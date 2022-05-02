@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  {{ title }}
-update: {{ date }}
+author: liugezhou
 date: {{ date }}
-author: "liugezhou"
+category:
 tags:
 ---

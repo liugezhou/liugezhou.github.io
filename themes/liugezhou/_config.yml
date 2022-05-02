@@ -25,9 +25,11 @@ user:
 # documents: https://github.com/utterance/utterances
 # API config: https://utteranc.es/
 comment_utteranc:
-  enable: true
+  enable: false
   repo:  # your blog repo
-
+  
+date_format: YYYY-MM-DD
+time_format: HH:mm:ss
 
 # documents: https://valine.js.org/quickstart.html
 comment_valine:
