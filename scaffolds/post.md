@@ -1,10 +1,8 @@
 ---
 layout: post
 title:  {{ title }}
-subtitle: "hi, I'm liugezhou"
+update: {{ date }}
 date: {{ date }}
 author: "liugezhou"
-header-img: "time.png"
-cdn: 'header-on'
 tags:
 ---

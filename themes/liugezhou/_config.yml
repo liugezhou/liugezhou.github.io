@@ -31,9 +31,9 @@ comment_utteranc:
 
 # documents: https://valine.js.org/quickstart.html
 comment_valine:
-  enable: false
-  appId:
-  appKey:
+  enable: true # 开启评论功能
+  appId: Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz
+  appKey: bWsfs1hg9qURRp3gJ6SJU41x
 
 comment_disqus:
     enable: false
@@ -53,7 +53,7 @@ ga_track_id:
 ga_domain:
 
 # Baidu Analytics
-ba_track_id:
+ba_track_id: 65352c5d0937b81633dc41def4cba000
 
 # picture of about page
 about_pic: time.png
