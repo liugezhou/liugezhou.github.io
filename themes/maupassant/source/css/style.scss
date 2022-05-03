@@ -525,26 +525,31 @@ screen and (max-width: 35.5em) {
 
 blockquote,
 .stressed {
+    padding: 0 1em;
+    color: rgb(106, 115, 125);
+    border-left: 0.25em solid rgb(223, 226, 229);
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    margin: 2.5em 0;
-    padding: 0 0 0 50px;
-    color: #555;
-    border-left: none;
+    // margin: 2.5em 0;
+    // color: #555;
+    // border-left: none;
 }
 
 blockquote::before,
 .stressed-quote::before {
-    content: "\201C";
-    display: block;
-    font-family: times;
-    font-style: normal;
-    font-size: 48px;
-    color: #444;
-    font-weight: bold;
-    line-height: 30px;
-    margin-left: -50px;
-    position: absolute;
+    padding: 0 1em;
+    color: rgb(106, 115, 125);
+    border-left: 0.25em solid rgb(223, 226, 229);
+    // content: "\201C";
+    // display: block;
+    // font-family: times;
+    // font-style: normal;
+    // font-size: 48px;
+    // color: #444;
+    // font-weight: bold;
+    // line-height: 30px;
+    // margin-left: -50px;
+    // position: absolute;
 }
 
 strong,
