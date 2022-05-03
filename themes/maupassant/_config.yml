@@ -1,0 +1,145 @@
+disqus:
+  enable: false ## If you want to use Disqus comment system, please set the value to true.
+  shortname: ## Your disqus_shortname, e.g. username
+  api: ## You can visit Disqus comments in China mainland without barriers using Disqus API, e.g. https://disqus.skk.moe/disqus/
+  apikey: ## Your API key obtained in Disqus API Application, e.g. yk00ZB1fjYGRkrCrDDRYDUjpp26GJWJiJRZQZ5SY0r3th5FMW6pnSzQMnWH7ua7r
+  admin: ## Username of your Disqus moderator, e.g. username
+  admin_label: ## The text of Disqus moderator badge, e.g. Mod
+uyan: ## Your uyan_id. e.g. 1234567
+livere: ## Your livere data-uid, e.g. MTAyMC8zMDAxOC78NTgz
+changyan: ## Your changyan appid, e.g. cyrALsXc8
+changyan_conf: ## Your changyan conf, e.g. prod_d8a508c2825ab57eeb43e7c69bba0e8b
+gitalk: ## See: https://github.com/gitalk/gitalk
+  enable: false ## If you want to use Gitment comment system please set the value to true.
+  owner: ## Your GitHub ID, e.g. username
+  repo: ## The repository to store your comments, make sure you're the repo's owner, e.g. gitalk.github.io
+  client_id: ## GitHub client ID, e.g. 75752dafe7907a897619
+  client_secret: ## GitHub client secret, e.g. ec2fb9054972c891289640354993b662f4cccc50
+  admin: ## Github repo owner and collaborators, only these guys can initialize github issues.
+valine: ## See: https://valine.js.org
+  enable: true ## If you want to use Valine comment system, please set the value to true.
+  appid: Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz ## Your LeanCloud application App ID, e.g. pRBBL2JR4N7kLEGojrF0MsSs-gzGzoHsz
+  appkey: bWsfs1hg9qURRp3gJ6SJU41x ## Your LeanCloud application App Key, e.g. tjczHpDfhjYDSYddzymYK1JJ
+  notify: false ## Mail notifier, see https://github.com/xCss/Valine/wiki/Valine-评论系统中的邮件提醒设置
+  verify: false ## Validation code.
+  placeholder: Come on baby ## Comment box placeholders.
+  avatar: "mm" ## Gravatar type, see https://github.com/xCss/Valine/wiki/avatar-setting-for-valine
+  pageSize: 10 ## Number of comments per page.
+  guest_info: nick,mail,link ## Attributes of reviewers.
+minivaline: ## See: https://github.com/MiniValine/MiniValine
+  enable: false ## If you want to use MiniValine comment system, please set the value to true.
+  appId: ## Your LeanCloud application App ID, e.g. pRBBL2JR4N7kLEGojrF0MsSs-gzGzoHsz
+  appKey: ## Your LeanCloud application App Key, e.g. tjczHpDfhjYDSYddzymYK1JJ
+  placeholder: Write a Comment ## Comment box placeholder.
+  adminEmailMd5: ## The MD5 of Admin Email to show Admin Flag.
+  math: true ## Support MathJax.
+  md: true ## Support Markdown.
+  # MiniValine's display language depends on user's browser or system environment
+  # If you want everyone visiting your site to see a uniform language, you can set a force language value
+  # Available values: en  | zh-CN | (and many more)
+  # More i18n info: https://github.com/MiniValine/minivaline-i18n
+  lang:
+waline: ## See: https://waline.js.org/
+  enable: false ## If you want to use Waline comment system, please set the value to true.
+  serverURL: ## Your server url, e.g. https://your-domain.vercel.app
+  pageSize: ## The desired number of comments shown in each page.
+utterances: ## See: https://utteranc.es
+  enable: false ## If you want to use Utterances comment system, please set the value to true.
+  repo: ## The repository utterances will connect to, e.g. tufu9441/comments
+  identifier: title ## The mapping between blog posts and GitHub issues.
+  theme: github-light ## Choose an Utterances theme which matches your blog.
+twikoo: ## See: https://twikoo.js.org
+  enable: false ## If you want to use twikoo comment system, please set the value to true.
+  envId: ## Tencent CloudBase envId
+  region: ## Tencent CloudBase region, e.g. ap-shanghai
+  path: ## Article path, e.g. window.location.pathname
+
+google_search: false 
+baidu_search: false 
+swiftype: 
+self_search: true ## 本地搜索
+google_analytics: 
+baidu_analytics: 65352c5d0937b81633dc41def4cba000 ## 百度统计Key值
+fancybox: true ## If you want to use fancybox please set the value to true.
+show_category_count: true ## TODO 好像没起作用哎
+toc_number: true ## TODO 好像没起作用哎
+shareto: false ## 分享按钮 you must have hexo-helper-qrcode installed.
+busuanzi: false ## If you want to use Busuanzi page views please set the value to true.
+wordcount: true ## 字数统计
+widgets_on_small_screens: false ## Set to true to enable widgets on small screens.
+canvas_nest:
+  enable: false ## If you want to use dynamic background please set the value to true, you can also fill the following parameters to customize the dynamic effect, or just leave them blank to keep the default effect.
+  color: ## RGB value of the color, e.g. "100,99,98"
+  opacity: ## Transparency of lines, e.g. "0.7"
+  zIndex: ## The z-index property of the background, e.g. "-1"
+  count: ## Quantity of lines, e.g. "150"
+donate:
+  enable: false ## If you want to display the donate button after each post, please set the value to true and fill the following items on your need. You can also enable donate button in a page by adding a "donate: true" item to the front-matter.
+  github: ## GitHub URL, e.g. https://github.com/Kaiyuan/donate-page
+  alipay_qr: ## Path of Alipay QRcode image, e.g. /img/AliPayQR.png
+  wechat_qr: ## Path of Wechat QRcode image, e.g. /img/WeChatQR.png
+  btc_qr: ## Path of Bitcoin QRcode image, e.g. /img/BTCQR.png
+  btc_key: ## Bitcoin key, e.g. 1KuK5eK2BLsqpsFVXXSBG5wbSAwZVadt6L
+  paypal_url: ## Paypal URL, e.g. https://www.paypal.me/tufu9441
+post_copyright:
+  enable: true ## If you want to display the copyright info after each post, please set the value to true and fill the following items on your need.
+  author: liugehzou ## Your author name, e.g. tufu9441
+  copyright_text: 人生缘编程 ## Your copyright text, e.g. The author owns the copyright, please indicate the source reproduced.
+love: true ## 页面点击显示小红心
+plantuml: ## Using PlantUML to generate UML diagram, must install hexo-filter-plantuml (https://github.com/miao1007/hexo-filter-plantuml).
+  render: "PlantUMLServer" ## Local or PlantUMLServer.
+  outputFormat: "svg" ## Common options: svg/png
+copycode: true ## If you want to enable one-click copy of the code blocks, set the value to true.
+dark: true ## 一键切换功能
+totop: true ## 一键返回顶部小火箭
+external_css: false ## If you want to load an external CSS file, set the value to true and create a file named "external.css" in the source/css folder.
+
+menu:
+  - page: home
+    directory: .
+    icon: fa-home
+  - page: archive
+    directory: archives/
+    icon: fa-archive
+  - page: about
+    directory: about/
+    icon: fa-user
+  - page: history
+    directory: history/
+    icon: fa-history
+  - page: rss
+    directory: atom.xml
+    icon: fa-rss
+
+widgets: ## Six widgets in sidebar provided: search, category, tag, recent_posts, recent_comments and links.
+  - search
+  - category
+  - tag
+  - recent_posts
+  - recent_comments
+  - links
+
+links:
+  - title: GitHub
+    url: https://github.com/liugezhou
+  - title: Older-Blog
+    url: https://liugezhou.github.io
+
+timeline:
+  - num: 1
+    word: 2017年11月13日。在CSDN写下第一篇markdown语法总结，开启写博客的萌芽，断断续续八篇水文
+  - num: 1
+    word: 2018年7月13日，开始在简书尝试写博客，与2019年6月19日在简书停更，累计60余篇文章，输出11+万字，获得242个粉丝，1250+喜欢
+  - num: 2
+    word: 2018年11月01日，掘金写下第一篇博文，至2020年2月19日，总共输出25篇文章，被点赞146次，阅读量32000+
+  - num: 3
+    word: 2019年7月3日，在Github上，用HEXO主题搭建了自己的个人博客，于2020年8月9日停更，累计输出94篇博文
+  - num: 4
+    word: 2022年5月2日，再次重新搭建新的博客，重新起航，坚持写文。
+
+# Static files
+js: js
+css: css
+
+# Theme version
+version: 1.0.0

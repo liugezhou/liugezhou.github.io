@@ -3,6 +3,7 @@ layout: post
 title: IDEA 自动生成mapper
 author: liugezhou
 date: 2021-05-28
+updated: 2021-05-28
 category: 
   服务端
 ---

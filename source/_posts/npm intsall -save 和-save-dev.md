@@ -1,6 +1,7 @@
 ---
 title: npm intsall -save 和-save-dev
 date: 2018-06-28
+updated: 2018-06-28
 categories:
 - 前端小技
 tags: 

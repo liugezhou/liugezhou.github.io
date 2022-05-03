@@ -1,6 +1,7 @@
 ---
 title: 电脑更换如何继续写hexo博客
 date: 2019-07-24
+updated: 2019-07-24
 categories:
 - 博客搭建
 tags: 

@@ -1,0 +1,170 @@
+if theme.disqus.enable == true
+  link(rel='stylesheet', type='text/css', href='https://unpkg.com/disqusjs@1.3/dist/disqusjs.css')
+  script(type='text/javascript', src='https://unpkg.com/disqusjs@1.3/dist/disqus.js')
+  script(type='text/javascript', id='disqus-count-script').
+    $(function() {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', '//disqus.com/next/config.json', true);
+      xhr.timeout = 2500;
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          $('.post-meta .post-comments-count').show();
+          var s = document.createElement('script');
+          s.id = 'dsq-count-scr';
+          s.src = 'https://#{theme.disqus.shortname}.disqus.com/count.js';
+          s.async = true;
+          (document.head || document.body).appendChild(s);
+        }
+      };
+      xhr.ontimeout = function () { xhr.abort(); };
+      xhr.send(null);
+    });
+  #disqus_thread.comments
+    script(type='text/javascript').
+      // Load comments with DisqusJS
+      function loadComments() {
+        window.dsqjs = new DisqusJS({
+          shortname: '#{theme.disqus.shortname}',
+          siteName: '#{config.title.replace("\'","\\\'")}',
+          identifier: '#{page.path}',
+          url: '#{config.url}/#{page.path}',
+          title: '#{page.title}',
+          api: '#{theme.disqus.api}',
+          apikey: '#{theme.disqus.apikey}',
+          admin: '#{theme.disqus.admin}',
+          adminLabel: '#{theme.disqus.admin_label}'
+        });
+      }
+      // Lazy load {# Credit: https://github.com/theme-next/hexo-theme-next/blob/master/layout/_third-party/comments/disqus.swig #}
+      (function () {
+        var offsetTop = document.getElementById('disqus_thread').offsetTop - window.innerHeight;
+        if (offsetTop <= 0) {
+          // Load directly when there's no scrollbar
+          window.addEventListener('load', loadComments, false);
+        } else {
+          var disqusScroll = function () {
+            // offsetTop may changes because of manually resizing browser window or lazy loading images
+            var offsetTop = document.getElementById('disqus_thread').offsetTop - window.innerHeight;
+            var scrollTop = window.scrollY;
+
+            // Pre-load comments a bit? (margin or anything else)
+            if (offsetTop - scrollTop < 60) {
+              window.removeEventListener('scroll', disqusScroll);
+              loadComments();
+            }
+          };
+          window.addEventListener('scroll', disqusScroll);
+        }
+      })();
+      // Scroll to comments automatically if #comment-xxx anchor specified
+      window.addEventListener('load', function () {
+        // I don't know why, it just works.
+        window.setTimeout(function () {
+          if (location.hash.indexOf('#comment-') !== -1) {
+            document.getElementById('disqus_thread').scrollIntoView(true);
+          }
+        }, 100);
+      }, false);
+
+if theme.uyan
+  #uyan_frame
+  script(type='text/javascript', src='//v2.uyan.cc/code/uyan.js?uid=' + theme.uyan)
+
+if theme.changyan
+  #SOHUCS(sid=page.date.valueOf())
+  script.
+    (function(){var appid='#{theme.changyan}';var conf='#{theme.changyan_conf}';var width=window.innerWidth||document.documentElement.clientWidth;if(width<960){window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id='+appid+'&conf='+conf+'"><\/script>')}else{var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})})}})()
+
+if theme.livere
+  #lv-container(data-id='city', data-uid=theme.livere)
+    script.
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+
+if theme.gitalk.enable == true
+  #container
+  link(rel='stylesheet', type='text/css', href='//unpkg.com/gitalk/dist/gitalk.css')
+  script(type='text/javascript', src='//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js')
+  script(type='text/javascript', src='//unpkg.com/gitalk/dist/gitalk.min.js')
+  script.
+    var gitalk = new Gitalk({
+      clientID: '#{theme.gitalk.client_id}',
+      clientSecret: '#{theme.gitalk.client_secret}',
+      repo: '#{theme.gitalk.repo}',
+      owner: '#{theme.gitalk.owner}',
+      admin: ['#{theme.gitalk.admin}'],
+      id: md5(location.pathname),
+      distractionFreeMode: false
+    })
+    gitalk.render('container')
+
+if theme.valine.enable == true
+  #vcomment
+  script(src='//cdn1.lncld.net/static/js/3.0.4/av-min.js')
+  script(src='//unpkg.com/valine@latest/dist/Valine.min.js')
+  script.
+    var notify = '#{ theme.valine.notify }' == 'true' ? true : false;
+    var verify = '#{ theme.valine.verify }' == 'true' ? true : false;
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = '#{ theme.valine.guest_info }'.split(',').filter(function(item){
+      return GUEST_INFO.indexOf(item) > -1
+    });
+    guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+    window.valine = new Valine({
+      el:'#vcomment',
+      notify:notify,
+      verify:verify,
+      appId:'#{theme.valine.appid}',
+      appKey:'#{theme.valine.appkey}',
+      placeholder:'#{theme.valine.placeholder}',
+      avatar:'#{theme.valine.avatar}',
+      guest_info:guest_info,
+      pageSize:'#{theme.valine.pageSize}'
+    })
+
+if theme.minivaline.enable == true
+  #minivaline-container
+  script(src='https://unpkg.com/minivaline/dist/MiniValine.min.js')
+  script.
+    new MiniValine({
+      el: '#minivaline-container',
+      appId: '#{theme.minivaline.appId}',
+      appKey: '#{theme.minivaline.appKey}',
+      placeholder: '#{theme.minivaline.placeholder}',
+      lang: '#{theme.minivaline.lang}',
+      adminEmailMd5: '#{theme.minivaline.adminEmailMd5}',
+      math: #{theme.minivaline.math},
+      md: #{theme.minivaline.md}
+    })
+
+if theme.waline.enable == true
+  #waline
+  script(src='//unpkg.com/@waline/client@v2/dist/waline.js')
+  link(rel='stylesheet', type='text/css', href='//unpkg.com/@waline/client@v2/dist/waline.css')
+  script.
+    Waline.init({
+      el: '#waline',
+      comment: true,
+      serverURL: '#{theme.waline.serverURL}',
+      pageSize: '#{theme.waline.pageSize}',
+    })
+
+if theme.utterances.enable == true
+  script(src='https://utteranc.es/client.js', repo=theme.utterances.repo, issue-term=theme.utterances.identifier, theme=theme.utterances.theme, crossorigin='anonymous', async)  
+
+if theme.twikoo.enable == true
+  #tcomment
+  script(src='https://unpkg.com/twikoo@1.5.7/dist/twikoo.all.min.js')
+  script.
+    twikoo.init({
+      envId: '#{theme.twikoo.envId}',
+      el: '#tcomment',
+      region: '#{theme.twikoo.region}',
+      path: '#{theme.twikoo.path}'
+    })

@@ -3,6 +3,7 @@ layout: post
 title: CentOS_Docker_Nginx_Node_Jenkins
 author: liugezhou
 date: 2021-06-13
+updated: 2021-06-13
 category: 
     服务端
 tags:

@@ -3,6 +3,7 @@ layout: post
 title:  很爽的Promise几道console题
 author: liugezhou
 date: 2022-04-04
+updated: 2022-04-04
 category: 
     前端小技
 tags:

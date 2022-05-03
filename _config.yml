@@ -1,6 +1,6 @@
 # Site
 title: 六个周
-subtitle: 'liugezhou'
+subtitle: 'Talk is cheap,Show me the code'
 description: '六个周的博客'
 keywords: 博客搭建 六个周的博客 每周总结
 author: liugezhou
@@ -41,9 +41,9 @@ post_asset_folder: false
 relative_link: false
 future: true
 highlight:
-  enable: false
+  enable: true
   line_number: true
-  auto_detect: false
+  auto_detect: true
   tab_replace: ''
   wrap: true
   hljs: false
@@ -85,7 +85,7 @@ exclude:
 ignore:
 
 # Extensions
-theme: liugezhou
+theme: maupassant
 
 # Deployment
 deploy:

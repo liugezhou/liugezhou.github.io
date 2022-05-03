@@ -1,0 +1,28 @@
+extends base
+block title
+  title= page.title + ' | ' + config.title
+block content
+  .post
+    h1.post-title= page.title
+    .post-content
+      != page.content
+      section#process
+        .container
+          .row
+            .col-xs-12.col-sm-12.col-md-8.col-md-offset-2
+              .timeline-centered
+                .line
+                .present Past
+                .dot_tp
+                .born Now
+                .dot_bt
+                - for (var i in theme.timeline)
+                  .timeline-entry
+                    .timeline-entry-inner
+                      .timeline-icon.wow.fadeInUp(data-wow-delay='0.2s')
+                        span.number= theme.timeline[i].num
+                      .timeline-label.wow.fadeInUp(data-wow-delay='0.2s')
+                        span.word= theme.timeline[i].word
+
+  if page.comments
+    include _partial/comments.pug

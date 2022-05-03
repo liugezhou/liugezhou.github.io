@@ -1,6 +1,7 @@
 ---
 title: 小程序Request的封装
 date: 2019-05-28
+updated: 2019-05-28
 categories:
 - 前端小技
 tags: 

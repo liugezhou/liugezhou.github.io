@@ -3,6 +3,7 @@ layout: post
 title: CMD、AMD、ES6NEXT
 author: liugezhou
 date: 2021-01-25 09:14:00
+updated: 2021-01-25 
 category: 
     前端小技
 ---
