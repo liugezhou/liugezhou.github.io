@@ -1,45 +1,41 @@
 ---
 layout: post
 title: Week6-脚手架项目和组件初始化开发
-author: liugezhou
 date: 2021-03-01
-updated: 2021-03-05
+updated: 2022-05-04
+description: 脚手架项目和组件初始化开发
+toc: true
 category: 
     Web架构之脚手架
 tags:
     Web架构之脚手架
 ---
-### 第一章：本周导学
 
----
+<font color=blue>更新说明：对文章目录排版做了调整。</font>
+<font color=blue> 更新时间：2022-05-04</font>
 
-#### 1-1 本周整体内容介绍和学习方法
+## 第一章：本周导学
+
+**1-1 本周整体内容介绍和学习方法**
 > - 重点：脚手架安装 项目/组件  功能开发。
 > - 技术栈：ejs模版渲染(项目模板安装)和glob文件筛选。
 > - 加餐：ejs源码解析、require源码解析。 
 
+## 第二章：脚手架安装模版功能架构设计
 
-### 第二章：脚手架安装模版功能架构设计
-
----
-
-
-#### 2-1 脚手架安装项目模板架构设计
+**2-1 脚手架安装项目模板架构设计**
 installTemplate
-#### 2-2 脚手架组件初始化架构设计
 
+**2-2 脚手架组件初始化架构设计**
 > 与项目大体过程没有改变。
 > tiny change：
 > - 文本提示名称
 > - 项目名称format
 > - 组件需要填写描述信息
 
+## 第三章 脚手架模板安装核心实现：ejs 库功能详解
 
-### 第三章 脚手架模板安装核心实现：ejs 库功能详解
-
----
-
-#### 3-1 ejs模板引擎的三种基本用法
+**3-1 ejs模板引擎的三种基本用法**
 
 > ejs主要用于模版渲染的。jsp、php是之前模版渲染的代表。ejs的实现与jsp非常类似。
 > - ejs.compile(html,options)(data)
@@ -73,8 +69,7 @@ renderFile.then(file => console.log(file))
 
 ```
 
-#### 3-2 ejs模板不同标签用法详解
-**
+**3-2 ejs模板不同标签用法详解**
 > - <%   : ‘脚本’标签，用于流程控制，无输出。
 > - <%= : 输出数据到模版(输出是转义Html标签)
 > - <%- : 输出非转义的数据到模版 :如果数据是<div>liugehou</div>,那么输出的就是这样的格式。
@@ -83,22 +78,20 @@ renderFile.then(file => console.log(file))
 > - -%>: 删除紧随其后的换行符
 > - _%>: 删除后面空格字符
 
-
-#### 3-3 ejs模板几种特殊用法
+**3-3 ejs模板几种特殊用法**
 
 > 本节主要介绍ejs另外比较常用的三个辅助功能
 > - 包含: include
 > - 自定义分隔符: 我们上面默认使用的是%，我们只需要在options参数中定义 delimiter这个参数即可
 > - 自定义文件加载器: 在使用ejs.renderFile读取文件之前，可以使用ejs.fileLoader做一些操作
-> ```javascript
+
+```javascript
 ejs.fileLoader = function(filePath){
 	const content = fs.readFileSync(filePath)
   return '<div><%= user.copyright %></div>' + content
 }
 ```
-
-
-#### 3-4 glob用法小结
+**3-4 glob用法小结**
 
 > glob最早是出现在类Unix系统的命令中的，用来匹配文件路径。 
 
@@ -110,19 +103,16 @@ glob('**/*.js',{ignore:['node_modules/**','webpack.config.js']},function(err,fil
 })
 ```
 
-### 第四章：脚手架项目模板安装功能开发
+## 第四章：脚手架项目模板安装功能开发
 
----
+**4-1 引入项目模板类型和标准安装逻辑开发**
 
-#### 4-1 引入项目模板类型和标准安装逻辑开发
-**
 > 本节代码较少，主要是梳理流程，上一大周写到了下载模版到本地缓存，本节接着上周进度：
 > 接着便需要安装模版，新建了安装模版 installTemplate()方法，并对拿到模版的type进行判断，
 > 若为normal，则执行安装标准模版方法：installNormalTemplate()
 > 若为custom，则执行安装自定义模版方法：installCustomTemplate()
 
-
-#### 4-2 拷贝项目模板功能开发
+**4-2 拷贝项目模板功能开发**
 ```javascript
 async installNormalTemplate(){
   //拷贝模板代码至当前目录
@@ -144,8 +134,7 @@ async installNormalTemplate(){
   }
 }
 ```
-#### 
-#### 4-3 项目模板安装依赖和启动命令 | **4-4 白名单命令检测功能开发**
+**4-3 项目模板安装依赖和启动命令 | **4-4 白名单命令检测功能开发****
 
 在上一节，模板copy成功之后，紧接着：
 ```javascript
@@ -185,8 +174,7 @@ async execCommand(command,errMsg){
         return null;
     }
 ```
-#### 
-#### 4-5 项目名称自动格式化功能开发
+**4-5 项目名称自动格式化功能开发**
 
 > 本节使用了kebab-case这个库，将手动填入的项目名称保存在projectInfo中，以供后续package.json中的ejs渲染使用。
 
@@ -200,13 +188,13 @@ if(projectInfo.projectVersion){
   projectInfo.version = projectInfo.projectVersion
 }
 ```
-#### 
-#### 4-6 本章核心：ejs动态渲染项目模板
+**4-6 本章核心：ejs动态渲染项目模板**
 
 > - 首先将vue2模版中package.json文件中的name以及version使用<%= className%>和<%= version%>替代，并发布新的版本至npm。
 > - commands/init模块安装 ejs和glob库。
 > - 核心代码如下(在4-4节中依赖安装前，ejs动态渲染)
-> ```javascript
+
+```javascript
  async ejsRender(options){
    const dir = process.cwd()
    const projectInfo = this.projectInfo
@@ -240,23 +228,18 @@ if(projectInfo.projectVersion){
  }
 ```
 
+**4-7 init命令直接传入项目名称功能支持**
 
-#### 4-7 init命令直接传入项目名称功能支持
 > 本节完成的是  对命令行中传入项目名称的一个支持
 > 通过判断脚手架命令是否传入项目名称，对inquirer中的prompt进行动态push。
 
+## 第五章 组件模板开发及脚手架组件初始化功能支持
 
-### 第五章 组件模板开发及脚手架组件初始化功能支持
-
----
-
-
-#### 5-1 慕课乐高组件库模板开发
+**5-1 慕课乐高组件库模板开发**
 
 > 维护组件库发布至npm，然后在mongodb数据库中进行配置。
 
-
-#### 5-2 项目和组件模板数据隔离+动态配置ejs ignore
+**5-2 项目和组件模板数据隔离+动态配置ejs ignore**
 
 这部分完整代码如下
 ```javascript
@@ -332,8 +315,7 @@ projectPrompt.push({
   choices: this.createTemplateChoice()
 })
 ```
-#### 
-#### 5-3 获取组件信息功能开发
+**5-3 获取组件信息功能开发**
 
 完整核心代码如下,添加了 descriptionPrompt
 ```javascript
@@ -370,26 +352,20 @@ if(projectInfo.componentDescription){
 }
 
 ```
+**5-4 解决组件库初始化过程中各种工程问题**
 
-#### 5-4 解决组件库初始化过程中各种工程问题
-**
 > 慕课乐高组件库，在发布到npm包时，安装出现问题，问题原因是 package.json中，需要将
 > "files":['dist']  这行代码去除，这是因为files这里限定了上传发布到npm后只有dist这个目录。
 
+## 第六章 脚手架自定义初始化项目模板功能开发
 
-### 第六章 脚手架自定义初始化项目模板功能开发
-
----
-
-
-#### 6-1 自定义项目模板开发
+**6-1 自定义项目模板开发**
 
 > - 发布自定义模版 [liugezhou-cli-dev-template-custom-vue2](https://www.npmjs.com/package/liugezhou-cli-dev-template-custom-vue2)
 > - mongodb中配置自定义模版数据。
 
-
-#### 6-2 自定义模板执行逻辑开发
-#### 6-3 自定义模板上线
+**6-2 自定义模板执行逻辑开发**
+**6-3 自定义模板上线**
 ```javascript
 async installCustomTemplate(){
         //查询自定义模版的入口文件
@@ -413,13 +389,9 @@ async installCustomTemplate(){
   }
 }
 ```
-### 
-### 第七章 本周加餐：ejs 库源码解析 —— 彻底搞懂模板动态渲染原理
+## 第七章 本周加餐：ejs 库源码解析 —— 彻底搞懂模板动态渲染原理
 
----
-
-
-#### 7-1 ejs.compile执行流程分析
+**7-1 ejs.compile执行流程分析**
 > ejs模版渲染的思路值得我们学习，于是我们就开始了了ejs的源码的学习。 
 
 [点击查看【processon】](https://www.processon.com/view/link/6041c047e401fd641ae13fc6)
@@ -500,8 +472,7 @@ function Template(text, opts) {
 }
 
 ```
-#### 
-#### 7-2 深入讲解ejs编译原理
+**7-2 深入讲解ejs编译原理**
 > 上一节我们看到了 return templet.compile()处，源代码如下
 
 ```javascript
@@ -670,8 +641,9 @@ function Template(text, opts) {
   },
 
 ```
-#### 
-#### 7-3 动态生成Function+with用法讲解
+
+**7-3 动态生成Function+with用法讲解**
+
 > 上一节代码没有继续追踪，根据自己的源码一步一步调试，生一节调试到的代码为：
 
 ```javascript
@@ -720,8 +692,8 @@ with(ctx){
 }
 ```
 
-#### 7-4 ejs compile函数执行流程分析
-**
+**7-4 ejs compile函数执行流程分析**
+
 > apply简要解释
 
 ```javascript
@@ -734,8 +706,7 @@ test(1,2,3) //通常调用   // 1 2 3
 test.apply({a:'applt'},[2,3,4]) // 2 3 4 
 test.call({a:'call',2,3,4)    // 2 3 4
 ```
-
-#### 7-5 ejs.render和renderFile原理讲解
+**7-5 ejs.render和renderFile原理讲解**
 
 ejs.render的代码执行流程为：
 > - const renderTemplate = ejs.render(html,data,options)
@@ -743,20 +714,15 @@ ejs.render的代码执行流程为：
 > - handleCache ==>  return  exports.compile(template, options);
 > - handleCache(opts, template)(data)
 
-
 renderFile的原理讲解
 > 1. const renderFile = ejs.renderFile(**path**.resolve(__dirname,'template.html'),data,options)
 > 1. exports.renderFile
 > 1. tryHandleCache(opts, data, cb)
 > 1. handleCache(options)(data)
 
+## 第八章 加餐：require源码解析，彻底搞懂 npm 模块加载原理
 
-### 第八章 加餐：require源码解析，彻底搞懂 npm 模块加载原理
-
----
-
-#### 8-1 require源码执行流程分析
-**
+**8-1 require源码执行流程分析**
 
 - **require使用场景**
 
@@ -823,7 +789,7 @@ Module.prototype.require = function(id) {
 > - id：传入的字符串
 > - this：Module对象
 > - isMain:flase表示加载的不是一个主模块
-> ```javascript
+```javascript
 Module._load = function(request, parent, isMain) {
   let relResolveCacheIdentifier;
   if (parent) {
@@ -895,12 +861,9 @@ Module._load = function(request, parent, isMain) {
 };
 
 ```
-
-#### 
-#### 8-2 require加载模块原理详解
+**8-2 require加载模块原理详解**
 
 > 上一节我们走到了Module._load(filename)
-
 
 ```javascript
 Module.prototype.load = function(filename) {
@@ -955,6 +918,7 @@ Module.prototype.load = function(filename) {
 ```
 
 Module._extensions[extension](this,filename)
+
 ```javascript
 Module._extensions['.js'] = function(module, filename) {
   if (filename.endsWith('.js')) {
@@ -1032,7 +996,7 @@ Module.prototype._compile = function(content, filename) {
 
 ```
 
-#### 8-3 require加载内置模块和四种文件类型原理
+**8-3 require加载内置模块和四种文件类型原理**
 
 1. 加载内置模块：流程到 loadNativeModule结束。
 1. 加载node_modules模块：通过 Module._resolveFilename(request, parent, isMain)找到路径。
@@ -1040,7 +1004,7 @@ Module.prototype._compile = function(content, filename) {
 1. 加载.js/.json/.node/mjs文件：Module._extensions['XXX' ]
 1. 加载其它文件后缀名：默认按js执行
 
-#### 8-4 require缓存机制解析和CommonJS加载主模块原理
+**8-4 require缓存机制解析和CommonJS加载主模块原理**
 
 > 连续加载两次同一个文件，require是如何处理的？
 require的缓存机制，使得在第二次加载相同的文件时，不会再次执行源文件，直接从缓存中去拿。 
@@ -1054,7 +1018,7 @@ CommonJS加载主模块流程：
 > 
 与require的区别为：isMain为true，parent为null
 
-#### 8-5 require原理总结和回顾
+**8-5 require原理总结和回顾**
 
 > - `relativeResolveCache[relResolveCacheIdentifier] `查询缓存路径
 > - `Module._cache[filename] `查询缓存模块
@@ -1069,4 +1033,3 @@ CommonJS加载主模块流程：
 > - `exports, require, module, filename, dirname `生成入参
 > - `compiledWrapper.call `执行模块函数
 > - `return module.exports` 输出模块返回结果
-

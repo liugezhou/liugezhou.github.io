@@ -1,44 +1,40 @@
 ---
 layout: post
 title: Week31-脚手架发布模块云发布功能开发
-author: liugezhou
 date: 2021-08-15
-updated: 2021-08-18
+updated: 2022-05-04
+description: 脚手架发布模式git自动化流程开发
+toc: true
 category: 
     Web架构之脚手架
 tags:
     Web架构之脚手架
 ---
-### 第一章 本周导学
----
 
-#### 1-1 本周介绍和学习方法
+<font color=blue>更新说明：对文章目录排版做了调整。</font>
+<font color=blue> 更新时间：2022-05-04</font>
+
+## 第一章 本周导学
+**1-1 本周介绍和学习方法**
 > - 云发布原理、架构和实现
 > - OSS API(OSS接入指南)
 > - 上线发布流程(支持Hash和History模式发布)
 > - 附赠：Node高分库分享(awesome-nodejs)
 
-### 
-### 第二章 云发布模块架构设计
+## 第二章 云发布模块架构设计
 
----
-
-
-#### 2-1 前端发布OSS架构设计
+**2-1 前端发布OSS架构设计**
 > - CloudBuild实例添加参数：prod（是否为正式版本）
 > - 添加准备阶段 ：获取OSS文件，询问是否覆盖
 
-#### 2-2 云发布架构和流程设计
+**2-2 云发布架构和流程设计**
 [点击查看【processon】](https://www.processon.com/embed/61127e8907912940a9654a57)
 
-### 第三章 云发布功能开发
-
----
+## 第三章 云发布功能开发
 
 > 本章内容更新代码为分支 [lesson31](https://github.com/liugezhou/cloudscope-cli/tree/lesson31)
 
-
-#### 3-1 实现云发布前的预检查逻辑
+**3-1 实现云发布前的预检查逻辑**
 > 在上一节中，mdoels/git/lib/index.js中，有preparePublish方法，之前检查命令是否为npm或cnpm
 > 在上一节基础上，这里添加了，执行构建命令是否为 build，代码如下
 > 
@@ -67,8 +63,7 @@ getPackageJson(){
   return fse.readJsonSync(pkgPath)
 }
 ```
-
-#### 3-2 静态资源服务器类型选择逻辑开发
+**3-2 静态资源服务器类型选择逻辑开发**
 > - 上一节我们检查了build这个命令
 > - 接着，我们需要选择上传资源服务器的类型，也就是OSS
 >    - 这里的代码是为了后续如果要修改资源服务器类型，可以进行代码的再开发--添加其他资源服务器类型。
@@ -112,8 +107,7 @@ async choicePublish(gitPublishPath){
 ```
 > 关于 --prod参数的传入，与--refreshToken等一样，这里就不做演示了。
 
-
-#### 3-3 云发布服务端预检查逻辑实现
+**3-3 云发布服务端预检查逻辑实现**
 > 本节是服务端相关的代码实现，同样代码为分支 [ lesson31](https://github.com/liugezhou/cloudscope-cli-server/tree/lesson31)
 > 主要是拿到云构建结果的dist或者build目录
 
@@ -163,7 +157,7 @@ findBuildPath(){
 }
 ```
 
-#### 3-4 创建OSS bucket+OSS实例化开发(服务端)
+**3-4 创建OSS bucket+OSS实例化开发(服务端)**
 > - cnpm install -S ali-oss
 > - 客户端传递prod参数到服务端，服务端根据prod参数，获取不同环境的OSS
 > 
@@ -220,7 +214,7 @@ const OSS_REGION=''
 ```
 > 以上关于OSS Key等的配置，可去阿里云免费试用一个月OSS对象存储功能，填入相应的值。
 
-#### 3-5 云发布核心流程：上传OSS功能开发
+**3-5 云发布核心流程：上传OSS功能开发**
 代码逻辑如下
 > - npm i -S glob
 
@@ -281,18 +275,14 @@ async function publish(cloudBuildTask,socket,helper){
 ```
 > 最后经过测试，在阿里云控制台看到相关的OSS文件已上传。
 
-
-#### 3-6 OSS域名绑定 + CDN绑定
+**3-6 OSS域名绑定 + CDN绑定**
 
 - 域名绑定
 - CDN绑定
 
-### 第四章 云发布流程完善
+## 第四章 云发布流程完善
 
----
-
-
-#### 4-1 获取OSS API开发
+**4-1 获取OSS API开发**
 **服务端**
 > - **router.js中添加路由 router.get('/project/oss', controller.project.getOSSProject);**
 
@@ -358,7 +348,7 @@ async list({prefix}){
 }
 ```
 
-#### 4-2 覆盖发布逻辑开发
+**4-2 覆盖发布逻辑开发**
 > 服务端提供了获取OSS文件列表的接口，接着要在客户端去请求OSS上是否有文件，且是否发布。
 > 代码如下：
 
@@ -407,7 +397,7 @@ module.exports = function (data) {
   })
 }
 ```
-#### 4-3 服务端缓存文件清除功能实现
+**4-3 服务端缓存文件清除功能实现**
 本节主要是对redis以及缓存文件进行清除,并在build结束后，断开链接
 ```javascript
 // app/io/middleware/auth.js
@@ -432,10 +422,10 @@ async clean(){
  }))
 socket.disconnect()
 ```
-#### 4-4 自动提交代码 BUG 修复
+**4-4 自动提交代码 BUG 修复**
 > 本地未出错
 
-#### 4-5 history模式发布原理讲解
+**4-5 history模式发布原理讲解**
 > 使用 createWebHistory发布代码时，在OSS服务器，改变url地址，再刷新的话，会显示404，在nginx中有try_files的配置，而我们这里没有，因此除了将createWebhistory改为createWebHashHistory模式外，本节课讲述history模式发布解决这个问题---通过**本地**方式演示。
 > - 首先，history模式，需要在nginx上做配置
 > - 然后，分两个步骤实现
@@ -469,32 +459,23 @@ server {
 
 5. **这个时候启动本地nginx服务器，访问8081端口，再刷新页面，histpry路由模式就不会报404了**
 
-
-
-#### 4-6 history模式远程发布原理讲解
+**4-6 history模式远程发布原理讲解**
 > - 登录ESC服务器
 > - 配置nginx
 > - 本地文件上传到服务器 
 >    -  scp -r /User/liugezhou/Desktop/vue-router-demo/index.html  root@liugezhou:upload/test
 
-
-
-#### 4-7 脚手架自动上传模板逻辑开发
-#### 4-8 获取 OSS 文件 API 开发
-#### 4-9 上传模板功能实现
+**4-7 脚手架自动上传模板逻辑开发**
+**4-8 获取 OSS 文件 API 开发**
+**4-9 上传模板功能实现**
 > 通过三个新的参数：sshUser 、sshIp、sshPath继续下一步，具体代码就不贴了，这几章就只是流程的问题了。
 
-#### 
-#### 4-10 自动打tag+合并代码至master分支流程开发
+**4-10 自动打tag+合并代码至master分支流程开发**
 > **本节课直接看着仓库代码，具体的流程还需要后续深度学习。**
 
+## 第五章 本周加餐：node常用三方库介绍
 
-
-### 第五章 本周加餐：node常用三方库介绍
-
----
-
-#### 5-1 Node高分库：PDF文件生成工具——PDFKit
+**5-1 Node高分库：PDF文件生成工具——PDFKit**
 > [awesome-nodejs](https://github.com/sindresorhus/awesome-nodejs)
 
 本节sam老师，主要是讲解了这个[pdfkit](https://github.com/foliojs/pdfkit)库。
@@ -560,14 +541,15 @@ doc
 doc.end();
 ```
 
-#### 5-2 Node Excel处理库讲解
+**5-2 Node Excel处理库讲解**
 [https://github.com/dtjohnson/xlsx-populate](https://github.com/dtjohnson/xlsx-populate)
 
-#### 5-3 命令行交互库Listr讲解
+**5-3 命令行交互库Listr讲解**
 
 - [np](https://github.com/sindresorhus/np)：Better npm publish
 - np核心库：[listr](https://www.npmjs.com/package/listr)
-#### 5-4 利用Listr对项目自动创建Tag逻辑进行优化
+
+**5-4 利用Listr对项目自动创建Tag逻辑进行优化**
 ```javascript
 const Listr = require('listr')
 const { Observable } = require('rxjs')
@@ -601,17 +583,3 @@ process.on('unhandledRejection',(e)=>{
     console.log(e.message)
 })
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-

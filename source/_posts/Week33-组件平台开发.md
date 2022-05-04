@@ -1,37 +1,29 @@
 ---
 layout: post
 title: Week33-组件平台开发
-author: liugezhou
 date: 2021-08-26
-updated: 2021-08-29
+updated: 2022-05-04
+description: 组件平台开发
+toc: true
 category: 
     Web架构之脚手架
 tags:
     Web架构之脚手架
 ---
-<a name="HSEoC"></a>
-### 第一章 本周导学
 
----
+<font color=blue>更新说明：对文章目录排版做了调整。</font>
+<font color=blue> 更新时间：2022-05-04</font>
 
-<a name="q5Q62"></a>
-#### 1-1 本章介绍
+## 第一章 本周导学
+**1-1 本章介绍**
 > - 组件平台
 > - 组件预览
 > - 组件README
 
-<a name="MG4nm"></a>
-### 
-<a name="ztC8A"></a>
-### 第二章 组件平台架构设计和技术选型
-
----
-
-<a name="algMo"></a>
-#### 2-1 组件平台架构设计
+## 第二章 组件平台架构设计和技术选型
+**2-1 组件平台架构设计**
 [点击查看【processon】](https://www.processon.com/embed/61298d22637689579630027a)
-<a name="gTsNZ"></a>
-#### 2-2 组件平台技术选型和框架搭建
+**2-2 组件平台技术选型和框架搭建**
   umi-component-test改项目代码提交至：[https://github.com/liugezhou/umi-component-test](https://github.com/liugezhou/umi-component-test)
 
 1. **初始化UmiJS**
@@ -41,8 +33,7 @@ tags:
 > - yarn install
 > - yarn start
 
-<a name="UykDt"></a>
-#####  2. 新建页面
+2. 新建页面
 > npx umi g page detail
 
 3. **配置路由**
@@ -53,8 +44,7 @@ tags:
 >  ],
 > yarn start启动项目后，访问 http://192.168.1.3:8000/nice即可看到最新的页面
 
-<a name="jJsRL"></a>
-#####  4. 安装 Ant Design
+4. 安装 Ant Design
 > yarn add antd
 
 5. **使用**
@@ -63,16 +53,8 @@ import { Button } from "antd";
 
 <Button type="primary">Button</Button>
 ```
-<a name="mbeWU"></a>
-### 
-<a name="JWwJv"></a>
-### 第三章 组件平台基础功能开发
-
----
-
-<a name="CmlG4"></a>
-#### 
-3-1 umi 项目全局入口文件+国际化开发
+## 第三章 组件平台基础功能开发
+**3-1 umi 项目全局入口文件+国际化开发**
 
 > - 运行时配置:约定src/app.tsx为运行时配置,该配置文件下可以做一些全局性的操作
 > - 国际化：文档-插件-@umijs/plugin-locale
@@ -114,10 +96,7 @@ export default function IndexPage() {
 ```
 > 最后：yarn start启动文件，访问查看控制台：http://localhost:8000/?locale=en-US
 
-
-
-<a name="hRNXK"></a>
-#### 3-2 组件平台功能展示 + 页头页脚开发
+**3-2 组件平台功能展示 + 页头页脚开发**
 
 > umijs支持layout引入，于是我们在开发页头页脚的时候，页面页头与页脚是在各个页面都存在的，于是我们可以将页面不同的地方以layout的形式注入
 
@@ -196,14 +175,12 @@ export default defineConfig({
 });
 
 ```
-
-<a name="By9Ts"></a>
-#### 3-3 组件平台动态配置 API 开发
+**3-3 组件平台动态配置 API 开发**
 > 我们的页面与页脚内容需要从接口获取，因此，本节内容为在 cloudscope-cli-server服务中去编写接口代码。
 > 本周相关代码提交至：[cloudscope-cli/server/lesson33](https://github.com/liugezhou/cloudscope-cli-server/tree/lesson32)
 
 
-**3-3-1 添加路由 **
+**3-3-1 添加路由**
 ```javascript
 // app/route.js
 'use strict';
@@ -238,9 +215,7 @@ class ComponentSiteController extends Controller{
 > - 需要在mongoDB中新建集合 componentSite,添加页面页脚数据
 > - 启动项目，浏览器输入地址，测试访问结果
 
-
-<a name="MFxMY"></a>
-#### 3-4 前端动态配置 API 接入
+**3-4 前端动态配置 API 接入**
 > 代码无分支提交至：[umi-component-test](https://github.com/liugezhou/umi-component-test)
 
 > 上一节我们开发完毕api接口后，在前端请求该接口
@@ -327,13 +302,9 @@ function BasicLayout(props){
  export default BasiLayout;
 ```
 
-<a name="cr6u6"></a>
-### 第四章 组件平台组件列表页面开发
+## 第四章 组件平台组件列表页面开发
 
----
-
-<a name="R1lR7"></a>
-#### 4-1 组件列表 API 开发
+**4-1 组件列表 API 开发**
 > 本周相关代码提交至：[cloudscope-cli/server/lesson33](https://github.com/liugezhou/cloudscope-cli-server/tree/lesson32)
 
 ```javascript
@@ -380,8 +351,7 @@ ORDER BY c.create_dt, v.version DESC`;
   ctx.body = components;
 }
 ```
-<a name="nM4NP"></a>
-#### 4-2 测试组件数据创建
+**4-2 测试组件数据创建**
 > - 上一节我们获取的组件列表数据为一条，本节首先再去创建几条测试数据。
 > - 在此之前，先去更改之前的组件模版 cloudscope-cli-components，packahe.json的配置：publishConfig为access：true 和 build:demo
 >    - 外层package.json 增加一个版本号
@@ -409,14 +379,9 @@ ORDER BY c.create_dt, v.version DESC`;
 > - 查看npm发布组件信息
 > - 查看云OSS上传信息
 
-<a name="CFZP7"></a>
-#### 
-<a name="tTLK9"></a>
-#### 4-3 组件列表页面开发
-<a name="QLk1x"></a>
-#### 4-4 组件卡片面板开发
-<a name="Bht6s"></a>
-#### 4-5 搜索框组件开发+模糊搜索API开发
+**4-3 组件列表页面开发**
+**4-4 组件卡片面板开发**
+**4-5 搜索框组件开发+模糊搜索API开发**
 > 这三节内容为组件首页列表的umi项目代码开发，包括布局、请求、点击事件等功能，代码分类为：国际化配置、工具类、业务代码，其中核心内容为业务代码，主要是使用UI库ant-design-react和umi以及react的一些用法。
 > 
 > - **国际化配置**
@@ -650,15 +615,10 @@ export default function IndexPage() {
   padding:30px;
 }
 ```
-<a name="xxQ5W"></a>
-### 
-<a name="MRgHV"></a>
-### 第五章 组件平台组件详情页面开发
 
----
+## 第五章 组件平台组件详情页面开发
 
-<a name="hwguh"></a>
-#### 5-1 组件详情获取API开发
+**5-1 组件详情获取API开发**
 > 首先在umi-component-dev项目下写details页面
 
 ```javascript
@@ -737,13 +697,8 @@ async show() {
   }
 }
 ```
-<a name="pqi63"></a>
-#### 5-2 组件基本信息样式开发
-<a name="x1hXf"></a>
-#### 5-3 组件代码+预览样式开发
-<a name="aiaLK"></a>
-#### 5-4 组件安装样式和复制命令功能开发
-<a name="nyPFY"></a>
-#### 5-5 组件多预览文件上传工作
-<a name="ECOlL"></a>
-#### 5-6 组件多预览文件上传开发
+**5-2 组件基本信息样式开发**
+**5-3 组件代码+预览样式开发**
+**5-4 组件安装样式和复制命令功能开发**
+**5-5 组件多预览文件上传工作**
+**5-6 组件多预览文件上传开发**

@@ -1,14 +1,16 @@
 ---
 layout: post
 title: Vscode开发秘籍
-author: liugezhou
 date: 2022-01-17
-updated: 2022-04-17
-category:
-  前端小技
-tags:
-  Vscode
+updated: 2022-05-04
+toc: true
+description: Vscode一些使用技巧
+categories:
+- 前端小技
 ---
+<font color=blue>更新说明：对文章排版以及内容格式做了调整。</font>
+<font color=blue> 更新时间：2022-05-04</font>
+
 > VsCode调试大法好，对其熟练掌握，使我们的开发效率倍增，这篇博文记录各种Vscode从基础到深入的各种快速使用技巧。
 > 文章的开始是学习自掘金的这篇文章：[深入讲解VsCode各场景高级调试与使用技巧](https://juejin.cn/post/7071146744339234846)
 > 后续会加入各种有关Vscode技巧内容。
@@ -29,7 +31,6 @@ tags:
 > - 关闭所有窗口 ：~~ ~~**~~⌘ + K ,W~~**
 > - 
 
-
 ## 进阶技巧
 > - 想将某一行的代码整体前移或后移，还在使用Tab键或者Shift+Tab键吗，替换成⌘ + 【
 > - 还在直接使用 ⌘ + F,查找后再替换吗？可以使用使用** ⌘+ option + F **批量替换： **⌘ + Enter **
@@ -38,5 +39,3 @@ tags:
 > - 是不是想要把某几行的代码合并成一行？ 代码选中 Ctrl + J
 > - 一个方法过长？想要讲这个方法收起来？ option + ⌘ + [
 > - 
-
-

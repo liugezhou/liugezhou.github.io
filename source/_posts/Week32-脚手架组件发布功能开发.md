@@ -1,40 +1,36 @@
 ---
 layout: post
 title: Week32-脚手架组件发布功能开发
-author: liugezhou
 date: 2021-08-22
-updated: 2021-08-25
+updated: 2022-05-04
+description: 脚手架组件发布功能开发
+toc: true
 category: 
     Web架构之脚手架
 tags:
     Web架构之脚手架
 ---
-### 第一章 周介绍
 
----
+<font color=blue>更新说明：对文章目录排版做了调整。</font>
+<font color=blue> 更新时间：2022-05-04</font>
 
-#### 1-1 整体内容介绍
+## 第一章 周介绍
+
+**1-1 整体内容介绍**
 > - 前端组件演讲过程和大厂前端物料体系介绍
 > - 组件复用体系架构设计
 > - 脚手架组件创建+发布全流程实现
 
+## 第二章 大厂物料体系介绍和前端组件平台架构设计
 
-### 第二章 大厂物料体系介绍和前端组件平台架构设计
-
----
-
-#### 2-1 大厂前端物料体系介绍
-#### 2-2 组件平台架构设计
+**2-1 大厂前端物料体系介绍**
+**2-2 组件平台架构设计**
 [点击查看【processon】](https://www.processon.com/embed/612322001efad44bb279c2f2)
 
+## 第三章 脚手架组件创建和预览项目开发
 
-### 第三章 脚手架组件创建和预览项目开发
-
----
-
-#### 3-1 新的组件库模板开发
-** **
-** 1. 发布npm包**
+**3-1 新的组件库模板开发**
+1. 发布npm包
 
 - 下载源至某处：[https://git.imooc.com/class-110/lego-bricks](https://git.imooc.com/class-110/lego-bricks)
 - 新建文件 cloudscope-cli-components
@@ -99,8 +95,7 @@ tags:
 3. **新建components-test目录**
 > cloudscope-cli init -tp /Users/liumingzhou/Documents/imoocCourse/Web前端架构师/cloudscope-cli/commands/init
 
-
-#### 3-2 组件库预览项目开发
+**3-2 组件库预览项目开发**
 > 这节听的有点懵逼，上一节，通过cloudscope-cli init了一个命令后，
 > - npm run build
 > - 根目录下继续新建examples目录,cd examples
@@ -127,8 +122,7 @@ module.exports = {
 ```
 > 最后继续 npm run build,打开dist目录下的index.html,查看页面效果
 
-
-#### 3-3 组件多预览模式开发
+**3-3 组件多预览模式开发**
 
 > 有点小懵逼，组件库就开发完毕了
 
@@ -147,17 +141,13 @@ module.exports = {
     }
 }
 ```
-#### 
-#### 3-4 将预览功能集成到组件库模板
-#### 3-5 组件初始化时自动生成配置文件
-#### 3-6 组件库命名优化
+**3-4 将预览功能集成到组件库模板**
+**3-5 组件初始化时自动生成配置文件**
+**3-6 组件库命名优化**
 
+## 第四章 脚手架组件发布流程开发
 
-### 第四章 脚手架组件发布流程开发
-
----
-
-####  4-1 组件仓库初始化流程优化
+**4-1 组件仓库初始化流程优化**
 cloudscope-cli 本章相关代码提交至 [cloudscope-cli/lesson32](https://github.com/liugezhou/cloudscope-cli/tree/lesson32)
 > 本节主要为对仓库名称带有·@·进行一个合法的名字修改
 
@@ -176,7 +166,7 @@ class Git {
 }
 ```
 
-#### 4-2 组件上传前预检查流程开发
+**4-2 组件上传前预检查流程开发**
 cloudscope-cli 本章相关代码提交至 [cloudscope-cli/lesson32](https://github.com/liugezhou/cloudscope-cli/tree/lesson32)
 ```javascript
 // cloudscope-cli/models/git/lib/index.js
@@ -212,7 +202,7 @@ isComponent(){
 }
 ```
 
-#### 4-3 组件发布前准备工作开发
+**4-3 组件发布前准备工作开发**
 cloudscope-cli 本章相关代码提交至 [cloudscope-cli/lesson32](https://github.com/liugezhou/cloudscope-cli/tree/lesson32)
 ```javascript
 async publish(){
@@ -238,7 +228,7 @@ async saveComponentToDB(){
   }
 ```
 
-#### 4-4 创建RDS组件表+后端MySQL插件集成
+**4-4 创建RDS组件表+后端MySQL插件集成**
 cloudscope-cli-server 本章相关代码提交至 [cloudscope-cli-server/lesson32](https://github.com/liugezhou/cloudscope-cli-server/tree/lesson32)
 
 > 本章主要是在服务端链接mysql数据库，并做相关测试
@@ -284,7 +274,7 @@ async mysqlTest(){
 }
 ```
 
-#### 4-5 组件上传数据库准备工作开发
+**4-5 组件上传数据库准备工作开发**
 cloudscope-cli 本章相关代码提交至 [cloudscope-cli/lesson32](https://github.com/liugezhou/cloudscope-cli/tree/lesson32)
 ```javascript
 // models/git/lib/index.js
@@ -341,7 +331,7 @@ module.exports = {
   },
 };
 ```
-#### 4-6 组件上传restful api开发
+**4-6 组件上传restful api开发**
 cloudscope-cli-server 本章相关代码提交至 [cloudscope-cli-server/lesson32](https://github.com/liugezhou/cloudscope-cli-server/tree/lesson32)
 ```javascript
 // app/constant.js
@@ -406,7 +396,7 @@ class ComponentsController extends Controller {
 module.exports = ComponentsController
 ```
 
-#### 4-7 组件上传数据库逻辑开发
+**4-7 组件上传数据库逻辑开发**
 ```javascript
 // app/service/ComponentService.js
 'use strict'
@@ -553,7 +543,7 @@ async create() {
     }
 ```
 
-#### 4-8 组件NPM发布逻辑开发
+**4-8 组件NPM发布逻辑开发**
 
 > 本节主要是调试过多，重要几行代码为在脚手架 cloudscope-cli中添加NPM发布逻辑
 
@@ -570,7 +560,6 @@ async uploadComponentToNpm() {
 }
 ```
 
-#### 4-9 组件自动生成远程仓库Tag问题解决
-
+**4-9 组件自动生成远程仓库Tag问题解决**
 > End
 

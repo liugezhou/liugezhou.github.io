@@ -1,20 +1,23 @@
 ---
 layout: post
 title: Week4-脚手架命令注册和执行过程开发
-author: liugezhou
 date: 2021-02-09
-updated: 2021-02-13
+updated: 2022-05-04
+description: 脚手架命令注册和执行过程开发
+toc: true
 category: 
     Web架构之脚手架
 tags:
     Web架构之脚手架
 ---
+
+<font color=blue>更新说明：对文章目录排版做了调整。</font>
+<font color=blue> 更新时间：2022-05-04</font>
+
 本Week代码提交支：[lesson04](https://github.com/liugezhou/cloudscope-cli/tree/lesson04)
-### 第一章：本周导学
+## 第一章：本周导学
 
----
-
-#### 1-1 本周整体内容介绍和学习方法
+**1-1 本周整体内容介绍和学习方法**
 
 标题
 > - 基于Commander完成脚手架命令注册和命令执行过程开发
@@ -37,13 +40,8 @@ tags:
 > Node多进程开发进阶--child_process源码解析
 > - 深入Node源码看清spawn/exec/execFile/fork的本质区别，彻底搞懂Node多进程原理。
 
-
-### 第二章：imooc-cli脚手架命令注册
-
----
-
-#### 2-1 imooc-cli脚手架初始化+全局参数注册
-**
+## 第二章：imooc-cli脚手架命令注册
+**2-1 imooc-cli脚手架初始化+全局参数注册**
 (本节有代码编写)
 
 本节的主要内容为使用commander这个库在全局添加注册命令
@@ -88,8 +86,7 @@ function registerCommand(){
     }
 }
 ```
-**
-#### 2-2 imooc-cli脚手架命令注册
+**2-2 imooc-cli脚手架命令注册**
 
 (本节有代码编写)
 
@@ -109,19 +106,16 @@ program
 
 ......
 ```
-### 
 
-### 第三章：高性能脚手架架构设计和缓存结构设计
 
----
+## 第三章：高性能脚手架架构设计和缓存结构设计
 
-#### 3-1 当前imooc-cli脚手架架构痛点分析
-**
+**3-1 当前imooc-cli脚手架架构痛点分析**
 (本节无代码编写)
 
 当前的代码架构如图：
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1613700080140-15a7a447-3498-4ded-93d9-1e4e023683e1.png#align=left&display=inline&height=899&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1798&originWidth=2636&size=1137285&status=done&style=none&width=1318)
-#### 3-2 高性能脚手架架构设计
+**3-2 高性能脚手架架构设计**
 
 (本节无代码编写)
 
@@ -131,8 +125,7 @@ program
 > - 动态加载的时候，通过node多进程进行执行：深挖cpu性能
 
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1613703997616-ab0776af-eed7-477c-898e-29d37d22d07e.png#align=left&display=inline&height=1021&margin=%5Bobject%20Object%5D&name=image.png&originHeight=2042&originWidth=2098&size=213977&status=done&style=none&width=1049)
-#### 3-3 脚手架命令动态加载功能架构设计
-**
+**3-3 脚手架命令动态加载功能架构设计**
 (本节无代码编写)
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1613706288783-051c9322-0a54-4b4e-af90-cef9d74b0a1c.png#align=left&display=inline&height=750&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1500&originWidth=2120&size=172745&status=done&style=none&width=1060)
 > 上图架构初看有些难度，在代码编写之后再去回顾，会有更深理解。
@@ -148,12 +141,9 @@ program
 > - node 执行文件: ** node core/cli/bin/index.js**
 > - node -e '字符串'：**node  -e  "require(./core/cli/bin/index.js)"**
 
-### 
-### 第4章 通用 npm 模块类 Package 封装
+## 第四章 通用 npm 模块类 Package 封装
 
----
-
-#### 4-1 脚手架命令本地调试功能支持
+**4-1 脚手架命令本地调试功能支持**
 
 (本节有代码编写)
 
@@ -187,15 +177,13 @@ module.exports = init;
 > 
 > 另外，访问targetPath这个参数的时候，需要program.opts().targetPath访问。
 
-#### 
-#### 4-2 动态执行库exec模块创建
+**4-2 动态执行库exec模块创建**
 
 (本节有代码编写)
 > core下新建包文件： lerna create @cloudscope-cli/exec  core/
 > 然后在core/cli/lib/index.js文件中将exec包引入，将action(init)此处改为action(exec)
 
-#### 
-#### 4-3 创建npm模块通用类Package
+**4-3 创建npm模块通用类Package**
 
 (本节有代码编写)
 > 首先讲解了exec模块逻辑
@@ -204,14 +192,11 @@ module.exports = init;
 > 3.  Package.getRootFile(获取入口文件)
 > 4.  Package.update / Package.install
 
-
 代码实现：
 > - 在model文件下创建新的模块Package：lerna create @cloudscope-cli/package 
 > - 在core/exec/lib/index.js文件中引入：const Package =  require('@cloudscope-cli/package')
 
-
-#### 4-4 Package类的属性、方法定义及构造函数逻辑开发
-
+**4-4 Package类的属性、方法定义及构造函数逻辑开发**
 
 (本节有代码编写)
 
@@ -219,7 +204,6 @@ module.exports = init;
 > - core/exec中创建一个Package对象
 > - model/package中Package类的构造方法
 > - utils/utils中添加isObject方法：判断一个属性是否为对象
-> 
 代码分别如下：
 
 ```typescript
@@ -308,8 +292,7 @@ module.exports = {
 }
 ```
 
-#### 4-5 Package类获取入口文件路径功能开发（pkg-dir应用+解决不同操作系统路径兼容问题）
-**
+**4-5 Package类获取入口文件路径功能开发（pkg-dir应用+解决不同操作系统路径兼容问题）**
 (本节有代码编写)
 本节主要实现models/package/lib/index.js中获取入口文件路径的方法实现getRootfile()
 
@@ -355,8 +338,7 @@ function formatPath(p) {
 
 module.exports = formatPath;
 ```
-#### 
-#### 4-6 利用npminstall库安装npm模块
+**4-6 利用npminstall库安装npm模块**
 
 (本节有代码编写)
 本节实现的内容为exec中的install方法,通过npminstall这个库。
@@ -464,8 +446,7 @@ module.exports = exec;
 
 ```
 
-#### 4-7 Package类判断模块是否存在方法开发
-**
+**4-7 Package类判断模块是否存在方法开发**
 (本节有代码编写)
 本节的主要内容是实现package/lib/index.js中的exists方法，代码实现如下：
 ```typescript
@@ -498,8 +479,8 @@ async exists(){
   }
 }
 ```
-#### 
-#### 4-8 Package类更新模块逻辑开发
+
+**4-8 Package类更新模块逻辑开发**
 
 (本节有代码编写)
 本节内容主要为如果Package包有升级，那么需要去更新，主要实现代码为：
@@ -536,8 +517,7 @@ async update(){
   return latestFilePath;
 }
 ```
-#### 
-#### 4-9 Package类获取缓存模块入口文件功能改造
+**4-9 Package类获取缓存模块入口文件功能改造**
 
 (本节有代码编写)
 ```typescript
@@ -566,11 +546,8 @@ async update(){
 ```
 ps：关于项目的代码以上就结束了，代码提交至：[lesson04](https://github.com/liugezhou/cloudscope-cli/tree/lesson04)
 
-### 第五章：预备知识：Node 多进程开发入门
-
-
-
-#### 5-1 进程的基本概念(讲解在操作系统中如何查看进程的嵌套关系)
+## 第五章：预备知识：Node 多进程开发入门
+**5-1 进程的基本概念(讲解在操作系统中如何查看进程的嵌套关系)**
 
 > 官方文档中文版： [http://nodejs.cn/api/child_process.html](http://nodejs.cn/api/child_process.html)
 > 
@@ -590,8 +567,8 @@ ps：关于项目的代码以上就结束了，代码提交至：[lesson04](http
 > 使用webstorm调试一个node程序的图示如下：
 
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1613782220578-cb349dc9-93e0-4ee4-b1e9-ba0018f8751f.png#align=left&display=inline&height=442&margin=%5Bobject%20Object%5D&name=image.png&originHeight=884&originWidth=1554&size=379426&status=done&style=none&width=777)
-#### 5-2 child_process异步方法使用教程（exec&execFile）
-**
+
+**5-2 child_process异步方法使用教程（exec&execFile）**
 child_process用法:
 > 异步用法
 > - exec
@@ -626,9 +603,7 @@ cp.execFile('ls',['-al'],function(err,stdout,stderr){
 > - exec主要用来执行一个shell命令，本质是execFile，只是参数不同，不支持传入arguments参数。
 > - execFile只能执行一个文件，且加入一些命令，不能使用管道符。
 
-
-#### 5-3 child_process spawn用法以及与exec&execFile的区别
-**
+**5-3 child_process spawn用法以及与exec&execFile的区别**
 > exec、execFile、fork底层都是使用的spawn。
 > spawn使用的时候，没有回调，需要监听获取结果。    
 > 新建一个test.shell文件的时候，如果要读取这个文件，那么需要添加权限：chmod +x test.shell
@@ -655,8 +630,7 @@ child.stderr.on('data',function(chunk){
 > exec/execFile:耗时、开销比较小的任务:    一次性返回结果。
 > fork：多进程、多线程的下载。
 
-
-#### 5-4 child_process fork用法及父子进程通信机制讲解
+**5-4 child_process fork用法及父子进程通信机制讲解**
 
 > fork主要是使用node来执行我们的命令。
 > fork会执行两个进程 主进程与子进程。
@@ -687,9 +661,7 @@ process.on('message', (msg)=>{
 
 process.send('hello main process!')
 ```
-
-#### 5-5 child_process同步方法使用教程
-**
+**5-5 child_process同步方法使用教程**
 > - execSync
 > - execFileSync
 > - spawnSync
@@ -709,14 +681,9 @@ console.log(ret2.toString())
 const ret3 = cp.spawnSync('ls',['-al'])
 console.log(ret3.stdout.toString())
 ```
+## 第六章 基于 Node 多进程构建高性能脚手架
 
-### 第六章 基于 Node 多进程构建高性能脚手架
-
----
-
-
-#### 6-1 通过脚手架命令Command类封装
-
+**6-1 通过脚手架命令Command类封装**
 
 (本节有代码编写)
 
@@ -790,8 +757,7 @@ require(rootFile).apply(null,arguments);
 //修改为
 require(rootFile).call(null,Array.from(arguments));
 ```
-#### 
-#### 6-2 脚手架参数初始化方法开发
+**6-2 脚手架参数初始化方法开发**
 
 (本节有代码编写)
 
@@ -831,16 +797,12 @@ initArgs(){
 
 ```
 > chain中的init方法与exec均抛出异常，需要由子类去实现：即commands/init/lib/index.js.
-
-
-#### 6-3 利用Node多进程动态执行命令（stdio的inherit属性讲解）
-
+**6-3 利用Node多进程动态执行命令（stdio的inherit属性讲解）**
 
 (本节有代码编写)
 > 我们回到exec/lib/index.js中，其中之前的那行代码 
 > require(rootFile).call(null,Array.from(**arguments**));
 > 是在当前进程中调用的，我们需要修改为在node进程中进行调用，这便是本节的重点。
-
 
 > 我们通过本周第五章的内容，已经知道了如何使用child_process下的同步或者异步方法进行子进程的执行，这里我有两种方法可以使用
 
@@ -871,8 +833,7 @@ child.on('exit', e=>{
 > spawn方法中的参数stdio默认值为'pipe'管道，pipe使得主进程与子进程会产生通信通道，因此需要通过on这种方式去进行监听。
 > stdio还有一个值为'inherit'，它将相应的stdio传给父进程或者从父进程传入。也就是说：直接将process.stdin、process.stdout、process.stderr直接和父进程进行绑定，这样就无须去监听结果，可以直接将结果打印出来。
 
-
-#### 6-4 生成Node多进程动态执行代码
+**6-4 生成Node多进程动态执行代码**
 
 (本节有代码编写)
 
@@ -882,8 +843,6 @@ child.on('exit', e=>{
 > _
 > 也就是兼容 conse code = `require(rootFile).call(null,Array.from(arguments));`
 > rootfile -> ${rootfile},难点是  Array.from(arguments)的传入。
-
-
 
 ```javascript
 const args = Array.from(arguments)
@@ -905,8 +864,7 @@ const code = `require('${rootFile}').call(null,${JSON.stringify(args)})`
 ```
 到这里，使用node多进程执行代码的功能就完成了。
 
-#### 6-5 windows操作系统spawn执行命令兼容
-**
+**6-5 windows操作系统spawn执行命令兼容**
 
 (本节有代码编写)
 
@@ -923,11 +881,8 @@ function exec(command,args,options){
 ```
 到以上为止，我们完成了动态命令的加载和执行。
 
-### 第七章 加餐：Node 进阶： child_process 源码分析
-
----
-
-#### 7-1 Node多进程child_process库exec方法源码执行流程分析
+## 第七章 加餐：Node 进阶： child_process 源码分析
+**7-1 Node多进程child_process库exec方法源码执行流程分析**
 
 疑问和收获：
 > exec和execFile到底有什么区别？
@@ -1039,12 +994,9 @@ function spawn(file, args, options) {
 ```
 > spawn方法的第2行如拓扑图所示，对参数执行了normalizeSpawnArguments方法，这里通过调试查看参数，发现，opts这个对象的file为 'bin/sh'，这里涉及到一个重要的知识点:
 
-
-
 shell的使用
 > 1. 直接执行shell文件： /bin/sh test.shell
 > 1. 直接执行shell语句： /bin/sh -c "ls -al|grep node_modules"
-
 
 > spawn方法的第3行 const child = new ChildProcess
 > 通过分析，我们知道这个ChildProcess调用的是内部库 internal/child_process的this._handler,再进一步如拓扑图所示，调用的是c++文件，不做继续跟踪。
@@ -1057,8 +1009,7 @@ shell的使用
 
 上面就是对exec源码的略读过程。
 
-#### 7-2 高能：child_process库exec源码精度
-**
+**7-2 高能：child_process库exec源码精度**
 > 上一节我们阅读了exec源码的第一遍，对答题流程有了认识，这节开始阅读第二遍，进行细节的解读。
 
 
@@ -1180,8 +1131,7 @@ function spawn(file, args, options) {
 
 ```
 
-
-#### 7-3 深度分析child_process库spawn底层实现
+**7-3 深度分析child_process库spawn底层实现**
 接着上一节代码块中走到了child.spawn：
 > - 第一步是通过getValidStdio去生成pipe，创建一个管道实例：第一个是输入，第二个是输出，第三个是error(只是生成了管道，但是还没创建socket的通信)
 > - 第二步对spawn的一些参数进行处理：下面代码未贴
@@ -1368,8 +1318,7 @@ let encoding;
 }
 ```
 
-#### 7-4 child_process事件应用方法详解
-**
+**7-4 child_process事件应用方法详解**
 > 本节我们进入到child_process源码的第三轮，彻底搞懂process的回调流程，也是child_process中最复杂的部分。同样，我们通过processOn图对流程进行梳理一遍：
 
 [点击查看【processon】](https://www.processon.com/embed/60322abd079129248a48e0ec)
@@ -1404,19 +1353,14 @@ child.on('close',()=>{
     console.log('close!')
 })
 ```
-#### 
-#### 7-5 高难度：深度解析child_process库spawn方法回调原理
-
+**7-5 高难度：深度解析child_process库spawn方法回调原理**
 > 这一章完全听的懵逼了。略过。。。。。。。
 
-
-
-#### 7-6 child_process库fork执行流程分析
+**7-6 child_process库fork执行流程分析**
 > 略。。。。。。。
 
 
-#### 7-7 精化：Node多进程源码总结
-**
+**7-7 精化：Node多进程源码总结**
 > - exec/execFile/spawn/fork的区别
 >    - exec: 原理是调用/bin/sh -c 执行我们传入的shell脚本，底层调用略execFile
 >    - execFile：原理是直接执行我们传入的file和args，底层调用spawn创建和执行子进程，并建立略回调，一次性将所有的stdout和stderr结果返回
@@ -1430,16 +1374,3 @@ child.on('close',()=>{
 >    - exit: 子进程关闭完成后发起的回调
 >    - close：子进程所有Socket通信端口全部关闭后发起的回调
 >    - stdout close/stderr close:特定的PIPE读取完成后调用onReadableStreamEnd关闭Socket时发起的回调。
-
-> 
-
-
-
-
-
-
-
-
-
-
-

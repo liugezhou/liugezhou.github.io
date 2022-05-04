@@ -1,30 +1,33 @@
 ---
 layout: post
 title: Week29-脚手架发布模式git自动化流程开发
-author: liugezhou
 date: 2021-07-05
-updated: 2021-07-10
+updated: 2022-05-04
+description: 脚手架发布模式git自动化流程开发
+toc: true
 category: 
     Web架构之脚手架
 tags:
     Web架构之脚手架
 ---
-### 第一章 本周导学
 
----
+<font color=blue>更新说明：对文章目录排版做了调整。</font>
+<font color=blue> 更新时间：2022-05-04</font>
 
-#### 1-1 本周整体介绍和学习方法
+## 第一章 本周导学
+
+**1-1 本周整体介绍和学习方法**
 > - GitFlow实战
 > - 通过simple-git操作git命令
 > - Github和Gitee openAPI接入
 > - 本周加餐：Node最佳实践分享
 
-##### 主要内容
+**主要内容**
 > - Git仓库初始化(利用Github和Gitee OpenAPI)
 > - 本地Git初始化
 > - GitFlow流程实现(代码自动提交)
 
-##### 附赠内容
+**附赠内容**
 > Node项目最佳实践：
 > - 项目结构最佳实践
 > - 异常处理最佳实践
@@ -32,20 +35,16 @@ tags:
 > - 发布上线最佳实践
 > - 安全最佳实践
 
-### 第二章 Git Flow 模块架构设计
+## 第二章 Git Flow 模块架构设计
 
----
-
-#### 2-1 GitFlow模块架构设计
+**2-1 GitFlow模块架构设计**
 [点击查看【processon】](https://www.processon.com/embed/610bf5d81e0853337b1eb8bd)
-#### 2-2 GitFlow流程回顾
+**2-2 GitFlow流程回顾**
 
 [点击查看【processon】](https://www.processon.com/embed/60f2487c1efad41bbea86894)
-### 第三章 Github&Gitee API 接入
+## 第三章 Github&Gitee API 接入
 
----
-
-#### 3-1 创建Git类
+**3-1 创建Git类**
 > 1. 首先创建一个新的package--git，用来管理与git相关的所有内容
 > - lerna create git models/git
 > 2. 在上周代码写完this.prepare()之后（commands/publish/lib/index.js中），我们就需要去调用这个新建的git包，实例化出来一个对象，并将projectInfo的信息传递进去
@@ -78,7 +77,7 @@ class Git {
 module.exports = Git;
 ```
 
-#### 3-2 用户主目录检查逻辑开发
+**3-2 用户主目录检查逻辑开发**
 
 > 本节的主要代码为在Class Git中编写prepare方法，检查用户主目录是否存在
 
@@ -141,8 +140,7 @@ module.exports = Git;
 >    - **fs.existsSync(path):**如果路径存在返回true，不存在返回false
 > - user-home\fs-extra:第三方
 
-
-#### 3-3 选择远程Git仓库逻辑开发
+**3-3 选择远程Git仓库逻辑开发**
 > - 上一节的内容总结一句大白话就是：获取 /User/username/.cloudscope-cli目录，如果没有就创建。
 > - 本节的内容一句话总结就是实现了一个**checkGitServer**方法，这个方法的主要功能是检查在上文提到的.cloudscope-cli下是否有.git/.git-server文件，没有的话通过 inquirer询问创建
 > - 且在 @cloudscope-cli/utils下新建了** readFile**和writeFile方法
@@ -221,8 +219,7 @@ async checkGitServer(){
 ```
 > @cloudscope-cli/utils 下的readFile和writeFile方法实现为使用node自带的fs.readFileSync(path)和fs.writeFileSync(path)方法
 
-#### 
-#### 3-4 创建GitServer类
+**3-4 创建GitServer类**
 > 本节主要创建了一个GitServer类，并新建Github类和Gitee类分别继承GitServer。
 
 ```javascript
@@ -261,7 +258,7 @@ class GitServer {
 
 module.exports = GitServer
 ```
-#### 3-5 生成远程仓库Token逻辑开发
+**3-5 生成远程仓库Token逻辑开发**
 
 > 本节课的主要内容为生成远程仓库Token。
 > - 首先在类Github.js和Gitee.js中分别实现获取帮助文档和相应token的文档方法
@@ -308,7 +305,7 @@ module.exports = GitServer
     }
 ```
 
-#### 3-6 Gitee API接入+获取用户组织信息功能开发
+**3-6 Gitee API接入+获取用户组织信息功能开发**
 
 > 本章节主要是Gitee API的接入：获取用户信息和组织信息
 > - 使用第三方库有 axios
@@ -370,12 +367,11 @@ async getUserAndOrgs(){
     }
 ```
 
-#### 3-7 Github API接入开发
+**3-7 Github API接入开发**
 > 本节代码类似于Gitee API，不同点在于，Github API需要在headers中传入token：_config_.headers['Authorization'] =`token ${**this**.token}`
 > 然后，基础BASE_URL更换，获取组织URL更换，改动部分代码即可。
 
-
-#### 3-8 远程仓库类型选择逻辑开发
+**3-8 远程仓库类型选择逻辑开发**
 > 之前的章节我们选择了Git托管类型，生成了相关托管平台的token，获取到了个人和组织的信息，然后这节我们将要继续选择：确认远程仓库的类型(是个人还是组织)，如果我们拿到的信息只有个人，那么就不显示组织选项。
 > 同样，我们要将拿到的个人或者组织登录名(login)以及类型(owner)写入到缓存文件中.
 > 
@@ -441,11 +437,9 @@ async checkGitOwner(){
     }
 ```
 
-### 第四章 GitFlow 初始化流程开发
+## 第四章 GitFlow 初始化流程开发
 
----
-
-#### 4-1 Gitee获取和创建仓库API接入
+**4-1 Gitee获取和创建仓库API接入**
 > - 这节的代码，出了一个小bug，调试到了天亮,bug方法的实现为下面示例50行：this.handleResponse(response)，课程代码讲到在获取一个仓库的API时没有status参数，经测试是有的。
 > - 本节**主要**完成的功能有：
 >    -  检查并创建远程仓库 **checkRepo **方法实现
@@ -513,12 +507,11 @@ createRepo(name){
 }
 ```
 
-#### 4-2 Github获取和创建仓库API接入
+**4-2 Github获取和创建仓库API接入**
 > 与Gitee获取和创建仓库API类似。GithubRequest同样实现了post方法。
 > 类Github同样实现了getRepo和createRepo方法。
 
-#### 
-#### 4-3 Github&Gitee组织仓库创建API接入
+**4-3 Github&Gitee组织仓库创建API接入**
 > 本节内容较为简单，实现了远程创建组织仓库API
 
 ```javascript
@@ -529,7 +522,7 @@ createOrgRepo(name,login){
     accept:'application/vnd.github.v3+json'
   })
 ```
-#### 4-4 gitignore文件检查
+**4-4 gitignore文件检查**
 > 提交准备工作：有些项目没有默认创建.gitignore,因此会引发提交大量无用或无关代码。
 > 因此，我们需要检查并创建.gitignore文件的方法
 > 这里需要注意的是安装的.gitignore安装目录为当前执行文件，而不是缓存文件
@@ -571,7 +564,7 @@ pnpm-debug.log*
         }
     }
 ```
-#### 4-5 git本地仓库初始化和远程仓库绑定
+**4-5 git本地仓库初始化和远程仓库绑定**
 
 > 本节主要完成的功能为本地的仓库的初始化：即执行git init方法和git addRemote方法。
 
@@ -605,7 +598,7 @@ async getRemote(){
 }
 ```
 
-#### 4-6 git自动化提交功能开发
+**4-6 git自动化提交功能开发**
 > 上一节的流程在本地实现了两个操作
 > - **git init** 
 > - **git remote add origin 'git@github.com:${login}/${name}.git'**
@@ -685,17 +678,15 @@ async pullRemoteRepo(branchName,options){
 }
 ```
 
-### 第五章 GitFlow本地仓库代码自动提交
+## 第五章 GitFlow本地仓库代码自动提交
 
----
-
-#### 5-1 自动生成开发分支原理讲解1
+**5-1 自动生成开发分支原理讲解1**
 > 第一遍：这节课听的有点懵逼。
 > 
 
 [点击查看【processon】](https://www.processon.com/embed/610f8ef87d9c082be335ac23)
 
-#### 5-2 自动生成开发分支功能开发
+**5-2 自动生成开发分支功能开发**
 
 > 本节主要实现为 获取远程发布分支列表(git ls-remote --refs)和获取远程最新发布分支号(通过正则匹配release分支，并排序获取最新分支)，详细代码如下：
 
@@ -752,7 +743,7 @@ const VERSION_DEVELOP = 'dev'
     }
 ```
 
-#### 5-3 高端操作：自动升级版本号功能开发
+**5-3 高端操作：自动升级版本号功能开发**
 > 根据5-1图示，上两节我们完成的部分为：获取远程发布分支号列表、获取远程最新发布分支号，并在上节代码中经过处理，拿到了最新的远程发布的版本号，接下来我们实现
 > - 判断最新发布版本号是否存在
 >    - 不存在：生成本地开发分支
@@ -810,8 +801,7 @@ this.syncVersionToPackageJson()
    }
  }
 ```
-#### 
-5-4 GitFlow代码自动提交流程梳理+stash区检查功能开发
+**5-4 GitFlow代码自动提交流程梳理+stash区检查功能开发**
 
 [点击查看【processon】](https://www.processon.com/embed/610fe95c6376891eb94d7e38)
 
@@ -831,26 +821,20 @@ async checkStash(){
 }
 ```
 
-#### 5-5 代码冲突处理+Git代码删除后还原方法讲解
+**5-5 代码冲突处理+Git代码删除后还原方法讲解**
 > 本节以及上一节听的有些懵逼，需要第二遍重新学习
 
 
-#### 5-6 自动切换开发分支+合并远程分支代码+推送代码功能开发
+**5-6 自动切换开发分支+合并远程分支代码+推送代码功能开发**
 > 先暂时略过笔记。
 
+## 第六章 本周加餐：Node编码最佳实践
 
-
-### 第六章 本周加餐：Node编码最佳实践
-
----
-
-#### 6-1 Node最佳实践学习说明
+**6-1 Node最佳实践学习说明**
 > - 通过[https://github.com/goldbergyoni/nodebestpractices/blob/master/README.chinese.md](https://github.com/goldbergyoni/nodebestpractices/blob/master/README.chinese.md)这个库学习。
 > - 需要有node的实践。
-
-
-#### 6-2 Node项目架构最佳实践
-#### 6-3 Node异常处理最佳实践
+**6-2 Node项目架构最佳实践**
+**6-3 Node异常处理最佳实践**
 
 **代码示例: 捕获 unresolved 和 rejected 的 promise**
 ```javascript
@@ -867,8 +851,8 @@ process.on('uncaughtException', (error) => {
 
 
 ```
-#### 6-4 Node编码规范最佳实践
-#### 6-5 Node测试+安全最佳实践
+**6-4 Node编码规范最佳实践**
+**6-5 Node测试+安全最佳实践**
 
 
 

@@ -83,8 +83,8 @@ donate:
   paypal_url: ## Paypal URL, e.g. https://www.paypal.me/tufu9441
 post_copyright:
   enable: true ## If you want to display the copyright info after each post, please set the value to true and fill the following items on your need.
-  author: liugezhou ## Your author name, e.g. tufu9441
-  copyright_text: 人生缘编程 ## Your copyright text, e.g. The author owns the copyright, please indicate the source reproduced.
+  author: 六个周 ## Your author name, e.g. tufu9441
+  copyright_text:  ## Your copyright text, e.g. The author owns the copyright, please indicate the source reproduced.
 love: true ## 页面点击显示小红心
 plantuml: ## Using PlantUML to generate UML diagram, must install hexo-filter-plantuml (https://github.com/miao1007/hexo-filter-plantuml).
   render: "PlantUMLServer" ## Local or PlantUMLServer.
@@ -105,7 +105,7 @@ menu:
     directory: about/
     icon: fa-user
   - page: tags
-    directory: tags
+    directory: tags/
     icon: fa-tags
   - page: history
     directory: history/
@@ -131,19 +131,21 @@ links:
 
 timeline:
   - num: 1
-    word: 2017年11月13日。在CSDN写下第一篇markdown语法总结，开启写博客的萌芽，断断续续八篇水文
-  - num: 1
-    word: 2018年7月13日，开始在简书尝试写博客，与2019年6月19日在简书停更，累计60余篇文章，输出11+万字，获得242个粉丝，1250+喜欢
+    word: 2017年11月13日。在CSDN写下第一篇博客：关于markdown的用法总结。此为博客萌芽阶段，该平台断续累计输出八篇水文
   - num: 2
-    word: 2018年11月01日，掘金写下第一篇博文，至2020年2月19日，总共输出25篇文章，被点赞146次，阅读量32000+
+    word: 2018年7月13日，在简书平台尝试以抄写内容的方式发布博客，至2019年6月19日在简书停更，累计输出60余篇文章，输出11+万字，获得242个粉丝，1250+喜欢
   - num: 3
-    word: 2019年7月3日，在Github上，用HEXO主题搭建了自己的个人博客，于2020年8月9日停更，累计输出94篇博文
+    word: 2018年11月01日，掘金写下第一篇博文，至2020年2月19日，总共输出25篇博文，收获点赞146次，阅读量32000+
   - num: 4
-    word: 2022年5月2日，再次重新搭建新的博客，重新起航，坚持写文。
+    word: 2019年7月3日，在Github上，以https://liugezhou.online域名基于HEXO搭建了自己的个人博客，于2020年8月9日停更，后地址改为https://liugezhou.github.io累计输出94篇博文
+  - num: 5
+    word: 2020年12月21日，在语雀平台注册用户，以《Web架构之脚手架》为契机，累计输出71篇公开文档，几十篇私密文档。
+  - num:  6
+    word: 2022年5月2日，基于maupassant主题，以https://liugezhou.github.io/blog域名，基于Github托管，重新搭建个人博客，初始迁移了大部分的语雀博客内容
 
 # Static files
 js: js
 css: css
 
 # Theme version
-version: 1.0.0
+version: 1.0.2

@@ -1,31 +1,29 @@
 ---
 layout: post
 title: week30-脚手架发布模块云构建系统开发
-author: liugezhou
 date: 2021-07-10
-updated: 2021-07-15
+updated: 2022-05-04
+description: 脚手架发布模块云构建系统开发
+toc: true
 category: 
     Web架构之脚手架
 tags:
     Web架构之脚手架
 ---
-### 第一章 本周导学
 
+<font color=blue>更新说明：对文章目录排版做了调整。</font>
+<font color=blue> 更新时间：2022-05-04</font>
 
----
+## 第一章 本周导学
 
-#### 1-1 本周整体内容介绍和学习方法
+**1-1 本周整体内容介绍和学习方法**
 > - **云构建**原理、架构和实现
 > - **WebSocket**入门到实战
 > - **Redis**入门实战
 
-### 
-### 第二章 云架构模块架构设计
+## 第二章 云架构模块架构设计
 
----
-
-
-#### 2-1 详细分析为什么需要设计云构建系统
+**2-1 详细分析为什么需要设计云构建系统**
 
 
 **为什么需要云构建**
@@ -40,15 +38,12 @@ tags:
 >    - 封网日统一发布卡口
 
 
-#### 2-2 云构建系统架构设计
+**2-2 云构建系统架构设计**
 [点击查看【processon】](https://www.processon.com/embed/61127e8907912940a9654a57)
 
-### 第三章 WebSocket 快速入门
+## 第三章 WebSocket 快速入门
 
----
-
-
-#### 3-1 WebSocket基本概念及同HTTP协议对比
+**3-1 WebSocket基本概念及同HTTP协议对比**
 > WebSocket概念
 > - HTTP：请求响应的单向。
 > - WebSocket：只需发起一次请求，双向发起请求，双向接收响应。常用为聊天工具、云构建请求。
@@ -57,7 +52,7 @@ tags:
 
 相关基本概念：[https://www.runoob.com/html/html5-websocket.html](https://www.runoob.com/html/html5-websocket.html)
 
-#### 3-2 egg集成WebSocket服务
+**3-2 egg集成WebSocket服务**
 
 **基础介绍**
 > 基础教程：[https://eggjs.org/zh-cn/tutorials/socketio.html](https://eggjs.org/zh-cn/tutorials/socketio.html)
@@ -155,7 +150,7 @@ module.exports = app => {
 
 ```
 
-#### 3-3 WebSocket客户端开发
+**3-3 WebSocket客户端开发**
 > 代码分支在 cloudscope-cli/lesson30上。
 > - lerna create cloudbuild models/
 > - cd models/cloudbuild
@@ -178,7 +173,7 @@ socket.on('res', msg => {
 }); 
 ```
 
-#### 3-4 WebSocket客户端与服务端交互流程分析
+**3-4 WebSocket客户端与服务端交互流程分析**
 
 以日志的打出分析流程
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1628635057269-41f4e637-7c4f-4b00-aeae-d13e3959deb4.png#clientId=uf661c060-e03a-4&from=paste&height=115&id=ue8dd3dff&margin=%5Bobject%20Object%5D&name=image.png&originHeight=346&originWidth=1256&originalType=binary&ratio=1&size=41485&status=done&style=none&taskId=u4167e09a-1bcd-4394-b772-fdfed654da3&width=418.6666666666667)
@@ -203,24 +198,21 @@ socket.on('res', msg => {
 >    - 服务端等待 next执行完毕后，最后在 filter.js中，打印出：packet response！
 
 
-### 第四章 Redis 快速入门
+## 第四章 Redis 快速入门
 
----
-
-
-#### 4-1 redis基本概念+安装方法+基本命令
+**4-1 redis基本概念+安装方法+基本命令**
 > - 该项目应用redis是要：存储任务信息
 > - redis安装
 > - 常用命令redis-cli[进入终端服务]和redis-server[启动redis服务]
 
 
-#### 4-2 阿里云redis服务配置和远程连接方法讲解
+**4-2 阿里云redis服务配置和远程连接方法讲解**
 我这里实在腾讯云领了一个月的redis免费试用版本,下面记录为课程的讲解，腾讯云相关redis见读书笔记。
 > - 购买完数据库后，第一个设置是白名单设置，0.0.0.0/0 如果不设置，会出现远程无法连接的问题
 > - 创建账号：使用默认账号或创建账号连接
 > - 连接成功后 AUTH <password>
 
-#### 4-3 egg集成redis方法讲解
+**4-3 egg集成redis方法讲解**
 redis为使用本地
 > - 首先在npm官网上查看 egg-redis这个插件
 > - 在server安装：npm i egg-redis  --save
@@ -252,12 +244,9 @@ async getRedis(){
    package: 'egg-redis',
  	};
 ```
-### 
-### 第五章 云构建初始化流程开发
+## 第五章 云构建初始化流程开发
 
----
-
-#### 5-1 CloudBuild类开发
+**5-1 CloudBuild类开发**
 > 根据第二章 架构图，本节主要代码为 CloudBuild类的创建与引用，最终传入git对象
 
 > 3-3节已经创建了cloudbuild，修改这里的代码为
@@ -305,8 +294,7 @@ async preparePublish(){
 > - 这个cloudbild实例为我们在models下新建的一个包，这样本节就形成了一个闭环。
 > - 下节开始就是cloudbuild实例的开发，以及publish流程。
 
-
-#### 5-2 生成构建命令+构建命令检查开发
+**5-2 生成构建命令+构建命令检查开发**
 > 本节主要内容是，用于定制build命令，通过 --buildCmd参数，如果用户传入build命令，那么使用传入的build命令打包，如果不是则传入默认的打包命令。
 > 1. 首先在 core/cli/lib/index.js中传入 --buildCmd参数
 
@@ -355,9 +343,7 @@ async preparePublish(){
 > **cloudscope-cli publish --targetPath /Users/liumingzhou/Documents/imoocCourse/Web前端架构师/cloudscope-cli/commands/publish --buildCmd 'anpm run build:prod'**
 > **抛出异常：**Build命令非法，必须使用npm或cnpm
 
-
-
-#### 5-3 通过CloudBuild创建WebSocket连接
+**5-3 通过CloudBuild创建WebSocket连接**
 > 我们在第三章的学习当中已经大略的知道了 前后端如何建立起socket连接，本节就是对服务端代码修改以及客户端代码开发-传递git.repo参数到服务端。
 > 
 > - 服务端
@@ -430,8 +416,7 @@ class CloudBuild {
 > **cloudscope-cli publish --targetPath /Users/liumingzhou/Documents/imoocCourse/Web前端架构师/cloudscope-cli/commands/publish --buildCmd 'npm run build:prod'**
 > - 在客户端与服务端分别打印出日志，测试正确
 
-#### 
-#### 5-4 WebSocket超时自动断开连接逻辑开发
+**5-4 WebSocket超时自动断开连接逻辑开发**
 > 本节比较简单，是解决连接不上服务端的问题--连接超时，抛出异常，部分代码如下：
 
 ```javascript
@@ -469,7 +454,8 @@ class CloudBuild {
 }
 
 ```
-#### 5-5 WebSocket客户端和服务端通信优化
+
+**5-5 WebSocket客户端和服务端通信优化**
 
 > 在整个websocket连接成功之后，是可以发送一些标准化日志的。
 > - 友好实现socket连接后的标准化日志，服务端改造
@@ -539,7 +525,7 @@ socket.on('error',(err)=>{
 })
 ```
 
-#### 5-6 云构建任务写入Redis
+**5-6 云构建任务写入Redis**
 > 本节主要内容就是将云构建任务写入到redis中去【服务端】,核心代码如下：
 
 ```javascript
@@ -558,7 +544,7 @@ logger.info(hashTask)
 
 ```
 
-#### 5-7 创建云构建任务功能开发
+**5-7 创建云构建任务功能开发**
 客户端添加build方法
 ```javascript
 // models/cloudbuild/lib/index.js   
@@ -628,11 +614,9 @@ module.exports = CloudBuildTask
 
 测试，可在服务端打印出options。
 
-### 第六章 云构建执行流程开发
+## 第六章 云构建执行流程开发
 
----
-
-#### 6-1 云构建任务初始化流程开发
+**6-1 云构建任务初始化流程开发**
 > 服务端云构建的初始化流程，主要内容为CloudBuildTask这个类
 > - npm i -S user-home simple-git fs-extra
 
@@ -671,7 +655,7 @@ class CloudBuildTask {
 module.exports = CloudBuildTask
 ```
 
-#### 6-2 云构建任务交互日志开发
+**6-2 云构建任务交互日志开发**
 > 本节在CloudBuildTask类中，还未进行开发前，现对错误日志，进行了升级或者说是友好的异常抛出。
 > 首先在CloudBuildTask这个类中，对于返回的格式进行了统一
 > 
@@ -738,8 +722,7 @@ async function prepare(cloudBuildTask,socket,helper) {
     })
   }
 ```
-#### 
-#### 6-3 服务端源码下载 + 切换分支
+**6-3 服务端源码下载 + 切换分支**
 > 在服务端 app/io/controller/build.js下，
 > - 我们完成了 await prepare(cloudBuildTask,socket,helper)，
 > - 接着我们继续实现  await download(cloudBuildTask,socket,helper)
@@ -777,8 +760,7 @@ async function download(cloudBuildTask,socket,helper){
 > 
 > 经过测试，在/User/username/.cloudscoe-cli/cloudbuild/test@1.0.2/test下安装了源码，执行git branch 看到切换到了 开发分支。
 
-#### 
-#### 6-4 服务端源码依赖安装+命令执行功能封装
+**6-4 服务端源码依赖安装+命令执行功能封装**
 
 与上一节的download流程一样
 ```javascript
@@ -847,7 +829,7 @@ function exec(command,args,options){
 }
 ```
 
-#### 6-5 云构建任务执行逻辑开发
+**6-5 云构建任务执行逻辑开发**
 ```javascript
 
 // app/io/controller/build.js
@@ -895,11 +877,3 @@ function checkCommand(command){
 ```
 > 最后在客户端经过测试，看到 build的dist目录没有构建成功：这是因为我的test源码不是一个可以打包的项目。
 > 于是重写创建项目，并且publish 的时候输入参数 --refreshServer  --refreshOwner ，构建成功。
-
-
-
-
-
-
-
-

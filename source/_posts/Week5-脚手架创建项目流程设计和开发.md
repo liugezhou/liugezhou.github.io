@@ -1,22 +1,23 @@
 ---
 layout: post
 title: Week5-脚手架创建项目流程设计和开发
-author: liugezhou
 date: 2021-02-22
-updated: 2021-02-25
+updated: 2022-05-04
+description: 脚手架创建项目流程设计和开发
+toc: true
 category: 
     Web架构之脚手架
 tags:
     Web架构之脚手架
 ---
+
+<font color=blue>更新说明：对文章目录排版做了调整。</font>
+<font color=blue> 更新时间：2022-05-04</font>
+
 本周代码提交分支至：[lesson05](https://github.com/liugezhou/cloudscope-cli/tree/lesson05)
+## 第一章：本周导学
 
-### 第一章：本周导学
-
----
-
-
-#### 1-1本周整体内容介绍和学习方法
+**1-1本周整体内容介绍和学习方法**
 
 收获
 > - 完成脚手架创建项目流程开发
@@ -24,37 +25,23 @@ tags:
 > - 服务端框架egg.js应用和API开发方法
 > - egg.js集成mongodb
 
-
-
-### 第二章 脚手架项目创建功能架构设计
-
----
-
-
-#### 2-1 脚手架创建项目功能架构背后的思考
-**
+## 第二章 脚手架项目创建功能架构设计
+**2-1 脚手架创建项目功能架构背后的思考**
 架构背后的思考
 > - _可扩展_：能够快速复用到不同团队，适用不同团队的差异。
 > - _低成本_：在不改动脚手架源码的基础上，新增模版，且新增模板的成本很低。
 > - _高性能_：控制存储空间，安装时充分利用Node多进程提升安装性能。
 
 
-#### 2-2 项目创建前准备阶段架构设计
+**2-2 项目创建前准备阶段架构设计**
 
 **init**
-**
-
-#### 2-3 下载项目模板阶段架构设计
+**2-3 下载项目模板阶段架构设计**
 
 **downloadTemplate**
+## 第三章 项目基本信息获取功能开发（详解命令行交互）
 
-### 
-### 第三章 项目基本信息获取功能开发（详解命令行交互）
-
----
-
-
-#### 3-1 项目创建准备阶段——判断当前目录是否为空功能开发
+**3-1 项目创建准备阶段——判断当前目录是否为空功能开发**
 
 > 本周代码从commands/init/lib/index.js文件中的exec方法开始启动。
 > 根据上面的两小节分析，exec方法的代码逻辑为：
@@ -67,7 +54,6 @@ prepare方法的代码逻辑为：
 > 1. _是否强制清空_
 > 1. _选择创建项目或组件_
 > 4. _获取项目/组件的基本信息_
-
 
 本节主要实现的代码是判断当前目录是否为空
 ```javascript
@@ -92,9 +78,7 @@ fileList = fileList.filter((file)=>{
 > - path.resolve(__dirname):拿到的是当前执行代码的目录
 > - 读取当前目录下的文件列表：fs.readdirSync()
 
-
-#### 3-2 inquirer基本用法和常用属性入门
-**
+**3-2 inquirer基本用法和常用属性入门**
 > 继续写代码前，首先在[测试项目](https://github.com/liugezhou/liugezhou-cli-demo)里体验inquirer
 
 ```javascript
@@ -132,27 +116,21 @@ inquirer
     }
   });
 ```
-
-#### 3-3 inquirer其他交互形式演示
-**
+**3-3 inquirer其他交互形式演示**
 > 本节主要对list、rawlist、expand、confirm、checkbox等进行了功能与代码测试
 > 测试代码提交至 [inquirer](https://github.com/liugezhou/liugezhou-cli-demo/tree/main/bin/inquirer)
 
-
-#### 3-4 强制清空当前目录功能开发
-**
+**3-4 强制清空当前目录功能开发**
 > 本节主要是清空当前目录，进行清空下，使用命令行交互inquirer问询，以及用 force这个参数添加业务逻辑，进行目录的清空判断
 > 
 > 清空目录功能主要是使用了第三方库_**fs-extra**_的**_emptyDirSync_(localPath)**方法。
 
-
-#### 3-5 获取项目基本信息功能开发
+**3-5 获取项目基本信息功能开发**
 
 > 本节使用inquirer进行了项目或者组件的选择询问、以及版本号控制台输入功能，但未对输入内容进行校验
 > 这里调整好代码逻辑即可。
 
-
-#### 3-6 项目名称和版本号合法性校验
+**3-6 项目名称和版本号合法性校验**
 
 > 本节的主要内容为合法项目名称的正则校验
 
@@ -177,14 +155,11 @@ function isValidName(v) {
 > 给出不合法的命名有：_1,a-,a_,a_1,a-1_
 > _/^[a-zA-Z]+([-][a-zA-Z][a-zA-Z0-9]*|[_][a-zA-Z][a-zA-Z0-9]*|[a-zA-Z0-9])$/.test(v)_
 
+> PS:3-6这里关于检验性输错后依旧报错的问题，没有得到解决，先暂缓了！
 
-#### PS:3-6这里关于检验性输错后依旧报错的问题，没有得到解决，先暂缓了！
+## 第四章 预备知识：egg.js + 云 mongodb 快速入门
 
-### 第4章 预备知识：egg.js + 云 mongodb 快速入门
-
----
-
-#### 4-1 下载项目模板功能实现流程分析+egg.js简介
+**4-1 下载项目模板功能实现流程分析+egg.js简介**
 
 > 上一节我们获得了项目信息，这一节通过获得的项目信息进行模板的下载
 > 
@@ -194,13 +169,10 @@ function isValidName(v) {
 > - 将项目模版信息存储到mongodb数据库中
 > - 通过egg.js获取mongodb中的数据并且通过API将其返回
 
-
 > 在进行egg.js快速搭建后台系统前，对egg.js + 云mongodb进行一个快速的入门学习。
 > - egg基于koa2生成的一个企业级框架。
 
-
-#### 4-2 cloudscope-cli-server后端项目创建
-**
+**4-2 cloudscope-cli-server后端项目创建**
 **快速搭建项目**
 > - mkdir cloudscope-cli-server
 > - cd cloudscope-cli-server
@@ -208,13 +180,11 @@ function isValidName(v) {
 > - npm i
 > - npm run dev
 
-
 > 这里需要注意的一点是：npm init egg
 > 实际执行的是 create-egg这个包。
 
+**4-3 通过egg.js框架添加新的API**
 
-#### 4-3 通过egg.js框架添加新的API
-**
 > 本节主要多egg脚手架进行了简单演示，将原路由home以及文件删除，新建了project/template路由以及controller。
 > 路由在app/router.js中
 
@@ -247,7 +217,7 @@ module.exports = ProjectController;
 
 ```
 
-#### 4-4 云mongodb开通+本地mongodb调试技巧讲解
+**4-4 云mongodb开通+本地mongodb调试技巧讲解**
 
 > 本地安装mongodb：[https://www.runoob.com/mongodb/mongodb-osx-install.html](https://www.runoob.com/mongodb/mongodb-osx-install.html)
 > 
@@ -269,9 +239,8 @@ module.exports = ProjectController;
 > - insert Doucument  (添加数据)
 > - add user  (cloudscope/cloudscope)
 
+**4-5 egg.js接入mongodb方法**
 
-#### 4-5 egg.js接入mongodb方法
-**
 > 本地mongodb数据库创建完成后，开始连接我们的本地数据库。
 > 
 > 回到上节新创建的项目,sam老师安装的第三方依赖为
@@ -393,6 +362,7 @@ class Mongo {
 module.exports = Mongo;
 
 ```
+
 > utils/mongo.js 代码修改：
 
 ```javascript
@@ -441,20 +411,15 @@ const mongo = require('./mongo.js')
  }
 ```
 
-### 第五章 项目模板开发 + 获取项目模板 API 开发
+## 第五章 项目模板开发 + 获取项目模板 API 开发
 
----
-
-#### 5-1 脚手架初始化项目模版开发
+**5-1 脚手架初始化项目模版开发**
 
 > 模版项目代码提交至：[liugezhou-cli-dev-template](https://github.com/liugezhou/liugezhou-cli-dev-template)
 
-
 > 项目模板建好后，npm publish发布至npm。
 
-
-#### 5-2 脚手架请求项目模板API开发
-**
+**5-2 脚手架请求项目模板API开发**
 **回到脚手架项目**
 > - 在utils下创建包： lerna create @cloudscope-cli/request
 > - cd utils
@@ -486,7 +451,6 @@ module.exports = request
 ```javascript
 const request = require('@cloudscope-cli/request')
 
-
 modules.exports = function(){
 	return	request({
   	url:'/project/template'
@@ -500,23 +464,18 @@ const template = getProjectTemplate()
 ```
 > 最后在测试项目下测试，打印template，成功。
 
-
-#### 5-3 通过环境变量配置默认URL+选择项目模板功能开发
+**5-3 通过环境变量配置默认URL+选择项目模板功能开发**
 
 > 本章内容回顾了process.env的配置，以及inquirer新添加询问需要选择的项目模版是什么。
 
-
-#### 5-4 基于vue-element-admin开发通用的中后台项目模板
+**5-4 基于vue-element-admin开发通用的中后台项目模板**
 > 5-1 中已将项目模版更新至git仓库，且已发布到npm中。
 > 只需要在mongodb数据库将后台模版name、npmName、version添加后即可。
 
+## 第六章 脚手架项目模板下载功能开发
 
-### 第六章 脚手架项目模板下载功能开发
+**6-1 脚手架下载项目模板功能开发**
 
----
-
-#### 6-1 脚手架下载项目模板功能开发
-**
 本节的主要内容为项目模版的安装
 ```javascript
 // commands/init/lib/index.js
@@ -543,8 +502,8 @@ async downloadTemplate(){
   }
 }
 ```
-#### 6-2 通过spinner实现命令行loading效果
-**
+**6-2 通过spinner实现命令行loading效果**
+
 > 首先在utils/utils中添加spinnerStart和sleep方法
 
 ```javascript
@@ -564,30 +523,23 @@ function sleep(timeout = 1000){
 ```
 > 然后在commands/init/lib/index.js中将spinner引入使用、测试。
 
+**6-3 项目模板更新功能调试**
 
-#### 6-3 项目模板更新功能调试
-**
 > 本节主要是安装功能的测试，以及第一次安装模版不存在时，关于spinner.stop的finnal处理。
-
 
 PS:在本节完成之后，发布至npm，本地全局安装的时候，出现错误，还未找到原因。
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1614176323840-aa953aab-1f25-4a99-b3c7-c10134d8257f.png#align=left&display=inline&height=207&margin=%5Bobject%20Object%5D&name=image.png&originHeight=414&originWidth=1852&size=255146&status=done&style=none&width=926)
 
-### 第七章：本周加餐：inquirer源码解析：彻底搞懂命令行交互原理
+## 第七章：本周加餐：inquirer源码解析：彻底搞懂命令行交互原理
 
----
-
-#### 7-1 本章学习路径和目标
+**7-1 本章学习路径和目标**
 
 > - 掌握 readline/events/stream/ansi-escapes/rxjs
 > - 掌握命令行交互的实现原理，并实现一个可交互的列表
 > - 分析inquirer源码掌握其中的关键实现
 
-
-#### 7-2 readline的使用方法和实现原理
-**
+**7-2 readline的使用方法和实现原理**
 > readline是Node.js中的一个内置库，主要是用来管理输入流的
-
 
 ```typescript
 const readline = require('readline')
@@ -623,8 +575,7 @@ input.on('keypress', onkeypress);
 input.on('end', ontermend);
 ```
 
-
-#### 7-3 高能：深入讲解readline键盘输入监听实现原理
+**7-3 高能：深入讲解readline键盘输入监听实现原理**
 
 > 略
 
@@ -678,7 +629,7 @@ setpread(function(s){
 
 ```
 
-#### 7-5 命令行样式修改的核心原理：ansi转义序列讲解
+**7-5 命令行样式修改的核心原理：ansi转义序列讲解**
 
 > ansi-escape-code:ansi转义序列
 > 定义的一个规范，终端通过转义字符实现特殊操作。
@@ -689,10 +640,9 @@ setpread(function(s){
 console.log('\x1B[31m\x1B[4m%s','your name:')
 console.log('\x1B[20G%s','test')
 ```
-#### 
-####  7-6 讨论readline
+**7-6 讨论readline**
 
-#### 7-7 响应式库rxjs快速入门
+**7-7 响应式库rxjs快速入门**
 
 > rxjs是一个异步的库，和我们的Promise是非常相似的。readline源码大量使用了这个库。
 
@@ -711,7 +661,7 @@ const pipe = range(1, 200)
   pipe.subscribe(x => console.log(x));
 ```
 
-#### 7-8& 7-9 放大招：手写命令行交互式列表组件
+**7-8& 7-9 放大招：手写命令行交互式列表组件**
 
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1614239781015-e12fd7f2-2899-40cd-9a56-acffc66f3eda.png#align=left&display=inline&height=319&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1202&originWidth=3048&size=648025&status=done&style=none&width=808)
 ```typescript
@@ -845,7 +795,7 @@ Prompt(option).then(answers => {
 });
 ```
 
-#### 7-10 inquirer源码执行流程分析
+**7-10 inquirer源码执行流程分析**
 
 略
 

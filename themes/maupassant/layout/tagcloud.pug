@@ -6,7 +6,7 @@ block content
     .post-content
       .tagcloud
         for tag in site.tags.toArray()
-          a(href='/tags/#' + tag.name, title=tag.name, rel= tag.length) #{tag.name}
+          a(href='/blog/tags/#' + tag.name, title=tag.name, rel= tag.length) #{tag.name}
 
       for tag in site.tags.toArray()
         .one-tag-list

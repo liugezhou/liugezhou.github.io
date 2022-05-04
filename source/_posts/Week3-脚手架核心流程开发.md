@@ -1,20 +1,21 @@
 ---
 layout: post
 title: Week3-脚手架核心流程开发
-author: liugezhou
 date: 2021-01-25
-updated: 2021-01-28
+updated: 2022-05-04
+description: 脚手架核心流程开发
+toc: true
 category: 
     Web架构之脚手架
 tags:
     Web架构之脚手架
 ---
-### 第一章：本周导学
 
----
+<font color=blue>更新说明：对文章目录排版做了调整。</font>
+<font color=blue> 更新时间：2022-05-04</font>
 
-#### 1-1 本周整体内容介绍和学习方法
-
+## 第一章：本周导学
+**本周整体内容介绍和学习方法**
 **标题**
 > 脚手架需求分析和架构设计，核心流程开发
 
@@ -32,52 +33,41 @@ tags:
 **加餐**
 > Node项目如何支持ES Module
 
-### 
+## 第二章：脚手架整体架构设计
 
-### 第二章：脚手架整体架构设计
-
----
-
-#### 2-1 大厂是如何做项目的
+**2-1 大厂是如何做项目的**
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611627629050-c9fbfc3b-b1aa-412a-ae69-a6ece22b1193.png#align=left&display=inline&height=530&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1594&originWidth=1504&size=670518&status=done&style=shadow&width=500)
 
-
-#### 2-2 前端研发过程中的痛点和需求分析
+**2-2 前端研发过程中的痛点和需求分析**
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611628169837-0c922852-aa1e-4947-8c10-915e5011250f.png#align=left&display=inline&height=651&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1302&originWidth=1596&size=209795&status=done&style=none&width=798)
 
-#### 2-3 加餐：大厂的git操作规范是怎样的？
+**2-3 加餐：大厂的git操作规范是怎样的？**
 
 > - clone下来的项目 master分支是不做开发的，我们会新建一个dev分支，上线以后会新建一个release分支。
 
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611630627184-bb642821-6fc2-49e7-9562-c91a818c2ae4.png#align=left&display=inline&height=484&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1526&originWidth=1578&size=528785&status=done&style=shadow&width=500)
 
-#### 2-4 高端操作：脚手架架构设计+绘制架构图 /  2-5 架构设计图绘图技巧分享
+**2-4 高端操作：脚手架架构设计+绘制架构图 /  2-5 架构设计图绘图技巧分享**
 
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611638349709-2256acfe-d49e-4962-8dc0-f2210f3471f4.png#align=left&display=inline&height=1584&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1584&originWidth=3198&size=3173935&status=done&style=shadow&width=3198)
 
+## 第三章 脚手架模块拆分策略和core模块技术方案
 
-### 第三章 脚手架模块拆分策略和core模块技术方案
-
----
-
-#### 3-1 脚手架模块拆分策略
+**3-1 脚手架模块拆分策略**
 
 - 核心流程：core
 - 命令：      commands  【初始化、发布、清除缓存】
 - 模型层：   models       【Command命令 、 Project项目 、 Component组件 、 Npm模块 、 Git仓库】
 - 支撑模块：utils           【Git操作 、 云构建 、 工具方法 、 API请求、 Git API】
 
-#### 3-2 core模块技术方案
+**3-2 core模块技术方案**
 
 准备阶段：
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611640991443-de1f758d-b1f9-4402-81aa-26b34ddcd0a1.png#align=left&display=inline&height=290&margin=%5Bobject%20Object%5D&name=image.png&originHeight=580&originWidth=1868&size=382219&status=done&style=none&width=934)
 
-### 第四章：脚手架执行准备过程实现
+## 第四章：脚手架执行准备过程实现
 
----
-
-#### 4-1 脚手架框架代码拆包+import-local应用
-
+**4-1 脚手架框架代码拆包+import-local应用**
 > - mkdir cloudscope-cli
 > - cd cloudscope-cli
 > - npm init -y
@@ -119,7 +109,8 @@ tags:
 > - cd core/cli
 > - npm install
 > - 在cloudscope-cli/core/cli/bin/index.js下添加如下代码：
-> ```javascript
+
+```javascript
 #! /usr/bin/env node
 
 const importLocal = require('import-local')
@@ -130,6 +121,7 @@ if(importLocal(__filename)){
   require('../lib')(process.argv.slice(2))
 }
 ```
+
 > - 在cloudscope-cli/core/cli/lib/index.js 文件中添加一行日志文件
 > - npm link
 > - cloudscope-cli:即可看到输出日志
@@ -149,17 +141,13 @@ git代码提交扩展
 > - 如果后面我们想要修改该分支代码并提交到该分支，我们就可以：
 > - git checkout -b temp origin/lesson01
 
-
-#### 4-2 检查版本号功能开发（require加载资源类型讲解+npmlog封装)
+**4-2 检查版本号功能开发（require加载资源类型讲解+npmlog封装)**
 
 从本节开始本地新建分支 lesson02，最后将此分支代码推送至远程仓库[cloudscope-cli](https://github.com/liugezhou/cloudscope-cli)。
 
 1. 本节代码开发过程中在命令行用到的命令：
 > - utils下新建log包： lerna create @cloudscope-cli/log utils
 > - log下安装npmlog包： lerna add npmjs utils/log 
-
-
-
 
 2. 其它记录的小知识点
 - require加载资源的类型：
@@ -173,8 +161,7 @@ git代码提交扩展
 > - 源码中存在的 log.addLevel()才可以打印，我们也可以通过这个方法定制自己的打印设置。（可以设置名字、value值大小，字体色、背景色等）
 > - 可以通过 log.heading定制输日志输出的前置。同时可以通过headingStyle做样式修改。
 
-
-#### 4-3 最低Node版本检查功能开发
+**4-3 最低Node版本检查功能开发**
 
 检查Node版本号的原因以及解决办法：
 > - 这是因为一些低版本的Node API在低版本是不支持的，因此要设置一个最低的Node版本号。
@@ -182,8 +169,7 @@ git代码提交扩展
 > - 版本号比对：第三方库 semver。
 > - 抛出异常颜色输出：第三方库 colors:引用'colors/safe',使用：colors.red('')
 
-
-#### 4-4 root账号启动检查和自动降级功能开发
+**4-4 root账号启动检查和自动降级功能开发**
 
 检查账号权限原因以及解决方法：
 > - 如果是使用root权限，一些文件就没有可读或者修改权限，因此需要对用户进行查询与降级处理
@@ -191,36 +177,29 @@ git代码提交扩展
 > - 检查第三方库：root-check。使用方法引入一下调用即可降级。
 > - root-check实现原理：调用downgrade-root 库 -> 判断是否为root权限 -> 若是通过process.env.SUDO_UID或者默认 defaultUid() 获取各个操作系统的uid
 
-
-#### 4-5 用户主目录检查功能开发
+**4-5 用户主目录检查功能开发**
 
 > - user-home:可以实现跨操作系统获取用户主目录的功能。
 > - path-exists:判断文件目录是否存在
 
-
 > - user-home实现：调用os-homedir库，再调用os库，若os库有homedir直接返回，若没有直接拿process.env.home(),还是没有就拼接 ‘/Users/'+process.env.USER
 > - path-exists实现：直接调用fs的accessSync(path)方法。
 
-
-#### 4-6 入参检查和debug模式开发
+**4-6 入参检查和debug模式开发**
 
 > 这里就进行如参检查，是要判断是否进入调试模式，如果带有 --debug参数，我们要进行log的level设置。
-
 
 > - 实现方式：使用minimist第三方库。
 > - 查看是否包含debug参数，直接：require('minimist')(process.argv.slice(2)).debug即可。
 > - 若上值为true，直接修改log.level即可。
 
-
-#### 4-7 环境变量检查功能开发
+**4-7 环境变量检查功能开发**
 
 > - 检查环境变量，我们使用第三方库：dotenv。
 > - 用法：require('dotenv').config({ path: '' }) ：若不传参数，我们在当前目录下拿到.env文件中的变量，之后就可以直接在process.env中使用了。支持传入path变量。
 > - 环境变量其实就是一个全局变量,如果我们有很多的环境变量需要使用，可以直接在.env文件宏进行配置
 
-
-#### 4-8 通用npm API模块封装 | **4-9 npm全局更新功能开发**
-
+**4-8 通用npm API模块封装 | **4-9 npm全局更新功能开发****
 > 准备阶段的最后一个功能：检查我们的这个脚手架是否为最新版本
 
 步骤：
@@ -231,15 +210,10 @@ npm提供了这样一个API: https://registry.npmjs.org/cloudscope-cli/core ,可
 > 3. 获取所有版本号，比对哪些版本号是大于当前版本号
 > 3. 获取最新的版本号，提示用户更新到此版本。
 
-
 将以上代码提交支仓库远程cloudscope-cli的分支 [lesson02](https://github.com/liugezhou/cloudscope-cli/tree/lesson02)，并合并至main分支。
 **
-### 第五章：脚手架命令注册实现(基于commander）
-
----
-
-
-#### 5-1 快速实现一个commander脚手架 ｜ 5-2 commander脚手架全局配置
+## 第五章：脚手架命令注册实现(基于commander）
+**5-1 快速实现一个commander脚手架 ｜ 5-2 commander脚手架全局配置**
 > 之前在学习命令注册的时候，使用的是yrags，本节使用另一个库 commander去实现命令注册
 > 本节代码提交至：[liugezhou-yargs-demo](https://github.com/liugezhou/liugezhou-yargs-demo)
 > 其中 bin/yargs.js是之前学习yargs的demo代码。
@@ -275,18 +249,13 @@ program
 ```
 > - liugezhou-test -V,即可看到输入版本号。
 > - liugezhou-test -d  // true
-
-
-#### 5-3 commander脚手架命令注册的两种方法
+**5-3 commander脚手架命令注册的两种方法**
 
 课程所讲内容：commander命令注册有两种方式：
 > 1. comman API注册命令
 > 1. addCommand API 注册命令
 
 现在默认安装commander时，已更新到7.0.0，sam老师写法还是6.X，可参考 [commader for git](https://github.com/tj/commander.js/blob/HEAD/Readme_zh-CN.md) 配置。本节内容就是对官方文档更新用法之后的学习笔记：
-
----
-
 
 1. Commander.js :
 > 完整的node.js命令行解决方法
@@ -336,11 +305,11 @@ program
       });
     });
 ```
-#### 5-4 commander注册命令的两种高级用法 ｜**5-5 再讲3条commander的高级用法**
+**5-4 commander注册命令的两种高级用法 ｜5-5 再讲3条commander的高级用法**
 
 > 1. 监听所有命令输入 : arguments
 > 1. 脚手架串行使用
-> ```javascript
+```javascript
    program
       .command('install [name]','install package',{
         executableFile:'vue'，
@@ -363,7 +332,7 @@ program.on('optins:debug',function(){
 }
 ```
 > 5. 对未知命令监听二：
-> ```javascript
+```javascript
 program.on('command:*',function(obj){
       console.log(obj)
       console.log('未知的命令：' + obj[0])
@@ -371,15 +340,9 @@ program.on('command:*',function(obj){
       console.log('可用命令：'+ avaliableCommands.join(','))
   })
 ```
+## 第六章 Node项目如何支持ES Module【加餐】
 
-
-### 第6章 Node项目如何支持ES Module【加餐】
-
----
-
-
-#### 6-1 通过webpack完成ES Module资源构建
-**
+**6-1 通过webpack完成ES Module资源构建**
 **模块化**
 > - CMD/AMD/require.js
 > - CommonJS: 加载：require(), 输出：module.exports() || exports.x
@@ -422,8 +385,7 @@ module.exports = function(){
 > - 上面代码通过 npm run build 打包后，将上面index.js中的require修改为 require("../dist/core.js")
 > - 执行 liugezhou-test 看到构建成功。
 
-
-#### 6-2 通过webpack target属性支持Node内置库
+**6-2 通过webpack target属性支持Node内置库**
 
 - webpack的target使用
 ```javascript
@@ -453,7 +415,7 @@ console.log(exists(path.resolve('.')))
     console.log('ok')
 })()
 ```
-#### 6-3 webpack loader配置babel-loader支持低版本node
+**6-3 webpack loader配置babel-loader支持低版本node**
 
 > 配置一个最简单babel-loader,需要安装的库
 > npm i -D 
@@ -497,8 +459,7 @@ module.exports = {
   }
 }
 ```
-
-#### 6-4 通过Node原生支持ES Module
+**6-4 通过Node原生支持ES Module**
 
 将node版本升级到14.x，代码中将引用的文件，改写后缀名为 .mjs即可。
 

@@ -523,21 +523,26 @@ screen and (max-width: 35.5em) {
     }
 }
 
+blockquote{
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 20px;
+    margin-inline-end: 20px;  
+}
 blockquote,
 .stressed {
-    padding: 0 1em;
+    padding: 0;
     color: rgb(106, 115, 125);
-    border-left: 0.25em solid rgb(223, 226, 229);
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+    // border-left: 0.25em solid rgb(223, 226, 229);
     // margin: 2.5em 0;
     // color: #555;
-    // border-left: none;
+    border-left: none;
 }
 
 blockquote::before,
 .stressed-quote::before {
-    padding: 0 1em;
+    // padding: 0 1em;
     color: rgb(106, 115, 125);
     border-left: 0.25em solid rgb(223, 226, 229);
     // content: "\201C";
@@ -551,7 +556,9 @@ blockquote::before,
     // margin-left: -50px;
     // position: absolute;
 }
-
+.word{
+    word-break: break-all;
+}
 strong,
 b,
 em {

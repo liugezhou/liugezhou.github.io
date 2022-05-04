@@ -1,20 +1,24 @@
 ---
 layout: post
 title: Week15-服务端 CI_CD：Github 自动化
-author: liugezhou
 date: 2021-03-15
-updated: 2021-03-20
+updated: 2022-05-04
+description: 服务端 CI_CD：Github 自动化
+toc: true
 category: 
     Web架构之脚手架
 tags:
     Web架构之脚手架
 ---
-### 第一章：周介绍
 
----
+<font color=blue>更新说明：对文章目录排版做了调整。</font>
+<font color=blue> 更新时间：2022-05-04</font>
 
-#### 1-1 介绍
-**标题：**服务端 CI/CD流程--让 github 自动化为我们服务
+## 第一章：周介绍
+
+**1-1 介绍**
+
+服务端 CI/CD流程--让 github 自动化为我们服务
 > CI:    Continuous Integration  持续集成
 > CD:   Continuous Delivery     持续交付
 > 合理全面的 CI/CD，自动化研发流程，提高研发效率，增加系统稳定性
@@ -25,25 +29,20 @@ tags:
 > - 学会 Docker 在 nodejs 中的应用
 > - 搭建测试环境
 
-
 关键词
 > - CI/CD
 > - Github actions：实现 CI/CD 的一个工具
 > - Docker Docker-compose
 
-
 链接：[CI/CD 介绍](https://www.redhat.com/zh/topics/devops/what-is-ci-cd)
-### 
-### 第二章 Github actions
-
----
+## 第二章 Github actions
 
 > 这一章双越讲的真的不知道讲了个啥，自己课下补吧，真是一塌糊涂。
 > github actions 的学习确实很有必要啊，回头等学习完毕再来吐槽。
 > 学习阮一峰大哥的这节文档：http://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html
 
 **第二遍视频笔记记录如下**
-#### 2-1 章介绍
+**2-1 章介绍**
 > - Github actions 是github 官方发布的一个产品 。
 > - 使用 Github actions 自动化构建和测试
 > - 认识 Github actions
@@ -54,7 +53,7 @@ tags:
 > - 疑问三：课程是以业务为导向，不可能把全部细节都讲出来，这个无可厚非，没有毛病，那你好歹把基础的大路边的内容，起码普及个差不多吧。
 > - 疑问四：这节章介绍内容，你讲解那么多二八法则是干嘛？讲解什么边际效应，是为了后续课程划水先找借口吗？
 
-#### 2-2 认识 Github actions
+**2-2 认识 Github actions**
 > - 00:00-01:00：由于中美时差造成的 Github 不稳定问题。
 > - 01:00-01:50：讲解了githu被微软收购，变得更好些，有了私有化个人项目，对中小企业越来越友好
 > - 01:50-02:10:讲解了课程为什么代码不公开的原因是一些数据的线上原因，此事说过好几遍，
@@ -72,7 +71,7 @@ tags:
 >    - 12:24-17:13:jobs 讲解。
 >       - （补充：runs-on 没什么特殊情况下直接使用 ubuntu-latest,还有可以设置的比如windows-latest，macOS-latest，steps 中 uses 中的 actions/checkout@v2,实际上代表的是github.com/actions/checkout 这个仓库，actions/xxx 中的东西，都是仓库中的内容，GitHub 官方的 actions 都放在 [github.com/actions](https://github.com/actions) 里面）
 
-#### 2-3 Github actions 功能演示
+**2-3 Github actions 功能演示**
 > - 00:00-00:50：run为自定义命令。如果为多个命令，则格式为 run: | 。
 > - 00:50-02:00：演示 run 命令 touch、echo、cat。
 > - 03:00-03:50：代码提交--将branch 改为本地代码分支，演示本地分支提交触发流程，其中关于 .docker-volumes/加到 ignore，具体干啥的留个问号。还有 commit 规范这块前面**貌似**没讲是如何控制规范的「ci 工具」？
@@ -83,7 +82,7 @@ tags:
 >    - 应用场景
 >    - yml语法格式
 
-#### 2-4 Github actions 做自动化测试
+**2-4 Github actions 做自动化测试**
 新建 yml 文件
 ```javascript
 name: test
@@ -135,47 +134,39 @@ pre-commit 执行本地接口测试(我的遗留问题：**关于 pre-commit 部
 **还是那个疑问，为什么不整个与课程同步的代码仓库？这个对学员来说究竟是不是必要的？**
 > 经过笨拙的尝试，终于成功。
 
-#### 2-5 Github actions 章总结
+**2-5 Github actions 章总结**
 > 没说什么新的内容
 
+## 第三章 Docker
 
-### 第三章 Docker
-
----
-
-#### 3-1 Docker 章介绍
+**3-1 Docker 章介绍**
 Docker
 > 基于 Docker，我们可以把开发、测试环境，一键部署到任何一台机器上。只要该机器安装了 Docker。
 > 有了 Docker，就有了一切。
 
-
 主要产出
 > 使用 Docker 构建 nodejs 项目
-
 
 主要内容
 > 认识 Dcoker
 > Dockerfile
 
-
 注意事项
 > 专业的运维工程师对 Docker还有更全面的应用：弹性扩展、微服务等。
 
-
-#### 3-2 认识 Docker
+**3-2 认识 Docker**
 介绍
 > Docker 就是一种虚拟机技术，比传统虚拟机(VMware、virtualBox)更加简单、轻量
 > - 启动快
 > - 资源占用少
 > - 体积小
 
-
 查找 docker 安装镜像
 > [https://hub.docker.com/](https://hub.docker.com/)
 
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1615798502926-399a6870-27e9-4c1d-9a1c-fb00cb91c9d0.png#height=770&id=EfLvb&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1540&originWidth=3192&originalType=binary&size=1486827&status=done&style=none&width=1596)
 
-#### 3-3 启动一个Docker容器
+**3-3 启动一个Docker容器**
 
 **image镜像**
 > - 下载镜像 docker pull <image-name>:<tag>
@@ -183,7 +174,6 @@ Docker
 > - 删除镜像：    docker rmi <images-id>
 > - 上传镜像：    docker push <username>/<password>:<tags>
 > - 如果出现REPOSITORY为 null 的情况时，使用docker image prune删除
-
 
 **container**
 > - 启动容器：**docker run -p xxxx:xxx -v=hostpath:containerPath -d --name <container-name> <image-name>**
@@ -198,8 +188,7 @@ Docker
 > - 查看容器日志 docker logs <container-id>
 > - 进入容器控制台 docker exec -it <container-id> /bin/sh
 
-
-#### 3-4 Docker容器的进一步演示
+**3-4 Docker容器的进一步演示**
 **功能演示**
 ```javascript
 docker run -p 81:80 -d --name nginx1 nginx
@@ -228,7 +217,8 @@ docker run -p 81:80 -v=/Users/wfp/html:/usr/share/nginx/html  -d --name nginx1 n
 # 3. 访问 重新访问 localhost:81 ，看是否你创建的页面？
 
 ```
-#### 3-5 介绍 Dockerfile 语法
+
+**3-5 介绍 Dockerfile 语法**
 > 一个简单的配置文件，描述如何构建一个新的 image 镜像
 > 注意：必须是 Dockerfile 这个文件名，必须在项目的根目录
 
@@ -254,7 +244,7 @@ ENV AUTHOR_NAME ="liugezhou"
 
 ```
 
-#### 3-6 用 Dockerfile 构建镜像
+**3-6 用 Dockerfile 构建镜像**
 **构建**
 > docker build -t <name> .  #最后的'.'指 Dockerfile 在当前目录下。    
 > docker images
@@ -300,14 +290,12 @@ docker rm <container-id>
 docker rmi <image-id>
 
 ```
-### 第四章 Docker-compose
+## 第四章 Docker-compose
 
----
-
-#### 4-1 docker-compose 章开始
+**4-1 docker-compose 章开始**
 > 用的来说就是 Docker-compse就是一种组合，这章学到的内容就是这个英文单词的翻译。
 
-#### 4-2 docker-compose 配置文件
+**4-2 docker-compose 配置文件**
 > - 文件名称必须为 **docker-compose.yml**
 > - 代码演示：多个service，代表多个docker镜像
 > - **image:redis **   表示引用官网的redis 镜像
@@ -340,7 +328,7 @@ services:
             - TZ=Asia/Shanghai # 设置时区
 
 ```
-#### 4-3 docker-compose 命令演示
+**4-3 docker-compose 命令演示**
 > - 00：00    --    02：55    **命令**
 >    - docker-compose build <service-name>
 >    - 启动所有服务器：docker-compose up -d (后台启动)
@@ -375,18 +363,16 @@ services:
 >    - docker logs <container-id>
 >    - docker-compose down
 
-#### 4-4 数据持久化
+**4-4 数据持久化**
 **连接mysql和mongodb**
 > **区别:**
 > - redis无数据库，mysql与mongodb需要连接数据库
 > - redis是缓存，无需数据持久化，mysql与mongodb需要**。**
-> 
-
 
 > volumes:
 > - '.docker-volumes/mongo/data:/data/db' # 数据持久化
 
-#### 4-5 配置 mysql
+**4-5 配置 mysql**
 ```typescript
 version: '3'
 services:
@@ -439,16 +425,13 @@ services:
 
 ```
 
-### 第五章 发布到测试机
+## 第五章 发布到测试机
 
----
-
-
-#### 5-2  配置测试机
+**5-2  配置测试机**
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1616483749691-5096e493-0140-498b-9141-01183dfbaba1.png#height=241&id=GkJ6b&margin=%5Bobject%20Object%5D&name=image.png&originHeight=482&originWidth=1590&originalType=binary&size=97199&status=done&style=none&width=795)
 
-#### 5-3 自动发布到测试机-讲解配置
-#### 5-4 自动发布到测试机-功能演示
+**5-3 自动发布到测试机-讲解配置**
+**5-4 自动发布到测试机-功能演示**
 ```typescript
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
@@ -499,9 +482,7 @@ jobs:
     "
       - name: delete ssh key # 删除 ssh key
       run: rm -rf ~/.ssh/id_rsa
-
 ```
 
-#### 5-5 自动发布到测试机--章总结
+**5-5 自动发布到测试机--章总结**
 > 😔
-

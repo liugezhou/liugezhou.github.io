@@ -1,33 +1,34 @@
 ---
 layout: post
 title: Week28-脚手架发布模块架构设计和核心流程开发
-author: liugezhou
 date: 2021-07-01
-updated: 2021-07-05
+updated: 2022-05-04
+description: 脚手架发布模块架构设计和核心流程开发
+toc: true
 category: 
     Web架构之脚手架
 tags:
     Web架构之脚手架
 ---
-### 第一章：周介绍
 
----
+<font color=blue>更新说明：对文章目录排版做了调整。</font>
+<font color=blue> 更新时间：2022-05-04</font>
+
+## 第一章：周介绍
 
 > - 掌握脚手架发布模块的整体架构设计和实现原理
 > - 掌握前端发布流程，并了解history和hash两种路由模式的区别
 > - 深入理解vue-router原理
 
-##### 关键词
+**关键词**
 > - 前端发布
 > - 前端路由
 > - vue-router
 
 
-### 第二章：脚手架发布流程架构设计
+## 第二章：脚手架发布流程架构设计
 
----
-
-#### 2-1  脚手架发布功能和流程讲解
+**2-1  脚手架发布功能和流程讲解**
 > - 不依靠后端或服务端人员，使用脚手架快速对更改的内容进行项目发布。
 > - imooc-cli --packagePath /Users/liumingzhou/Desktop/imooc-cli/packages/publish
 >    - git配置检查：保证远程仓库存在
@@ -35,40 +36,36 @@ tags:
 >    - 云构建+云发布：检查build结果、按照依赖、云构建、云发布、云断开
 
 [点击查看【processon】](https://www.processon.com/embed/60f240e1e401fd4fe0531bef)
-#### 
-#### 2-2 绘制项目发布架构设计图![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1625130215799-45b4c6cb-5c12-473e-aa80-b419f7b4d313.png#clientId=u0992a974-4b35-4&from=paste&height=725&id=u8f6ed252&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1450&originWidth=1696&originalType=binary&ratio=2&size=235617&status=done&style=none&taskId=u2fe54165-3971-4dd4-b469-194cd66bb28&width=848)
-### 第三章：imooc-cli脚手架git flow 自动化架构设计
 
----
+**2-2 绘制项目发布架构设计图**
+![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1625130215799-45b4c6cb-5c12-473e-aa80-b419f7b4d313.png#clientId=u0992a974-4b35-4&from=paste&height=725&id=u8f6ed252&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1450&originWidth=1696&originalType=binary&ratio=2&size=235617&status=done&style=none&taskId=u2fe54165-3971-4dd4-b469-194cd66bb28&width=848)
+## 第三章：imooc-cli脚手架git flow 自动化架构设计
 
-#### 3-1 git flow 基础流程讲解
+**3-1 git flow 基础流程讲解**
 > - git flow是2010年 Vincent Driessen设计出来的。
 
 [点击查看【processon】](https://www.processon.com/embed/60f2487c1efad41bbea86894)
 
-#### 3-2 git flow 多人协作流程讲解（详细讲解大厂git flow流程)
+**3-2 git flow 多人协作流程讲解（详细讲解大厂git flow流程)**
 [点击查看【processon】](https://www.processon.com/embed/60f250be0e3e7453927475af)
 
-#### 3-3 脚手架git flow prepare阶段架构设计
+**3-3 脚手架git flow prepare阶段架构设计**
+> ProcessOn画图
+
+**3-4 脚手架git flow 执行阶段架构设计 -Init**
 > ProcessOn画图
 
 
-#### 3-4 脚手架git flow 执行阶段架构设计 -Init
-> ProcessOn画图
+## 第四章 imooc-cli 脚手架云构建 + 云发布架构设计
 
 
-
-### 第四章 imooc-cli 脚手架云构建 + 云发布架构设计
-
----
-
-####  4-1 云构建+云发布整体流程设计
-#### 4-2 云构建+云发布详细流程设计1
-#### 4-3 云构建+云发布详细流程设计2
-#### 4-4 深入讲解云发布原理
+**4-1 云构建+云发布整体流程设计**
+**4-2 云构建+云发布详细流程设计1**
+**4-3 云构建+云发布详细流程设计2**
+**4-4 深入讲解云发布原理**
 [点击查看【processon】](https://www.processon.com/embed/60f258a11e085376da5a1525)
-### 第五章：imooc-cli脚手架publish模块开发
-#### 5-1 创建publish模块
+## 第五章：imooc-cli脚手架publish模块开发
+**5-1 创建publish模块**
 > 本模块在调试的时候出现问题：
 > - lerna create @cloudscope-cli/publish commands
 > - publish模块下lib的index中，打印日志：console.log('publish')
@@ -88,8 +85,7 @@ tags:
 > cloudscope-cli publish --targetPath /Users/liumingzhou/Documents/imoocCourse/Web前端架构师/cloudscope-cli/commands/publish 
 > 打印出：publish
 
-#### 
-#### 5-2 publish基本流程开发
+**5-2 publish基本流程开发**
 > 接下来的重点就是编写业务代码：cloudscope-cli/commands/publish/lib/index.js
 > - 参考init中的代码，extends Command
 > - 必须实现init和exec方法，否则报错
@@ -135,7 +131,7 @@ function init(argv){
 module.exports = init
 module.exports.PublishCommand = PublishCommand;
 ```
-#### 5-3 项目发布前预检查流程开发
+**5-3 项目发布前预检查流程开发**
 > 结合上一节代码，本节主要内容为：
 > - 初始化检查prepare
 >    - 确认项目是否npm项目
@@ -159,16 +155,12 @@ prepare(){
   this.projectInfo = {name,version,dir:projectPath}
 }
 ```
-
-### 第6章 本周加餐：前端路由模式原理和 vue-router 源码讲解
-
----
+## 第六章 本周加餐：前端路由模式原理和 vue-router 源码讲解
 
 **本章内容测试代码上传至：**[https://github.com/liugezhou/vue-router-demo](https://github.com/liugezhou/vue-router-demo)
-#### 
-#### 6-1 vue-router-next完整运行流程解析
-> **vue-router-next源码解析**
 
+**6-1 vue-router-next完整运行流程解析**
+> **vue-router-next源码解析**
 > vue-router常见问题：
 > - history和hash模式的区别是什么（涉及vue-router路由模式和前端发布原理）
 > - Vue dev模式下为什么不需要配置history fallback(涉及webpack-dev-server配置)
@@ -235,8 +227,7 @@ export default {
 
 ```
 
-#### 6-2 vue-router路由模式+history路由部署详细教学
-
+**6-2 vue-router路由模式+history路由部署详细教学**
 
 **Vue-router路由模式**
 > - hash：createWebHashHistory()
@@ -270,8 +261,7 @@ server {
 > - history模式跳转，利用的是浏览器对象中的history.pushState/replaceState/back/go/forward
 > - hash模式跳转，利用的是浏览器对象中的location.href
 
-#### 
-#### 6-3 vue-cli源码调试+dev模式history fallback原理讲解
+**6-3 vue-cli源码调试+dev模式history fallback原理讲解**
 
 **为什么Vue的dev模式下不需要配置history fallback？**
 > - 说明：我们在dev模式下启动项目：npm run serve,在scripts中serve，实际执行的命令是  vue-cli-service serve,这个时候我们调试源码就在**node_modules/.bin/vue-cli-service**。如果执行全局 vue create，调试该命令的话我们就需要去本地全局安装的vue源码中去调试。
@@ -281,8 +271,7 @@ server {
 > - 然后在上面的文件中打断点，开始进入debug调试模式。
 > - 跟着视频课程的调试，核心代码就是webpack的genHistoryApiFallbackRewrites 与try_files一样的作用
 
-#### 
-#### 6-4 vue-router初始化过程源码分析
+**6-4 vue-router初始化过程源码分析**
 
 **我们并没有定义router-link和router-view，为什么代码里能直接使用？**
 > - 在vscode的router.js中添加debugger调试，没起作用，因此，该源码的调试是在webstorm中debug的。
@@ -431,8 +420,7 @@ function createRouter(options) {
     };
     return router;
 ```
-#### 
-#### 6-5 vue3高级特性：vue插件+provide跨组件通信
+**6-5 vue3高级特性：vue插件+provide跨组件通信**
 
 **浏览器中如何实现URL变化但页面不刷新**
 > - 在控制台直接输入  history.pushState(null,null,'/Order'/),会发现浏览器窗口中地址发生了改变，但页面未刷新。
@@ -466,7 +454,7 @@ export default {
 
 在上图的高亮部分resolve(to)是路由匹配的相关实现，下节继续。
 
-#### 6-7 vue-router路由匹配源码分析
+**6-7 vue-router路由匹配源码分析**
 
 > 我们输入路由后如何与我们自己定义的 routes中的路由进行匹配，就涉及到vue-router的核心概念 matcher。
 > 两个关键点是：createRouter以及上一节提到的resollve方法。
@@ -507,7 +495,7 @@ function resolve(rawLocation, currentLocation) {
     }
 ```
 
-#### 6-8 vue3新特性defineComponent讲解1 && 6-9 vue3新特性defineComponent讲解2
+**6-8 vue3新特性defineComponent讲解1 && 6-9 vue3新特性defineComponent讲解2**
 
 **router-view如何实现组件动态渲染(涉及Vue动态组件)**
 > - 本节从router对象的install方法开始，找到 app.component('RouterView',RouterView)。
@@ -547,7 +535,7 @@ import { defineComponent,h } from 'vue'
  export default TestComponent2
 ```
 
-#### 6-10 深入解析router-view源码
+**6-10 深入解析router-view源码**
 
 ```javascript
 const RouterViewImpl = /*#__PURE__*/ defineComponent({
@@ -627,10 +615,3 @@ const RouterViewImpl = /*#__PURE__*/ defineComponent({
     },
 });
 ```
-
-
-
-
-
-
-

@@ -1,19 +1,22 @@
 ---
 layout: post
 title: Week14-服务端选型：磨刀不如砍柴功
-author: liugezhou
 date: 2021-03-09
-updated: 2021-03-12
+updated: 2022-05-04
+description: 服务端选型：磨刀不如砍柴功
+toc: true
 category: 
     Web架构之脚手架
 tags:
     Web架构之脚手架
 ---
-### 第一章 周介绍
 
----
+<font color=blue>更新说明：对文章目录排版做了调整。</font>
+<font color=blue> 更新时间：2022-05-04</font>
 
-#### 1-1 本周介绍
+## 第一章 周介绍
+
+**1-1 本周介绍**
 > - 服务端选型：所有技术为业务服务
 > - nodejs框架选型：Koa2
 > - 数据库：Mysql  Mongodb Redis
@@ -21,45 +24,39 @@ tags:
 > - 单元测试与接口测试：Jest
 > - 线上服务：PM2 + nginx
 
+## 第二章 选择nodejs框架
 
-### 第二章 选择nodejs框架
-
----
-
-#### 2-1 nodejs框架选型-开始
+**2-1 nodejs框架选型-开始**
 > - 所用常见的nodejs框架中，Koa2是最简单、最小的
 > - 目的扩充广度，让你了解有这门技术
 > - Koa2和Express
 > - eggs.js
 > - Nest.js
 
-#### 2-2 介绍koa2和express
+**2-2 介绍koa2和express**
 > - [koa2](https://koa.bootcss.com/):  基于Node.js平台的下一代web框架
 > - [express](https://expressjs.com/zh-cn/starter/generator.html):node平台web框架，koa2基于express。
 
-#### 2-3 介绍egg.js
+**2-3 介绍egg.js**
 > [egg.js](https://eggjs.org/zh-cn/):阿里开源，基于Koa2封装。
 
-#### 2-4 介绍nest.js
+**2-4 介绍nest.js**
 > [nest.js](https://docs.nestjs.cn/)：也是一个框架，默认基于express封装，比较小众。
 > 使用ts语法，大量使用装饰品，学习成本高。
 
+## 第三章 数据库使用 Mysql Mongodb 和 Redis
 
-### 第三章 数据库使用 Mysql Mongodb 和 Redis
-
----
-
-#### 3-1 章开始
+**3-1 章开始**
 > 这一章会介绍：
 > Mysql和Sequelize
 > Mongodb和Mongogoose
 > Mysql和Mongodb的区别
 > Redis。
 
-#### 3-2 回顾数据结构设计
+**3-2 回顾数据结构设计**
 > 对第一周内容做了个简单回顾
 
-#### 3-3 Mysql 和 Sequelize 1
+**3-3 Mysql 和 Sequelize 1**
 学习这节之前，先将代码clone到本地，代码地址：[https://github.com/liugezhou/lego_node_server](https://github.com/liugezhou/lego_node_server)
 
 > 1. mysql是Web应用中最常见的关系型数据库
@@ -93,9 +90,8 @@ async function testMysqlConn () {
 
 testMysqlConn().then(res => console.log(res)
 ```
-#### 
 
-#### 3-4 Mysql 和 Sequelize 2
+**3-4 Mysql 和 Sequelize 2**
 > Sequelize:最常用的ORM框架，它让开发者不用写繁琐的SQL语句，通过API即可操作数据库。
 > 1. npm i -S sequelize  require-all  simple-git
 > 1. 数据库连接测试文件：
@@ -235,7 +231,7 @@ module.exports = syncDb
 > 上面代码的一些逻辑总结为一句话：seq.sync({ alter: true })
 
 
-#### 3-5 Mongodb和Mongoose
+**3-5 Mongodb和Mongoose**
 > - Mongodb是Web应用中最常见的NoSQL应用。
 > - 本地在mongodb数据库中新建imooc_lego_course数据库，以及集合work。
 > - 然后，修改代码配置
@@ -328,7 +324,7 @@ module.exports = {
 > 这里，讲师再次推荐了自己的一个课程，鉴于此次购买课程自己不是很满意，这里，我觉得自己补充mongoose的基础知识就够了，总结至：[https://www.yuque.com/liugezhou/gofftg/zanx0w](https://www.yuque.com/liugezhou/gofftg/zanx0w)
 
 
-#### 3-6 Date 和时区
+**3-6 Date 和时区**
 > new Date()直接打印，会显示世界标准时间，和北京差8个时区，要想获得当前时间，只需要toString()即可。
 
 
@@ -346,17 +342,14 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shangh
 CMD npm i && npm run prd-dev && npx pm2 log
 
 ```
-#### 
-#### 3-7 Mysql和Mongodb的区别
+**3-7 Mysql和Mongodb的区别**
 > Mysql:关系型数据库，用于存储表格形式，格式规整的数据
 > Mongodb：文件数据库，用于存储文件，格式零散的数据。
 
-
-#### 3-8 介绍Redis
+**3-8 介绍Redis**
 
 > 在项目中：npm i -S redis
 > 然后根据前面Mysql以及Mongodb的调试方法，调试出本地的redis显示。
-
 
 > 课程中关于redis的其它内容依旧是给出实战课让自己去学习，其它的什么也没说，而我本地也是安装过redis的，但是不记得如何启动了，于是我的步骤是这么展开的：
 > 
@@ -390,23 +383,18 @@ CMD npm i && npm run prd-dev && npx pm2 log
 > 折腾了这么一趟，其实我开始的时候直接redis-server启动就可以了。
 > 此时在第三章3-3 clone的代码基础上，加入了redis配置后，执行npm run dev  发现redis连接成功了！
 
-
-#### 3-9 章总结
+**3-9 章总结**
 > 啰里八嗦后一句话：大家自己去学习基础知识，从头开始讲不可能。
 
+## 第四章 登录校验并使用JWT
 
-### 第四章 登录校验并使用JWT
-
----
-
-#### 4-1 开始
+**4-1 开始**
 > 选择JWT，放弃Session。
 > - Cookie和Session
 > - JWt
 > - SSO和OAuth2
 
-
-#### 4-2 介绍 Session 登录
+**4-2 介绍 Session 登录**
 Cookie做登录校验的过程
 > - 前端传入用户名密码，传给后端
 > - 后端验证成功，返回信息时set-cookie
@@ -418,10 +406,8 @@ Session
 > - 用户信息存储在服务端，可以快速封禁某个登录的用户
 > - 但是： 占用服务端内存、多进程、多服务、跨域传递cookie
 
-
-#### 4-3 介绍JWT登录
+**4-3 介绍JWT登录**
 > JWT -- Json Web Token
-
 
 JWT过程
 > - 前端输入用户名密码，传给后端。
@@ -459,7 +445,7 @@ module.exports = jwtKoa({
 })
 
 ```
-#### 4-4 SSO和OAuth2
+**4-4 SSO和OAuth2**
 > SSO:单点登录
 > OAuth2第三方鉴权的常用方式
 
@@ -474,23 +460,19 @@ module.exports = jwtKoa({
 **OAuth2验证**
 > 上述SSO是oauth的实际案例，其他常见的还有微信登录、github登录。即，当涉及到第三方用户登录校验时，都会用到OAuth2.0标准。
 
-
-#### 4-5 章总结
+**4-5 章总结**
 > Cooike/Session/Jwt/OSS/OAuth2
 
+## 第五章 单元测试选择 Jest
 
-### 第五章 单元测试选择 Jest
-
----
-
-#### 5-1 开始
+**5-1 开始**
 > 保证软件质量：单元测试和接口测试。
 > - Jest 和Mocha
 > - 单元测试为何难以落实
 > - supertest接口测试
 > - 测试驱动开发TDD
 
-#### 5-2 介绍Jest和Mocha
+**5-2 介绍Jest和Mocha**
 > Jest官网：[https://jestjs.io/zh-Hans/docs/getting-started](https://jestjs.io/zh-Hans/docs/getting-started)
 > Mocha官网：[https://mochajs.cn/#getting-started](https://mochajs.cn/#getting-started)
 
@@ -514,11 +496,11 @@ describe('test demo', () => {
 ```
 允许命令 npm run test:local
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1615380075667-3717ed7a-d4df-4fb3-811c-a54405a40a68.png#height=170&id=TKiJF&margin=%5Bobject%20Object%5D&name=image.png&originHeight=340&originWidth=1202&originalType=binary&size=58146&status=done&style=none&width=601)
-#### 5-3 为何单元测试难以落实
+**5-3 为何单元测试难以落实**
 > **使用方式不合理**：混淆了单元测试和集成测试，导致单元测试代码中有太多Mock。如果需要服务器启动才能执行的代码，就不是单元测试了。
 > **现状：**研发流程不规范
 
-#### 5-4 supertest接口测试
+**5-4 supertest接口测试**
 > supertest接口测试的目的是让所有接口稳起来。
 > 本地测试： jest + supertest
 > 远程测试： jest + axios
@@ -530,14 +512,14 @@ describe('test demo', () => {
 > 接口测试目录：__test__/api/
 
 
-### 第六章：线上服务使用PM2和nginx
+## 第六章：线上服务使用PM2和nginx
 
----
+**6-1 pm2和nginx-章开始**
 
-#### 6-1 pm2和nginx-章开始
 > 线上服务：稳定和高效
 
-#### 6-2 pm2配置和使用
+**6-2 pm2配置和使用**
+
 > 根据我之前的学习理解：pm2其实就是一个后台服务常驻的一个工具，我们平时在npm run dev后如果按Ctrl + c 停止后，服务就停止了，如果我们使用 pm2来启动，那么即使停止，我们的项目还是能够继续运行。
 > 
 > 另外，我本地正在开发一个vue项目，如果我想后台常驻，那么我可以直接执行：pm2 start npm -- run serve
@@ -589,8 +571,7 @@ module.exports = {
 > "prd-dev": "cross-env NODE_ENV=dev pm2 start bin/pm2-prd-dev.config.js"
 > 运行：npm run prd-dev
 
-
-#### 6-3 pm2日志拆分
+**6-3 pm2日志拆分**
 > 日志拆分的原因为：日志庞大，不利于检索且占用内存太大。
 > 日志拆分的方式有按天拆分或者小时等。
 > 
@@ -598,9 +579,8 @@ module.exports = {
 > 安装：pm2 install pm2-logrotate -g
 > 运行 pm2 list 即可看到 pm2-logrotate的进程
 
-
-
 **默认配置如下：**
+```
 $ pm2 set pm2-logrotate:max_size 10M # 日志文件最大 10M
 $ pm2 set pm2-logrotate:retain 30 # 保留 30 个文件，多了就自动删掉
 $ pm2 set pm2-logrotate:compress false # gzip 压缩文件
@@ -608,10 +588,12 @@ $ pm2 set pm2-logrotate:dateFormat YYYY-MM-DD_HH-mm-ss
 $ pm2 set pm2-logrotate:workerInterval 30 # 单位 s ，日志检查的时间间隔
 $ pm2 set pm2-logrotate:rotateInterval 0 0 * *_ _ * # 定时规则
 $ pm2 set pm2-logrotate:rotateModule true # 分割 pm2 模块的日志
+```
 可修改配置 pm2 set pm2-logrotate: <key><value>
 **rotateInterval规则[crontab]：**
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1615385209912-7aa07171-1c40-44b6-8472-653b309df450.png#height=216&id=o3KKF&margin=%5Bobject%20Object%5D&name=image.png&originHeight=431&originWidth=1206&originalType=binary&size=84782&status=done&style=none&width=603)
-#### 6-4 nginx配置和日志拆分
+
+**6-4 nginx配置和日志拆分**
 > - 静态服务
 > - 反向代理
 > - 负载均衡
@@ -625,9 +607,7 @@ $ pm2 set pm2-logrotate:rotateModule true # 分割 pm2 模块的日志
 > nginx -c xxx.conf
 
 
-### 第七章 周总结
-
----
+## 第七章 周总结
 
 **开发环境配置**
 > - eslint premitter
@@ -636,12 +616,9 @@ $ pm2 set pm2-logrotate:rotateModule true # 分割 pm2 模块的日志
 > - validator
 > - cors
 
+## 第八章 nodejs框架：express
 
-### 第八章 nodejs框架：express
-
----
-
-#### 8-1 安装
+**8-1 安装**
 > 通过脚手架安装：express-generator
 > - npm i express-generator -g
 > - express express-test
@@ -650,7 +627,7 @@ $ pm2 set pm2-logrotate:rotateModule true # 分割 pm2 模块的日志
 > - npm run start
 > - 为了方便改代码后不用重启，我们使用  npm i nodemon cross-env --save-dev
 
-#### 8-2 ｜8-3 介绍app-js
+**8-2 ｜8-3 介绍app-js**
 > - 各个插件的作用
 >    - http-errors:错误页处理
 >    - express
@@ -662,21 +639,17 @@ $ pm2 set pm2-logrotate:rotateModule true # 分割 pm2 模块的日志
 > - 处理get和post请求
 >    - res.json()
 
-
-#### 8-4 使用中间件
+**8-4 使用中间件**
 > app.use()
 > next参数作用。
 
-
-### 第九章：nodejs框架：koa2
-#### 
-#### 9-1 介绍koa2
+## 第九章：nodejs框架：koa2
+**9-1 介绍koa2**
 > - npm install koa-generator -g
 > - koa2 koa2-test
 > - npm install && npm run dev
 
-### 
-### 第十章 mysql和Sequelize
+## 第十章 mysql和Sequelize
 > 关于表的外键：表关联，有一些外键的设置，我发现之前的后端表中都没有对外键盘做一个级联操作，于是在回头查看一些表结构的时候，就不容易看出来一些表的关联关系，如果我们在新建表的时候就去设置外键表的关联，首先表结构一目了然，且在新增(外键关联的主键没有值得时候)会有错误提示，删除主键表的时候，关联的主键内容也会删掉。
 
 > select * from blogs inner join users on users.id =blogs.userid
@@ -687,37 +660,31 @@ $ pm2 set pm2-logrotate:rotateModule true # 分割 pm2 模块的日志
 > 
 > 数据库建表字段长度为255，varchar为可变长度，并不是会占用这么多的空间，数据库会自动计算缩短空间
 
+## 第十一章 mongodb基础学习
 
-### 第十一章 mongodb基础学习
-
----
-
-
-#### 11-1 mongodb是文档数据库
+**11-1 mongodb是文档数据库**
 > - Mongodb是一个文档数据库
 > - Mongodb和Mysql Redis的对比
 > - 如何选择？举例说明
 
-
-##### 文档数据库
+**文档数据库**
 > - Mysql 以表格形式存储数据
 > - Redis以 key-value形式存储数据
 > - Mongodb是以文档形式存储数据，格式像JSON
 
-##### 对比
+**对比**
 | Mysql | 关系型    ｜表格存储               ｜ SQL操作 ｜ 硬盘 |
 | --- | --- |
 | Redis | 非关系型 ｜ key-value形式存储 ｜ NoSQL   ｜ 内存 |
 | Mongodb | 非关系型 ｜文档存储               ｜ NoSQL   ｜ 硬盘 |
 
    
-#### 11-2 安装mongodb--介绍
+**11-2 安装mongodb--介绍**
 > - 安装mongodb服务端
 > - 安装mongodb客户端
 > - 启动和连接
 
-
-#### 11-3 安装mongodb-mac-安装homebrew
+**11-3 安装mongodb-mac-安装homebrew**
 > - 安装 homebrew
 > - 用homebrew安装 mongodb
 > - 安装客户端 compass
@@ -728,23 +695,19 @@ $ pm2 set pm2-logrotate:rotateModule true # 分割 pm2 模块的日志
 > 2. 验证 brew --version
 > 2. 切换源：查找资料即可(我本地未切换)
 
-
-#### 11-4 安装mongodb-mac-安装mongodb
+**11-4 安装mongodb-mac-安装mongodb**
 > - brew install mongodb-community
 > - 启动：brew services start mongodb-community
 > - 验证启动：mongo > 1 + 1 mongo
 > - 停止：brew services start mongodb-community
 
-
-#### 11-5 安装mongodb-mac-安装compass
+**11-5 安装mongodb-mac-安装compass**
 > mongodb官网下载 composs
 
-
-#### 11-6 compass操作mongodb
+**11-6 compass操作mongodb**
 > 数据库--集合--文档
 
-#### 
-#### 11-7 用命令行操作mongodb
+**11-7 用命令行操作mongodb**
 > - show dbs
 > - use myblogs --新建或者使用数据库
 > - show collections
@@ -754,16 +717,14 @@ $ pm2 set pm2-logrotate:rotateModule true # 分割 pm2 模块的日志
 > - db.blogs.update({"title":"标题1"},{$set:{"author":"lisi"}})
 > - db.blogs.find().sort({_id:-1})
 
-### 
-#### 11-8 mongodb的几个重要概念
+**11-8 mongodb的几个重要概念**
 > - databse:一个应用对应多个数据库服务
 > - collection
 > - document
 > - bson：类JSON格式，Binary JSON  二进制类型的JSON
 > - NoSQL：无需sql语句查询
 
-### 
-#### 11-9 nodejs连接mongodb
+**11-9 nodejs连接mongodb**
 > - mkdir mongodb-test
 > - cd mongodb-test
 > - npm init -y
@@ -797,7 +758,8 @@ MongoClient.connect(
     }
 )
 ```
-#### 11-10 nodejs操作mongodb
+
+**11-10 nodejs操作mongodb**
 ```javascript
 const MongoClient = require('mongodb')
 
@@ -875,7 +837,7 @@ MongoClient.connect(
 )
 ```
 
-#### 11-11 使用mongoose连接mongodb服务
+**11-11 使用mongoose连接mongodb服务**
 > - Schema定义数据格式的规范
 > - 以Model规范Collection
 > - 规范数据操作的APi
@@ -899,7 +861,7 @@ const User = mongoose.model('user',UserSchema)
 
 module.exports = User
 ```
-#### 11-12 mongoose操作mongodb
+**11-12 mongoose操作mongodb**
 ```javascript
 const Blog = require('../models/Blog')
 
@@ -926,11 +888,9 @@ const Blog = require('../models/Blog')
 })()
 ```
 
-### 第十二章 redis
+## 第十二章 redis
 
----
-
-#### 12-1 介绍redis基本使用
+**12-1 介绍redis基本使用**
 > - 内存数据库：比硬盘快很多很多。
 > - 公共数据可以使用redis做缓存
 > - 登录信息
@@ -940,8 +900,7 @@ const Blog = require('../models/Blog')
 > - set name 'liugezhou'
 > - get name
 
-
-#### 12-2 介绍redis-nodejs操作redis-1
+**12-2 介绍redis-nodejs操作redis-1**
 ```javascript
 const redis = require('redis')
 const { REDIS_CONF } = require('../conf/db')
@@ -953,9 +912,8 @@ redisClient.on('error', err=>{
     console.log('redis error', err)
 })
 ```
-#### 
-#### 12-3 介绍redis-nodejs操作redis-2
-> 没什么印象深刻的
 
+**12-3 介绍redis-nodejs操作redis-2**
+> 没什么印象深刻的
 
 - 服务器--如何查看redis安装在哪个目录
