@@ -53,7 +53,6 @@ twikoo: ## See: https://twikoo.js.org
   envId: ## Tencent CloudBase envId
   region: ## Tencent CloudBase region, e.g. ap-shanghai
   path: ## Article path, e.g. window.location.pathname
-
 google_search: false 
 baidu_search: false 
 swiftype: 
@@ -61,11 +60,11 @@ self_search: true ## 本地搜索
 google_analytics: 
 baidu_analytics: 65352c5d0937b81633dc41def4cba000 ## 百度统计Key值
 fancybox: true ## If you want to use fancybox please set the value to true.
-show_category_count: true ## TODO 好像没起作用哎
-toc_number: true ## TODO 好像没起作用哎
+show_category_count: true ## 分类文章累计数量显示
+toc_number: true ## 菜单是否显示数值排序
 shareto: false ## 分享按钮 you must have hexo-helper-qrcode installed.
-busuanzi: false ## If you want to use Busuanzi page views please set the value to true.
-wordcount: true ## 字数统计
+busuanzi: true ## If you want to use Busuanzi page views please set the value to true.
+wordcount: true ## 字数统计-hexo自带
 widgets_on_small_screens: false ## Set to true to enable widgets on small screens.
 canvas_nest:
   enable: false ## If you want to use dynamic background please set the value to true, you can also fill the following parameters to customize the dynamic effect, or just leave them blank to keep the default effect.
@@ -148,4 +147,4 @@ js: js
 css: css
 
 # Theme version
-version: 1.0.2
+version: 1.0.3
