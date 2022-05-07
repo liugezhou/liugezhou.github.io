@@ -9,7 +9,7 @@ description: Webpack相关内容
 categories:
 - 前端小技
 tags: 
-- Webpack
+- JavaScript
 ---
 <font color=blue>更新说明：对文章排版以及内容格式做了调整。</font>
 <font color=blue> 更新时间：2022-05-04</font>

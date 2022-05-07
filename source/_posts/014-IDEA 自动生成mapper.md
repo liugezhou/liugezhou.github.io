@@ -6,9 +6,9 @@ updated: 2022-05-04
 toc: true
 description: IDEA 自动生成mapper
 categories:
-- 前端小技
+- 服务端
 tags: 
-- Webpack
+- 服务端
 ---
 <font color=blue>更新说明：对文章排版以及内容格式做了调整。</font>
 <font color=blue> 更新时间：2022-05-04</font>

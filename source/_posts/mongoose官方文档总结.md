@@ -7,8 +7,6 @@ description: mongoose官方文档的简单学习
 toc: true
 category: 
   服务端
-tags: 
-  数据库
 ---
 
 <font color=blue>更新说明：对文章目录排版做了调整。</font>

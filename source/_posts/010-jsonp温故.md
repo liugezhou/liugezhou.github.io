@@ -6,8 +6,6 @@ toc: true
 description: 今天重新学习之前写了半截的项目，其中提到了jsonp，当时也是查了很多资料，做了很多笔记，但是最近在写一个项目的时候，竟然遗忘了很多，所以特此做个总结，在下次再遇到jsonp的时候，可以有一个清晰的认识。
 categories:
 - 前端小技
-tags: 
-    - 前端跨域
 ---
 <font color=blue>更新说明：对文章排版以及内容格式做了调整。</font>
 <font color=blue> 更新时间：2022-05-04</font>

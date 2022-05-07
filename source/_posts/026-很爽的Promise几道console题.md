@@ -8,7 +8,7 @@ description: 一些 关于Promise的学习内容，可以更好的帮我们理�
 category: 
     前端小技
 tags:
-    Promise
+    JavaScript
 ---
 
 > 本篇博文是学习的掘金的一篇博文：[【建议星星】要就来45道Promise面试题一次爽到底(1.1w字用心整理)](https://juejin.cn/post/6844904077537574919)，经过自己一个个问题的学习，整理如下：
