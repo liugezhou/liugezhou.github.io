@@ -10,14 +10,14 @@ livere: ## Your livere data-uid, e.g. MTAyMC8zMDAxOC78NTgz
 changyan: ## Your changyan appid, e.g. cyrALsXc8
 changyan_conf: ## Your changyan conf, e.g. prod_d8a508c2825ab57eeb43e7c69bba0e8b
 gitalk: ## See: https://github.com/gitalk/gitalk
-  enable: false ## If you want to use Gitment comment system please set the value to true.
-  owner: ## Your GitHub ID, e.g. username
-  repo: ## The repository to store your comments, make sure you're the repo's owner, e.g. gitalk.github.io
-  client_id: ## GitHub client ID, e.g. 75752dafe7907a897619
-  client_secret: ## GitHub client secret, e.g. ec2fb9054972c891289640354993b662f4cccc50
-  admin: ## Github repo owner and collaborators, only these guys can initialize github issues.
+  enable: true ## If you want to use Gitment comment system please set the value to true.
+  owner: liugezhou ## Your GitHub ID, e.g. username
+  repo: liugezhou.github.io/blog ## The repository to store your comments, make sure you're the repo's owner, e.g. gitalk.github.io
+  client_id: 3c8b9e3d76327efbe36d 
+  client_secret: 7e2820d126221072dcc93f37c99938705285eb50
+  admin: ['liugezhou'] ## Github repo owner and collaborators, only these guys can initialize github issues.
 valine: ## See: https://valine.js.org
-  enable: true ## If you want to use Valine comment system, please set the value to true.
+  enable: false ## If you want to use Valine comment system, please set the value to true.
   appid: Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz ## Your LeanCloud application App ID, e.g. pRBBL2JR4N7kLEGojrF0MsSs-gzGzoHsz
   appkey: bWsfs1hg9qURRp3gJ6SJU41x ## Your LeanCloud application App Key, e.g. tjczHpDfhjYDSYddzymYK1JJ
   notify: false ## Mail notifier, see https://github.com/xCss/Valine/wiki/Valine-评论系统中的邮件提醒设置
