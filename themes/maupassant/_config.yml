@@ -12,7 +12,7 @@ changyan_conf: ## Your changyan conf, e.g. prod_d8a508c2825ab57eeb43e7c69bba0e8b
 gitalk: ## See: https://github.com/gitalk/gitalk
   enable: true ## If you want to use Gitment comment system please set the value to true.
   owner: liugezhou ## Your GitHub ID, e.g. username
-  repo: blog ## The repository to store your comments, make sure you're the repo's owner, e.g. gitalk.github.io
+  repo: liugezhou.github.io ## The repository to store your comments, make sure you're the repo's owner, e.g. gitalk.github.io
   client_id: 3c8b9e3d76327efbe36d 
   client_secret: 7e2820d126221072dcc93f37c99938705285eb50
   admin: liugezhou ## Github repo owner and collaborators, only these guys can initialize github issues.

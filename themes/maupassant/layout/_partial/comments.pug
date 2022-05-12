@@ -99,7 +99,7 @@ if theme.gitalk.enable == true
       repo: '#{theme.gitalk.repo}',
       owner: '#{theme.gitalk.owner}',
       admin: ['#{theme.gitalk.admin}'],
-      id: md5(location.pathname.split('/')[2]),
+      id: md5(location.pathname),
       distractionFreeMode: false
     })
     gitalk.render('container')
