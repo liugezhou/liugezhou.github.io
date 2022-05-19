@@ -741,7 +741,7 @@ renderFile的原理讲解
 
 - **require执行流程**
 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1614932277979-39bbe4c8-f605-4a7c-aac4-2a5f900be870.png#align=left&display=inline&height=849&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1698&originWidth=2784&size=332139&status=done&style=none&width=1392)
+![6-1](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/6-1.2gu4krgoga40.webp)
 > 我们在调试这行代码的时候，在执行栈中可以看到，之前也执行了很多代码，这里的流程以及上面分析的使用场景，我们可以先引出一些思考：
 > - CommonJS模块的加载流程
 > - require如何加载内置模块？   loadNativeModule
@@ -754,7 +754,7 @@ renderFile的原理讲解
 > 1. 打开 Scripts --> no domain --> internal --> modules --> cjs -->  helpers.js
 > 1. return mod.require(path);   ----> line of 77 [helpers.js]
 > 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1615168647450-5156e05c-7bd5-4a7d-9235-eee5dd0799c9.png#align=left&display=inline&height=821&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1642&originWidth=2226&size=515995&status=done&style=none&width=1113)
+![6-2](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/6-2.ai0pdvjiq4o.webp)
 >    1. 这里的mod就是指Module对象，调试后每个字段含义为：
 >       1. id：源码文件路径
 >       1. path:源码文件对应的文件夹,通过path.dirname(id)生成

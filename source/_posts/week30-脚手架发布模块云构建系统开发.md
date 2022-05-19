@@ -176,8 +176,8 @@ socket.on('res', msg => {
 **3-4 WebSocket客户端与服务端交互流程分析**
 
 以日志的打出分析流程
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1628635057269-41f4e637-7c4f-4b00-aeae-d13e3959deb4.png#clientId=uf661c060-e03a-4&from=paste&height=115&id=ue8dd3dff&margin=%5Bobject%20Object%5D&name=image.png&originHeight=346&originWidth=1256&originalType=binary&ratio=1&size=41485&status=done&style=none&taskId=u4167e09a-1bcd-4394-b772-fdfed654da3&width=418.6666666666667)
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1628635078101-6b51c68f-8ad1-460d-aabf-b5e30fc2569f.png#clientId=uf661c060-e03a-4&from=paste&height=90&id=u62864eef&margin=%5Bobject%20Object%5D&name=image.png&originHeight=270&originWidth=1628&originalType=binary&ratio=1&size=57699&status=done&style=none&taskId=u8f5317b2-fb1d-46eb-a800-ac81356d35c&width=542.6666666666666)
+![30-1](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/30-1.7281qwkywao0.webp)
+![30-2](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/30-2.4f26ut5lap00.webp)
 > - 首先服务端(cloudscope-cli-server)启动服务:**npm run dev**
 > - 客户端启动服务：**node models/cloudbuild/lin/index.js**
 > - 客户端启动后：

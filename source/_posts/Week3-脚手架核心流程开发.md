@@ -36,20 +36,20 @@ tags:
 ## 第二章：脚手架整体架构设计
 
 **2-1 大厂是如何做项目的**
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611627629050-c9fbfc3b-b1aa-412a-ae69-a6ece22b1193.png#align=left&display=inline&height=530&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1594&originWidth=1504&size=670518&status=done&style=shadow&width=500)
+![3-1](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/3-1.6id7710dpwk0.webp)
 
 **2-2 前端研发过程中的痛点和需求分析**
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611628169837-0c922852-aa1e-4947-8c10-915e5011250f.png#align=left&display=inline&height=651&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1302&originWidth=1596&size=209795&status=done&style=none&width=798)
+![3-2](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/3-2.6ic0nprs1e00.webp)
 
 **2-3 加餐：大厂的git操作规范是怎样的？**
 
 > - clone下来的项目 master分支是不做开发的，我们会新建一个dev分支，上线以后会新建一个release分支。
 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611630627184-bb642821-6fc2-49e7-9562-c91a818c2ae4.png#align=left&display=inline&height=484&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1526&originWidth=1578&size=528785&status=done&style=shadow&width=500)
+![3-3](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/3-3.4sujpjgc1p40.webp)
 
 **2-4 高端操作：脚手架架构设计+绘制架构图 /  2-5 架构设计图绘图技巧分享**
 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611638349709-2256acfe-d49e-4962-8dc0-f2210f3471f4.png#align=left&display=inline&height=1584&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1584&originWidth=3198&size=3173935&status=done&style=shadow&width=3198)
+![3-4](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/3-4.3xuy7m03daw0.webp)
 
 ## 第三章 脚手架模块拆分策略和core模块技术方案
 
@@ -63,7 +63,7 @@ tags:
 **3-2 core模块技术方案**
 
 准备阶段：
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611640991443-de1f758d-b1f9-4402-81aa-26b34ddcd0a1.png#align=left&display=inline&height=290&margin=%5Bobject%20Object%5D&name=image.png&originHeight=580&originWidth=1868&size=382219&status=done&style=none&width=934)
+![3-5](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/3-5.1i5lq7mn8h5s.webp)
 
 ## 第四章：脚手架执行准备过程实现
 

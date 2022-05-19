@@ -216,7 +216,7 @@ docker run -id --name=c_redis -p 6379:6379 redis:5.0
 >    - 由于docker中镜像是分层的，tomcat一个安装包虽然只有70多MB，但也需要依赖与父镜像和基础镜像，所有整个对外暴露的tomcat镜像大小有差不多700MB。
 
 下面为原理讲解：
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1630824233495-7c78fd33-bf56-453c-bafc-75a494830b4c.png#clientId=ua34b126c-6bee-4&from=paste&height=235&id=u4d44d949&margin=%5Bobject%20Object%5D&name=image.png&originHeight=329&originWidth=255&originalType=binary&ratio=1&size=50532&status=done&style=none&taskId=ud113abe7-c25a-4431-afca-777456cb594&width=182.5)
+![image](https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/image.7klmm4fsfyg0.webp)
 
 - linux文件系统由boottfs和rootfs两部分组成
    - bootfs：包含bootloader(引导加载程序)和kernel(内核)
@@ -229,7 +229,7 @@ docker run -id --name=c_redis -p 6379:6379 redis:5.0
    - 再往上可以叠加其他的镜像文件
    - 只读镜像不可修改，如果需要对镜像tomcat做修改，Docker在最顶层提供了可加载一个读写文件系统作为容器
 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1630824925617-59703c72-1354-406f-b70c-c797fe604d9e.png#clientId=ua34b126c-6bee-4&from=paste&height=448&id=u00206449&margin=%5Bobject%20Object%5D&name=image.png&originHeight=582&originWidth=646&originalType=binary&ratio=1&size=169405&status=done&style=none&taskId=u43c81d39-31c6-4795-8874-00a4b0ba00b&width=497)
+![image](https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/image.4799tc2g20y0.webp)
 
 **2-2 Docker镜像如何制作**
 > 1. 容器转为镜像
@@ -373,9 +373,9 @@ server {
 > docker pull 私有仓库服务器ip:5000/centos:7
 
 ## 五、Docker相关概念
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1630838686450-52d7d239-b044-40aa-be45-5e91a8b160d9.png#clientId=ue6ba99a4-2430-4&from=paste&height=476&id=udd163364&margin=%5Bobject%20Object%5D&name=image.png&originHeight=621&originWidth=413&originalType=binary&ratio=1&size=124725&status=done&style=none&taskId=u85af19d6-fc2e-4c6c-8603-3982ad75ef4&width=316.65625)
+![image](https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/image.5j5a1fna9340.webp)
 > docker容器与传统虚拟机比较
 > - 相同：容器和虚拟机具有相似的资源隔离和分配优势
 > - 不同：容器虚拟化的是操作系统，虚拟机虚拟化的是硬件；传统虚拟机可以运行不同的操作系统，容器只能运行统一类型操作系统。
 > 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1630838866544-eedcc664-4b72-4279-bde5-df04d4bf357a.png#clientId=ue6ba99a4-2430-4&from=paste&height=226&id=u8b0a675f&margin=%5Bobject%20Object%5D&name=image.png&originHeight=258&originWidth=755&originalType=binary&ratio=1&size=76482&status=done&style=none&taskId=u867c49dd-e341-4a2d-a70e-1bc4a027c4c&width=661.6619262695312)
+![image](https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/image.xisha1ny828.webp)

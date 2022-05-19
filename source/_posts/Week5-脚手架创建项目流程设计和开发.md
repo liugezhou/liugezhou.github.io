@@ -528,7 +528,7 @@ function sleep(timeout = 1000){
 > 本节主要是安装功能的测试，以及第一次安装模版不存在时，关于spinner.stop的finnal处理。
 
 PS:在本节完成之后，发布至npm，本地全局安装的时候，出现错误，还未找到原因。
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1614176323840-aa953aab-1f25-4a99-b3c7-c10134d8257f.png#align=left&display=inline&height=207&margin=%5Bobject%20Object%5D&name=image.png&originHeight=414&originWidth=1852&size=255146&status=done&style=none&width=926)
+![5-1](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/5-1.43dqyvyh5i00.webp)
 
 ## 第七章：本周加餐：inquirer源码解析：彻底搞懂命令行交互原理
 
@@ -663,7 +663,7 @@ const pipe = range(1, 200)
 
 **7-8& 7-9 放大招：手写命令行交互式列表组件**
 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1614239781015-e12fd7f2-2899-40cd-9a56-acffc66f3eda.png#align=left&display=inline&height=319&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1202&originWidth=3048&size=648025&status=done&style=none&width=808)
+![5-2](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/5-2.2du7kwyz7a3o.webp)
 ```typescript
 const EventEmitter = require('events');
 const readline = require('readline');
@@ -798,25 +798,4 @@ Prompt(option).then(answers => {
 **7-10 inquirer源码执行流程分析**
 
 略
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

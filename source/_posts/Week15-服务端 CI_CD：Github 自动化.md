@@ -164,7 +164,7 @@ Docker
 查找 docker 安装镜像
 > [https://hub.docker.com/](https://hub.docker.com/)
 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1615798502926-399a6870-27e9-4c1d-9a1c-fb00cb91c9d0.png#height=770&id=EfLvb&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1540&originWidth=3192&originalType=binary&size=1486827&status=done&style=none&width=1596)
+![15-1](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/15-1.5y49r0icxak0.webp)
 
 **3-3 启动一个Docker容器**
 
@@ -428,7 +428,7 @@ services:
 ## 第五章 发布到测试机
 
 **5-2  配置测试机**
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1616483749691-5096e493-0140-498b-9141-01183dfbaba1.png#height=241&id=GkJ6b&margin=%5Bobject%20Object%5D&name=image.png&originHeight=482&originWidth=1590&originalType=binary&size=97199&status=done&style=none&width=795)
+![15-2](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/15-2.5so88ss1y340.webp)
 
 **5-3 自动发布到测试机-讲解配置**
 **5-4 自动发布到测试机-功能演示**

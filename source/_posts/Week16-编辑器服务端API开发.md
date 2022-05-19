@@ -65,7 +65,7 @@ tags:
 > - 前端查询需求多变
 > - 有一个独立的数据提供方，对接很多使用方，不能一一定制开发
 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1616649572022-65c0b220-bd8b-4f81-b662-600053cb6446.png#height=962&id=Y0wTY&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1924&originWidth=1550&originalType=binary&ratio=1&size=516857&status=done&style=none&width=775)
+![16-1](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/16-1.1sb04ia0rla8.webp)
 
 **2-6 数据库设计-数据表结构**
 > 注意，使用sequelize和mongoose，会自动创建id/createAt和updateAt,无需再自己手动创建。
@@ -77,8 +77,7 @@ tags:
 > src/models下的model设计
 
 **2-8 server端架构设计**
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1623766298689-bca8dd70-10f3-4853-9ca7-cc518867810b.png#clientId=ue7f9533d-5750-4&from=paste&height=352&id=ue7c617a6&margin=%5Bobject%20Object%5D&name=image.png&originHeight=703&originWidth=1498&originalType=binary&ratio=2&size=506157&status=done&style=none&taskId=u3ceeaae9-280e-4725-ad5d-2a5bf040151&width=749)
-
+![16-2](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/16-2.6ulmnnc0qfk0.webp)
 **2-9 技术方案设计-章总结**
 
 > 领导技术方案设、评审技术方案设计

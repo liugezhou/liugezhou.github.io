@@ -3,7 +3,6 @@ title: About me
 date: 2022-05-02 12:30:56
 layout: about
 ---
-> 目前人在北京，前端攻城师，三十而已。  
 
 - 第一爱好：<font color=red>有酒必到</font>
 
@@ -15,11 +14,7 @@ layout: about
 
 - 较关注的博主：<font color=green>阮一峰</font> 
 
-- 座右词：<font color=red>enjoy day</font>
-
 - 对自己的期望：<font color=Magenta>坚持写博客</font>
-
-  …………再补吧
 
 > 邮箱：18231133236@163.com 
 

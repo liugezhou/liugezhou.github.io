@@ -38,7 +38,7 @@ tags:
 [点击查看【processon】](https://www.processon.com/embed/60f240e1e401fd4fe0531bef)
 
 **2-2 绘制项目发布架构设计图**
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1625130215799-45b4c6cb-5c12-473e-aa80-b419f7b4d313.png#clientId=u0992a974-4b35-4&from=paste&height=725&id=u8f6ed252&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1450&originWidth=1696&originalType=binary&ratio=2&size=235617&status=done&style=none&taskId=u2fe54165-3971-4dd4-b469-194cd66bb28&width=848)
+![28-1](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/28-1.7b7b0edh7fs0.webp)
 ## 第三章：imooc-cli脚手架git flow 自动化架构设计
 
 **3-1 git flow 基础流程讲解**
@@ -276,10 +276,10 @@ server {
 **我们并没有定义router-link和router-view，为什么代码里能直接使用？**
 > - 在vscode的router.js中添加debugger调试，没起作用，因此，该源码的调试是在webstorm中debug的。
 > 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1628047764392-a61a2d94-7d68-44ab-9fc1-d6653902ac04.png#clientId=u33afe963-5827-4&from=paste&height=423&id=ueab79527&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1690&originWidth=2168&originalType=binary&ratio=1&size=262023&status=done&style=none&taskId=u603e396f-5f1b-4a34-be26-509ede13e90&width=543)
+![28-2](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/28-2.20o3twc8o868.webp)
 > - 项目启动之后，打开浏览器，点击刷新，会进入到调试处
 > 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1628046042276-85ac9450-130e-4d46-8419-7fe1389d6ee6.png#clientId=u33afe963-5827-4&from=paste&height=637&id=uc7aa3fca&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1274&originWidth=2990&originalType=binary&ratio=1&size=381684&status=done&style=none&taskId=uf28c96d1-cbba-4623-ad2b-aa8d35a855b&width=1495)
+![28-3](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/28-3.5q03uo6szog.webp)
 > - 首先进入到**createWebHistory**方法中去(上图第21行代码)，返回的routerHistory提供了一系列的工具方法(路由跳转、监听的事件方法等)，具体实现源码以及注释如下：
 
 ```javascript
@@ -449,7 +449,7 @@ export default {
 </script>
 ```
 > 然后step into到router.push方法中，由此开始调试，进入pushWithRedirect()方法中(如下图)
-> ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1628085550602-7240d54a-4ef1-40aa-8bcf-838c34b5b1e1.png#clientId=u07b3dab7-63fe-4&from=paste&height=270&id=ue20b6bac&margin=%5Bobject%20Object%5D&name=image.png&originHeight=414&originWidth=841&originalType=binary&ratio=1&size=109578&status=done&style=none&taskId=u51a528a0-78c6-435a-8d3a-f29d2d5bb42&width=548.5)
+![28-4](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/28-4.4fsku45pmnw0.webp)
 > 然后一步一步的，调试源码到最后，最终会通过history.pushState()方法，来改变地址而不发生页面的更新。
 
 在上图的高亮部分resolve(to)是路由匹配的相关实现，下节继续。
@@ -458,7 +458,7 @@ export default {
 
 > 我们输入路由后如何与我们自己定义的 routes中的路由进行匹配，就涉及到vue-router的核心概念 matcher。
 > 两个关键点是：createRouter以及上一节提到的resollve方法。
-> ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1628085788900-55d31ed3-b3b8-4e9b-aef5-6f267ee0ff20.png#clientId=u07b3dab7-63fe-4&from=paste&height=613&id=uab5aa9a4&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1226&originWidth=2078&originalType=binary&ratio=1&size=246002&status=done&style=none&taskId=u721fc399-48f1-4d77-b5c1-05d1ebfac1c&width=1039)
+![28-5](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/28-5.6g8w1s5ubqc0.webp)
 
 > 本节重点讲解这个resolve方法，我们假定从 /home跳转到/order，代码以及注释如下：
 

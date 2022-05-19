@@ -320,7 +320,8 @@ module.exports = {
 
 ```
 > 最后，我们在进行mysql与mongoose的测试的时候，在routes/index.js中将有关redis的内容暂时注释，
-> 然后执行：npm run start，出现下面则测试成功![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1615281020589-db065d89-095b-4962-9dd5-17c296d3a937.png#height=310&id=xapI9&margin=%5Bobject%20Object%5D&name=image.png&originHeight=620&originWidth=1054&originalType=binary&size=112212&status=done&style=none&width=527)
+> 然后执行：npm run start，出现下面则测试成功!
+![14-1](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/14-1.4dfeo10krko0.webp)
 > 这里，讲师再次推荐了自己的一个课程，鉴于此次购买课程自己不是很满意，这里，我觉得自己补充mongoose的基础知识就够了，总结至：[https://www.yuque.com/liugezhou/gofftg/zanx0w](https://www.yuque.com/liugezhou/gofftg/zanx0w)
 
 
@@ -365,10 +366,10 @@ CMD npm i && npm run prd-dev && npx pm2 log
 > 
 > 我这里使用 redis-server /usr/local/etc/redis.conf的方式启动redis，
 > 然后出现报错：
-> ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1615358249479-0170c9ee-507a-41f4-8ee9-1ee828c20a4b.png#height=196&id=H6RiQ&margin=%5Bobject%20Object%5D&name=image.png&originHeight=392&originWidth=1446&originalType=binary&size=113007&status=done&style=none&width=723)
+![14-2](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/14-2.1a79q81ytxa8.webp)
 > 接着查找错误，原因为配置错误,没有深究下去。
 > 但是尝试了另一个启动命令  redis-server:
-> ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1615358605688-4e0632af-d62d-460f-b605-f5ec4beae02c.png#height=604&id=atM2B&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1208&originWidth=2456&originalType=binary&size=766762&status=done&style=none&width=1228)
+![14-3](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/14-3.50llefpz7j00.webp)
 > 成功了！
 > 如图显示这个版本是5.0.8的，也就是说我之前电脑上其实是有redis的，我新安装的这个6.0.9的并没有用上。
 > 
@@ -495,7 +496,7 @@ describe('test demo', () => {
 })
 ```
 允许命令 npm run test:local
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1615380075667-3717ed7a-d4df-4fb3-811c-a54405a40a68.png#height=170&id=TKiJF&margin=%5Bobject%20Object%5D&name=image.png&originHeight=340&originWidth=1202&originalType=binary&size=58146&status=done&style=none&width=601)
+![14-4](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/14-4.yr753gttyr4.webp)
 **5-3 为何单元测试难以落实**
 > **使用方式不合理**：混淆了单元测试和集成测试，导致单元测试代码中有太多Mock。如果需要服务器启动才能执行的代码，就不是单元测试了。
 > **现状：**研发流程不规范
@@ -591,7 +592,7 @@ $ pm2 set pm2-logrotate:rotateModule true # 分割 pm2 模块的日志
 ```
 可修改配置 pm2 set pm2-logrotate: <key><value>
 **rotateInterval规则[crontab]：**
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1615385209912-7aa07171-1c40-44b6-8472-653b309df450.png#height=216&id=o3KKF&margin=%5Bobject%20Object%5D&name=image.png&originHeight=431&originWidth=1206&originalType=binary&size=84782&status=done&style=none&width=603)
+![14-5](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/14-5.c6yvkmaj06o.webp)
 
 **6-4 nginx配置和日志拆分**
 > - 静态服务

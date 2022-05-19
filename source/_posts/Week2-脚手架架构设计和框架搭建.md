@@ -51,7 +51,7 @@ tags:
 
 > - 开发imooc-cli脚手架的核心目标：提升前端研发效能【提炼通用代码、通用流程、构建发布上线】
 > 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611125397789-68a2e0d6-4049-4151-af4c-a2513756610b.png#height=647&id=b8PHY&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1608&originWidth=2484&originalType=binary&ratio=1&size=753927&status=done&style=none&width=1000)
+![2-1](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/2-1.3vft5c4ms5m0.webp)
 > - 脚手架核心价值：_**自动化、标准化、数据化    **_
 > 
 和自动化构建工具(jenkins、travia)区别：自动化构建工具在服务端执行，无法覆盖本地操作且定制自动化的构建工具需要用到Java等后端语言，对前端不友好。
@@ -61,7 +61,7 @@ tags:
 > - 脚手架简介：脚手架的本质是一个操作系统的客户端，通过命令行执行。
 > - 脚手架执行原理：
 > 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611126513308-7551078d-9729-4c3f-9ce1-bc1cd65537d5.png#height=437&id=ffpJg&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1348&originWidth=1544&originalType=binary&ratio=1&size=128695&status=done&style=none&width=500)
+![2-2](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/2-2.5sd3oxy068s0.webp) 
 > - 从应用角度看vue-cli开发脚手架过程：
 > 1. 首先是个npm项目，项目中有一个bin/vue.js的文件，且这个项目发布到了npm上
 > 1. 将npm项目安装到了lib/node_modules
@@ -134,7 +134,8 @@ tags:
 
 **问题三：描述脚手架命令执行的全过程**
 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611155797577-b97e0a5b-4268-4557-989f-c775a8df209e.png#height=421&id=Q2wv9&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1266&originWidth=1502&originalType=binary&ratio=1&size=210724&status=done&style=none&width=500)
+![2-3](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/2-3.79oyc1dprz80.webp)
+
 **2-6 脚手架开发流程和难点解析**
 
 **通过以上分析，我们大致了解一个脚手架的开发流程如下：**
@@ -296,7 +297,8 @@ Lerna 是架构优化的产物，它揭示了一个架构真理：项目复杂�
 
 
 **Lerna开发脚手架流程 ⭐️⭐️⭐️**
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611219283732-20749276-e3f8-41df-b369-fd4944cc912b.png#height=275&id=n4LOq&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1178&originWidth=1586&originalType=binary&ratio=1&size=276163&status=done&style=none&width=370)![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611282008448-64f1e496-894d-4cdc-a8e3-9425b3cb0bd9.png#height=282&id=kSPWI&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1208&originWidth=1584&originalType=binary&ratio=1&size=366199&status=done&style=none&width=370)
+![2-4](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/2-4.1fovy6rqci3k.webp)
+![2-5](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/2-5.ry7x197y6ow.webp)
 
  **3-4 基于lerna搭建脚手架框架**
 **本节使用命令依次如下**
@@ -437,13 +439,13 @@ Lerna 是架构优化的产物，它揭示了一个架构真理：项目复杂�
 > npm install -S dedent
 
 然后，开始编辑index.js文件，进行yargs相关用法的学习：
-![code.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611332195539-83a5222b-1e7c-4a18-9146-ade192ffaab5.png#height=2006&id=My02i&margin=%5Bobject%20Object%5D&name=code.png&originHeight=2388&originWidth=1786&originalType=binary&ratio=1&size=605333&status=done&style=none&width=1500)
+![2-6](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/2-6.2vup03ac3eg0.webp)
 
  **4-7 yargs高级用法讲解**
 
 
 关于yargs的command用法，我们从npmjs官网，看到示例如下：
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611363892411-13cdaa87-de8d-4fdf-ad0d-87ede5688f31.png#height=599&id=EgyEv&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1198&originWidth=1524&originalType=binary&ratio=1&size=186435&status=done&style=none&width=762)
+![2-7](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/2-7.6vlv3vzsg740.webp)
 通过以上代码，我们可以看到定义command的时候，传入了四个参数：
 
 > - 'serve [port]': command的格式,port为我们自定义的option，相当于  liugezhou-test  serve
@@ -452,7 +454,7 @@ Lerna 是架构优化的产物，它揭示了一个架构真理：项目复杂�
 > - 第四个参数我们叫做handler：是用来具体执行command的一个行为
 
 在对上面demo有个简单了解后，回到我们上一节的代码中，继续添加command定义：
-![code.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611367422811-93534778-8a5b-4144-8eee-d9c50a564245.png#height=519&id=N801K&margin=%5Bobject%20Object%5D&name=code.png&originHeight=1308&originWidth=1512&originalType=binary&ratio=1&size=204860&status=done&style=none&width=600)
+![2-8](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/2-8.hrcclk4of0w.webp)
 
  **4-8 lerna脚手架初始化过程超详细讲解**
 
@@ -673,7 +675,7 @@ module.exports.silent = moduleId => resolveFrom.silent(process.cwd(), moduleId);
 ```
 这里又引用了resolve-from这个库的silent静默方法(源码见下)：
 这里需要引起注意一点的是resolve-from这个库传入的两个参数分别是上面提到的 lerna/cli.js以及 process.cwd()这个参数，这个process.cwd的传入参数为Working directory：
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611463262491-5f545983-7bb9-4430-8f57-a74a08253af6.png#height=404&id=bguBu&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1886&originWidth=2798&originalType=binary&ratio=1&size=789798&status=done&style=none&width=600)
+![2-9](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/2-9.5jf81z9j35c0.webp)
 ```javascript
 'use strict';
 const path = require('path');
@@ -729,7 +731,7 @@ module.exports.silent = (fromDir, moduleId) => resolveFrom(fromDir, moduleId, tr
 > Module._nodeModulesPaths(fromDir)这个方法，这个方法的作用是生成node_modules的可能路径。
 > 在对这个方法源码进行学习前，我们预先从老师那了解到了这个方法的实现逻辑：
 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611464777242-a9f5d023-ab30-46d9-a53a-dcacd752c544.png#height=332&id=NjFtq&margin=%5Bobject%20Object%5D&name=image.png&originHeight=964&originWidth=1450&originalType=binary&ratio=1&size=498574&status=done&style=none&width=500)
+![2-10](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/2-10.6yvj127gn0w0.webp)
 
 
 然后我们进入到Module._nodeModulesPaths方法中：
@@ -783,7 +785,7 @@ Module._nodeModulePaths = function(from) {
 
 将这个数组返回后，我们继续分析Module._resolveFilename这个方法的源码：
 同样在对这个方法源码进行学习前，我们也预先从老师那了解到了这个方法的实现逻辑：
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611466194055-309c4341-3cbb-4aba-a1da-c9aeda9d59a9.png#height=380&id=krJev&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1004&originWidth=1322&originalType=binary&ratio=1&size=499994&status=done&style=none&width=500)
+![2-11](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/2-11.666n2zheeec0.webp)
 
 
 
@@ -913,7 +915,7 @@ Module._resolveLookupPaths = function(request, parent) {
 ```
  Module._findPath要解决的问题是在paths中解析模块的真实路径，
 同样在对这个方法源码进行学习前，我们也预先从老师那了解到了这个方法的实现逻辑：
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611484440976-2cdfe27b-dc36-4601-bcd4-16821c8828c9.png#height=490&id=Afw7m&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1756&originWidth=1792&originalType=binary&ratio=1&size=854731&status=done&style=none&width=500)
+![2-12](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/2-12.2oq71qhv97u0.webp)
 源码如下：
 ```javascript
 Module._findPath = function(request, paths, isMain) {
@@ -1034,7 +1036,7 @@ function toRealPath(requestPath) {
 ```
 同样的，我们在进去toRealPath这个方法，看到fs.realpathSync实现之前，我们先从老师哪里有拿到逻辑图，并根据图进行分析学习该代码里面的逻辑：
 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1611486592351-2eda19cb-648f-42ce-a114-4f5fc80a1a1d.png#height=555&id=vaB7M&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1744&originWidth=1570&originalType=binary&ratio=1&size=770955&status=done&style=none&width=500)
+![2-13](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/2-13.21kw7t7x45pc.webp)
 
 然后我们继续 Step Into到fs.realpathSync这个方法中，源码如下：
 ```javascript

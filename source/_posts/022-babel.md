@@ -43,12 +43,14 @@ tags:
 
 ## 二、babel插件与预设
 > 在继续上面的问题之前，这里我们需要深刻的晓得：babel的核心是**插件**，babel的所有工作都是由插件完成的。然后我们去查看babel的插件列表：[https://babeljs.io/docs/en/plugins-list](https://babeljs.io/docs/en/plugins-list)，部分截图如下
-> ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1631153922607-35bd71a6-dcaf-42bd-b2e9-336ef43dc495.png#clientId=u90972840-f7c3-4&from=paste&height=571&id=u72c58d17&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1712&originWidth=1118&originalType=binary&ratio=1&size=144065&status=done&style=none&taskId=u25964189-5d96-4681-96e9-5c4d670690a&width=372.6666666666667)
+
+![babel](https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/babel.5z62x05kn300.webp)
+
 > 其中arrow-functions(也就是ES6的箭头函数)对应的插件是@babel/plugin-transform-arrow-functions
 > 如果要使用这个插件，需要安装：npm install --save-dev @babel/plugin-transform-arrow-functions
 > 这个插件作用就是将ES6的箭头函数转化为ES5写法。
-> ![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1631154073171-462689b0-84b9-467c-9f58-e72e8d2b419a.png#clientId=u90972840-f7c3-4&from=paste&height=177&id=iomqr&margin=%5Bobject%20Object%5D&name=image.png&originHeight=530&originWidth=1726&originalType=binary&ratio=1&size=56423&status=done&style=none&taskId=ucbb483d7-f1f3-44aa-ae62-d4bfa378105&width=575.3333333333334)
-> 
+![babel](https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/babel.1pbhb3j4a5s0.webp)
+
 > 进入到这个方法的详情页，如上图，我们看到：**This plugin is included in @babel/preset-env**
 > 也就是说这个插件以及其他各种单个插件都放在了@babel/preset-env这个包中。之所以要**included **到一个里面**，**是因为我们总不能一个一个插件的安装引入，官方就提供了一个包：'嘿，兄弟，我把一些你们都会用到的一系列的插件包在一块，你们就不用单个安装了，只需要执行下面的命令：
 > npm install --save-dev @babel/preset-env'
@@ -142,7 +144,4 @@ tags:
 > 
 > 
 > 这里的重点是这个 + 号，差不多的理解为：  所以现在的项目有些不会使用polyfiil，但不会出现问题，是因为写的ES代码几乎都没有什么新的特性，浏览器差不多都支持了，为了保险起见后续新API的标准推出，有的项目才会装这个polyfill     吧？
-
-
-
 

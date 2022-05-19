@@ -114,7 +114,7 @@ program
 (本节无代码编写)
 
 当前的代码架构如图：
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1613700080140-15a7a447-3498-4ded-93d9-1e4e023683e1.png#align=left&display=inline&height=899&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1798&originWidth=2636&size=1137285&status=done&style=none&width=1318)
+![4-1](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/4-1.1i06rp47u534.webp)
 **3-2 高性能脚手架架构设计**
 
 (本节无代码编写)
@@ -124,10 +124,11 @@ program
 > - 动态加载的脚手架通过缓存形式进行存储：执行哪个命令下载哪个命令
 > - 动态加载的时候，通过node多进程进行执行：深挖cpu性能
 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1613703997616-ab0776af-eed7-477c-898e-29d37d22d07e.png#align=left&display=inline&height=1021&margin=%5Bobject%20Object%5D&name=image.png&originHeight=2042&originWidth=2098&size=213977&status=done&style=none&width=1049)
+![4-2](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/4-2.5444cg85tuk0.webp)
 **3-3 脚手架命令动态加载功能架构设计**
 (本节无代码编写)
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1613706288783-051c9322-0a54-4b4e-af90-cef9d74b0a1c.png#align=left&display=inline&height=750&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1500&originWidth=2120&size=172745&status=done&style=none&width=1060)
+![4-3](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/4-3.3epstrvnolk0.webp)
+
 > 上图架构初看有些难度，在代码编写之后再去回顾，会有更深理解。
 > 
 > 本节简单讲述了两点：
@@ -556,7 +557,8 @@ ps：关于项目的代码以上就结束了，代码提交至：[lesson04](http
 > - 第一，进程是一个实体。每一个进程都有它自己的地址空间。
 > - 第二，进程是一个“执行中的程序”，存在嵌套关系
 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1613781727136-94f6e9f9-c693-4dd0-bc11-61cb0a8ce727.png#align=left&display=inline&height=324&margin=%5Bobject%20Object%5D&name=image.png&originHeight=420&originWidth=768&size=39670&status=done&style=none&width=593)
+![4-4](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/4-4.4uu4pjciaww0.webp)
+
 > Node进程存在的感知：
 > 终端中输入：ps -ef | grep node 命令。
 > - UID是当前用户获取权限的ID
@@ -566,7 +568,7 @@ ps：关于项目的代码以上就结束了，代码提交至：[lesson04](http
 
 > 使用webstorm调试一个node程序的图示如下：
 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/358819/1613782220578-cb349dc9-93e0-4ee4-b1e9-ba0018f8751f.png#align=left&display=inline&height=442&margin=%5Bobject%20Object%5D&name=image.png&originHeight=884&originWidth=1554&size=379426&status=done&style=none&width=777)
+![4-5](https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/4-5.1th8sx2izpb4.webp)
 
 **5-2 child_process异步方法使用教程（exec&execFile）**
 child_process用法:
