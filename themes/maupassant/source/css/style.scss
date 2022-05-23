@@ -45,9 +45,16 @@ body {
     padding-top: 20px;
 }
 
-a,
 button.submit {
     color: #6E7173;
+    text-decoration: none;
+    -webkit-transition: all .1s ease-in;
+    -moz-transition: all .1s ease-in;
+    -o-transition: all .1s ease-in;
+    transition: all .1s ease-in;
+}
+a{
+    color:#3949AB;
     text-decoration: none;
     -webkit-transition: all .1s ease-in;
     -moz-transition: all .1s ease-in;
@@ -57,7 +64,7 @@ button.submit {
 
 a:hover,
 a:active {
-    color: #444;
+    color: #0086b3;
 }
 
 a:focus {
