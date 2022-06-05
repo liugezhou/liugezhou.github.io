@@ -89,4 +89,7 @@ theme: maupassant
 
 # Deployment
 deploy:
-  type: ''
+  type: 'git'
+  repo: https://github.com/liugezhou/blog
+  branch: gh-pages
+  message: 202222
