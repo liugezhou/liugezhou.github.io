@@ -92,4 +92,4 @@ deploy:
   type: git
   repo: https://github.com/liugezhou/blog
   branch: gh-pages
-  message: '202222'
+  message: '202223'
