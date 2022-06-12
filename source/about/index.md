@@ -6,11 +6,13 @@ layout: about
 
 - 第一爱好：<font color=red>有酒必到</font>
 
-- 日常喜好：<font color=Blue>工作</font>、<font color=Blue>背单词</font>、<font color=Blue>看电影</font> 、<font color=Blue>喝鸡汤</font> 、<font color=Blue>写周报</font> 
+- 日常喜好：<font color=Blue>工作</font>、<font color=Blue>背单词</font>、<font color=Blue>看电影</font> 、<font color=Blue>喝鸡汤</font> 、<font color=Blue>写周报</font> 、<font color=Blue>背单词</font> 
 
 - 正在培养：<font color=Teal>读书</font>、<font color=Teal>学英语</font>、<font color=	Teal>写读后感</font>、<font color=Teal>跑步</font>
 
 - 受影响的一本书：<font color=Orange>人类简史</font>
+
+- 在读书籍<font color=red>《沧海之水》</font>
 
 - 较关注的博主：<font color=green>阮一峰</font> 
 
