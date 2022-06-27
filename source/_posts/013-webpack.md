@@ -26,13 +26,13 @@ tags:
 **从代码角度看：**
 > 传统做法(vue2.5之前没有vue.config.js时)是：将webpack.base.config.js中各个配置对象拷贝一份(基础配置)。然后根据不同的环境merge不同的配置。
 > 比如测试环境独有的代理devServer、sourcemap、热更新HotModuleReplacementPlugin。
-> 比如正式环境独有的UglifyJsPlugin、extract-text-webpack-plugin、optimize-css-assets-webpack-plugin、html-webpack-pluin等等。
+> 比如正式环境独有的UglifyJsPlugin、extract-text-webpack-plugin、optimize-css-assets-webpack-plugin、html-webpack-plugin等等。
 
 **base.config.js**
 > webpack.base.config.js文件其实就足足的表达了这个webpack的构成到底是有哪些部分组成。
 > 由于配置较多，我们这里支只对其中重要的几个配置做简要概述。
 > - entry: 入口文件，模块构建的起点，一个入口文件最后生成一个chunk
-> - output：输出文件，模块构建的终点，可以设置输出文件和输出路径
+> - output：输出文件，模块构建的终点，可以设置d多个输出文件和输出路径
 > - resolve：文件路径的指向，比如别名配置等，这个配置可以加快打包过程
 > - modules：这里面主要就是配置的一些loader
 > - plugins：这里面主要配置的就是一些基础plugin
@@ -40,7 +40,7 @@ tags:
 ##  loader
 > 我们必须知道的是webpack她只认识js，loader就是用来将不是js的文件经过**函数**处理成js。
 > 然后这个loader的配置，如上所示我们通常写在**modules.rules**属性中。
-> 最后，需要注意的是loader支持链式调用(每个loader可以处理之前已经处理过的资源)，到这对于laoder的掌握已经算快及格了。
+> 最后，需要注意的是loader支持链式调用(每个loader可以处理之前已经处理过的资源)，到这对于loader的掌握已经算快及格了。
 > 接着看完loader和plugin之后，我们就及格了。
 
 **常用loader**
@@ -83,7 +83,7 @@ tags:
 
 ##  loader与plugin的区别，以及如何自定义
 **区别**
-> - loader本身就只是一个函数，在该函数中对接收到的内容进行转换。它是个翻译官，它在modules的rules中配置，内部包含test、loader和optins属性。
+> - loader本身就只是一个函数，在该函数中对接收到的内容进行转换。它是个翻译官，它在modules的rules中配置，内部包含test、loader和options属性。
 > - Plugin就是插件，基于事件流。Webpack在运行当中会去广播一些事件，plugin去监听这些事件，然后干活。plugin单独配置，通过构造函数传入参数生效。
 
 **自定义loader**
@@ -97,7 +97,7 @@ tags:
 > - compilation：作为Plugin内置事件回调函数的参数，包含了当前的模块资源、编译生成资源、变化的文件以及被跟踪依赖的状态信息。当检测到一个文件变化，一次新的compilation将被创建。
 
 ```javascript
-// 倒出一个函数，其中source为webpack传递给loader的输入参数--文件源内容
+// 导出一个函数，其中source为webpack传递给loader的输入参数--文件源内容
 module.exports = function(source){
   const content = doSomething2JsString(source);
   // 如果loader配置了options对象，那么this.query将指向options
@@ -124,7 +124,7 @@ class MyPlugin{
 > webpack的热更新又称为热替换(Hot Module Replacement) -- HMR
 > 这个机制可以做到不用刷新浏览器而将变更的模块替换掉。
 > 
-> HMR的核心就是：客户端从服务端拉去更新后的文件(他们直接维护了一个**websocket)**，当本地资源发生变更后，客户端进行资源对比，然后增量更新。
+> HMR的核心就是：客户端从服务端拉去更新后的文件(他们直接维护了一个**websocket**)，当本地资源发生变更后，客户端进行资源对比，然后增量更新。
 > 开启HMR，要在webpack配置文件的devServer中设置hot为true即可。
 
 ## 代理
@@ -174,7 +174,7 @@ app.use('/api',proxy({target:'http://liugezhou.online'},changeOrigin:true))
 
 ## 除了webpack，其他模块管理工具
 **rollup**
-> 相比webpack，rollup要小巧很多，当下的vue、react、thress.js都是使用roullup打包
+> 相比webpack，rollup要小巧很多，当下的vue、react、three.js都是使用rollup打包
 
 **vite**
 > - 快速冷启动
