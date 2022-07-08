@@ -9,8 +9,8 @@ timezone: Asia/Shanghai
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://liugezhou.github.io/project'
-url: https://liugezhou.github.io/blog
-root: /blog/
+url: https://blog.liugezhou.online/
+root: /
 permalink: :title/
 permalink_defaults:
 pretty_urls:
@@ -104,6 +104,6 @@ douban:
 # Deployment
 deploy:
   type: git
-  repo: https://github.com/liugezhou/blog
+  repo: git@github.com:liugezhou/liugezhou.github.io.git
   branch: gh-pages
-  message: '202223'
+  message: '20220708'
