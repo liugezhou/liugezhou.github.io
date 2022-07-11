@@ -62,7 +62,7 @@ google_analytics:
 baidu_analytics: 912656f1f71687bc80e68bfc7315fc4c ## 百度统计Key值
 fancybox: true ## If you want to use fancybox please set the value to true.
 show_category_count: true ## 分类文章累计数量显示
-toc_number: true ## 菜单是否显示数值排序
+toc_number: false ## 菜单是否显示数值排序
 shareto: false ## 分享按钮 you must have hexo-helper-qrcode installed.
 busuanzi: true ## If you want to use Busuanzi page views please set the value to true.
 wordcount: true ## 字数统计-hexo自带
@@ -110,7 +110,7 @@ menu:
   - page: about
     directory: about/
     icon: fa-user
-  - page: 阅读
+  - page: 读书
     directory: books/
     icon: fa-book
   - page: 电影
