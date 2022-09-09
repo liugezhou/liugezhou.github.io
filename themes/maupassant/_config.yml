@@ -137,14 +137,14 @@ widgets: ## Six widgets in sidebar provided: search, category, tag, recent_posts
 links:
   - title: GitHub
     url: https://github.com/liugezhou
-  - title: Running
-    url: https://run.liugezhou.online
   - title: Web架构之脚手架
-    url: https://www.yuque.com/liugezhou/architect
+    url: https://blog.liugezhou.online/frontend-docs/
   - title: 浏览器工作原理
     url: https://liugezhou.gitbook.io/liugezhou/
   - title: 密码生成工具
     url: https://blog.liugezhou.online/password-generator
+  - title: Running
+    url: https://run.liugezhou.online
 
 timeline:
   - num: 1
