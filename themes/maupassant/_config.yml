@@ -159,6 +159,8 @@ timeline:
     word: 2020年12月21日，在语雀平台注册用户，以《Web架构之脚手架》为契机，累计输出71篇公开文档，几十篇私密文档。
   - num:  6
     word: 2022年5月2日，基于maupassant主题，以https://liugezhou.github.io/blog域名，基于Github托管，重新搭建个人博客，初始迁移了大部分的语雀博客内容
+  - num:  7
+    word: 2022年7月8日，老博客下线，新博客域名更新为：https://blog.liugezhou.online 
 
 # Static files
 js: js
