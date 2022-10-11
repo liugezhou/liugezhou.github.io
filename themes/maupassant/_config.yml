@@ -137,8 +137,8 @@ widgets: ## Six widgets in sidebar provided: search, category, tag, recent_posts
 links:
   - title: GitHub
     url: https://github.com/liugezhou
-  - title: Web架构之脚手架
-    url: https://blog.liugezhou.online/frontend-docs/
+  - title: Back to basic frontend
+    url: https://blog.liugezhou.online/frontend-docs/everyday/today.html
   - title: 浏览器工作原理
     url: https://liugezhou.gitbook.io/liugezhou/
   - title: 密码生成工具
