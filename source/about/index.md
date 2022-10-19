@@ -14,7 +14,7 @@ layout: about
 
 - 对自己的期望：<font color=Magenta>坚持记录</font>
 
-- 最近在这里: 公众号:<font color=Green>Wakaka</font>、[今日前端](https://blog.liugezhou.online/frontend-docs/)
+- 最近在这里: 公众号:<font color=Green>Wakaka</font>、[今日前端](https://day.liugezhou.online/)
 
 邮箱：<font color=Magenta>18231133236@163.com </font>
 WeChat：<font color=green>enjoy_day000</font>
