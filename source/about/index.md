@@ -18,4 +18,3 @@ layout: about
 
 邮箱：<font color=Magenta>18231133236@163.com </font>
 WeChat：<font color=green>enjoy_day000</font>
-
