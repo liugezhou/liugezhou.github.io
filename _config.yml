@@ -90,17 +90,17 @@ theme: maupassant
 # 豆瓣配置
 douban:
   user: 211650178    #这个需要修改为你个人的id 
-  builtin: true   #如果想生成豆瓣页面，这个需要设置为true
+  builtin: false   #如果想生成豆瓣页面，这个需要设置为true
   book:
      title: '阅读书单'
-     quote: '读书像在体验别样人生'
+     quote: '读书就是在体验别样人生'
   movie:
      title: '电影'
      quote: '其实我是一个演员'
   game:
      title: 'Game'
      quote: '游戏人生'
-  timeout: 100000
+  timeout: 1000000
 # Deployment
 deploy:
   type: git
