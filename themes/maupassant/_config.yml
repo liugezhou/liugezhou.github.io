@@ -110,15 +110,15 @@ menu:
   - page: about
     directory: about/
     icon: fa-user
-  # - page: 读书
-  #   directory: books/
-  #   icon: fa-book
-  # - page: 电影
-  #   directory: movies/
-  #   icon: fa-file-movie-o
-  # - page: 游戏
-  #   directory: games/
-  #   icon: fa-gamepad
+  - page: 读书
+    directory: books/
+    icon: fa-book
+  - page: 电影
+    directory: movies/
+    icon: fa-file-movie-o
+  - page: 游戏
+    directory: games/
+    icon: fa-gamepad
   - page: 开往
     directory: https://travellings.link
     icon: fa-subway
