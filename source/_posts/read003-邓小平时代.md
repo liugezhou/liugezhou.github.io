@@ -3,7 +3,6 @@ layout: post
 title: 邓小平时代
 date: 2022-11-15
 updated: 2022-11-15
-toc: true
 category:
   读书
 tags: 
