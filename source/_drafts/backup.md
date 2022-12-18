@@ -10,3 +10,11 @@ https://cdn.staticaly.com/gh/liugezhou/image@master/blog/blog_title2.jpg
 
 ## 豆瓣更新
 hexo douban -bgm
+
+
+
+
+
+https://files.mdnice.com/fullstack-1.png
+changTo
+https://cdn.staticaly.com/gh/liugezhou/image@master/blog/newTitle.png
