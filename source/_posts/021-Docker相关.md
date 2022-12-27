@@ -334,6 +334,7 @@ docker run -id --name=c_redis -p 6379:6379 redis:5.0
 
 > - curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 > - chmod +x /usr/local/bin/docker-compose
+> - 查看docker-compose版本：`docker-compose --version`
 > - docker-compose 卸载 **rm /usr/local/bin/docker-compose**
 
 > - cd /Users/liumingzhou/Desktop/demo
