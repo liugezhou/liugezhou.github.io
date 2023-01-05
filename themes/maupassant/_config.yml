@@ -120,7 +120,7 @@ menu:
     directory: games/
     icon: fa-gamepad
   - page: 开往
-    directory: https://travellings.link
+    directory: https://www.travellings.cn/go.html
     icon: fa-subway
   - page: rss
     directory: atom.xml
