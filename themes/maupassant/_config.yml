@@ -101,24 +101,24 @@ menu:
   - page: archive
     directory: archives/
     icon: fa-archive
-  - page: tags
-    directory: tags/
-    icon: fa-tags
-  - page: history
-    directory: history/
-    icon: fa-history
+  # - page: tags
+  #   directory: tags/
+  #   icon: fa-tags
+  # - page: history
+  #   directory: history/
+  #   icon: fa-history
   - page: about
     directory: about/
     icon: fa-user
-  - page: 读书
-    directory: books/
-    icon: fa-book
-  - page: 电影
-    directory: movies/
-    icon: fa-file-movie-o
-  - page: 游戏
-    directory: games/
-    icon: fa-gamepad
+  # - page: 读书
+  #   directory: books/
+  #   icon: fa-book
+  # - page: 电影
+  #   directory: movies/
+  #   icon: fa-file-movie-o
+  # - page: 游戏
+  #   directory: games/
+  #   icon: fa-gamepad
   - page: 开往
     directory: https://www.travellings.cn/go.html
     icon: fa-subway

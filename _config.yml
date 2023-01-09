@@ -1,6 +1,6 @@
 # Site
 title: 六个周
-subtitle: 'enjoy day'
+subtitle: '一个人只有一种命运，尽早遇见，尽情拥抱。'
 description: '六个周的博客'
 keywords: 博客搭建 六个周的博客
 author: liugezhou
@@ -104,4 +104,4 @@ deploy:
   type: git
   repo: git@github.com:liugezhou/liugezhou.github.io.git
   branch: gh-pages
-  message: '20220708'
+  message: '20230110'
