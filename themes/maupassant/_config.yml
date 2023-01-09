@@ -130,23 +130,21 @@ widgets: ## Six widgets in sidebar provided: search, category, tag, recent_posts
   - search
   - category
   # - tag
-  - recent_posts
-  - recent_comments
+  # - recent_posts
+  # - recent_comments
   - links
 
 links:
   - title: GitHub
     url: https://github.com/liugezhou
+  - title: Twitter
+    url: https://twitter.com/liugezhou
+  - title: 竹白订阅
+    url: https://zhouzhou.zhubai.love/
   - title: 今日前端
     url: https://day.liugezhou.online
   - title: 网站导航
     url: https://list.liugezhou.online
-  - title: memos
-    url: https://memos.liugezhou.online
-  - title: 浏览器工作原理
-    url: https://liugezhou.gitbook.io/liugezhou/
-  - title: 密码生成工具
-    url: https://blog.liugezhou.online/password-generator
   - title: Running
     url: https://run.liugezhou.online
 
