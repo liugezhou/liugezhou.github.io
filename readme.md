@@ -6,7 +6,7 @@
 - 正在培养: <font color=Teal>读书</font>、<font color=Teal>学英语</font>、<font color=	Teal>写读后感</font>、<font color=Teal>跑步</font>
 
 
-- 最近在这里: [竹白](https://zhouzhou.zhubai.love/)、 公众号: <font color=Green>Wakaka</font>、[今日前端](https://day.liugezhou.online/)
+- 最近在这里: [竹白](https://zhouzhou.zhubai.love/)、 公众号: [Wakaka](https://day.liugezhou.online/official.png)、[今日前端](https://day.liugezhou.online/)
 
 欢迎通过 [竹白](https://zhouzhou.zhubai.love/) 订阅我的博客。
 
