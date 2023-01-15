@@ -137,16 +137,18 @@ widgets: ## Six widgets in sidebar provided: search, category, tag, recent_posts
 links:
   - title: GitHub
     url: https://github.com/liugezhou
-  - title: Twitter
-    url: https://twitter.com/liugezhou
-  - title: 竹白订阅
-    url: https://zhouzhou.zhubai.love/
   - title: 今日前端
     url: https://day.liugezhou.online
+  - title: 竹白订阅
+    url: https://zhouzhou.zhubai.love/
+  - title: zlib搜书
+    url: https://read.liugezhou.online/
   - title: 网站导航
     url: https://list.liugezhou.online
   - title: Running
     url: https://run.liugezhou.online
+  - title: Twitter
+    url: https://twitter.com/liugezhou
 
 timeline:
   - num: 1
