@@ -1,6 +1,18 @@
-# 目录
+## Introduce
+- 第一爱好: <font color=red>有酒必到</font>
 
-## 分类
+- 日常喜好: <font color=Blue>写代码</font>、<font color=Blue>背单词</font>、<font color=Blue>看电影</font> 、<font color=Blue>喝鸡汤</font> 、<font color=Blue>写周报</font> 、<font color=Blue>突发奇想</font> 
+
+- 正在培养: <font color=Teal>读书</font>、<font color=Teal>学英语</font>、<font color=	Teal>写读后感</font>、<font color=Teal>跑步</font>
+
+
+- 最近在这里: [竹白](https://zhouzhou.zhubai.love/)、 公众号: <font color=Green>Wakaka</font>、[今日前端](https://day.liugezhou.online/)
+
+欢迎通过 [竹白](https://zhouzhou.zhubai.love/) 订阅我的博客。
+
+
+
+## Category
 
 | <a href="#mzxj">每周小结</a> | <a href="#qdxj">前端小技</a> | <a href="#jsj">Web 架构之脚手架</a> | <a href="#hexo">博客搭建</a> | <a href="#server">服务端</a> | <a href="#browner">浏览器工作原理</a> | <a href="#read">读书笔记</a> |
 | ---------------------------- | ---------------------------- | ----------------------------------- | ---------------------------- | ---------------------------- | ------------------------------------- | ---------------------------- |
@@ -28,11 +40,11 @@
 [每周小结(\*72):没有主题](https://blog.liugezhou.online/202235-No72/)  
 [每周小结(\*71):青春未凉离了伤](https://blog.liugezhou.online/202234-No71/)  
 [每周小结(\*70):职场 PUA](https://blog.liugezhou.online/202233-No70/)  
-[每周小结(\*69)：我的前半生](https://blog.liugezhou.online/202232-No69/)  
-[每周小结(\*68)：为什么要打架](https://blog.liugezhou.online/202231-No68/)  
-[每周小结(\*67)：为什么不敢发表观点](https://blog.liugezhou.online/202230-No67/)  
-[每周小结(\*66)：下一个五年](https://blog.liugezhou.online/202229-No66/)  
-[每周小结(\*65)：有计划的输出](https://blog.liugezhou.online/202228-No65/)  
+[每周小结(\*69):我的前半生](https://blog.liugezhou.online/202232-No69/)  
+[每周小结(\*68):为什么要打架](https://blog.liugezhou.online/202231-No68/)  
+[每周小结(\*67):为什么不敢发表观点](https://blog.liugezhou.online/202230-No67/)  
+[每周小结(\*66):下一个五年](https://blog.liugezhou.online/202229-No66/)  
+[每周小结(\*65):有计划的输出](https://blog.liugezhou.online/202228-No65/)  
 [每周小结(\*64):周总结陷入疲劳](https://blog.liugezhou.online/202227-No64/)  
 [每周小结(\*63):关于正能量](https://blog.liugezhou.online/202226-No63/)  
 [每周小结(\*62):底特律-化身为人](<https://blog.liugezhou.online/202225(6.20-6.26)/>)  
@@ -62,8 +74,8 @@
 [Week28-脚手架发布模块架构设计和核心流程开发](https://blog.liugezhou.online/Week28-%E8%84%9A%E6%89%8B%E6%9E%B6%E5%8F%91%E5%B8%83%E6%A8%A1%E5%9D%97%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E5%92%8C%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%E5%BC%80%E5%8F%91/)  
 [Week17-编辑器服务端调用第三方服务](https://blog.liugezhou.online/Week17-%E7%BC%96%E8%BE%91%E5%99%A8%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%B0%83%E7%94%A8%E7%AC%AC%E4%B8%89%E6%96%B9%E6%9C%8D%E5%8A%A1/)  
 [Week16-编辑器服务端 API 开发](https://blog.liugezhou.online/Week16-%E7%BC%96%E8%BE%91%E5%99%A8%E6%9C%8D%E5%8A%A1%E7%AB%AFAPI%E5%BC%80%E5%8F%91/)  
-[Week15-服务端 CI_CD：Github 自动化](https://blog.liugezhou.online/Week15-%E6%9C%8D%E5%8A%A1%E7%AB%AF%20CI_CD%EF%BC%9AGithub%20%E8%87%AA%E5%8A%A8%E5%8C%96/)  
-[Week14-服务端选型：磨刀不如砍柴功](https://blog.liugezhou.online/Week14-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%80%89%E5%9E%8B%EF%BC%9A%E7%A3%A8%E5%88%80%E4%B8%8D%E5%A6%82%E7%A0%8D%E6%9F%B4%E5%8A%9F/)  
+[Week15-服务端 CI_CD:Github 自动化](https://blog.liugezhou.online/Week15-%E6%9C%8D%E5%8A%A1%E7%AB%AF%20CI_CD%EF%BC%9AGithub%20%E8%87%AA%E5%8A%A8%E5%8C%96/)  
+[Week14-服务端选型:磨刀不如砍柴功](https://blog.liugezhou.online/Week14-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%80%89%E5%9E%8B%EF%BC%9A%E7%A3%A8%E5%88%80%E4%B8%8D%E5%A6%82%E7%A0%8D%E6%9F%B4%E5%8A%9F/)  
 [Week6-脚手架项目和组件初始化开发](https://blog.liugezhou.online/Week6-%E8%84%9A%E6%89%8B%E6%9E%B6%E9%A1%B9%E7%9B%AE%E5%92%8C%E7%BB%84%E4%BB%B6%E5%88%9D%E5%A7%8B%E5%8C%96%E5%BC%80%E5%8F%91/)  
 [Week5-脚手架创建项目流程设计和开发](https://blog.liugezhou.online/Week5-%E8%84%9A%E6%89%8B%E6%9E%B6%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE%E6%B5%81%E7%A8%8B%E8%AE%BE%E8%AE%A1%E5%92%8C%E5%BC%80%E5%8F%91/)  
 [Week4-脚手架命令注册和执行过程开发](https://blog.liugezhou.online/Week4-%E8%84%9A%E6%89%8B%E6%9E%B6%E5%91%BD%E4%BB%A4%E6%B3%A8%E5%86%8C%E5%92%8C%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B%E5%BC%80%E5%8F%91/)  
@@ -116,13 +128,13 @@
 
 ## <a id="browner">浏览器工作原理</a>
 
-[阶段七：浏览器安全](https://blog.liugezhou.online/A7%E9%98%B6%E6%AE%B5%E4%B8%83%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%89%E5%85%A8/)  
-[阶段六：浏览器中的网络](https://blog.liugezhou.online/A6%E9%98%B6%E6%AE%B5%E5%85%AD%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E7%BD%91%E7%BB%9C/)  
-[阶段五：浏览器中的页面](https://blog.liugezhou.online/A5%E9%98%B6%E6%AE%B5%E4%BA%94%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E9%A1%B5%E9%9D%A2/)  
-[阶段四：浏览器中的页面循环系统](https://blog.liugezhou.online/A4%E9%98%B6%E6%AE%B5%E5%9B%9B%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E9%A1%B5%E9%9D%A2%E5%BE%AA%E7%8E%AF%E7%B3%BB%E7%BB%9F/)  
-[阶段三：V8 工作原理](https://blog.liugezhou.online/A3%E9%98%B6%E6%AE%B5%E4%B8%89%EF%BC%9AV8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/)  
-[阶段二：浏览器中 JavaScript 的执行机制](https://blog.liugezhou.online/A2%E9%98%B6%E6%AE%B5%E4%BA%8C%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%ADJavaScript%E7%9A%84%E6%89%A7%E8%A1%8C%E6%9C%BA%E5%88%B6/)  
-[阶段一：宏观视角下的浏览器](https://blog.liugezhou.online/A1%E9%98%B6%E6%AE%B5%E4%B8%80%EF%BC%9A%E5%AE%8F%E8%A7%82%E8%A7%86%E8%A7%92%E4%B8%8B%E7%9A%84%E6%B5%8F%E8%A7%88%E5%99%A8/)
+[阶段七:浏览器安全](https://blog.liugezhou.online/A7%E9%98%B6%E6%AE%B5%E4%B8%83%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%89%E5%85%A8/)  
+[阶段六:浏览器中的网络](https://blog.liugezhou.online/A6%E9%98%B6%E6%AE%B5%E5%85%AD%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E7%BD%91%E7%BB%9C/)  
+[阶段五:浏览器中的页面](https://blog.liugezhou.online/A5%E9%98%B6%E6%AE%B5%E4%BA%94%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E9%A1%B5%E9%9D%A2/)  
+[阶段四:浏览器中的页面循环系统](https://blog.liugezhou.online/A4%E9%98%B6%E6%AE%B5%E5%9B%9B%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E9%A1%B5%E9%9D%A2%E5%BE%AA%E7%8E%AF%E7%B3%BB%E7%BB%9F/)  
+[阶段三:V8 工作原理](https://blog.liugezhou.online/A3%E9%98%B6%E6%AE%B5%E4%B8%89%EF%BC%9AV8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/)  
+[阶段二:浏览器中 JavaScript 的执行机制](https://blog.liugezhou.online/A2%E9%98%B6%E6%AE%B5%E4%BA%8C%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%ADJavaScript%E7%9A%84%E6%89%A7%E8%A1%8C%E6%9C%BA%E5%88%B6/)  
+[阶段一:宏观视角下的浏览器](https://blog.liugezhou.online/A1%E9%98%B6%E6%AE%B5%E4%B8%80%EF%BC%9A%E5%AE%8F%E8%A7%82%E8%A7%86%E8%A7%92%E4%B8%8B%E7%9A%84%E6%B5%8F%E8%A7%88%E5%99%A8/)
 
 ## <a id="read">读书</a>
 
