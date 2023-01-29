@@ -19,7 +19,8 @@
 
 ## <a id="mzxj">每周小结</a>
 
-[每周小结(\*91):新年快乐](https://blog.liugezhou.online/202303-No92/)  
+[每周小结(\*93):离职后很焦虑怎么缓解](https://blog.liugezhou.online/202304-No93/)  
+[每周小结(\*92):新年快乐](https://blog.liugezhou.online/202303-No92/)  
 [每周小结(\*91):寻觅意义](https://blog.liugezhou.online/202302-No91/)  
 [每周小结(\*90):回到最开始的样子](https://blog.liugezhou.online/202301-No90/)  
 [每周小结(\*89):立个 Flag](https://blog.liugezhou.online/202252-No89/)  
