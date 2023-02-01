@@ -71,23 +71,24 @@ webpack.base.config.js 文件其实就足足的表达了这个 webpack 的构成
 
 ## plugin
 
-> webpack 的 plugin 要比 loader 强大，这个 plugin 在 webpack 的整个生命周期活动，可以做一些在构建范围内的事情。
+> webpack 的 plugin 要比 loader 强大，可以在 webpack 运行到某个时刻的时候，帮你做一些事情 类似与 vue 中的生命周期函数(比如html-webpack-plugin会在打包结束后自动生成html文件)。  
 > 通过之前的学习，我们也知道需要哪些插件，我们就直接引入，然后以 new 对象的形式传入 plugins 配置对象中去就可以。
 > 然后，如果再深入一点点的话，我们看 plugin 的本质：其实就是具有一个**apply**方法的 JS 对象。这个 apply 方法是会被 webpack 的 compiler 调用的。并且在整个编译生命周期都可以访问 compiler 对象。
 
 **_内置插件_**
 
-> - uglifyJsPlugin:压缩和混淆代码。
-> - CommonsChunkPlugin:提高打包效率，将第三方库和业务代码分开打包
-> - HotModuleReplacementPlugin:热更新
-> - DefinePlugin:编译时配置全局变量，这对开发模式和发布模式的构建允许不同行为非常有用
+- uglifyJsPlugin:压缩和混淆代码。
+- CommonsChunkPlugin:提高打包效率，将第三方库和业务代码分开打包
+- HotModuleReplacementPlugin:热更新
+- DefinePlugin:编译时配置全局变量，这对开发模式和发布模式的构建允许不同行为非常有用
 
 **其它插件**
 
-> - html-webpack-plugin：可以根据模板自动生成 html 代码，并自动引用 css 和 js 文件
-> - ProvidePlugin：自动加载模块，代替 require 和 import
-> - extract-text-webpack-plugin:将 js 文件中引用的样式单独抽离成 css 文件
-> - optimize-css-assets-webpack-plugin:不同组件中重复的 css 可以快速去重
+- html-webpack-plugin：可以根据模板自动生成 html 代码，并自动引用 css 和 js 文件
+- ProvidePlugin：自动加载模块，代替 require 和 import
+- extract-text-webpack-plugin:将 js 文件中引用的样式单独抽离成 css 文件
+- optimize-css-assets-webpack-plugin:不同组件中重复的 css 可以快速去重
+- clean-webpack-plugin:打包生成 dist 目录下的覆盖
 
 ## loader 与 plugin 的区别，以及如何自定义
 
