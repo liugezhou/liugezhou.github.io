@@ -4,7 +4,6 @@ title: web3js 实战基本操作
 date: 2023-02-15
 toc: true
 image: https://cdn.staticaly.com/gh/liugezhou/image@master/blog/033_web3js.png
-description:  记录Web3js的相关基础API，方便后续在文使用中直接查找相关API。  
 category:
     Web3
 tags:
