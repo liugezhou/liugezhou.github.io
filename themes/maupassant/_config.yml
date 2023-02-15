@@ -139,16 +139,18 @@ links:
     url: https://github.com/liugezhou
   - title: 今日前端
     url: https://day.liugezhou.online
-  - title: 竹白订阅
+  - title: 我的竹白
     url: https://zhouzhou.zhubai.love/
-  - title: zlib搜书
+  - title: zlib 搜书工具
     url: https://read.liugezhou.online/
   - title: 网站导航
     url: https://list.liugezhou.online
-  - title: Running
-    url: https://run.liugezhou.online
+  - title: Memos
+    url: https://memos.liugezhou.online/explore
   - title: Twitter
     url: https://twitter.com/liugezhou
+  - title: Running
+    url: https://run.liugezhou.online
 
 timeline:
   - num: 1
