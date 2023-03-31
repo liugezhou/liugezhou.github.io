@@ -36,6 +36,6 @@
     "markdown-it-mark": "^3.0.1"
   },
   "devDependencies": {
-    "hexo-douban": "^2.1.4"
+    "hexo-douban": "^2.2.0"
   }
 }
