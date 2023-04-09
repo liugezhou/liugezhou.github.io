@@ -137,6 +137,8 @@ widgets: ## Six widgets in sidebar provided: search, category, tag, recent_posts
 links:
   - title: GitHub
     url: https://github.com/liugezhou
+  - title: 自定义 ChatGPT
+    url: https://chat.liugezhou.online
   - title: 今日前端
     url: https://day.liugezhou.online
   - title: 我的竹白
