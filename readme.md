@@ -19,6 +19,14 @@
 
 ## <a id="mzxj">每周小结</a>
 
+[每周小结(*101):暂时告个别](https://blog.liugezhou.online/202314-No101/)  
+[每周小结(*100):总结过去，提升幸福感](https://blog.liugezhou.online/202313-No100/)  
+[每周小结(*99):鸽了一期](https://blog.liugezhou.online/202310-No99/)  
+[每周小结(*98):情绪 EMO](https://blog.liugezhou.online/202309-No98/)  
+[每周小结(*97):累瘫了](https://blog.liugezhou.online/202308-No97/)  
+[每周小结(*96):十分钟冥想](https://blog.liugezhou.online/202307-No96/)  
+[每周小结(*95):小酒](https://blog.liugezhou.online/202306-No95/)  
+[每周小结(*94):KTV小小感](https://blog.liugezhou.online/202305-No94/)  
 [每周小结(\*93):离职后很焦虑怎么缓解](https://blog.liugezhou.online/202304-No93/)  
 [每周小结(\*92):新年快乐](https://blog.liugezhou.online/202303-No92/)  
 [每周小结(\*91):寻觅意义](https://blog.liugezhou.online/202302-No91/)  
