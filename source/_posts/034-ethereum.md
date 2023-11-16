@@ -3,14 +3,14 @@ layout: post
 title: 以太坊基础笔记
 date: 2023-02-17
 toc: true
-image: https://cdn.staticaly.com/gh/liugezhou/image@master/web3/000_ether.png
+image: https://cdn.statically.io/gh/liugezhou/image@master/web3/000_ether.png
 category:
     Web3
 tags:
     ethereum
 ---
 
-![ethereum](https://cdn.staticaly.com/gh/liugezhou/image@master/web3/000_ether.png)
+![ethereum](https://cdn.statically.io/gh/liugezhou/image@master/web3/000_ether.png)
 <!--more-->
 
 这篇文章用来记录在学习以太坊的过程中,一些相关的基本概念和 solidity 语言的相关基础语法等。
@@ -18,17 +18,17 @@ tags:
 # 以太坊基础
 ## 涉及工具
 
-![tools](https://cdn.staticaly.com/gh/liugezhou/image@master/web3/001_tools.png)
+![tools](https://cdn.statically.io/gh/liugezhou/image@master/web3/001_tools.png)
 
 ## 区块链发展简史
 
-![history](https://cdn.staticaly.com/gh/liugezhou/image@master/web3/002_history.png)
+![history](https://cdn.statically.io/gh/liugezhou/image@master/web3/002_history.png)
 
 [EOS是什么](https://cloud.tencent.com/developer/news/175867)
 
 ## 以太坊中的重要概念
 
-![concept](https://cdn.staticaly.com/gh/liugezhou/image@master/web3/003_concept.png)
+![concept](https://cdn.statically.io/gh/liugezhou/image@master/web3/003_concept.png)
 
 ## 以太坊的货币
 
@@ -38,7 +38,7 @@ tags:
 
 ## 以太币单位
 
-![wei](https://cdn.staticaly.com/gh/liugezhou/image@master/web3/004_wei.png)
+![wei](https://cdn.statically.io/gh/liugezhou/image@master/web3/004_wei.png)
 
 # Solidity
 ## 变量

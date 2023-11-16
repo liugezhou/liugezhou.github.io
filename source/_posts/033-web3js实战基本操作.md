@@ -3,14 +3,14 @@ layout: post
 title: web3js 实战基本操作
 date: 2023-02-15
 toc: true
-image: https://cdn.staticaly.com/gh/liugezhou/image@master/blog/033_web3js.png
+image: https://cdn.statically.io/gh/liugezhou/image@master/blog/033_web3js.png
 category:
     Web3
 tags:
     web3js
 ---
 
-![](https://cdn.staticaly.com/gh/liugezhou/image@master/blog/033_web3js.png)
+![](https://cdn.statically.io/gh/liugezhou/image@master/blog/033_web3js.png)
 
 <!--more-->
 

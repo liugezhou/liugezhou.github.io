@@ -9,7 +9,7 @@ tags:
   - 读书
 ---
 
-![邓小平时代](https://cdn.staticaly.com/gh/liugezhou/image@master/blog/read003dxpsd.webp)
+![邓小平时代](https://cdn.statically.io/gh/liugezhou/image@master/blog/read003dxpsd.webp)
 <!--more-->
 
 ## 背景
