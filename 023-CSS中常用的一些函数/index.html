@@ -1,0 +1,133 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="CSS中常用的一些函数"><meta name="twitter:description" content="&lt;p&gt;&lt;font color=blue&gt;更新说明：对文章排版以及内容格式做了调整。&lt;/font&gt;&lt;br&gt;
+&lt;font color=blue&gt; 更新时间：2022-05-04&lt;/font&gt;&lt;/p&gt;
+&lt;h3 id=&quot;calc用法&quot;&gt;calc用法&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;calc()函数支持加减乘除四种运算。&lt;/li&gt;
+&lt;li&gt;书写上一定要注意啊，&lt;strong&gt;加减号两边一定要有空格&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;任何长度值都可以使用calc函数进行计算:% vh vw px em等&lt;/li&gt;
+&lt;li&gt;calc函数使DOM元素更加灵活的响应视口改变，还可以通过calc函数实现元素的绝对剧中定位(postion:absoute;top(50vh-Xpx))&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;min函数-max函数&quot;&gt;min函数(max函数)&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;min()函数支持一个或多个表达式，每个表达式用逗号分隔，将最小的值作为返回值&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;clamp函数&quot;&gt;clamp函数&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;语法为clamp(MIN,VAL,MAX)：作用是返回一个区间范围内的值，首选值为VAL，大于MAX使用MAX，小与MIN，使用MIN。&lt;br&gt;
+相当于min(MIN,min(max,MAX))&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;变量使用-var函数&quot;&gt;&lt;strong&gt;变量使用(var函数)&lt;/strong&gt;&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;CSS声明变量，需要在声明的变量前加两根连接线：&lt;code&gt;--&lt;/code&gt;,需要注意变量名大小写敏感。且注意如果变量值有单位，不能写成字符串。&lt;/li&gt;
+&lt;li&gt;var函数用于读取变量，var函数还可以接收第二个参数，表示变量的默认值，即如果变量不存在，就使用默认值。&lt;/li&gt;
+&lt;li&gt;利用css动态根据页面变化导致的规则变化，可以在响应式布局中使用media声明全局变量，使得不同的屏幕宽度有不同的变量值。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;line-gradient&quot;&gt;line-gradient&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;用于创建一个线性渐变的图像，需要设置起点的方向和渐变的起始颜色。&lt;/li&gt;
+&lt;li&gt;未设置方向，默认是从上到下。&lt;/li&gt;
+&lt;li&gt;语法 line-gradient&lt;code&gt;[&amp;lt;angel&amp;gt; | &amp;lt;side-or-corner&amp;gt;],stopColor1,stopColor2&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;radial-gradient&quot;&gt;radial-gradient&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;与line-gradient类似，语法为&lt;code&gt;[shape size position],stopColor1,stopColor2&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;shape:指明径向渐变的形状，可以为circle和ellipse.&lt;/li&gt;
+&lt;li&gt;size:代表径向渐变范围的半径大小，shape为ellipse时需要设置两个值、、shape为circle时不能设置百分比。&lt;/li&gt;
+&lt;li&gt;postion:默认值是中心点，支持关键字，支持距离左上角的角标位置(px或百分比单位)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight processing&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;.&lt;span class=&quot;property&quot;&gt;radial_1&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;comment&quot;&gt;/*最简单的渐变：由中心到四周，由蓝色到黄色*/&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;background&lt;/span&gt;-&lt;span class=&quot;built_in&quot;&gt;image&lt;/span&gt;: radial-&lt;span class=&quot;title function_&quot;&gt;gradient&lt;/span&gt;(&lt;span class=&quot;built_in&quot;&gt;blue&lt;/span&gt;, yellow);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;.&lt;span class=&quot;property&quot;&gt;radial_2&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;comment&quot;&gt;/*半椭圆形渐变：由左侧中心点到四周，有蓝色到黄色*/&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;background&lt;/span&gt;-&lt;span class=&quot;built_in&quot;&gt;image&lt;/span&gt;: radial-&lt;span class=&quot;title function_&quot;&gt;gradient&lt;/span&gt;(&lt;span class=&quot;built_in&quot;&gt;ellipse&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;% &lt;span class=&quot;number&quot;&gt;50&lt;/span&gt;% at left center, &lt;span class=&quot;built_in&quot;&gt;blue&lt;/span&gt;, yellow);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;.&lt;span class=&quot;property&quot;&gt;radial_3&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;comment&quot;&gt;/*左上角到右下角的发散式渐变*/&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;background&lt;/span&gt;-&lt;span class=&quot;built_in&quot;&gt;image&lt;/span&gt;: radial-&lt;span class=&quot;title function_&quot;&gt;gradient&lt;/span&gt;(circle farthest-corner at left top, &lt;span class=&quot;built_in&quot;&gt;blue&lt;/span&gt;, yellow);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;.&lt;span class=&quot;property&quot;&gt;radial_4&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;comment&quot;&gt;/*指定颜色渐变范围*/&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;background&lt;/span&gt;-&lt;span class=&quot;built_in&quot;&gt;image&lt;/span&gt;: radial-&lt;span class=&quot;title function_&quot;&gt;gradient&lt;/span&gt;(&lt;span class=&quot;built_in&quot;&gt;ellipse&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;50&lt;/span&gt;% &lt;span class=&quot;number&quot;&gt;30&lt;/span&gt;%, &lt;span class=&quot;built_in&quot;&gt;blue&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;30&lt;/span&gt;%, yellow &lt;span class=&quot;number&quot;&gt;70&lt;/span&gt;%);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+"><meta name="twitter:image"><title>CSS中常用的一些函数 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">CSS中常用的一些函数</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">CSS中常用的一些函数</h1><div class="post-meta">2021-11-12<span> | </span><span class="category"><a href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 633</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 2</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/023-CSS%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0/#vcomment"><span class="valine-comment-count" data-xid="/023-CSS%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#calc%E7%94%A8%E6%B3%95"><span class="toc-text">calc用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#min%E5%87%BD%E6%95%B0-max%E5%87%BD%E6%95%B0"><span class="toc-text">min函数(max函数)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#clamp%E5%87%BD%E6%95%B0"><span class="toc-text">clamp函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E4%BD%BF%E7%94%A8-var%E5%87%BD%E6%95%B0"><span class="toc-text">变量使用(var函数)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#line-gradient"><span class="toc-text">line-gradient</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#radial-gradient"><span class="toc-text">radial-gradient</span></a></li></ol></div></div><div class="post-content"><p><font color=blue>更新说明：对文章排版以及内容格式做了调整。</font><br>
+<font color=blue> 更新时间：2022-05-04</font></p>
+<h3 id="calc用法">calc用法</h3>
+<blockquote>
+<ul>
+<li>calc()函数支持加减乘除四种运算。</li>
+<li>书写上一定要注意啊，<strong>加减号两边一定要有空格</strong></li>
+<li>任何长度值都可以使用calc函数进行计算:% vh vw px em等</li>
+<li>calc函数使DOM元素更加灵活的响应视口改变，还可以通过calc函数实现元素的绝对剧中定位(postion:absoute;top(50vh-Xpx))</li>
+</ul>
+</blockquote>
+<h3 id="min函数-max函数">min函数(max函数)</h3>
+<blockquote>
+<p>min()函数支持一个或多个表达式，每个表达式用逗号分隔，将最小的值作为返回值</p>
+</blockquote>
+<h3 id="clamp函数">clamp函数</h3>
+<blockquote>
+<p>语法为clamp(MIN,VAL,MAX)：作用是返回一个区间范围内的值，首选值为VAL，大于MAX使用MAX，小与MIN，使用MIN。<br>
+相当于min(MIN,min(max,MAX))</p>
+</blockquote>
+<h3 id="变量使用-var函数"><strong>变量使用(var函数)</strong></h3>
+<blockquote>
+<ul>
+<li>CSS声明变量，需要在声明的变量前加两根连接线：<code>--</code>,需要注意变量名大小写敏感。且注意如果变量值有单位，不能写成字符串。</li>
+<li>var函数用于读取变量，var函数还可以接收第二个参数，表示变量的默认值，即如果变量不存在，就使用默认值。</li>
+<li>利用css动态根据页面变化导致的规则变化，可以在响应式布局中使用media声明全局变量，使得不同的屏幕宽度有不同的变量值。</li>
+</ul>
+</blockquote>
+<h3 id="line-gradient">line-gradient</h3>
+<blockquote>
+<ul>
+<li>用于创建一个线性渐变的图像，需要设置起点的方向和渐变的起始颜色。</li>
+<li>未设置方向，默认是从上到下。</li>
+<li>语法 line-gradient<code>[&lt;angel&gt; | &lt;side-or-corner&gt;],stopColor1,stopColor2</code></li>
+</ul>
+</blockquote>
+<h3 id="radial-gradient">radial-gradient</h3>
+<blockquote>
+<ul>
+<li>与line-gradient类似，语法为<code>[shape size position],stopColor1,stopColor2</code></li>
+<li>shape:指明径向渐变的形状，可以为circle和ellipse.</li>
+<li>size:代表径向渐变范围的半径大小，shape为ellipse时需要设置两个值、、shape为circle时不能设置百分比。</li>
+<li>postion:默认值是中心点，支持关键字，支持距离左上角的角标位置(px或百分比单位)</li>
+</ul>
+</blockquote>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">.<span class="property">radial_1</span> &#123;</span><br><span class="line">  <span class="comment">/*最简单的渐变：由中心到四周，由蓝色到黄色*/</span></span><br><span class="line">  <span class="built_in">background</span>-<span class="built_in">image</span>: radial-<span class="title function_">gradient</span>(<span class="built_in">blue</span>, yellow);</span><br><span class="line">&#125;</span><br><span class="line">.<span class="property">radial_2</span> &#123;</span><br><span class="line">  <span class="comment">/*半椭圆形渐变：由左侧中心点到四周，有蓝色到黄色*/</span></span><br><span class="line">  <span class="built_in">background</span>-<span class="built_in">image</span>: radial-<span class="title function_">gradient</span>(<span class="built_in">ellipse</span> <span class="number">100</span>% <span class="number">50</span>% at left center, <span class="built_in">blue</span>, yellow);</span><br><span class="line">&#125;</span><br><span class="line">.<span class="property">radial_3</span> &#123;</span><br><span class="line">  <span class="comment">/*左上角到右下角的发散式渐变*/</span></span><br><span class="line">  <span class="built_in">background</span>-<span class="built_in">image</span>: radial-<span class="title function_">gradient</span>(circle farthest-corner at left top, <span class="built_in">blue</span>, yellow);</span><br><span class="line">&#125;</span><br><span class="line">.<span class="property">radial_4</span> &#123;</span><br><span class="line">  <span class="comment">/*指定颜色渐变范围*/</span></span><br><span class="line">  <span class="built_in">background</span>-<span class="built_in">image</span>: radial-<span class="title function_">gradient</span>(<span class="built_in">ellipse</span> <span class="number">50</span>% <span class="number">30</span>%, <span class="built_in">blue</span> <span class="number">30</span>%, yellow <span class="number">70</span>%);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>CSS中常用的一些函数</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2021-11-12</p><p><span>最后更新：</span>2022-05-04</p><p><span>原始链接：</span><a href="/023-CSS中常用的一些函数/">https://blog.liugezhou.online/023-CSS%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/023-CSS%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/CSS"><i class="fa fa-tag">CSS</i></a></div><div class="post-nav"><a class="pre" href="/024-Vue3%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">Vue3基础</a><a class="next" href="/022-babel/">Babel有关基础内容</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

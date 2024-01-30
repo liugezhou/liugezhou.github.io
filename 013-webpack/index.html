@@ -1,0 +1,469 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="Webpack全基础"><meta name="twitter:description" content="&lt;h2 id=&quot;背景&quot;&gt;背景&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;随着前端项目工程化、越来越复杂，Webpack 出现了。它是用来实现前端项目模块化的一个静态模块打包工具。&lt;/li&gt;
+&lt;li&gt;所谓静态指的是开发阶段。&lt;/li&gt;
+&lt;li&gt;webpack 的作用一是：编译代码能力、提高效率，解决浏览器兼容问题(ES6-&amp;gt;ES5)&lt;/li&gt;
+&lt;li&gt;webpack 的作用二是：模块整合能力，提高性能，解决了浏览器频繁请求文件的问题&lt;/li&gt;
+&lt;li&gt;webpack 的作用三是：项目维护性增强了，支持不同种类的前端模块类型。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;构建流程简单认识&quot;&gt;构建流程简单认识&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;从代码角度看：&lt;/strong&gt;&lt;br&gt;
+传统做法(vue2.5 之前没有 vue.config.js 时)是：将 webpack.base.config.js 中各个配置对象拷贝一份(基础配置)。然后根据不同的环境 merge 不同的配置。&lt;br&gt;
+比如测试环境独有的代理 devServer、sourcemap、热更新 HotModuleReplacementPlugin。&lt;br&gt;
+比如正式环境独有的 UglifyJsPlugin、extract-text-webpack-plugin、optimize-css-assets-webpack-plugin、html-webpack-plugin 等等。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;base.config.js&lt;/strong&gt;&lt;br&gt;
+webpack.base.config.js 文件其实就足足的表达了这个 webpack 的构成到底是有哪些部分组成。&lt;br&gt;
+由于配置较多，我们这里支只对其中重要的几个配置做简要概述。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;mode: production(代码压缩),development(代码未压缩)&lt;/li&gt;
+&lt;li&gt;entry: 打包入口文件，模块构建的起点，一个入口文件最后生成一个 chunk&lt;/li&gt;
+&lt;li&gt;output：输出文件，模块构建的终点，可以设置多个输出文件和输出路径&lt;/li&gt;
+&lt;li&gt;resolve：文件路径的指向，比如别名配置等，这个配置可以加快打包过程&lt;/li&gt;
+&lt;li&gt;modules：这里面主要就是配置的一些 loader&lt;/li&gt;
+&lt;li&gt;plugins：这里面主要配置的就是一些基础 plugin&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;loader&quot;&gt;loader&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;我们必须知道的是 webpack 她只认识 js，loader 就是用来将不是 js 的文件经过&lt;strong&gt;函数&lt;/strong&gt;处理成 js。&lt;br&gt;
+然后这个 loader 的配置，如上所示我们通常写在&lt;strong&gt;modules.rules&lt;/strong&gt;属性中。&lt;br&gt;
+最后，需要注意的是 loader 支持链式调用(每个 loader 可以处理之前已经处理过的资源)，到这对于 loader 的掌握已经算快及格了。&lt;br&gt;
+接着看完 loader 和 plugin 之后，我们就及格了。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;常用 loader&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;样式 loader&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;scss-loader:将 scss 文件转换为 css 文件，在 vue 的模板使用中直接安装 node-sass 和 sass-loader 即可使用，但是需要注意版本的问题，版本过高可能会引起报错&lt;/li&gt;
+&lt;li&gt;less-loader：将 less 文件转换为 css 文件,使用时需要安装 less 和 less-loader&lt;/li&gt;
+&lt;li&gt;stylus-loader:stylus 样式写法，使用时需要安装 stylus 和 stylus-loader&lt;/li&gt;
+&lt;li&gt;css-loader：用来处理文件中的@import 和 url()、require 等引入&lt;/li&gt;
+&lt;li&gt;postcss-loader:处理 css3 的前缀等，autoprefixer-loader 已被废弃&lt;/li&gt;
+&lt;li&gt;style-loader:创建一个 style 标签将 css 文件嵌入到 html 当中去,通过 dom 操作 css&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;编译 loader&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;vue-loader:这个 loader 的作用是将扩展名为.vue 的单文件组件转换成 js 模块&lt;/li&gt;
+&lt;li&gt;babel-loader：将 ES6 转换为 ES5 代码&lt;/li&gt;
+&lt;li&gt;ts-loader：将 ts 转为 js&lt;/li&gt;
+&lt;li&gt;awesome-typescript-loader：将 ts 文件转换为 js，性能优于 ts-loader&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;文件 loader&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;raw-loader：可以将文件以字符串的形式返回&lt;/li&gt;
+&lt;li&gt;file-loader：分发文件到 output 目录并返回相对路径&lt;/li&gt;
+&lt;li&gt;url-loader：与 file-loader 类似，但可以将小于配置 limit 大小的文件转换成内敛 Data Url 的方式，减少请求。&lt;/li&gt;
+&lt;li&gt;html-minify-loader:压缩 html&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;plugin&quot;&gt;plugin&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;webpack 的 plugin 要比 loader 强大，可以在 webpack 运行到某个时刻的时候，帮你做一些事情 类似与 vue 中的生命周期函数(比如html-webpack-plugin会在打包结束后自动生成html文件)。&lt;br&gt;
+通过之前的学习，我们也知道需要哪些插件，我们就直接引入，然后以 new 对象的形式传入 plugins 配置对象中去就可以。&lt;br&gt;
+然后，如果再深入一点点的话，我们看 plugin 的本质：其实就是具有一个&lt;strong&gt;apply&lt;/strong&gt;方法的 JS 对象。这个 apply 方法是会被 webpack 的 compiler 调用的。并且在整个编译生命周期都可以访问 compiler 对象。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;内置插件&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;uglifyJsPlugin:压缩和混淆代码。&lt;/li&gt;
+&lt;li&gt;CommonsChunkPlugin:提高打包效率，将第三方库和业务代码分开打包&lt;/li&gt;
+&lt;li&gt;HotModuleReplacementPlugin:热更新&lt;/li&gt;
+&lt;li&gt;DefinePlugin:编译时配置全局变量，这对开发模式和发布模式的构建允许不同行为非常有用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;其它插件&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;html-webpack-plugin：可以根据模板自动生成 html 代码，并自动引用 css 和 js 文件&lt;/li&gt;
+&lt;li&gt;ProvidePlugin：自动加载模块，代替 require 和 import&lt;/li&gt;
+&lt;li&gt;extract-text-webpack-plugin:将 js 文件中引用的样式单独抽离成 css 文件&lt;/li&gt;
+&lt;li&gt;optimize-css-assets-webpack-plugin:不同组件中重复的 css 可以快速去重&lt;/li&gt;
+&lt;li&gt;clean-webpack-plugin:打包生成 dist 目录下的覆盖&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;loader-与-plugin-的区别，以及如何自定义&quot;&gt;loader 与 plugin 的区别，以及如何自定义&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;区别&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;loader 本身就只是一个函数，在该函数中对接收到的内容进行转换。它是个翻译官，它在 modules 的 rules 中配置，内部包含 test、loader 和 options 属性。&lt;/li&gt;
+&lt;li&gt;Plugin 就是插件，基于事件流。Webpack 在运行当中会去广播一些事件，plugin 去监听这些事件，然后干活。plugin 单独配置，通过构造函数传入参数生效。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;自定义 loader&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;loader 本质上是一个函数&lt;/li&gt;
+&lt;li&gt;因为函数中的 this 作为上下文会被 webpack 填充，因此不能将 loader 设为一个箭头函数&lt;/li&gt;
+&lt;li&gt;该函数接受一个参数，这个参数是 webpack 传递给 loader 的文件源内容&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;自定义 Plugin&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;webpack 编译会创建两个核心对象：compiler 和 compilation&lt;/li&gt;
+&lt;li&gt;compiler：包含了 webpack 环境的所有配置消息，包括 options、loader 和 plugin，以及 webpack 整个生命周期相关的钩子&lt;/li&gt;
+&lt;li&gt;compilation：作为 Plugin 内置事件回调函数的参数，包含了当前的模块资源、编译生成资源、变化的文件以及被跟踪依赖的状态信息。当检测到一个文件变化，一次新的 compilation 将被创建。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 导出一个函数，其中source为webpack传递给loader的输入参数--文件源内容&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable language_&quot;&gt;module&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;exports&lt;/span&gt; = &lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; (&lt;span class=&quot;params&quot;&gt;source&lt;/span&gt;) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; content = &lt;span class=&quot;title function_&quot;&gt;doSomething2JsString&lt;/span&gt;(source)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;comment&quot;&gt;// 如果loader配置了options对象，那么this.query将指向options&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; options = &lt;span class=&quot;variable language_&quot;&gt;this&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;query&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;variable language_&quot;&gt;this&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;fallback&lt;/span&gt;(&lt;span class=&quot;literal&quot;&gt;null&lt;/span&gt;, content) &lt;span class=&quot;comment&quot;&gt;//异步&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; content &lt;span class=&quot;comment&quot;&gt;//同步&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;自定义 Plugin，需要遵循的规范是：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;插件必须是一个函数或是包含 apply 方法的对象，这样才能访问 compiler 实例&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title class_&quot;&gt;MyPlugin&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;comment&quot;&gt;//Webpack会调用MyPlugin实例的apply方法给插件实例传入compiler对象&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;title function_&quot;&gt;apply&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;compiler&lt;/span&gt;) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;// 找到合适的事件钩子，实现自己的插件&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    compiler.&lt;span class=&quot;property&quot;&gt;hooks&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;emit&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;tap&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;MyPlugin&amp;#x27;&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;(&lt;span class=&quot;params&quot;&gt;compilation&lt;/span&gt;) =&amp;gt;&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &lt;span class=&quot;comment&quot;&gt;//do something&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;热更新&quot;&gt;热更新&lt;/h2&gt;
+&lt;p&gt;webpack 的热更新又称为热替换(Hot Module Replacement) – HMR:这个机制可以做到不用刷新浏览器而将变更的模块替换掉。&lt;/p&gt;
+&lt;p&gt;HMR 的核心就是：客户端从服务端拉去更新后的文件(他们直接维护了一个&lt;strong&gt;websocket&lt;/strong&gt;)，当本地资源发生变更后，客户端进行资源对比，然后增量更新。&lt;br&gt;
+开启 HMR，要在 webpack 配置文件的 devServer 中设置 hot 为 true 即可。&lt;/p&gt;
+&lt;h2 id=&quot;SourceMap-设置&quot;&gt;SourceMap 设置&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;项目打包后，如果关闭 sourceMap 的配置，在浏览器打开项目后，看到的 js 代码为打包后的代码，不利于查找代码错误。&lt;/li&gt;
+&lt;li&gt;sourceMap 是一个映射关系，他可以知道在 dist 打包后的 main.js 错误的代码对应在未经打包的代码的位置。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;配置项为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;devtool:‘source-map’—会在 dist 目录下生成一个.map 的映射文件。
+&lt;ul&gt;
+&lt;li&gt;如果为’inline-source-map’，则不会生成.map 文件，直接在原 main.js 文见中添加注释以映射(位置在底部)。&lt;/li&gt;
+&lt;li&gt;如果为’cheap-inline-source-map’ :与 inline 不同，只告诉是哪行代码出错，效率会高一些。&lt;/li&gt;
+&lt;li&gt;如果为&amp;quot;cheap-module-source-map’:不管是业务代码，但是依赖的第三方模块，都会显示出出错的地方。&lt;/li&gt;
+&lt;li&gt;eval 是打包效率最高的方式。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;如果是开发环境，建议使用&lt;code&gt;cheap-module-eval-source-map&lt;/code&gt;这种方式。&lt;/li&gt;
+&lt;li&gt;如果是生产环境，一般不用设置 devtool 的配置。如果要配置，推荐使用&lt;code&gt;cheap-module-source-map&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;代理&quot;&gt;代理&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;配置&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;webpack 中提供服务器的工具为 webpack-dev-server，只适用与开发阶段&lt;br&gt;
+配置核心为：devServer -&amp;gt; proxy&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;原理&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Proxy 工作原理实际上利用&lt;strong&gt;http-proxy-middleware&lt;/strong&gt;这个 http 中间件，实现请求转发给其他服务器。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; express = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;express&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; proxy = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;http-proxy-middleware&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; app = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;title function_&quot;&gt;express&lt;/span&gt;()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;app.&lt;span class=&quot;title function_&quot;&gt;use&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;/api&amp;#x27;&lt;/span&gt;,&lt;span class=&quot;title function_&quot;&gt;proxy&lt;/span&gt;(&amp;#123;&lt;span class=&quot;attr&quot;&gt;target&lt;/span&gt;:&lt;span class=&quot;string&quot;&gt;&amp;#x27;http://liugezhou.online&amp;#x27;&lt;/span&gt;&amp;#125;,&lt;span class=&quot;attr&quot;&gt;changeOrigin&lt;/span&gt;:&lt;span class=&quot;literal&quot;&gt;true&lt;/span&gt;))&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// http://localhost:3000/api/foo/bar -&amp;gt;http://liugezhou.online/aoi/foo/bar&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;strong&gt;跨域&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;过程：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;webpack-dev-server 在本地开发时启动了一个服务器，我们开发的应用运行在这个服务器上&lt;/li&gt;
+&lt;li&gt;后端服务运行在另一个服务上&lt;/li&gt;
+&lt;li&gt;这个时候由于&lt;strong&gt;浏览器的同源策略&lt;/strong&gt;，访问后端服务就会出现跨域现象&lt;/li&gt;
+&lt;li&gt;然后使用 devServer-proxy 配置，相当于开了一个代理服务器&lt;/li&gt;
+&lt;li&gt;于是交互变成：本地发生请求、代理服务器接受请求、代理服务器将请求发生给目标服务器，然后再倒叙顺序返回&lt;/li&gt;
+&lt;li&gt;由于服务器与服务器直接请求数据不会发生跨域行文，所以上面的流程就跑通了(跨域行为是浏览器的同源策略导致的)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;TreeShaking&quot;&gt;TreeShaking&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;要解决的问题&lt;/strong&gt;&lt;br&gt;
+在 math.js 这个模块中有两个方法 add 和 minus，在 index 中只调用 add 方法，去打包的时候，会将 math 中的两个方法均打包，这样做是没有必要，且会使得打包文件变大，Tree Shaking 就是为了解决这个问题的。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;开发环境下：默认没有TreeShaking功能。&lt;/li&gt;
+&lt;li&gt;生成环境下：默认配置好，但是仍然需要对 package.json 中的 sideEffects 进行配置。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;Code-Splitting&quot;&gt;Code Splitting&lt;/h2&gt;
+&lt;p&gt;Webpack的代码分割与webpack无关，只是对代码进行分割，提高代码的执行效率和性能。&lt;br&gt;
+比如引入了第三方包lodash，在entry中设置将业务代码和引入的包分别单独打包。&lt;/p&gt;
+&lt;h2 id=&quot;Chunk指什么&quot;&gt;Chunk指什么&lt;/h2&gt;
+&lt;p&gt;chunk 指的是整个项目完成打包后，dist 下面有几个 js 文件就是指几个 chunk。&lt;/p&gt;
+&lt;h2 id=&quot;借助-webpack-优化性能&quot;&gt;借助 webpack 优化性能&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;JS 代码压缩 -&amp;gt; uglifyJsPlugin/terserPlugin&lt;/li&gt;
+&lt;li&gt;CSS 代码压缩 -&amp;gt;optimize-assets-css-webpack-plugin/css-minimizer-webpack-plugin&lt;/li&gt;
+&lt;li&gt;HTML 文件代码压缩 -&amp;gt;htmlwebpackplugin 设置 minify 属性进行优化&lt;/li&gt;
+&lt;li&gt;文件大小压缩 -&amp;gt; compression-webpack-plugin&lt;/li&gt;
+&lt;li&gt;图片压缩 -&amp;gt; url-loader/&lt;/li&gt;
+&lt;li&gt;Tree Shaking -&amp;gt;&lt;/li&gt;
+&lt;li&gt;代码分离 -&amp;gt; splitChunkPlugin&lt;/li&gt;
+&lt;li&gt;内联 chunk -&amp;gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;提搞-webpack-的构建速度&quot;&gt;提搞 webpack 的构建速度&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;优化 loader 配置&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;使用 loader 时，可以通过配置 include、exclude、test 等属性来匹配文件&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;合理使用 resolve.extensions&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;优化 resolve.modules&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;项目构建时，可以通过指明存放第三模块的绝对路径来减少寻找的时间&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;优化 resolve.alias&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;别名使用&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;除了-webpack，其他模块管理工具&quot;&gt;除了 webpack，其他模块管理工具&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;rollup&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;相比 webpack，rollup 要小巧很多，当下的 vue、react、three.js 都是使用 rollup 打包&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;vite&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;快速冷启动&lt;/li&gt;
+&lt;li&gt;即时热更新&lt;/li&gt;
+&lt;li&gt;真正的按需编译&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;parcel&lt;/strong&gt;&lt;/p&gt;
+"><meta name="twitter:image"><title>Webpack全基础 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Webpack全基础</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Webpack全基础</h1><div class="post-meta">2021-05-21<span> | </span><span class="category"><a href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 2.8k</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 10</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/013-webpack/#vcomment"><span class="valine-comment-count" data-xid="/013-webpack/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86"><span class="toc-text">构建流程简单认识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#loader"><span class="toc-text">loader</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#plugin"><span class="toc-text">plugin</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#loader-%E4%B8%8E-plugin-%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%8C%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89"><span class="toc-text">loader 与 plugin 的区别，以及如何自定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%83%AD%E6%9B%B4%E6%96%B0"><span class="toc-text">热更新</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SourceMap-%E8%AE%BE%E7%BD%AE"><span class="toc-text">SourceMap 设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%90%86"><span class="toc-text">代理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TreeShaking"><span class="toc-text">TreeShaking</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Code-Splitting"><span class="toc-text">Code Splitting</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Chunk%E6%8C%87%E4%BB%80%E4%B9%88"><span class="toc-text">Chunk指什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%80%9F%E5%8A%A9-webpack-%E4%BC%98%E5%8C%96%E6%80%A7%E8%83%BD"><span class="toc-text">借助 webpack 优化性能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E6%90%9E-webpack-%E7%9A%84%E6%9E%84%E5%BB%BA%E9%80%9F%E5%BA%A6"><span class="toc-text">提搞 webpack 的构建速度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%A4%E4%BA%86-webpack%EF%BC%8C%E5%85%B6%E4%BB%96%E6%A8%A1%E5%9D%97%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7"><span class="toc-text">除了 webpack，其他模块管理工具</span></a></li></ol></div></div><div class="post-content"><h2 id="背景">背景</h2>
+<blockquote>
+<ol>
+<li>随着前端项目工程化、越来越复杂，Webpack 出现了。它是用来实现前端项目模块化的一个静态模块打包工具。</li>
+<li>所谓静态指的是开发阶段。</li>
+<li>webpack 的作用一是：编译代码能力、提高效率，解决浏览器兼容问题(ES6-&gt;ES5)</li>
+<li>webpack 的作用二是：模块整合能力，提高性能，解决了浏览器频繁请求文件的问题</li>
+<li>webpack 的作用三是：项目维护性增强了，支持不同种类的前端模块类型。</li>
+</ol>
+</blockquote>
+<h2 id="构建流程简单认识">构建流程简单认识</h2>
+<p><strong>从代码角度看：</strong><br>
+传统做法(vue2.5 之前没有 vue.config.js 时)是：将 webpack.base.config.js 中各个配置对象拷贝一份(基础配置)。然后根据不同的环境 merge 不同的配置。<br>
+比如测试环境独有的代理 devServer、sourcemap、热更新 HotModuleReplacementPlugin。<br>
+比如正式环境独有的 UglifyJsPlugin、extract-text-webpack-plugin、optimize-css-assets-webpack-plugin、html-webpack-plugin 等等。</p>
+<p><strong>base.config.js</strong><br>
+webpack.base.config.js 文件其实就足足的表达了这个 webpack 的构成到底是有哪些部分组成。<br>
+由于配置较多，我们这里支只对其中重要的几个配置做简要概述。</p>
+<ul>
+<li>mode: production(代码压缩),development(代码未压缩)</li>
+<li>entry: 打包入口文件，模块构建的起点，一个入口文件最后生成一个 chunk</li>
+<li>output：输出文件，模块构建的终点，可以设置多个输出文件和输出路径</li>
+<li>resolve：文件路径的指向，比如别名配置等，这个配置可以加快打包过程</li>
+<li>modules：这里面主要就是配置的一些 loader</li>
+<li>plugins：这里面主要配置的就是一些基础 plugin</li>
+</ul>
+<h2 id="loader">loader</h2>
+<blockquote>
+<p>我们必须知道的是 webpack 她只认识 js，loader 就是用来将不是 js 的文件经过<strong>函数</strong>处理成 js。<br>
+然后这个 loader 的配置，如上所示我们通常写在<strong>modules.rules</strong>属性中。<br>
+最后，需要注意的是 loader 支持链式调用(每个 loader 可以处理之前已经处理过的资源)，到这对于 loader 的掌握已经算快及格了。<br>
+接着看完 loader 和 plugin 之后，我们就及格了。</p>
+</blockquote>
+<p><strong>常用 loader</strong><br>
+<strong>样式 loader</strong></p>
+<blockquote>
+<ul>
+<li>scss-loader:将 scss 文件转换为 css 文件，在 vue 的模板使用中直接安装 node-sass 和 sass-loader 即可使用，但是需要注意版本的问题，版本过高可能会引起报错</li>
+<li>less-loader：将 less 文件转换为 css 文件,使用时需要安装 less 和 less-loader</li>
+<li>stylus-loader:stylus 样式写法，使用时需要安装 stylus 和 stylus-loader</li>
+<li>css-loader：用来处理文件中的@import 和 url()、require 等引入</li>
+<li>postcss-loader:处理 css3 的前缀等，autoprefixer-loader 已被废弃</li>
+<li>style-loader:创建一个 style 标签将 css 文件嵌入到 html 当中去,通过 dom 操作 css</li>
+</ul>
+</blockquote>
+<p><strong>编译 loader</strong></p>
+<blockquote>
+<ul>
+<li>vue-loader:这个 loader 的作用是将扩展名为.vue 的单文件组件转换成 js 模块</li>
+<li>babel-loader：将 ES6 转换为 ES5 代码</li>
+<li>ts-loader：将 ts 转为 js</li>
+<li>awesome-typescript-loader：将 ts 文件转换为 js，性能优于 ts-loader</li>
+</ul>
+</blockquote>
+<p><strong>文件 loader</strong></p>
+<blockquote>
+<ul>
+<li>raw-loader：可以将文件以字符串的形式返回</li>
+<li>file-loader：分发文件到 output 目录并返回相对路径</li>
+<li>url-loader：与 file-loader 类似，但可以将小于配置 limit 大小的文件转换成内敛 Data Url 的方式，减少请求。</li>
+<li>html-minify-loader:压缩 html</li>
+</ul>
+</blockquote>
+<h2 id="plugin">plugin</h2>
+<blockquote>
+<p>webpack 的 plugin 要比 loader 强大，可以在 webpack 运行到某个时刻的时候，帮你做一些事情 类似与 vue 中的生命周期函数(比如html-webpack-plugin会在打包结束后自动生成html文件)。<br>
+通过之前的学习，我们也知道需要哪些插件，我们就直接引入，然后以 new 对象的形式传入 plugins 配置对象中去就可以。<br>
+然后，如果再深入一点点的话，我们看 plugin 的本质：其实就是具有一个<strong>apply</strong>方法的 JS 对象。这个 apply 方法是会被 webpack 的 compiler 调用的。并且在整个编译生命周期都可以访问 compiler 对象。</p>
+</blockquote>
+<p><strong><em>内置插件</em></strong></p>
+<ul>
+<li>uglifyJsPlugin:压缩和混淆代码。</li>
+<li>CommonsChunkPlugin:提高打包效率，将第三方库和业务代码分开打包</li>
+<li>HotModuleReplacementPlugin:热更新</li>
+<li>DefinePlugin:编译时配置全局变量，这对开发模式和发布模式的构建允许不同行为非常有用</li>
+</ul>
+<p><strong>其它插件</strong></p>
+<ul>
+<li>html-webpack-plugin：可以根据模板自动生成 html 代码，并自动引用 css 和 js 文件</li>
+<li>ProvidePlugin：自动加载模块，代替 require 和 import</li>
+<li>extract-text-webpack-plugin:将 js 文件中引用的样式单独抽离成 css 文件</li>
+<li>optimize-css-assets-webpack-plugin:不同组件中重复的 css 可以快速去重</li>
+<li>clean-webpack-plugin:打包生成 dist 目录下的覆盖</li>
+</ul>
+<h2 id="loader-与-plugin-的区别，以及如何自定义">loader 与 plugin 的区别，以及如何自定义</h2>
+<p><strong>区别</strong></p>
+<blockquote>
+<ul>
+<li>loader 本身就只是一个函数，在该函数中对接收到的内容进行转换。它是个翻译官，它在 modules 的 rules 中配置，内部包含 test、loader 和 options 属性。</li>
+<li>Plugin 就是插件，基于事件流。Webpack 在运行当中会去广播一些事件，plugin 去监听这些事件，然后干活。plugin 单独配置，通过构造函数传入参数生效。</li>
+</ul>
+</blockquote>
+<p><strong>自定义 loader</strong></p>
+<blockquote>
+<ul>
+<li>loader 本质上是一个函数</li>
+<li>因为函数中的 this 作为上下文会被 webpack 填充，因此不能将 loader 设为一个箭头函数</li>
+<li>该函数接受一个参数，这个参数是 webpack 传递给 loader 的文件源内容</li>
+</ul>
+</blockquote>
+<p><strong>自定义 Plugin</strong></p>
+<blockquote>
+<ul>
+<li>webpack 编译会创建两个核心对象：compiler 和 compilation</li>
+<li>compiler：包含了 webpack 环境的所有配置消息，包括 options、loader 和 plugin，以及 webpack 整个生命周期相关的钩子</li>
+<li>compilation：作为 Plugin 内置事件回调函数的参数，包含了当前的模块资源、编译生成资源、变化的文件以及被跟踪依赖的状态信息。当检测到一个文件变化，一次新的 compilation 将被创建。</li>
+</ul>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 导出一个函数，其中source为webpack传递给loader的输入参数--文件源内容</span></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = <span class="keyword">function</span> (<span class="params">source</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> content = <span class="title function_">doSomething2JsString</span>(source)</span><br><span class="line">  <span class="comment">// 如果loader配置了options对象，那么this.query将指向options</span></span><br><span class="line">  <span class="keyword">const</span> options = <span class="variable language_">this</span>.<span class="property">query</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="title function_">fallback</span>(<span class="literal">null</span>, content) <span class="comment">//异步</span></span><br><span class="line">  <span class="keyword">return</span> content <span class="comment">//同步</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>自定义 Plugin，需要遵循的规范是：</p>
+<blockquote>
+<ul>
+<li>插件必须是一个函数或是包含 apply 方法的对象，这样才能访问 compiler 实例</li>
+</ul>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyPlugin</span> &#123;</span><br><span class="line">  <span class="comment">//Webpack会调用MyPlugin实例的apply方法给插件实例传入compiler对象</span></span><br><span class="line">  <span class="title function_">apply</span>(<span class="params">compiler</span>) &#123;</span><br><span class="line">    <span class="comment">// 找到合适的事件钩子，实现自己的插件</span></span><br><span class="line">    compiler.<span class="property">hooks</span>.<span class="property">emit</span>.<span class="title function_">tap</span>(<span class="string">&#x27;MyPlugin&#x27;</span>, <span class="function">(<span class="params">compilation</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">//do something</span></span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="热更新">热更新</h2>
+<p>webpack 的热更新又称为热替换(Hot Module Replacement) – HMR:这个机制可以做到不用刷新浏览器而将变更的模块替换掉。</p>
+<p>HMR 的核心就是：客户端从服务端拉去更新后的文件(他们直接维护了一个<strong>websocket</strong>)，当本地资源发生变更后，客户端进行资源对比，然后增量更新。<br>
+开启 HMR，要在 webpack 配置文件的 devServer 中设置 hot 为 true 即可。</p>
+<h2 id="SourceMap-设置">SourceMap 设置</h2>
+<ul>
+<li>项目打包后，如果关闭 sourceMap 的配置，在浏览器打开项目后，看到的 js 代码为打包后的代码，不利于查找代码错误。</li>
+<li>sourceMap 是一个映射关系，他可以知道在 dist 打包后的 main.js 错误的代码对应在未经打包的代码的位置。</li>
+</ul>
+<p>配置项为：</p>
+<ul>
+<li>devtool:‘source-map’—会在 dist 目录下生成一个.map 的映射文件。
+<ul>
+<li>如果为’inline-source-map’，则不会生成.map 文件，直接在原 main.js 文见中添加注释以映射(位置在底部)。</li>
+<li>如果为’cheap-inline-source-map’ :与 inline 不同，只告诉是哪行代码出错，效率会高一些。</li>
+<li>如果为&quot;cheap-module-source-map’:不管是业务代码，但是依赖的第三方模块，都会显示出出错的地方。</li>
+<li>eval 是打包效率最高的方式。</li>
+</ul>
+</li>
+<li>如果是开发环境，建议使用<code>cheap-module-eval-source-map</code>这种方式。</li>
+<li>如果是生产环境，一般不用设置 devtool 的配置。如果要配置，推荐使用<code>cheap-module-source-map</code>。</li>
+</ul>
+<h2 id="代理">代理</h2>
+<p><strong>配置</strong></p>
+<blockquote>
+<p>webpack 中提供服务器的工具为 webpack-dev-server，只适用与开发阶段<br>
+配置核心为：devServer -&gt; proxy</p>
+</blockquote>
+<p><strong>原理</strong></p>
+<blockquote>
+<p>Proxy 工作原理实际上利用<strong>http-proxy-middleware</strong>这个 http 中间件，实现请求转发给其他服务器。</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> proxy = <span class="built_in">require</span>(<span class="string">&#x27;http-proxy-middleware&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> <span class="title function_">express</span>()</span><br><span class="line">app.<span class="title function_">use</span>(<span class="string">&#x27;/api&#x27;</span>,<span class="title function_">proxy</span>(&#123;<span class="attr">target</span>:<span class="string">&#x27;http://liugezhou.online&#x27;</span>&#125;,<span class="attr">changeOrigin</span>:<span class="literal">true</span>))</span><br><span class="line"><span class="comment">// http://localhost:3000/api/foo/bar -&gt;http://liugezhou.online/aoi/foo/bar</span></span><br></pre></td></tr></table></figure>
+<p><strong>跨域</strong></p>
+<blockquote>
+<p>过程：</p>
+<ul>
+<li>webpack-dev-server 在本地开发时启动了一个服务器，我们开发的应用运行在这个服务器上</li>
+<li>后端服务运行在另一个服务上</li>
+<li>这个时候由于<strong>浏览器的同源策略</strong>，访问后端服务就会出现跨域现象</li>
+<li>然后使用 devServer-proxy 配置，相当于开了一个代理服务器</li>
+<li>于是交互变成：本地发生请求、代理服务器接受请求、代理服务器将请求发生给目标服务器，然后再倒叙顺序返回</li>
+<li>由于服务器与服务器直接请求数据不会发生跨域行文，所以上面的流程就跑通了(跨域行为是浏览器的同源策略导致的)</li>
+</ul>
+</blockquote>
+<h2 id="TreeShaking">TreeShaking</h2>
+<p><strong>要解决的问题</strong><br>
+在 math.js 这个模块中有两个方法 add 和 minus，在 index 中只调用 add 方法，去打包的时候，会将 math 中的两个方法均打包，这样做是没有必要，且会使得打包文件变大，Tree Shaking 就是为了解决这个问题的。</p>
+<ul>
+<li>开发环境下：默认没有TreeShaking功能。</li>
+<li>生成环境下：默认配置好，但是仍然需要对 package.json 中的 sideEffects 进行配置。</li>
+</ul>
+<h2 id="Code-Splitting">Code Splitting</h2>
+<p>Webpack的代码分割与webpack无关，只是对代码进行分割，提高代码的执行效率和性能。<br>
+比如引入了第三方包lodash，在entry中设置将业务代码和引入的包分别单独打包。</p>
+<h2 id="Chunk指什么">Chunk指什么</h2>
+<p>chunk 指的是整个项目完成打包后，dist 下面有几个 js 文件就是指几个 chunk。</p>
+<h2 id="借助-webpack-优化性能">借助 webpack 优化性能</h2>
+<blockquote>
+<ul>
+<li>JS 代码压缩 -&gt; uglifyJsPlugin/terserPlugin</li>
+<li>CSS 代码压缩 -&gt;optimize-assets-css-webpack-plugin/css-minimizer-webpack-plugin</li>
+<li>HTML 文件代码压缩 -&gt;htmlwebpackplugin 设置 minify 属性进行优化</li>
+<li>文件大小压缩 -&gt; compression-webpack-plugin</li>
+<li>图片压缩 -&gt; url-loader/</li>
+<li>Tree Shaking -&gt;</li>
+<li>代码分离 -&gt; splitChunkPlugin</li>
+<li>内联 chunk -&gt;</li>
+</ul>
+</blockquote>
+<h2 id="提搞-webpack-的构建速度">提搞 webpack 的构建速度</h2>
+<p><strong>优化 loader 配置</strong></p>
+<blockquote>
+<p>使用 loader 时，可以通过配置 include、exclude、test 等属性来匹配文件</p>
+</blockquote>
+<p><strong>合理使用 resolve.extensions</strong><br>
+<strong>优化 resolve.modules</strong></p>
+<blockquote>
+<p>项目构建时，可以通过指明存放第三模块的绝对路径来减少寻找的时间</p>
+</blockquote>
+<p><strong>优化 resolve.alias</strong></p>
+<blockquote>
+<p>别名使用</p>
+</blockquote>
+<h2 id="除了-webpack，其他模块管理工具">除了 webpack，其他模块管理工具</h2>
+<p><strong>rollup</strong></p>
+<blockquote>
+<p>相比 webpack，rollup 要小巧很多，当下的 vue、react、three.js 都是使用 rollup 打包</p>
+</blockquote>
+<p><strong>vite</strong></p>
+<blockquote>
+<ul>
+<li>快速冷启动</li>
+<li>即时热更新</li>
+<li>真正的按需编译</li>
+</ul>
+</blockquote>
+<p><strong>parcel</strong></p>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>Webpack全基础</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2021-05-21</p><p><span>最后更新：</span>2023-01-31</p><p><span>原始链接：</span><a href="/013-webpack/">https://blog.liugezhou.online/013-webpack/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/013-webpack/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/JavaScript"><i class="fa fa-tag">JavaScript</i></a></div><div class="post-nav"><a class="pre" href="/014-IDEA%20%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90mapper/">IDEA 自动生成mapper</a><a class="next" href="/012-JS%E6%95%B0%E7%BB%84/">JavaScript数组</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

@@ -1,0 +1,501 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="阶段五：浏览器中的页面"><meta name="twitter:description" content="&lt;h2 id=&quot;21-Chrome开发者工具：利用网络面板做性能分析&quot;&gt;21 | Chrome开发者工具：利用网络面板做性能分析&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;页面是浏览器的核心，浏览器中的所有功能都是服务于页面的，Chrome开发者工具又是调试页面的核心工具。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;网络面板&quot;&gt;网络面板&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;控制器&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;开始或停止抓包&lt;/li&gt;
+&lt;li&gt;全局搜索&lt;/li&gt;
+&lt;li&gt;禁止从cache中加载资源&lt;/li&gt;
+&lt;li&gt;模拟网络&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;过滤器&lt;/li&gt;
+&lt;li&gt;抓图信息：Capture screenshots&lt;/li&gt;
+&lt;li&gt;详细列表：重点内容&lt;/li&gt;
+&lt;li&gt;下载信息概要&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;DOMContentLoaded:页面已经构建好DOM，所需要的HTML、CSS和JS文件都已经下载完成&lt;/li&gt;
+&lt;li&gt;Load:浏览器已经加载了所有的资源(图片、样式表等)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;详细信息中的Timing&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Queued:排队–资源优先级、6个TCP链接。&lt;/li&gt;
+&lt;li&gt;Stalled:其它一些可能导致连接过程被推迟的原因。&lt;/li&gt;
+&lt;li&gt;Proxy Negotiation:代理协商阶段&lt;/li&gt;
+&lt;li&gt;Initial connection/SSL:与服务器建立连接的阶段&lt;/li&gt;
+&lt;li&gt;Request sent:网络进程准备请求数据，发送给网络，时间通常不到1ms。&lt;/li&gt;
+&lt;li&gt;Waiting(TTFB):第一字节时间，反映服务端相应速度的重要指标。&lt;/li&gt;
+&lt;li&gt;Connect Download:从第一字节时间到接收到全部响应数据所用的时间。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;优化Timing&quot;&gt;优化Timing&lt;/h3&gt;
+&lt;h4 id=&quot;1-Queuing时间太久&quot;&gt;1. Queuing时间太久&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;大概率因为每个域名同时维护6个TCP连接，基于这个原因可以使用域名分片技术，即把该站点下面的资源放在多个域名下。另外可以将站点升级至HTTP2，因为HTTP2下面已经没有每个域名同时维护6个TCP连接的限制了(可通过curl -I 域名方式查看HTTP协议版本)。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;2-第一字节时间过久-TTFB&quot;&gt;2. 第一字节时间过久(TTFB)&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;服务器生成页面数据时间过久&lt;/li&gt;
+&lt;li&gt;网络原因&lt;/li&gt;
+&lt;li&gt;发送请求头带上了多余的用户信息：比如不必要的Cookie信息&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;3-ContentLoad时间过久&quot;&gt;3.ContentLoad时间过久&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;可能是字节数太多的原因导致的。这时候你就需要减少文件大小，比如压缩、去掉源码中不必要的注释等方法。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;22-DOM树：JavaScript是如何影响DOM树构建的&quot;&gt;22 | DOM树：JavaScript是如何影响DOM树构建的&lt;/h2&gt;
+&lt;h3 id=&quot;什么是DOM&quot;&gt;什么是DOM&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;网络&lt;/strong&gt;传递给&lt;strong&gt;渲染引擎&lt;/strong&gt;的HTML文件字节流渲染引擎是无法理解，需要将其转换为其能够理解的内部结构，这个内部结构就是DOM，DOM提供了对HTML文档结构化的表述，主要作用有三种：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;DOM是生成页面的基础数据结构&lt;/li&gt;
+&lt;li&gt;DOM提供给JS脚本操作DOM的接口&lt;/li&gt;
+&lt;li&gt;DOM是一道安全防线，不安全内容在DOM解析阶段会被拒之门外。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;DOM树如何生成&quot;&gt;DOM树如何生成&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;简言之：通过HTML解析器，将HTML字节流转换为DOM结构。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;阶段一：通过分词器将字节流转换为Token。&lt;/li&gt;
+&lt;li&gt;阶段二、阶段三同步进行，将Token解析为DOM节点，并将DOM节点添加到DOM树中。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;JavaScript是如何影响DOM生成的&quot;&gt;JavaScript是如何影响DOM生成的&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;一段HTML文件，如果加入了script标签(内有脚本内容)，在解析到此script标签时，此时的HTML解析器会暂停DOM的解析，因为接下来JavaScript可能要修改当前生成的DOM结构。&lt;/li&gt;
+&lt;li&gt;如果HTML文件中通过script引入了js文件，那解析到script时，需要先下载这段JS代码，而下载过程会阻塞DOM接续，因此一方面浏览器做了预解析的操作优化，而另一方面对我们来说，如果该scipt标签内没有操作DOM的相关代码，可以将该脚本设置为异步加载(async或defer)。&lt;br&gt;
+async与defer的区别是：async方法在脚本文件下载完毕后立即执行。而defer是在DOMContentLoaded事件之前执行。&lt;/li&gt;
+&lt;li&gt;JS引擎在解析JS之前，并不知道其中是否会有操纵CSSOM行为的代码，所以在解析JS前，不管是否操纵了CSSOM，都会先去下载CSS文件并解析成CSSOM后，才会再来执行JS脚本。&lt;br&gt;
+最后，得出结论，JavaScript会阻塞DOM的生成，而CSSOM又会阻塞JavaScript的执行，因此DOM的生成受到JS和CSS的影响。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;23-｜-渲染流水线：CSS如何影响首次加载时的白屏时间？&quot;&gt;23 ｜ 渲染流水线：CSS如何影响首次加载时的白屏时间？&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;首先在上一节基础上进行一个小扩展，Chrome浏览器的&lt;strong&gt;预解析线程&lt;/strong&gt;会先对文件中扫描到的js或者css文件进行一个提前下载数据的阶段，然后这个阶段就可能会因为下载文件而造成阻塞。&lt;br&gt;
+然后，渲染流水线需要CSSOM是因为浏览器一样无法直接理解CSS，需要转换成CSSOM，然后进行样式计算、计算布局等阶段。&lt;br&gt;
+最后，渲染流水线的流程再简单梳理一遍就是：HTML解析器再接收到数据后，预解析器识别出了有CSS和JavaScript文件，会预先对这些资源进行同步下载，然后生成DOM之前，由于DOM受JS影响，而JS又受CSSOM影响，所以，首先保证的是CSS的下载完成、CSSOM的结构生成。&lt;br&gt;
+针对这个渲染流程的阶段分析，其白屏瓶颈为：下载CSS和JavaScipt以及执行JavaScript的时间，因此缩短白屏时长的策略有：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;通过内敛CSS和JS文件，减少这两种文件的下载时间&lt;/li&gt;
+&lt;li&gt;减少文件大小，通过Webpack等工具移除不必要的注释、压缩JS文件等方式。&lt;/li&gt;
+&lt;li&gt;不需要在HTML阶段使用的JS标记async和defer。&lt;/li&gt;
+&lt;li&gt;CSS文件过大，可通过媒体查询属性，标记为多个不同用途CSS文件，只在特定环境下加载特点CSS文件。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;24-｜-分层和合成机制：为什么CSS动画比JavaScript高效&quot;&gt;24 ｜ 分层和合成机制：为什么CSS动画比JavaScript高效&lt;/h2&gt;
+&lt;h3 id=&quot;显示器是怎么显示图像的&quot;&gt;显示器是怎么显示图像的&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;每个显示器都有固定的&lt;strong&gt;刷新频率&lt;/strong&gt;，通常是60HZ，也就是每秒更新60张图片，更新的图片都来自&lt;strong&gt;显卡&lt;/strong&gt;中一个叫做&lt;strong&gt;前缓冲区&lt;/strong&gt;的地方，显示器的工作就是每秒固定读取60张从前缓冲区中的图像，显示在&lt;strong&gt;显示器&lt;/strong&gt;上。&lt;br&gt;
+这个显卡的作用就是合成新的图片，将生成的图片保存在后缓冲区，然后与前缓冲区进行交换，其刷新频率和显示器一致。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;帧和帧率&quot;&gt;帧和帧率&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;我们在滑动页面或者手势缩放页面的过程中，屏幕产生了相应的效果，这是因为滚动或者缩放的这个操作，渲染引擎迅速捕捉到这个动作并将60张图片更新到显卡的后缓冲区，然后显卡的后缓冲区与前缓冲区进行交换，显示器从显卡前缓冲区读取这个图像，显示在显示器上。&lt;br&gt;
+将渲染流水线生成的每一张图片称为&lt;strong&gt;一帧&lt;/strong&gt;，每秒更新了多少帧称为&lt;strong&gt;帧率&lt;/strong&gt;。&lt;br&gt;
+于是，要解决一帧生产时间过久的问题，Chrome对浏览器渲染方式做了大量工作，其中最卓有成效的就是引入了&lt;strong&gt;分层&lt;/strong&gt;和&lt;strong&gt;合成机制&lt;/strong&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;生成一帧图像的方式&quot;&gt;生成一帧图像的方式&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;生产一帧的生成方式有&lt;strong&gt;重绘&lt;/strong&gt;、&lt;strong&gt;重排&lt;/strong&gt;、&lt;strong&gt;合成&lt;/strong&gt;三种方式。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;重排会重新根据CSSOM和DOM来计算布局树，生成一张图片会将整个渲染流水线都执行一遍。&lt;/li&gt;
+&lt;li&gt;重绘在生成一张图片的过程中，少了重新布局的阶段，但依然会进重新计算绘制消息，会比重排效率高。&lt;/li&gt;
+&lt;li&gt;合成不会触发布局和绘制过程，因此合成效率更高。&lt;/li&gt;
+&lt;li&gt;重排和重绘操作都是在渲染进程的主线程上执行的，比较耗时；而合成操作是在渲染进程的合成线程上执行的，执行速度快，且不占用主线程。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;分层和合成&quot;&gt;分层和合成&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;分层是将多个素材分解成多个图层处理，将这些图层合并在一起就叫做合成。&lt;br&gt;
+然后根据阶段一的内容，我们知道在(&lt;strong&gt;构建DOM树、样式计算、布局阶段&lt;/strong&gt;) 后，就是&lt;strong&gt;分层&lt;/strong&gt;的过程，之所以需要分层，是后续的流程需要根据这个层来干事情，比如再之后的&lt;strong&gt;绘制&lt;/strong&gt;会对每一个层生成一个个绘制指令，然后&lt;strong&gt;光栅化阶段&lt;/strong&gt;根据一个个指令生成图片，一个图层就是一张图片，最后合成线程就将一张张图片进行合成一张图片，将最终生成的图片发送至显卡的后缓冲区。&lt;br&gt;
+这就是分层和合成的流程。&lt;br&gt;
+需要特别注意的是：&lt;strong&gt;合成的这个操作是在合成线程中完成的，不会影响主线程执行&lt;/strong&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;分块&quot;&gt;分块&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;通常页面内容比显示器内容要大很多，若等待所有图片都生成完毕再通过和合成生成一张图片的话，开销会很大，因此合成线程会优先绘制靠近视口的图块，且在首次合成图块的时候使用了一个低分辨率的图片。等正常比例的网页内容绘制好之后，再替换掉当前显示的低分辨率内容。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;利用分层技术优化代码&quot;&gt;利用分层技术优化代码&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;当对一些元素进行几何形状变换、透明度变换、缩放等操作时，使用JS操作会牵扯到整个渲染流水线，而使用CSS则只会经过合成线程的合成阶段，效率要大很多。&lt;br&gt;
+也就解释了为什么CSS动画要比JavaScript动画效率高。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;25-页面性能：如何系统地优化页面&quot;&gt;25 | 页面性能：如何系统地优化页面&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;这里讨论的优化页面是指：如何更快的让页面显示和响应。&lt;br&gt;
+而页面的周期分为加载阶段、交互阶段和关闭阶段，前两个阶段是用户体验的主要阶段。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;加载阶段&quot;&gt;加载阶段&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;加载阶段也就是资源下载整合的阶段，这些资源包括图片、音频、视频等不会影响阻塞页面首次加载的资源，以及JS、CSS、HTML等阻塞首次渲染的资源。&lt;br&gt;
+阻塞首次渲染的资源称为关键资源，优化点有：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;尽量减少关键资源个数&lt;/li&gt;
+&lt;li&gt;关键资源内容尽量小&lt;/li&gt;
+&lt;li&gt;降低关键资源的RTT次数。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;交互阶段&quot;&gt;交互阶段&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;减少JavaScript脚本执行时间&lt;/li&gt;
+&lt;li&gt;避免强制同步布局。&lt;/li&gt;
+&lt;li&gt;避免布局抖动&lt;/li&gt;
+&lt;li&gt;合理利用CSS合成动画&lt;/li&gt;
+&lt;li&gt;避免频繁的垃圾回收&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;26-｜-虚拟DOM和实际DOM有何不同&quot;&gt;26 ｜ 虚拟DOM和实际DOM有何不同&lt;/h2&gt;
+&lt;h3 id=&quot;DOM缺陷&quot;&gt;DOM缺陷&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;DOM缺陷就是往往一个小的DOM操作，渲染引擎需要进行重排、重绘、合成等操作，这些操作非常频繁且耗时，会带来性能问题。&lt;br&gt;
+然后需要一种方式来减少JS对DOM的操作，于是虚拟DOM就来了。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;什么是虚拟DOM&quot;&gt;什么是虚拟DOM&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;虚拟DOM的作用是：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;将页面改变的内容应用到虚拟DOM上，不是直接应用到DOM上。&lt;/li&gt;
+&lt;li&gt;变换应用到虚拟DOM上时，不会着急去渲染页面，而仅是调整虚拟DOM的内部状态，这样操作虚拟DOM效率高且畅快。&lt;/li&gt;
+&lt;li&gt;虚拟DOM收集到足够的改变，将这些变化一次性应用到真实DOM上，这样就能较少一些不必要的更新，同时保证DOM稳定输出。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;27-｜-渐进式网页应用-PWA-它究竟解决了Web应用的哪些问题？&quot;&gt;27 ｜ 渐进式网页应用(PWA):它究竟解决了Web应用的哪些问题？&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;PWA:Progressive Web App 渐进式网页应用。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;PWA提供了一个&lt;strong&gt;渐进式的过渡方案&lt;/strong&gt;，让Web应用逐步具有本地应用的能力，且根据技术的演进，采用渐进式的方式逐步支持各项新技术，不断实现本地应用特性，是一个非常缓和的渐进式策略，而不是一步到位。&lt;/li&gt;
+&lt;li&gt;PWA是一种理念，渐进式增强Web的优势，通过技术手段渐进式缩短和本地应用或者小程序的距离，基于这套理念之下的技术都可以归类为PWA。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;Web应用-VS-本地应用&quot;&gt;Web应用 VS 本地应用&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;相对于本地应用，Web应用缺少的是：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;缺少离线使用能力。&lt;/li&gt;
+&lt;li&gt;缺少消息推送能力。&lt;/li&gt;
+&lt;li&gt;缺少一级入口。&lt;br&gt;
+当然，基于上面的这几种缺陷吧，PWA提供了两种解决防范：引入了Service Worker来尝试解决离线存储和消息推送的问题。&lt;br&gt;
+引入了manifest.json来解决一级入口的问题,可以让开发者定义桌面图标、显示名称、启动信息、页面主题颜色等。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;Service-Worker&quot;&gt;Service Worker&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;主要思想是：在页面和网络直接增加一个&lt;strong&gt;拦截器&lt;/strong&gt;，用来缓存和拦截请求。&lt;br&gt;
+这个拦截器是干嘛的呢：没有安装 Service Worker 之前，WebApp 都是直接通过网络模块来请求资源的。安装了 Service Worker 模块之后，WebApp 请求资源时，会&lt;strong&gt;先通过 Service Worker&lt;/strong&gt;，让它判断是返回 Service Worker 缓存的资源还是重新去网络请求资源。一切的控制权都交由 Service Worker 来处理。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;Web-Worker&quot;&gt;Web Worker&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Web Worker是为了避免一个JS脚本执行占用主线程时间过长这个问题而出现的。&lt;br&gt;
+Web Worker是运行在页面主线程之外的，但Web Worker当中没有当前页面的DOM环境，因此只能执行和DOM无关的脚步，并通过postMessage方法将执行结果返回给主线程，也就是说，Web Worker是在渲染进程中开启的一个新线程。&lt;br&gt;
+然后Service Worker借鉴了Web Worker的核心思想:‘让其运行在主线程之外’，而由于Web Worker是临时的，执行结果保存不下来，因此Service Worker增加了储存功能。&lt;br&gt;
+安全设计上，Service Worker采用HTTPS协议。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;28-｜-WebComponent：像搭积木一样构建Web应用&quot;&gt;28 ｜ WebComponent：像搭积木一样构建Web应用&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;怎么理解组件化呢：&lt;strong&gt;对内高内聚、对外低耦合&lt;/strong&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;阻碍前端组件化的因素&quot;&gt;阻碍前端组件化的因素&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;CSS全局样式阻碍组件化—scoped&lt;/li&gt;
+&lt;li&gt;DOM阻碍组件化，页面中只有一个DOM，任何地方都可以直接读取和修改DOM。&lt;br&gt;
+因此使用JS实现组件化没有问题，但是遇上CSS和DOm，就不好弄了。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;WebComponent组件化&quot;&gt;WebComponent组件化&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;WebComponent给出的解决思路就是提供局部视图封装能力，让CSS和HTML和JS运行在局部环境，已使得不会影响全局。&lt;br&gt;
+他的实现简单概括为： 使用template属性来创建模板，使用&lt;strong&gt;影子DOM&lt;/strong&gt;提供局部作用域，将template中DOM和CSS与全局进行隔离。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;影子DOM&quot;&gt;影子DOM&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;影子DOM的作用主要有两类：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;影子DOM的元素对于整个网页是不可见的。&lt;/li&gt;
+&lt;li&gt;影子DOM的CSS不会影响到整个网页的CSSOM，影子内部的CSS只对内部元素起作用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+"><meta name="twitter:image"><title>阶段五：浏览器中的页面 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">阶段五：浏览器中的页面</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">阶段五：浏览器中的页面</h1><div class="post-meta">2022-04-10<span> | </span><span class="category"><a href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 3.7k</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 12</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/A5%E9%98%B6%E6%AE%B5%E4%BA%94%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E9%A1%B5%E9%9D%A2/#vcomment"><span class="valine-comment-count" data-xid="/A5%E9%98%B6%E6%AE%B5%E4%BA%94%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E9%A1%B5%E9%9D%A2/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#21-Chrome%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%EF%BC%9A%E5%88%A9%E7%94%A8%E7%BD%91%E7%BB%9C%E9%9D%A2%E6%9D%BF%E5%81%9A%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90"><span class="toc-text">21 | Chrome开发者工具：利用网络面板做性能分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E9%9D%A2%E6%9D%BF"><span class="toc-text">网络面板</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E5%8C%96Timing"><span class="toc-text">优化Timing</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Queuing%E6%97%B6%E9%97%B4%E5%A4%AA%E4%B9%85"><span class="toc-text">1. Queuing时间太久</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E7%AC%AC%E4%B8%80%E5%AD%97%E8%8A%82%E6%97%B6%E9%97%B4%E8%BF%87%E4%B9%85-TTFB"><span class="toc-text">2. 第一字节时间过久(TTFB)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-ContentLoad%E6%97%B6%E9%97%B4%E8%BF%87%E4%B9%85"><span class="toc-text">3.ContentLoad时间过久</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#22-DOM%E6%A0%91%EF%BC%9AJavaScript%E6%98%AF%E5%A6%82%E4%BD%95%E5%BD%B1%E5%93%8DDOM%E6%A0%91%E6%9E%84%E5%BB%BA%E7%9A%84"><span class="toc-text">22 | DOM树：JavaScript是如何影响DOM树构建的</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFDOM"><span class="toc-text">什么是DOM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DOM%E6%A0%91%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90"><span class="toc-text">DOM树如何生成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JavaScript%E6%98%AF%E5%A6%82%E4%BD%95%E5%BD%B1%E5%93%8DDOM%E7%94%9F%E6%88%90%E7%9A%84"><span class="toc-text">JavaScript是如何影响DOM生成的</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#23-%EF%BD%9C-%E6%B8%B2%E6%9F%93%E6%B5%81%E6%B0%B4%E7%BA%BF%EF%BC%9ACSS%E5%A6%82%E4%BD%95%E5%BD%B1%E5%93%8D%E9%A6%96%E6%AC%A1%E5%8A%A0%E8%BD%BD%E6%97%B6%E7%9A%84%E7%99%BD%E5%B1%8F%E6%97%B6%E9%97%B4%EF%BC%9F"><span class="toc-text">23 ｜ 渲染流水线：CSS如何影响首次加载时的白屏时间？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#24-%EF%BD%9C-%E5%88%86%E5%B1%82%E5%92%8C%E5%90%88%E6%88%90%E6%9C%BA%E5%88%B6%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88CSS%E5%8A%A8%E7%94%BB%E6%AF%94JavaScript%E9%AB%98%E6%95%88"><span class="toc-text">24 ｜ 分层和合成机制：为什么CSS动画比JavaScript高效</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%98%BE%E7%A4%BA%E5%99%A8%E6%98%AF%E6%80%8E%E4%B9%88%E6%98%BE%E7%A4%BA%E5%9B%BE%E5%83%8F%E7%9A%84"><span class="toc-text">显示器是怎么显示图像的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%A7%E5%92%8C%E5%B8%A7%E7%8E%87"><span class="toc-text">帧和帧率</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E4%B8%80%E5%B8%A7%E5%9B%BE%E5%83%8F%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="toc-text">生成一帧图像的方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E5%B1%82%E5%92%8C%E5%90%88%E6%88%90"><span class="toc-text">分层和合成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E5%9D%97"><span class="toc-text">分块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%88%86%E5%B1%82%E6%8A%80%E6%9C%AF%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81"><span class="toc-text">利用分层技术优化代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#25-%E9%A1%B5%E9%9D%A2%E6%80%A7%E8%83%BD%EF%BC%9A%E5%A6%82%E4%BD%95%E7%B3%BB%E7%BB%9F%E5%9C%B0%E4%BC%98%E5%8C%96%E9%A1%B5%E9%9D%A2"><span class="toc-text">25 | 页面性能：如何系统地优化页面</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A0%E8%BD%BD%E9%98%B6%E6%AE%B5"><span class="toc-text">加载阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%A4%E4%BA%92%E9%98%B6%E6%AE%B5"><span class="toc-text">交互阶段</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#26-%EF%BD%9C-%E8%99%9A%E6%8B%9FDOM%E5%92%8C%E5%AE%9E%E9%99%85DOM%E6%9C%89%E4%BD%95%E4%B8%8D%E5%90%8C"><span class="toc-text">26 ｜ 虚拟DOM和实际DOM有何不同</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DOM%E7%BC%BA%E9%99%B7"><span class="toc-text">DOM缺陷</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%99%9A%E6%8B%9FDOM"><span class="toc-text">什么是虚拟DOM</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#27-%EF%BD%9C-%E6%B8%90%E8%BF%9B%E5%BC%8F%E7%BD%91%E9%A1%B5%E5%BA%94%E7%94%A8-PWA-%E5%AE%83%E7%A9%B6%E7%AB%9F%E8%A7%A3%E5%86%B3%E4%BA%86Web%E5%BA%94%E7%94%A8%E7%9A%84%E5%93%AA%E4%BA%9B%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-text">27 ｜ 渐进式网页应用(PWA):它究竟解决了Web应用的哪些问题？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Web%E5%BA%94%E7%94%A8-VS-%E6%9C%AC%E5%9C%B0%E5%BA%94%E7%94%A8"><span class="toc-text">Web应用 VS 本地应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Service-Worker"><span class="toc-text">Service Worker</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Web-Worker"><span class="toc-text">Web Worker</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#28-%EF%BD%9C-WebComponent%EF%BC%9A%E5%83%8F%E6%90%AD%E7%A7%AF%E6%9C%A8%E4%B8%80%E6%A0%B7%E6%9E%84%E5%BB%BAWeb%E5%BA%94%E7%94%A8"><span class="toc-text">28 ｜ WebComponent：像搭积木一样构建Web应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%BB%E7%A2%8D%E5%89%8D%E7%AB%AF%E7%BB%84%E4%BB%B6%E5%8C%96%E7%9A%84%E5%9B%A0%E7%B4%A0"><span class="toc-text">阻碍前端组件化的因素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WebComponent%E7%BB%84%E4%BB%B6%E5%8C%96"><span class="toc-text">WebComponent组件化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BD%B1%E5%AD%90DOM"><span class="toc-text">影子DOM</span></a></li></ol></li></ol></div></div><div class="post-content"><h2 id="21-Chrome开发者工具：利用网络面板做性能分析">21 | Chrome开发者工具：利用网络面板做性能分析</h2>
+<blockquote>
+<p>页面是浏览器的核心，浏览器中的所有功能都是服务于页面的，Chrome开发者工具又是调试页面的核心工具。</p>
+</blockquote>
+<h3 id="网络面板">网络面板</h3>
+<blockquote>
+<ol>
+<li>控制器</li>
+</ol>
+<ul>
+<li>开始或停止抓包</li>
+<li>全局搜索</li>
+<li>禁止从cache中加载资源</li>
+<li>模拟网络</li>
+</ul>
+<ol start="2">
+<li>过滤器</li>
+<li>抓图信息：Capture screenshots</li>
+<li>详细列表：重点内容</li>
+<li>下载信息概要</li>
+</ol>
+<ul>
+<li>DOMContentLoaded:页面已经构建好DOM，所需要的HTML、CSS和JS文件都已经下载完成</li>
+<li>Load:浏览器已经加载了所有的资源(图片、样式表等)</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>详细信息中的Timing</p>
+<ul>
+<li>Queued:排队–资源优先级、6个TCP链接。</li>
+<li>Stalled:其它一些可能导致连接过程被推迟的原因。</li>
+<li>Proxy Negotiation:代理协商阶段</li>
+<li>Initial connection/SSL:与服务器建立连接的阶段</li>
+<li>Request sent:网络进程准备请求数据，发送给网络，时间通常不到1ms。</li>
+<li>Waiting(TTFB):第一字节时间，反映服务端相应速度的重要指标。</li>
+<li>Connect Download:从第一字节时间到接收到全部响应数据所用的时间。</li>
+</ul>
+</blockquote>
+<h3 id="优化Timing">优化Timing</h3>
+<h4 id="1-Queuing时间太久">1. Queuing时间太久</h4>
+<blockquote>
+<p>大概率因为每个域名同时维护6个TCP连接，基于这个原因可以使用域名分片技术，即把该站点下面的资源放在多个域名下。另外可以将站点升级至HTTP2，因为HTTP2下面已经没有每个域名同时维护6个TCP连接的限制了(可通过curl -I 域名方式查看HTTP协议版本)。</p>
+</blockquote>
+<h4 id="2-第一字节时间过久-TTFB">2. 第一字节时间过久(TTFB)</h4>
+<blockquote>
+<ul>
+<li>服务器生成页面数据时间过久</li>
+<li>网络原因</li>
+<li>发送请求头带上了多余的用户信息：比如不必要的Cookie信息</li>
+</ul>
+</blockquote>
+<h4 id="3-ContentLoad时间过久">3.ContentLoad时间过久</h4>
+<blockquote>
+<p>可能是字节数太多的原因导致的。这时候你就需要减少文件大小，比如压缩、去掉源码中不必要的注释等方法。</p>
+</blockquote>
+<h2 id="22-DOM树：JavaScript是如何影响DOM树构建的">22 | DOM树：JavaScript是如何影响DOM树构建的</h2>
+<h3 id="什么是DOM">什么是DOM</h3>
+<blockquote>
+<p><strong>网络</strong>传递给<strong>渲染引擎</strong>的HTML文件字节流渲染引擎是无法理解，需要将其转换为其能够理解的内部结构，这个内部结构就是DOM，DOM提供了对HTML文档结构化的表述，主要作用有三种：</p>
+<ul>
+<li>DOM是生成页面的基础数据结构</li>
+<li>DOM提供给JS脚本操作DOM的接口</li>
+<li>DOM是一道安全防线，不安全内容在DOM解析阶段会被拒之门外。</li>
+</ul>
+</blockquote>
+<h3 id="DOM树如何生成">DOM树如何生成</h3>
+<blockquote>
+<p>简言之：通过HTML解析器，将HTML字节流转换为DOM结构。</p>
+<ul>
+<li>阶段一：通过分词器将字节流转换为Token。</li>
+<li>阶段二、阶段三同步进行，将Token解析为DOM节点，并将DOM节点添加到DOM树中。</li>
+</ul>
+</blockquote>
+<h3 id="JavaScript是如何影响DOM生成的">JavaScript是如何影响DOM生成的</h3>
+<blockquote>
+<ul>
+<li>一段HTML文件，如果加入了script标签(内有脚本内容)，在解析到此script标签时，此时的HTML解析器会暂停DOM的解析，因为接下来JavaScript可能要修改当前生成的DOM结构。</li>
+<li>如果HTML文件中通过script引入了js文件，那解析到script时，需要先下载这段JS代码，而下载过程会阻塞DOM接续，因此一方面浏览器做了预解析的操作优化，而另一方面对我们来说，如果该scipt标签内没有操作DOM的相关代码，可以将该脚本设置为异步加载(async或defer)。<br>
+async与defer的区别是：async方法在脚本文件下载完毕后立即执行。而defer是在DOMContentLoaded事件之前执行。</li>
+<li>JS引擎在解析JS之前，并不知道其中是否会有操纵CSSOM行为的代码，所以在解析JS前，不管是否操纵了CSSOM，都会先去下载CSS文件并解析成CSSOM后，才会再来执行JS脚本。<br>
+最后，得出结论，JavaScript会阻塞DOM的生成，而CSSOM又会阻塞JavaScript的执行，因此DOM的生成受到JS和CSS的影响。</li>
+</ul>
+</blockquote>
+<h2 id="23-｜-渲染流水线：CSS如何影响首次加载时的白屏时间？">23 ｜ 渲染流水线：CSS如何影响首次加载时的白屏时间？</h2>
+<blockquote>
+<p>首先在上一节基础上进行一个小扩展，Chrome浏览器的<strong>预解析线程</strong>会先对文件中扫描到的js或者css文件进行一个提前下载数据的阶段，然后这个阶段就可能会因为下载文件而造成阻塞。<br>
+然后，渲染流水线需要CSSOM是因为浏览器一样无法直接理解CSS，需要转换成CSSOM，然后进行样式计算、计算布局等阶段。<br>
+最后，渲染流水线的流程再简单梳理一遍就是：HTML解析器再接收到数据后，预解析器识别出了有CSS和JavaScript文件，会预先对这些资源进行同步下载，然后生成DOM之前，由于DOM受JS影响，而JS又受CSSOM影响，所以，首先保证的是CSS的下载完成、CSSOM的结构生成。<br>
+针对这个渲染流程的阶段分析，其白屏瓶颈为：下载CSS和JavaScipt以及执行JavaScript的时间，因此缩短白屏时长的策略有：</p>
+<ol>
+<li>通过内敛CSS和JS文件，减少这两种文件的下载时间</li>
+<li>减少文件大小，通过Webpack等工具移除不必要的注释、压缩JS文件等方式。</li>
+<li>不需要在HTML阶段使用的JS标记async和defer。</li>
+<li>CSS文件过大，可通过媒体查询属性，标记为多个不同用途CSS文件，只在特定环境下加载特点CSS文件。</li>
+</ol>
+</blockquote>
+<h2 id="24-｜-分层和合成机制：为什么CSS动画比JavaScript高效">24 ｜ 分层和合成机制：为什么CSS动画比JavaScript高效</h2>
+<h3 id="显示器是怎么显示图像的">显示器是怎么显示图像的</h3>
+<blockquote>
+<p>每个显示器都有固定的<strong>刷新频率</strong>，通常是60HZ，也就是每秒更新60张图片，更新的图片都来自<strong>显卡</strong>中一个叫做<strong>前缓冲区</strong>的地方，显示器的工作就是每秒固定读取60张从前缓冲区中的图像，显示在<strong>显示器</strong>上。<br>
+这个显卡的作用就是合成新的图片，将生成的图片保存在后缓冲区，然后与前缓冲区进行交换，其刷新频率和显示器一致。</p>
+</blockquote>
+<h3 id="帧和帧率">帧和帧率</h3>
+<blockquote>
+<p>我们在滑动页面或者手势缩放页面的过程中，屏幕产生了相应的效果，这是因为滚动或者缩放的这个操作，渲染引擎迅速捕捉到这个动作并将60张图片更新到显卡的后缓冲区，然后显卡的后缓冲区与前缓冲区进行交换，显示器从显卡前缓冲区读取这个图像，显示在显示器上。<br>
+将渲染流水线生成的每一张图片称为<strong>一帧</strong>，每秒更新了多少帧称为<strong>帧率</strong>。<br>
+于是，要解决一帧生产时间过久的问题，Chrome对浏览器渲染方式做了大量工作，其中最卓有成效的就是引入了<strong>分层</strong>和<strong>合成机制</strong>。</p>
+</blockquote>
+<h3 id="生成一帧图像的方式">生成一帧图像的方式</h3>
+<blockquote>
+<p>生产一帧的生成方式有<strong>重绘</strong>、<strong>重排</strong>、<strong>合成</strong>三种方式。</p>
+<ul>
+<li>重排会重新根据CSSOM和DOM来计算布局树，生成一张图片会将整个渲染流水线都执行一遍。</li>
+<li>重绘在生成一张图片的过程中，少了重新布局的阶段，但依然会进重新计算绘制消息，会比重排效率高。</li>
+<li>合成不会触发布局和绘制过程，因此合成效率更高。</li>
+<li>重排和重绘操作都是在渲染进程的主线程上执行的，比较耗时；而合成操作是在渲染进程的合成线程上执行的，执行速度快，且不占用主线程。</li>
+</ul>
+</blockquote>
+<h3 id="分层和合成">分层和合成</h3>
+<blockquote>
+<p>分层是将多个素材分解成多个图层处理，将这些图层合并在一起就叫做合成。<br>
+然后根据阶段一的内容，我们知道在(<strong>构建DOM树、样式计算、布局阶段</strong>) 后，就是<strong>分层</strong>的过程，之所以需要分层，是后续的流程需要根据这个层来干事情，比如再之后的<strong>绘制</strong>会对每一个层生成一个个绘制指令，然后<strong>光栅化阶段</strong>根据一个个指令生成图片，一个图层就是一张图片，最后合成线程就将一张张图片进行合成一张图片，将最终生成的图片发送至显卡的后缓冲区。<br>
+这就是分层和合成的流程。<br>
+需要特别注意的是：<strong>合成的这个操作是在合成线程中完成的，不会影响主线程执行</strong>。</p>
+</blockquote>
+<h3 id="分块">分块</h3>
+<blockquote>
+<p>通常页面内容比显示器内容要大很多，若等待所有图片都生成完毕再通过和合成生成一张图片的话，开销会很大，因此合成线程会优先绘制靠近视口的图块，且在首次合成图块的时候使用了一个低分辨率的图片。等正常比例的网页内容绘制好之后，再替换掉当前显示的低分辨率内容。</p>
+</blockquote>
+<h3 id="利用分层技术优化代码">利用分层技术优化代码</h3>
+<blockquote>
+<p>当对一些元素进行几何形状变换、透明度变换、缩放等操作时，使用JS操作会牵扯到整个渲染流水线，而使用CSS则只会经过合成线程的合成阶段，效率要大很多。<br>
+也就解释了为什么CSS动画要比JavaScript动画效率高。</p>
+</blockquote>
+<h2 id="25-页面性能：如何系统地优化页面">25 | 页面性能：如何系统地优化页面</h2>
+<blockquote>
+<p>这里讨论的优化页面是指：如何更快的让页面显示和响应。<br>
+而页面的周期分为加载阶段、交互阶段和关闭阶段，前两个阶段是用户体验的主要阶段。</p>
+</blockquote>
+<h3 id="加载阶段">加载阶段</h3>
+<blockquote>
+<p>加载阶段也就是资源下载整合的阶段，这些资源包括图片、音频、视频等不会影响阻塞页面首次加载的资源，以及JS、CSS、HTML等阻塞首次渲染的资源。<br>
+阻塞首次渲染的资源称为关键资源，优化点有：</p>
+<ol>
+<li>尽量减少关键资源个数</li>
+<li>关键资源内容尽量小</li>
+<li>降低关键资源的RTT次数。</li>
+</ol>
+</blockquote>
+<h3 id="交互阶段">交互阶段</h3>
+<blockquote>
+<ol>
+<li>减少JavaScript脚本执行时间</li>
+<li>避免强制同步布局。</li>
+<li>避免布局抖动</li>
+<li>合理利用CSS合成动画</li>
+<li>避免频繁的垃圾回收</li>
+</ol>
+</blockquote>
+<h2 id="26-｜-虚拟DOM和实际DOM有何不同">26 ｜ 虚拟DOM和实际DOM有何不同</h2>
+<h3 id="DOM缺陷">DOM缺陷</h3>
+<blockquote>
+<p>DOM缺陷就是往往一个小的DOM操作，渲染引擎需要进行重排、重绘、合成等操作，这些操作非常频繁且耗时，会带来性能问题。<br>
+然后需要一种方式来减少JS对DOM的操作，于是虚拟DOM就来了。</p>
+</blockquote>
+<h3 id="什么是虚拟DOM">什么是虚拟DOM</h3>
+<blockquote>
+<p>虚拟DOM的作用是：</p>
+<ol>
+<li>将页面改变的内容应用到虚拟DOM上，不是直接应用到DOM上。</li>
+<li>变换应用到虚拟DOM上时，不会着急去渲染页面，而仅是调整虚拟DOM的内部状态，这样操作虚拟DOM效率高且畅快。</li>
+<li>虚拟DOM收集到足够的改变，将这些变化一次性应用到真实DOM上，这样就能较少一些不必要的更新，同时保证DOM稳定输出。</li>
+</ol>
+</blockquote>
+<h2 id="27-｜-渐进式网页应用-PWA-它究竟解决了Web应用的哪些问题？">27 ｜ 渐进式网页应用(PWA):它究竟解决了Web应用的哪些问题？</h2>
+<blockquote>
+<p>PWA:Progressive Web App 渐进式网页应用。</p>
+<ul>
+<li>PWA提供了一个<strong>渐进式的过渡方案</strong>，让Web应用逐步具有本地应用的能力，且根据技术的演进，采用渐进式的方式逐步支持各项新技术，不断实现本地应用特性，是一个非常缓和的渐进式策略，而不是一步到位。</li>
+<li>PWA是一种理念，渐进式增强Web的优势，通过技术手段渐进式缩短和本地应用或者小程序的距离，基于这套理念之下的技术都可以归类为PWA。</li>
+</ul>
+</blockquote>
+<h3 id="Web应用-VS-本地应用">Web应用 VS 本地应用</h3>
+<blockquote>
+<p>相对于本地应用，Web应用缺少的是：</p>
+<ul>
+<li>缺少离线使用能力。</li>
+<li>缺少消息推送能力。</li>
+<li>缺少一级入口。<br>
+当然，基于上面的这几种缺陷吧，PWA提供了两种解决防范：引入了Service Worker来尝试解决离线存储和消息推送的问题。<br>
+引入了manifest.json来解决一级入口的问题,可以让开发者定义桌面图标、显示名称、启动信息、页面主题颜色等。</li>
+</ul>
+</blockquote>
+<h3 id="Service-Worker">Service Worker</h3>
+<blockquote>
+<p>主要思想是：在页面和网络直接增加一个<strong>拦截器</strong>，用来缓存和拦截请求。<br>
+这个拦截器是干嘛的呢：没有安装 Service Worker 之前，WebApp 都是直接通过网络模块来请求资源的。安装了 Service Worker 模块之后，WebApp 请求资源时，会<strong>先通过 Service Worker</strong>，让它判断是返回 Service Worker 缓存的资源还是重新去网络请求资源。一切的控制权都交由 Service Worker 来处理。</p>
+</blockquote>
+<h4 id="Web-Worker">Web Worker</h4>
+<blockquote>
+<p>Web Worker是为了避免一个JS脚本执行占用主线程时间过长这个问题而出现的。<br>
+Web Worker是运行在页面主线程之外的，但Web Worker当中没有当前页面的DOM环境，因此只能执行和DOM无关的脚步，并通过postMessage方法将执行结果返回给主线程，也就是说，Web Worker是在渲染进程中开启的一个新线程。<br>
+然后Service Worker借鉴了Web Worker的核心思想:‘让其运行在主线程之外’，而由于Web Worker是临时的，执行结果保存不下来，因此Service Worker增加了储存功能。<br>
+安全设计上，Service Worker采用HTTPS协议。</p>
+</blockquote>
+<h2 id="28-｜-WebComponent：像搭积木一样构建Web应用">28 ｜ WebComponent：像搭积木一样构建Web应用</h2>
+<blockquote>
+<p>怎么理解组件化呢：<strong>对内高内聚、对外低耦合</strong>。</p>
+</blockquote>
+<h3 id="阻碍前端组件化的因素">阻碍前端组件化的因素</h3>
+<blockquote>
+<ul>
+<li>CSS全局样式阻碍组件化—scoped</li>
+<li>DOM阻碍组件化，页面中只有一个DOM，任何地方都可以直接读取和修改DOM。<br>
+因此使用JS实现组件化没有问题，但是遇上CSS和DOm，就不好弄了。</li>
+</ul>
+</blockquote>
+<h3 id="WebComponent组件化">WebComponent组件化</h3>
+<blockquote>
+<p>WebComponent给出的解决思路就是提供局部视图封装能力，让CSS和HTML和JS运行在局部环境，已使得不会影响全局。<br>
+他的实现简单概括为： 使用template属性来创建模板，使用<strong>影子DOM</strong>提供局部作用域，将template中DOM和CSS与全局进行隔离。</p>
+</blockquote>
+<h3 id="影子DOM">影子DOM</h3>
+<blockquote>
+<p>影子DOM的作用主要有两类：</p>
+<ul>
+<li>影子DOM的元素对于整个网页是不可见的。</li>
+<li>影子DOM的CSS不会影响到整个网页的CSSOM，影子内部的CSS只对内部元素起作用。</li>
+</ul>
+</blockquote>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>阶段五：浏览器中的页面</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2022-04-10</p><p><span>最后更新：</span>2022-04-11</p><p><span>原始链接：</span><a href="/A5阶段五：浏览器中的页面/">https://blog.liugezhou.online/A5%E9%98%B6%E6%AE%B5%E4%BA%94%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E9%A1%B5%E9%9D%A2/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/A5%E9%98%B6%E6%AE%B5%E4%BA%94%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E9%A1%B5%E9%9D%A2/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/浏览器工作原理"><i class="fa fa-tag">浏览器工作原理</i></a></div><div class="post-nav"><a class="pre" href="/202214(4.6-4.10)/">每周小结(*51):论中国</a><a class="next" href="/202213(3.28-4.5)/">每周小结(*50):恐惧、不安与惊慌</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

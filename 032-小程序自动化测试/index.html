@@ -1,0 +1,231 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="微信小程序自动化实现:Automator"><meta name="twitter:description" content="&lt;p&gt;&lt;img src=&quot;https://tikolu.net/i/kbtml&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+微信小程序自动化测试完全实现。&lt;/p&gt;
+&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+&lt;p&gt;参考:&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/devtools/auto/automator.html&quot;&gt;官方文档&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;单个测试文件测试流程&quot;&gt;单个测试文件测试流程&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;安装小程序自动化SDK配合jest实现小程序自动化测试：&lt;code&gt;miniprogram-automator&lt;/code&gt; 、&lt;code&gt;jest&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;示例 index.spec.js&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; automator = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;miniprogram-automator&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;automator.&lt;span class=&quot;title function_&quot;&gt;launch&lt;/span&gt;(&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;cliPath&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&amp;#x27;/Applications/wechatwebdevtools.app/Contents/MacOS/cli&amp;#x27;&lt;/span&gt;, &lt;span class=&quot;comment&quot;&gt;// 工具 cli 位置&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;projectPath&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&amp;#x27;Users/liugezhou/Desktop/miniprogram&amp;#x27;&lt;/span&gt;, &lt;span class=&quot;comment&quot;&gt;// 项目文件地址&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;).&lt;span class=&quot;title function_&quot;&gt;then&lt;/span&gt;(&lt;span class=&quot;keyword&quot;&gt;async&lt;/span&gt; miniProgram =&amp;gt; &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; page = &lt;span class=&quot;keyword&quot;&gt;await&lt;/span&gt; miniProgram.&lt;span class=&quot;title function_&quot;&gt;reLaunch&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;/pages/index/index&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;await&lt;/span&gt; page.&lt;span class=&quot;title function_&quot;&gt;waitFor&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;500&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; element = &lt;span class=&quot;keyword&quot;&gt;await&lt;/span&gt; page.$(&lt;span class=&quot;string&quot;&gt;&amp;#x27;.btn&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;await&lt;/span&gt; element.&lt;span class=&quot;title function_&quot;&gt;tap&lt;/span&gt;()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;await&lt;/span&gt; miniProgram.&lt;span class=&quot;title function_&quot;&gt;close&lt;/span&gt;()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; &lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;启动 &lt;code&gt;node index.spec.js&lt;/code&gt;,完成单个示例测试。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;自动化测试&quot;&gt;自动化测试&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;在小程序根目录下新建，tests/pages/liugezhou.spec.js&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; automator = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;miniprogram-automator&amp;#x27;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;title function_&quot;&gt;describe&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;index&amp;#x27;&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;() =&amp;gt;&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; miniProgram;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; page;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; wsEndpoint = &lt;span class=&quot;string&quot;&gt;&amp;#x27;ws://127.0.0.1:9420&amp;#x27;&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;title function_&quot;&gt;beforeAll&lt;/span&gt;(&lt;span class=&quot;title function_&quot;&gt;async&lt;/span&gt;() =&amp;gt; &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    miniProgram = &lt;span class=&quot;keyword&quot;&gt;await&lt;/span&gt; automator.&lt;span class=&quot;title function_&quot;&gt;connect&lt;/span&gt;(&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &lt;span class=&quot;attr&quot;&gt;wsEndpoint&lt;/span&gt;: wsEndpoint&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#125;, &lt;span class=&quot;number&quot;&gt;30000&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;title function_&quot;&gt;it&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;test liugezhou/index.wxml&amp;#x27;&lt;/span&gt;, &lt;span class=&quot;title function_&quot;&gt;async&lt;/span&gt;() =&amp;gt; &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   page = &lt;span class=&quot;keyword&quot;&gt;await&lt;/span&gt; miniProgram.&lt;span class=&quot;title function_&quot;&gt;reLaunch&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;/pages/liugezhou/index&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;await&lt;/span&gt; page.&lt;span class=&quot;title function_&quot;&gt;waitFor&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;500&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; element = &lt;span class=&quot;keyword&quot;&gt;await&lt;/span&gt; page.$(&lt;span class=&quot;string&quot;&gt;&amp;#x27;.liugezhou&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;variable language_&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;keyword&quot;&gt;await&lt;/span&gt; element.&lt;span class=&quot;title function_&quot;&gt;attribute&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;class&amp;#x27;&lt;/span&gt;))&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;await&lt;/span&gt; element.&lt;span class=&quot;title function_&quot;&gt;tap&lt;/span&gt;()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; &lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;package.json中添加scripts命令&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight json&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;&amp;quot;e2e&amp;quot;&lt;/span&gt;&lt;span class=&quot;punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&amp;quot;jest ./tests/pages liugezhou.test.js --runInBand&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;关闭开发工具客户端，&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;cd  /Applications/wechatwebdevtools.app/Contents/MacOS/ &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;./cli --auto  /Users/liugezhou/Desktop/miniprogram  --auto-port 9420&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol start=&quot;4&quot;&gt;
+&lt;li&gt;
+&lt;p&gt;在终端根目录下执行&lt;code&gt;npm run e2e&lt;/code&gt;即可发现测试通过&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;miniProgram提供了控制小程序的方法&lt;br&gt;
+下面的方法用熟之后，可以熟练的编写自动化测试代码了。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;miniProgram = &lt;span class=&quot;keyword&quot;&gt;await&lt;/span&gt; automator.&lt;span class=&quot;title function_&quot;&gt;connect&lt;/span&gt;(&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    wsEndpoint,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#125;)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;miniProgram.pageStack():获取小程序页面堆栈&lt;/li&gt;
+&lt;li&gt;miniProgram.navigateTo():保留当前页面，跳转到某个页面&lt;/li&gt;
+&lt;li&gt;miniProgram.redirectTo():关闭当前页面，跳转到某个页面&lt;/li&gt;
+&lt;li&gt;miniProgram.navigateBack():关闭当前页面，返回上一页面或多级页面&lt;/li&gt;
+&lt;li&gt;miniProgram.reLaunch(): 关闭所有页面，打开到应用内的某个页面&lt;/li&gt;
+&lt;li&gt;miniProgram.currentPage(): 获取当前页面(路径、参数等)。&lt;/li&gt;
+&lt;li&gt;miniProgram.systemInfo():获取系统信息&lt;/li&gt;
+&lt;li&gt;miniProgram.callWxMethod(method,params):调用 wx 对象上的指定方法，调用的方法名。&lt;/li&gt;
+&lt;li&gt;miniProgram.pageScrollTo(number):将页面滚动到目标位置(同wx.pageScrollTo())&lt;/li&gt;
+&lt;li&gt;miniProgram.screenshot({path:‘’}):对当前页面进行截图，若不传options，则返回base64编码&lt;/li&gt;
+&lt;li&gt;miniProgram.exposeFunction(name,bindingFunction):在 AppService 全局暴露方法，供小程序侧调用测试脚本中的方法。&lt;/li&gt;
+&lt;li&gt;miniProgram.stopAudits({path:‘’}):停止体验评分并获取报告&lt;/li&gt;
+&lt;li&gt;miniProgram.disconnect():断开与小程序运行时的连接&lt;/li&gt;
+&lt;li&gt;miniProgram.close():断开与小程序运行时的连接并关闭项目窗口。&lt;/li&gt;
+&lt;li&gt;miniProgram.on(‘exception’,err=&amp;gt;{}):页面JS出错时触发&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;ul&gt;
+&lt;li&gt;page.path: 页面路径&lt;/li&gt;
+&lt;li&gt;page.query: 页面参数&lt;/li&gt;
+&lt;li&gt;page.$(“.demo”):  获取页面元素&lt;/li&gt;
+&lt;li&gt;page.$$(“.list”): 获取页面元素数组&lt;/li&gt;
+&lt;li&gt;page.waitFor():等待直到指定条件成立。
+&lt;ul&gt;
+&lt;li&gt;number - 指定时间之后，结束等待&lt;/li&gt;
+&lt;li&gt;string - 参数被当成选择器，当该选择弃元素个数不为0时，结束等待&lt;/li&gt;
+&lt;li&gt;Function - 断言函数，返回true时，结束等待。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;page.data():获取页面渲染数据&lt;/li&gt;
+&lt;li&gt;page.setData():设置页面渲染数据&lt;/li&gt;
+&lt;li&gt;page.size():获取页面的可滚动宽度和高度&lt;/li&gt;
+&lt;li&gt;page.scrollTop():获取页面的滚动位置&lt;/li&gt;
+&lt;li&gt;page.callMethod():调用页面指定方法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;element 通过 page.$()获得&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;element.tagName:标签名，小写&lt;/li&gt;
+&lt;li&gt;element.$():在元素范围内获取元素&lt;/li&gt;
+&lt;li&gt;element.$$():在元素范围内获取元素数组&lt;/li&gt;
+&lt;li&gt;element.size():获取元素的高度和宽度&lt;/li&gt;
+&lt;li&gt;element.offset():获取元素的绝对位置 left和top&lt;/li&gt;
+&lt;li&gt;element.text():获取元素文本&lt;/li&gt;
+&lt;li&gt;element.attribute():获取元素特性&lt;/li&gt;
+&lt;li&gt;element.property():获取元素属性&lt;/li&gt;
+&lt;li&gt;element.wxml():获取元素wxml&lt;/li&gt;
+&lt;li&gt;element.value():获取元素值&lt;/li&gt;
+&lt;li&gt;element.style(‘color’):获取元素样式值&lt;/li&gt;
+&lt;li&gt;element.tap(): 点击元素&lt;/li&gt;
+&lt;li&gt;element.longpress(): 长按元素&lt;/li&gt;
+&lt;li&gt;element.touchstart(): 手指开始触摸元素&lt;/li&gt;
+&lt;li&gt;element.trigger(str,obj):触发元素事件&lt;/li&gt;
+&lt;li&gt;element.input(str):输入文本，仅 input、textarea 组件可以使用&lt;/li&gt;
+&lt;li&gt;element.callMethod():调用组件实例指定方法，仅自定义组件可以使用。&lt;/li&gt;
+&lt;li&gt;element.data():获取组件实例渲染数据，仅自定义组件可以使用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;我的博客即将同步至腾讯云开发者社区，邀请大家一同入驻：&lt;a href=&quot;https://cloud.tencent.com/developer/support-plan?invite_code=2ptwka3frvuok&quot;&gt;https://cloud.tencent.com/developer/support-plan?invite_code=2ptwka3frvuok&lt;/a&gt;&lt;/p&gt;
+"><meta name="twitter:image"><title>微信小程序自动化实现:Automator | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">微信小程序自动化实现:Automator</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">微信小程序自动化实现:Automator</h1><div class="post-meta">2022-10-11<span> | </span><span class="category"><a href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 987</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 4</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/032-%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/#vcomment"><span class="valine-comment-count" data-xid="/032-%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/"></span><span> 条评论</span></a><div class="post-content"><p><img src="https://tikolu.net/i/kbtml" alt=""><br>
+微信小程序自动化测试完全实现。</p>
+<span id="more"></span>
+<p>参考:<a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/devtools/auto/automator.html">官方文档</a></p>
+<h3 id="单个测试文件测试流程">单个测试文件测试流程</h3>
+<ol>
+<li>安装小程序自动化SDK配合jest实现小程序自动化测试：<code>miniprogram-automator</code> 、<code>jest</code></li>
+<li>示例 index.spec.js</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> automator = <span class="built_in">require</span>(<span class="string">&#x27;miniprogram-automator&#x27;</span>)</span><br><span class="line">automator.<span class="title function_">launch</span>(&#123;</span><br><span class="line">  <span class="attr">cliPath</span>: <span class="string">&#x27;/Applications/wechatwebdevtools.app/Contents/MacOS/cli&#x27;</span>, <span class="comment">// 工具 cli 位置</span></span><br><span class="line">  <span class="attr">projectPath</span>: <span class="string">&#x27;Users/liugezhou/Desktop/miniprogram&#x27;</span>, <span class="comment">// 项目文件地址</span></span><br><span class="line">&#125;).<span class="title function_">then</span>(<span class="keyword">async</span> miniProgram =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> page = <span class="keyword">await</span> miniProgram.<span class="title function_">reLaunch</span>(<span class="string">&#x27;/pages/index/index&#x27;</span>)</span><br><span class="line">  <span class="keyword">await</span> page.<span class="title function_">waitFor</span>(<span class="number">500</span>)</span><br><span class="line">  <span class="keyword">const</span> element = <span class="keyword">await</span> page.$(<span class="string">&#x27;.btn&#x27;</span>)</span><br><span class="line">  <span class="keyword">await</span> element.<span class="title function_">tap</span>()</span><br><span class="line">  <span class="keyword">await</span> miniProgram.<span class="title function_">close</span>()</span><br><span class="line">&#125;)</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>启动 <code>node index.spec.js</code>,完成单个示例测试。</li>
+</ol>
+<h3 id="自动化测试">自动化测试</h3>
+<ol>
+<li>在小程序根目录下新建，tests/pages/liugezhou.spec.js</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> automator = <span class="built_in">require</span>(<span class="string">&#x27;miniprogram-automator&#x27;</span>);</span><br><span class="line"> </span><br><span class="line"><span class="title function_">describe</span>(<span class="string">&#x27;index&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> miniProgram;</span><br><span class="line">  <span class="keyword">let</span> page;</span><br><span class="line">  <span class="keyword">const</span> wsEndpoint = <span class="string">&#x27;ws://127.0.0.1:9420&#x27;</span>;</span><br><span class="line">  <span class="title function_">beforeAll</span>(<span class="title function_">async</span>() =&gt; &#123;</span><br><span class="line">    miniProgram = <span class="keyword">await</span> automator.<span class="title function_">connect</span>(&#123;</span><br><span class="line">      <span class="attr">wsEndpoint</span>: wsEndpoint</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;, <span class="number">30000</span>);</span><br><span class="line"> </span><br><span class="line">  <span class="title function_">it</span>(<span class="string">&#x27;test liugezhou/index.wxml&#x27;</span>, <span class="title function_">async</span>() =&gt; &#123;</span><br><span class="line">   page = <span class="keyword">await</span> miniProgram.<span class="title function_">reLaunch</span>(<span class="string">&#x27;/pages/liugezhou/index&#x27;</span>)</span><br><span class="line">    <span class="keyword">await</span> page.<span class="title function_">waitFor</span>(<span class="number">500</span>)</span><br><span class="line">    <span class="keyword">const</span> element = <span class="keyword">await</span> page.$(<span class="string">&#x27;.liugezhou&#x27;</span>)</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">await</span> element.<span class="title function_">attribute</span>(<span class="string">&#x27;class&#x27;</span>))</span><br><span class="line">    <span class="keyword">await</span> element.<span class="title function_">tap</span>()</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>package.json中添加scripts命令</li>
+</ol>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;e2e&quot;</span><span class="punctuation">:</span> <span class="string">&quot;jest ./tests/pages liugezhou.test.js --runInBand&quot;</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>关闭开发工具客户端，</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd  /Applications/wechatwebdevtools.app/Contents/MacOS/ </span><br><span class="line"></span><br><span class="line">./cli --auto  /Users/liugezhou/Desktop/miniprogram  --auto-port 9420</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>
+<p>在终端根目录下执行<code>npm run e2e</code>即可发现测试通过</p>
+</li>
+<li>
+<p>miniProgram提供了控制小程序的方法<br>
+下面的方法用熟之后，可以熟练的编写自动化测试代码了。</p>
+</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">miniProgram = <span class="keyword">await</span> automator.<span class="title function_">connect</span>(&#123;</span><br><span class="line">    wsEndpoint,</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>miniProgram.pageStack():获取小程序页面堆栈</li>
+<li>miniProgram.navigateTo():保留当前页面，跳转到某个页面</li>
+<li>miniProgram.redirectTo():关闭当前页面，跳转到某个页面</li>
+<li>miniProgram.navigateBack():关闭当前页面，返回上一页面或多级页面</li>
+<li>miniProgram.reLaunch(): 关闭所有页面，打开到应用内的某个页面</li>
+<li>miniProgram.currentPage(): 获取当前页面(路径、参数等)。</li>
+<li>miniProgram.systemInfo():获取系统信息</li>
+<li>miniProgram.callWxMethod(method,params):调用 wx 对象上的指定方法，调用的方法名。</li>
+<li>miniProgram.pageScrollTo(number):将页面滚动到目标位置(同wx.pageScrollTo())</li>
+<li>miniProgram.screenshot({path:‘’}):对当前页面进行截图，若不传options，则返回base64编码</li>
+<li>miniProgram.exposeFunction(name,bindingFunction):在 AppService 全局暴露方法，供小程序侧调用测试脚本中的方法。</li>
+<li>miniProgram.stopAudits({path:‘’}):停止体验评分并获取报告</li>
+<li>miniProgram.disconnect():断开与小程序运行时的连接</li>
+<li>miniProgram.close():断开与小程序运行时的连接并关闭项目窗口。</li>
+<li>miniProgram.on(‘exception’,err=&gt;{}):页面JS出错时触发</li>
+</ul>
+<hr>
+<ul>
+<li>page.path: 页面路径</li>
+<li>page.query: 页面参数</li>
+<li>page.$(“.demo”):  获取页面元素</li>
+<li>page.$$(“.list”): 获取页面元素数组</li>
+<li>page.waitFor():等待直到指定条件成立。
+<ul>
+<li>number - 指定时间之后，结束等待</li>
+<li>string - 参数被当成选择器，当该选择弃元素个数不为0时，结束等待</li>
+<li>Function - 断言函数，返回true时，结束等待。</li>
+</ul>
+</li>
+<li>page.data():获取页面渲染数据</li>
+<li>page.setData():设置页面渲染数据</li>
+<li>page.size():获取页面的可滚动宽度和高度</li>
+<li>page.scrollTop():获取页面的滚动位置</li>
+<li>page.callMethod():调用页面指定方法</li>
+</ul>
+<hr>
+<p>element 通过 page.$()获得</p>
+<ul>
+<li>element.tagName:标签名，小写</li>
+<li>element.$():在元素范围内获取元素</li>
+<li>element.$$():在元素范围内获取元素数组</li>
+<li>element.size():获取元素的高度和宽度</li>
+<li>element.offset():获取元素的绝对位置 left和top</li>
+<li>element.text():获取元素文本</li>
+<li>element.attribute():获取元素特性</li>
+<li>element.property():获取元素属性</li>
+<li>element.wxml():获取元素wxml</li>
+<li>element.value():获取元素值</li>
+<li>element.style(‘color’):获取元素样式值</li>
+<li>element.tap(): 点击元素</li>
+<li>element.longpress(): 长按元素</li>
+<li>element.touchstart(): 手指开始触摸元素</li>
+<li>element.trigger(str,obj):触发元素事件</li>
+<li>element.input(str):输入文本，仅 input、textarea 组件可以使用</li>
+<li>element.callMethod():调用组件实例指定方法，仅自定义组件可以使用。</li>
+<li>element.data():获取组件实例渲染数据，仅自定义组件可以使用。</li>
+</ul>
+<p>我的博客即将同步至腾讯云开发者社区，邀请大家一同入驻：<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/support-plan?invite_code=2ptwka3frvuok">https://cloud.tencent.com/developer/support-plan?invite_code=2ptwka3frvuok</a></p>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>微信小程序自动化实现:Automator</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2022-10-11</p><p><span>最后更新：</span>2024-01-29</p><p><span>原始链接：</span><a href="/032-小程序自动化测试/">https://blog.liugezhou.online/032-%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/032-%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/微信小程序"><i class="fa fa-tag">微信小程序</i></a></div><div class="post-nav"><a class="pre" href="/read002-%E6%B4%BB%E7%9D%80/">活着</a><a class="next" href="/202240-No77/">每周小结(*77):假期结束</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

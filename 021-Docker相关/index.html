@@ -1,0 +1,721 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="Docker"><meta name="twitter:description" content="&lt;h2 id=&quot;一、快速命令一览&quot;&gt;一、快速命令一览&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;docker -v&lt;/code&gt;: 查看 docker 版本&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;docker images&lt;/code&gt;: 查看本地安装的所有镜像&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;docker images -q&lt;/code&gt;: 查看本地安装的所有镜像ID&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;docker search liugezhou&lt;/code&gt;: 搜索公共镜像&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;docker pull something&lt;/code&gt;: 下载某个镜像&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;docker rmi something&lt;/code&gt;: 删除某个镜像&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;docker ps&lt;/code&gt;: 查看正在运行的容器&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;docker stop id&lt;/code&gt;: 停止正在运行的容器&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;docker start id&lt;/code&gt;: 再次启动停止的容器&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;docker restart id&lt;/code&gt;: 重新启动已经启动的容器&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;docker rm id&lt;/code&gt;: 删除已经停止运行的容器&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;docker rm id -f&lt;/code&gt;: 直接删除正在运行中的容器&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;docker run -it --name=nginx nginx /bin/bash&lt;/code&gt;: 此启动方式会给出一个命令终端
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;-i&lt;/strong&gt;: 表示容器运行&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;-t&lt;/strong&gt;: 表示分配一个终端&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;-d&lt;/strong&gt;: 表示守护后台运行&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;-p&lt;/strong&gt;: 表示修改默认的端口&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;–name&lt;/strong&gt;: 给容器起一个名字&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;docker exec  -it id /bin/bash&lt;/code&gt; : 可以通过这个命令进入到容器中去&lt;/li&gt;
+&lt;li&gt;在容器中退出而不停止，使用 &lt;code&gt;ctrl+p ctrl+q&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;二、Docker-应用部署实践&quot;&gt;二、Docker 应用部署实践&lt;/h2&gt;
+&lt;h3 id=&quot;2-1-MySQL&quot;&gt;2.1 MySQL&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;搜索 mysql 镜像&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight yml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;search&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;mysql&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;拉取 mysql 镜像&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight yml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;pull&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;mysql:5.6&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;创建容器，设置端口映射、目录映射&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight yml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 在/root目录下创建mysql目录用于存储mysql数据信息&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;mkdir&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;~/mysql&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;~/mysql&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight yml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;run&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;-id&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;\&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;3307&lt;/span&gt;&lt;span class=&quot;string&quot;&gt;:3306&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;\&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;--name=c_mysql&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;\&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;$PWD/conf:/etc/mysql/conf.d&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;\&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;$PWD/logs:/logs&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;\&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;$PWD/data:/var/lib/mysql&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;\&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;MYSQL_ROOT_PASSWORD=123456&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;\&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;mysql:5.7&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;参数说明：
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;-p 3307:3306&lt;/strong&gt;：将容器的 3306 端口映射到宿主机的 3307 端口。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;-v $PWD/conf:/etc/mysql/conf.d&lt;/strong&gt;：将主机当前目录下的 conf/my.cnf 挂载到容器的 /etc/mysql/my.cnf。配置目录&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;-v $PWD/logs:/logs&lt;/strong&gt;：将主机当前目录下的 logs 目录挂载到容器的 /logs。日志目录&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;-v $PWD/data:/var/lib/mysql&lt;/strong&gt; ：将主机当前目录下的 data 目录挂载到容器的 /var/lib/mysql 。数据目录&lt;/li&gt;
+&lt;li&gt;**-e MYSQL_ROOT_PASSWORD=123456：**初始化 root 用户的密码。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;4&quot;&gt;
+&lt;li&gt;进入容器，操作 mysql&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight yml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;–it&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;c_mysql&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;/bin/bash&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol start=&quot;5&quot;&gt;
+&lt;li&gt;使用外部机器连接容器中的 mysql&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;2-2-Tomcat&quot;&gt;2.2 Tomcat&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;搜索 tomcat 镜像&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight yml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;search&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;tomcat&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;拉取 tomcat 镜像&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight yml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;pull&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;tomcat&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;创建容器，设置端口映射、目录映射&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight yml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 在/root目录下创建tomcat目录用于存储tomcat数据信息&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;mkdir&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;~/tomcat&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;~/tomcat&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight yml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;run&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;-id&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;--name=c_tomcat&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;\&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;8080&lt;/span&gt;&lt;span class=&quot;string&quot;&gt;:8080&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;\&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;$PWD:/usr/local/tomcat/webapps&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;\&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;tomcat&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;参数说明：
+&lt;ul&gt;
+&lt;li&gt;**-p 8080:8080：**将容器的 8080 端口映射到主机的 8080 端口&lt;br&gt;
+**-v $PWD:/usr/local/tomcat/webapps：**将主机中当前目录挂载到容器的 webapps&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;4&quot;&gt;
+&lt;li&gt;使用外部机器访问 tomcat&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;2-3-Nginx&quot;&gt;2.3 Nginx&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;搜索 nginx 镜像&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight yml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;search&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;nginx&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;拉取 nginx 镜像&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight yml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;pull&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;nginx&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;创建容器，设置端口映射、目录映射&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight yml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 在/root目录下创建nginx目录用于存储nginx数据信息&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;mkdir&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;~/nginx&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;~/nginx&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;mkdir&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;conf&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;conf&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 在~/nginx/conf/下创建nginx.conf文件,粘贴下面内容&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;vim&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;nginx.conf&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight yml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;30&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;31&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;32&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;user&lt;/span&gt;  &lt;span class=&quot;string&quot;&gt;nginx;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;worker_processes&lt;/span&gt;  &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;string&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;error_log&lt;/span&gt;  &lt;span class=&quot;string&quot;&gt;/var/log/nginx/error.log&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;warn;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;pid&lt;/span&gt;        &lt;span class=&quot;string&quot;&gt;/var/run/nginx.pid;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;events&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;worker_connections&lt;/span&gt;  &lt;span class=&quot;number&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;string&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;http&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;include&lt;/span&gt;       &lt;span class=&quot;string&quot;&gt;/etc/nginx/mime.types;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;default_type&lt;/span&gt;  &lt;span class=&quot;string&quot;&gt;application/octet-stream;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;log_format&lt;/span&gt;  &lt;span class=&quot;string&quot;&gt;main&lt;/span&gt;  &lt;span class=&quot;string&quot;&gt;&amp;#x27;$remote_addr - $remote_user [$time_local] &amp;quot;$request&amp;quot; &amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                      &lt;span class=&quot;string&quot;&gt;&amp;#x27;$status $body_bytes_sent &amp;quot;$http_referer&amp;quot; &amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                      &lt;span class=&quot;string&quot;&gt;&amp;#x27;&amp;quot;$http_user_agent&amp;quot; &amp;quot;$http_x_forwarded_for&amp;quot;&amp;#x27;&lt;/span&gt;&lt;span class=&quot;string&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;access_log&lt;/span&gt;  &lt;span class=&quot;string&quot;&gt;/var/log/nginx/access.log&lt;/span&gt;  &lt;span class=&quot;string&quot;&gt;main;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;sendfile&lt;/span&gt;        &lt;span class=&quot;string&quot;&gt;on;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;#tcp_nopush     on;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;keepalive_timeout&lt;/span&gt;  &lt;span class=&quot;number&quot;&gt;65&lt;/span&gt;&lt;span class=&quot;string&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;#gzip  on;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;/etc/nginx/conf.d/*.conf;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight yml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;run&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;-id&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;--name=c_nginx&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;\&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;80&lt;/span&gt;&lt;span class=&quot;string&quot;&gt;:80&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;\&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;$PWD/conf/nginx.conf:/etc/nginx/nginx.conf&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;\&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;$PWD/logs:/var/log/nginx&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;\&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;$PWD/html:/usr/share/nginx/html&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;\&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;nginx&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;参数说明：
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;-p 80:80&lt;/strong&gt;：将容器的 80 端口映射到宿主机的 80 端口。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;-v $PWD/conf/nginx.conf:/etc/nginx/nginx.conf&lt;/strong&gt;：将主机当前目录下的 /conf/nginx.conf 挂载到容器的 :/etc/nginx/nginx.conf。配置目录&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;-v $PWD/logs:/var/log/nginx&lt;/strong&gt;：将主机当前目录下的 logs 目录挂载到容器的/var/log/nginx。日志目录&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;4&quot;&gt;
+&lt;li&gt;使用外部机器访问 nginx&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;2-4-Redis&quot;&gt;2.4 Redis&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;搜索 redis 镜像&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight yml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;search&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;redis&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;拉取 redis 镜像&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight yml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;pull&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;redis:5.0&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;创建容器，设置端口映射&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight yml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;run&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;-id&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;--name=c_redis&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;6379&lt;/span&gt;&lt;span class=&quot;string&quot;&gt;:6379&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;redis:5.0&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol start=&quot;4&quot;&gt;
+&lt;li&gt;使用外部机器连接 redis&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight yml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;./redis-cli.exe&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;-h&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;192.168&lt;/span&gt;&lt;span class=&quot;number&quot;&gt;.149&lt;/span&gt;&lt;span class=&quot;number&quot;&gt;.135&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;6379&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;三、Dockerfile&quot;&gt;三、Dockerfile&lt;/h2&gt;
+&lt;h3 id=&quot;3-1-Docker-镜像原理&quot;&gt;3.1 Docker 镜像原理&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;Docker 镜像的本质是什么？
+&lt;ul&gt;
+&lt;li&gt;是一个分层文件系统&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Docker 中一个 CentOS 镜像为什么只有 200MB，而一个 centos 操作系统的 iso 文件要几个 G？
+&lt;ul&gt;
+&lt;li&gt;CentOS 的 iso 镜像文件包含 bootfs 和 rootfs，而 docker 的 centos 镜像复用了操作系统的 bootfs，只有 rootfs 和其他镜像层&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Docker 中一个 Tomcat 镜像为什么有 680MB，而一个 tomcat 安装包只要 70 多 MB？
+&lt;ul&gt;
+&lt;li&gt;由于 docker 中镜像是分层的，tomcat 一个安装包虽然只有 70 多 MB，但也需要依赖与父镜像和基础镜像，所有整个对外暴露的 tomcat 镜像大小有差不多 700MB。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;下面为原理讲解：&lt;br&gt;
+&lt;img src=&quot;https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/image.7klmm4fsfyg0.webp&quot; alt=&quot;image&quot;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;linux 文件系统由 boottfs 和 rootfs 两部分组成
+&lt;ul&gt;
+&lt;li&gt;bootfs：包含 bootloader(引导加载程序)和 kernel(内核)&lt;/li&gt;
+&lt;li&gt;rootfs：root 文件系统，典型的 /dev,/bin,/etc 等标准目录和文件&lt;/li&gt;
+&lt;li&gt;不同的 linux 发行版，bootfs 基本一样，而 rootfs 不同，如 ubuntu，centos 等。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Docker 镜像原理
+&lt;ul&gt;
+&lt;li&gt;Docker 镜像是由特殊的文件系统叠加而成&lt;/li&gt;
+&lt;li&gt;最底端是 bootfs，并使用宿主机的 bootfs&lt;/li&gt;
+&lt;li&gt;第二层是 root 文件系统 rootfs，成为 base image&lt;/li&gt;
+&lt;li&gt;再往上可以叠加其他的镜像文件&lt;/li&gt;
+&lt;li&gt;只读镜像不可修改，如果需要对镜像 tomcat 做修改，Docker 在最顶层提供了可加载一个读写文件系统作为容器&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/image.4799tc2g20y0.webp&quot; alt=&quot;image&quot;&gt;&lt;/p&gt;
+&lt;h3 id=&quot;3-2-Docker-镜像如何制作&quot;&gt;3.2 Docker 镜像如何制作&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;容器转为镜像&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;docker commit 容器 id 镜像名称：版本号 【数据卷内容不会 commit 到 tar 文件中】&lt;/li&gt;
+&lt;li&gt;docker save -o 压缩文件名称 自定义镜像名：版本&lt;/li&gt;
+&lt;li&gt;docker load -i 压缩文件名称&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;commit&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将容器转化为一个镜像&lt;/li&gt;
+&lt;li&gt;‘docker commit -m ‘ubuntu with vim wget node yum’ -a liugezhou tender_saha liugezhou/ubuntu:node12’ 这个node12很重要，表示tag&lt;/li&gt;
+&lt;li&gt;‘docker push liugezhou/ubuntu:node12’ 直接推送到仓库&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;dockerfile&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;3-3-DockerFile-概念以及作用&quot;&gt;3.3 DockerFile 概念以及作用&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;DockerFile 是一个文本文件&lt;/li&gt;
+&lt;li&gt;包含了一条条的指令&lt;/li&gt;
+&lt;li&gt;每一条指令构建一层，基于基础镜像，最终构建出一个新的镜像&lt;/li&gt;
+&lt;li&gt;对于开发人员：可以为开发团队提供一个完全一致的开发环境&lt;/li&gt;
+&lt;li&gt;对于测试人员：可以直接拿开发时所构建的镜像或者通过 DockerFile 文件构建一个新的镜像开始工作&lt;/li&gt;
+&lt;li&gt;对于运维人员：在部署时，可以实现应用的无缝移植&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;3-4-Docker-关键字&quot;&gt;3.4 Docker 关键字&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;FROM：指定父镜像–指定 dockerfiel 基于哪个 image 构建&lt;br&gt;
+MAINTAINER：作者信息–用来标明这个 dockerfile 谁写的&lt;br&gt;
+LABLE：标签&lt;br&gt;
+RUN: 执行 linux 命令 --默认是 /bin/sh，RUN command 或者 Run [“command”,“param1”,“param2”]&lt;br&gt;
+EXPOSE：暴露端口&lt;br&gt;
+CMD：容器启动命令&lt;br&gt;
+COPY：复制文件–build 的时候复制文件到 image 中&lt;br&gt;
+ADD：添加文件–可以来源于远程服务&lt;br&gt;
+ENV：环境变量&lt;br&gt;
+VOLUMN：定义外部可以挂载的数据卷–启动容器的时候用-v 绑定 volume 目录&lt;br&gt;
+WORKDIR：工作目录–指定容器内部的工作目录，没有就创建&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;3-5-案例&quot;&gt;3.5 案例&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;案例一：定义 DockerFile，发布 spring-boot 项目&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;定义父镜像：FROM java:8&lt;/li&gt;
+&lt;li&gt;定义作者信息：MAINTAINER liugezhou&lt;a href=&quot;mailto:18231133236@163.com&quot;&gt;18231133236@163.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;将 jar 包添加到容器 ： ADD springboot.jar app.jar&lt;/li&gt;
+&lt;li&gt;定义容器启动执行命令：CMD java -jar app.jar&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;通过 dockerfile 构建镜像： docker build -f dockerfile 文件路径 -t 镜像名称：版本&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;案例二：自定义 centos 镜像，默认登录路径为 /usr,可以使用 vim&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;定义父镜像：FROM centos:7&lt;/li&gt;
+&lt;li&gt;定义作者信息：MAINTAINER liugezhou&lt;a href=&quot;mailto:18231133236@163.com&quot;&gt;18231133236@163.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;执行安装 vim 命令： RUN yum install -y vim&lt;/li&gt;
+&lt;li&gt;定义默认的工作目录 WORKDIR /usr&lt;/li&gt;
+&lt;li&gt;定义容器启动执行的命令：CMD /bin/bash&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;操作：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;cd /Users/liugezhou/Desktop/demo/dockerfiles&lt;/li&gt;
+&lt;li&gt;vi centos_dockerfile&lt;/li&gt;
+&lt;li&gt;将上面内容写入到 centos_dockerfile 中&lt;/li&gt;
+&lt;li&gt;docker build -t ./centos_dockerfile mycentos:1 .&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;此时，查看镜像列表：docker images&lt;br&gt;
+然后，进入查看目录与 vim 命令是否生效：docker run -it --name=c4 mycentos&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;四、docker-compose&quot;&gt;四、docker compose&lt;/h2&gt;
+&lt;h3 id=&quot;4-1-Docker-服务编排&quot;&gt;4.1 Docker 服务编排&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;服务编排：按照一定的业务规则批量管理容器&lt;/p&gt;
+&lt;p&gt;Docker Compose：Docker Compose 是一个编排多容器分布式部署的工具 ，提供命令集管理容器化应用的完整开发周期，包括服务构建、启动和停止。&lt;br&gt;
+使用步骤：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;利用 Dockerfile 定义运行环境镜像&lt;/li&gt;
+&lt;li&gt;使用 docker-compose.yml 定义组成应用的各服务&lt;/li&gt;
+&lt;li&gt;运行 docker-compose up 启动应用&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;4-2-Docker-Compose-安装-使用&quot;&gt;4.2 Docker Compose 安装 &amp;amp; 使用&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;curl -L &lt;a href=&quot;https://github.com/docker/compose/releases/download/1.22.0/docker-compose-%60uname&quot;&gt;https://github.com/docker/compose/releases/download/1.22.0/docker-compose-`uname&lt;/a&gt; -s&lt;code&gt;-&lt;/code&gt;uname -m` -o /usr/local/bin/docker-compose&lt;/li&gt;
+&lt;li&gt;chmod +x /usr/local/bin/docker-compose&lt;/li&gt;
+&lt;li&gt;查看docker-compose版本：&lt;code&gt;docker-compose --version&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;docker-compose 卸载 &lt;strong&gt;rm /usr/local/bin/docker-compose&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;cd /Users/liumingzhou/Desktop/demo&lt;/li&gt;
+&lt;li&gt;mkdir docker-compose&lt;/li&gt;
+&lt;li&gt;cd docker-compose&lt;/li&gt;
+&lt;li&gt;vim docker-compose.yml&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;version&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&amp;#x27;3&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;services&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;nginx&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   &lt;span class=&quot;attr&quot;&gt;image&lt;/span&gt;: nginx&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   &lt;span class=&quot;attr&quot;&gt;ports&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    - &lt;span class=&quot;number&quot;&gt;80&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;80&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   &lt;span class=&quot;attr&quot;&gt;links&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    - app&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   &lt;span class=&quot;attr&quot;&gt;volumes&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    - ./nginx/conf.&lt;span class=&quot;property&quot;&gt;d&lt;/span&gt;:&lt;span class=&quot;regexp&quot;&gt;/etc/&lt;/span&gt;nginx/conf.&lt;span class=&quot;property&quot;&gt;d&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;app&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;attr&quot;&gt;image&lt;/span&gt;: app&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;attr&quot;&gt;expose&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      - &lt;span class=&quot;string&quot;&gt;&amp;quot;8080&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;mkdir -p ./nginx/conf.d&lt;/li&gt;
+&lt;li&gt;cd nginx/conf.d&lt;/li&gt;
+&lt;li&gt;vim test.conf&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;server &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    listen &lt;span class=&quot;number&quot;&gt;80&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    access_log off;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    location / &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        proxy_pass &lt;span class=&quot;attr&quot;&gt;http&lt;/span&gt;:&lt;span class=&quot;comment&quot;&gt;//app:8080;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;cd /Users/liumingzhou/Desktop/demo/docker-compose&lt;/li&gt;
+&lt;li&gt;docker-compose up&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;五、Docker-私有仓库&quot;&gt;五、Docker 私有仓库&lt;/h2&gt;
+&lt;h3 id=&quot;5-1-搭建私有仓库&quot;&gt;5.1 搭建私有仓库&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;1、拉取私有仓库镜像&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;docker pull registry&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;2、启动私有仓库容器&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;docker run -id --name=registry -p 5000:5000 registry&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;3、打开浏览器 输入地址 &lt;a href=&quot;http://xn--5mqq6g52d62kn3k0a6264a&quot;&gt;http://私有仓库服务器&lt;/a&gt; ip:5000/v2/_catalog，&lt;br&gt;
+看到{“repositories”:[]} 表示私有仓库 搭建成功&lt;br&gt;
+4、修改 daemon.json&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;vim /etc/docker/daemon.json&lt;/li&gt;
+&lt;li&gt;在上述文件中添加一个 key，保存退出。此步用于让 docker 信任私有仓库地址；注意将私有仓库服务器 ip 修改为自己私有仓库服务器真实 ip&lt;/li&gt;
+&lt;li&gt;{“insecure-registries”:[“私有仓库服务器 ip:5000”]}&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;5、重启 docker 服务&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;systemctl restart docker&lt;/li&gt;
+&lt;li&gt;docker start registry&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;5-2-上传镜像到私有仓库&quot;&gt;5.2 上传镜像到私有仓库&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;1、标记镜像为私有仓库的镜像&lt;br&gt;
+docker tag centos:7 私有仓库服务器 IP:5000/centos:7&lt;br&gt;
+2、上传标记的镜像&lt;br&gt;
+docker push 私有仓库服务器 IP:5000/centos:7&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;5-3-从私有仓库拉取镜像&quot;&gt;5.3 从私有仓库拉取镜像&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;docker pull 私有仓库服务器 ip:5000/centos:7&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;六、Docker-相关概念&quot;&gt;六、Docker 相关概念&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/image.5j5a1fna9340.webp&quot; alt=&quot;image&quot;&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;docker 容器与传统虚拟机比较&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;相同：容器和虚拟机具有相似的资源隔离和分配优势&lt;/li&gt;
+&lt;li&gt;不同：容器虚拟化的是操作系统，虚拟机虚拟化的是硬件；传统虚拟机可以运行不同的操作系统，容器只能运行统一类型操作系统。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/image.xisha1ny828.webp&quot; alt=&quot;image&quot;&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+"><meta name="twitter:image"><title>Docker | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Docker</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Docker</h1><div class="post-meta">2021-09-05<span> | </span><span class="category"><a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 2.5k</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 10</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/021-Docker%E7%9B%B8%E5%85%B3/#vcomment"><span class="valine-comment-count" data-xid="/021-Docker%E7%9B%B8%E5%85%B3/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%BF%AB%E9%80%9F%E5%91%BD%E4%BB%A4%E4%B8%80%E8%A7%88"><span class="toc-text">一、快速命令一览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81Docker-%E5%BA%94%E7%94%A8%E9%83%A8%E7%BD%B2%E5%AE%9E%E8%B7%B5"><span class="toc-text">二、Docker 应用部署实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-MySQL"><span class="toc-text">2.1 MySQL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Tomcat"><span class="toc-text">2.2 Tomcat</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Nginx"><span class="toc-text">2.3 Nginx</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-Redis"><span class="toc-text">2.4 Redis</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81Dockerfile"><span class="toc-text">三、Dockerfile</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Docker-%E9%95%9C%E5%83%8F%E5%8E%9F%E7%90%86"><span class="toc-text">3.1 Docker 镜像原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-Docker-%E9%95%9C%E5%83%8F%E5%A6%82%E4%BD%95%E5%88%B6%E4%BD%9C"><span class="toc-text">3.2 Docker 镜像如何制作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-DockerFile-%E6%A6%82%E5%BF%B5%E4%BB%A5%E5%8F%8A%E4%BD%9C%E7%94%A8"><span class="toc-text">3.3 DockerFile 概念以及作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-Docker-%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-text">3.4 Docker 关键字</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E6%A1%88%E4%BE%8B"><span class="toc-text">3.5 案例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81docker-compose"><span class="toc-text">四、docker compose</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-Docker-%E6%9C%8D%E5%8A%A1%E7%BC%96%E6%8E%92"><span class="toc-text">4.1 Docker 服务编排</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-Docker-Compose-%E5%AE%89%E8%A3%85-%E4%BD%BF%E7%94%A8"><span class="toc-text">4.2 Docker Compose 安装 &amp; 使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81Docker-%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93"><span class="toc-text">五、Docker 私有仓库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93"><span class="toc-text">5.1 搭建私有仓库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E4%B8%8A%E4%BC%A0%E9%95%9C%E5%83%8F%E5%88%B0%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93"><span class="toc-text">5.2 上传镜像到私有仓库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E4%BB%8E%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93%E6%8B%89%E5%8F%96%E9%95%9C%E5%83%8F"><span class="toc-text">5.3 从私有仓库拉取镜像</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81Docker-%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="toc-text">六、Docker 相关概念</span></a></li></ol></div></div><div class="post-content"><h2 id="一、快速命令一览">一、快速命令一览</h2>
+<ul>
+<li><code>docker -v</code>: 查看 docker 版本</li>
+<li><code>docker images</code>: 查看本地安装的所有镜像</li>
+<li><code>docker images -q</code>: 查看本地安装的所有镜像ID</li>
+<li><code>docker search liugezhou</code>: 搜索公共镜像</li>
+<li><code>docker pull something</code>: 下载某个镜像</li>
+<li><code>docker rmi something</code>: 删除某个镜像</li>
+</ul>
+<hr>
+<ul>
+<li><code>docker ps</code>: 查看正在运行的容器</li>
+<li><code>docker stop id</code>: 停止正在运行的容器</li>
+<li><code>docker start id</code>: 再次启动停止的容器</li>
+<li><code>docker restart id</code>: 重新启动已经启动的容器</li>
+<li><code>docker rm id</code>: 删除已经停止运行的容器</li>
+<li><code>docker rm id -f</code>: 直接删除正在运行中的容器</li>
+<li><code>docker run -it --name=nginx nginx /bin/bash</code>: 此启动方式会给出一个命令终端
+<ul>
+<li><strong>-i</strong>: 表示容器运行</li>
+<li><strong>-t</strong>: 表示分配一个终端</li>
+<li><strong>-d</strong>: 表示守护后台运行</li>
+<li><strong>-p</strong>: 表示修改默认的端口</li>
+<li><strong>–name</strong>: 给容器起一个名字</li>
+</ul>
+</li>
+<li><code>docker exec  -it id /bin/bash</code> : 可以通过这个命令进入到容器中去</li>
+<li>在容器中退出而不停止，使用 <code>ctrl+p ctrl+q</code></li>
+</ul>
+<h2 id="二、Docker-应用部署实践">二、Docker 应用部署实践</h2>
+<h3 id="2-1-MySQL">2.1 MySQL</h3>
+<ol>
+<li>搜索 mysql 镜像</li>
+</ol>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">docker</span> <span class="string">search</span> <span class="string">mysql</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>拉取 mysql 镜像</li>
+</ol>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">docker</span> <span class="string">pull</span> <span class="string">mysql:5.6</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>创建容器，设置端口映射、目录映射</li>
+</ol>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在/root目录下创建mysql目录用于存储mysql数据信息</span></span><br><span class="line"><span class="string">mkdir</span> <span class="string">~/mysql</span></span><br><span class="line"><span class="string">cd</span> <span class="string">~/mysql</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">docker</span> <span class="string">run</span> <span class="string">-id</span> <span class="string">\</span></span><br><span class="line"><span class="string">-p</span> <span class="number">3307</span><span class="string">:3306</span> <span class="string">\</span></span><br><span class="line"><span class="string">--name=c_mysql</span> <span class="string">\</span></span><br><span class="line"><span class="string">-v</span> <span class="string">$PWD/conf:/etc/mysql/conf.d</span> <span class="string">\</span></span><br><span class="line"><span class="string">-v</span> <span class="string">$PWD/logs:/logs</span> <span class="string">\</span></span><br><span class="line"><span class="string">-v</span> <span class="string">$PWD/data:/var/lib/mysql</span> <span class="string">\</span></span><br><span class="line"><span class="string">-e</span> <span class="string">MYSQL_ROOT_PASSWORD=123456</span> <span class="string">\</span></span><br><span class="line"><span class="string">mysql:5.7</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>参数说明：
+<ul>
+<li><strong>-p 3307:3306</strong>：将容器的 3306 端口映射到宿主机的 3307 端口。</li>
+<li><strong>-v $PWD/conf:/etc/mysql/conf.d</strong>：将主机当前目录下的 conf/my.cnf 挂载到容器的 /etc/mysql/my.cnf。配置目录</li>
+<li><strong>-v $PWD/logs:/logs</strong>：将主机当前目录下的 logs 目录挂载到容器的 /logs。日志目录</li>
+<li><strong>-v $PWD/data:/var/lib/mysql</strong> ：将主机当前目录下的 data 目录挂载到容器的 /var/lib/mysql 。数据目录</li>
+<li>**-e MYSQL_ROOT_PASSWORD=123456：**初始化 root 用户的密码。</li>
+</ul>
+</li>
+</ul>
+<ol start="4">
+<li>进入容器，操作 mysql</li>
+</ol>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">docker</span> <span class="string">exec</span> <span class="string">–it</span> <span class="string">c_mysql</span> <span class="string">/bin/bash</span></span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>使用外部机器连接容器中的 mysql</li>
+</ol>
+<h3 id="2-2-Tomcat">2.2 Tomcat</h3>
+<ol>
+<li>搜索 tomcat 镜像</li>
+</ol>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">docker</span> <span class="string">search</span> <span class="string">tomcat</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>拉取 tomcat 镜像</li>
+</ol>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">docker</span> <span class="string">pull</span> <span class="string">tomcat</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>创建容器，设置端口映射、目录映射</li>
+</ol>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在/root目录下创建tomcat目录用于存储tomcat数据信息</span></span><br><span class="line"><span class="string">mkdir</span> <span class="string">~/tomcat</span></span><br><span class="line"><span class="string">cd</span> <span class="string">~/tomcat</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">docker</span> <span class="string">run</span> <span class="string">-id</span> <span class="string">--name=c_tomcat</span> <span class="string">\</span></span><br><span class="line"><span class="string">-p</span> <span class="number">8080</span><span class="string">:8080</span> <span class="string">\</span></span><br><span class="line"><span class="string">-v</span> <span class="string">$PWD:/usr/local/tomcat/webapps</span> <span class="string">\</span></span><br><span class="line"><span class="string">tomcat</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>参数说明：
+<ul>
+<li>**-p 8080:8080：**将容器的 8080 端口映射到主机的 8080 端口<br>
+**-v $PWD:/usr/local/tomcat/webapps：**将主机中当前目录挂载到容器的 webapps</li>
+</ul>
+</li>
+</ul>
+<ol start="4">
+<li>使用外部机器访问 tomcat</li>
+</ol>
+<h3 id="2-3-Nginx">2.3 Nginx</h3>
+<ol>
+<li>搜索 nginx 镜像</li>
+</ol>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">docker</span> <span class="string">search</span> <span class="string">nginx</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>拉取 nginx 镜像</li>
+</ol>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">docker</span> <span class="string">pull</span> <span class="string">nginx</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>创建容器，设置端口映射、目录映射</li>
+</ol>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在/root目录下创建nginx目录用于存储nginx数据信息</span></span><br><span class="line"><span class="string">mkdir</span> <span class="string">~/nginx</span></span><br><span class="line"><span class="string">cd</span> <span class="string">~/nginx</span></span><br><span class="line"><span class="string">mkdir</span> <span class="string">conf</span></span><br><span class="line"><span class="string">cd</span> <span class="string">conf</span></span><br><span class="line"><span class="comment"># 在~/nginx/conf/下创建nginx.conf文件,粘贴下面内容</span></span><br><span class="line"><span class="string">vim</span> <span class="string">nginx.conf</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="string">user</span>  <span class="string">nginx;</span></span><br><span class="line"><span class="string">worker_processes</span>  <span class="number">1</span><span class="string">;</span></span><br><span class="line"></span><br><span class="line"><span class="string">error_log</span>  <span class="string">/var/log/nginx/error.log</span> <span class="string">warn;</span></span><br><span class="line"><span class="string">pid</span>        <span class="string">/var/run/nginx.pid;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">events</span> &#123;</span><br><span class="line">    <span class="string">worker_connections</span>  <span class="number">1024</span><span class="string">;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">http</span> &#123;</span><br><span class="line">    <span class="string">include</span>       <span class="string">/etc/nginx/mime.types;</span></span><br><span class="line">    <span class="string">default_type</span>  <span class="string">application/octet-stream;</span></span><br><span class="line"></span><br><span class="line">    <span class="string">log_format</span>  <span class="string">main</span>  <span class="string">&#x27;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#x27;</span></span><br><span class="line">                      <span class="string">&#x27;$status $body_bytes_sent &quot;$http_referer&quot; &#x27;</span></span><br><span class="line">                      <span class="string">&#x27;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#x27;</span><span class="string">;</span></span><br><span class="line"></span><br><span class="line">    <span class="string">access_log</span>  <span class="string">/var/log/nginx/access.log</span>  <span class="string">main;</span></span><br><span class="line"></span><br><span class="line">    <span class="string">sendfile</span>        <span class="string">on;</span></span><br><span class="line">    <span class="comment">#tcp_nopush     on;</span></span><br><span class="line"></span><br><span class="line">    <span class="string">keepalive_timeout</span>  <span class="number">65</span><span class="string">;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#gzip  on;</span></span><br><span class="line"></span><br><span class="line">    <span class="string">include</span> <span class="string">/etc/nginx/conf.d/*.conf;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">docker</span> <span class="string">run</span> <span class="string">-id</span> <span class="string">--name=c_nginx</span> <span class="string">\</span></span><br><span class="line"><span class="string">-p</span> <span class="number">80</span><span class="string">:80</span> <span class="string">\</span></span><br><span class="line"><span class="string">-v</span> <span class="string">$PWD/conf/nginx.conf:/etc/nginx/nginx.conf</span> <span class="string">\</span></span><br><span class="line"><span class="string">-v</span> <span class="string">$PWD/logs:/var/log/nginx</span> <span class="string">\</span></span><br><span class="line"><span class="string">-v</span> <span class="string">$PWD/html:/usr/share/nginx/html</span> <span class="string">\</span></span><br><span class="line"><span class="string">nginx</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>参数说明：
+<ul>
+<li><strong>-p 80:80</strong>：将容器的 80 端口映射到宿主机的 80 端口。</li>
+<li><strong>-v $PWD/conf/nginx.conf:/etc/nginx/nginx.conf</strong>：将主机当前目录下的 /conf/nginx.conf 挂载到容器的 :/etc/nginx/nginx.conf。配置目录</li>
+<li><strong>-v $PWD/logs:/var/log/nginx</strong>：将主机当前目录下的 logs 目录挂载到容器的/var/log/nginx。日志目录</li>
+</ul>
+</li>
+</ul>
+<ol start="4">
+<li>使用外部机器访问 nginx</li>
+</ol>
+<h3 id="2-4-Redis">2.4 Redis</h3>
+<ol>
+<li>搜索 redis 镜像</li>
+</ol>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">docker</span> <span class="string">search</span> <span class="string">redis</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>拉取 redis 镜像</li>
+</ol>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">docker</span> <span class="string">pull</span> <span class="string">redis:5.0</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>创建容器，设置端口映射</li>
+</ol>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">docker</span> <span class="string">run</span> <span class="string">-id</span> <span class="string">--name=c_redis</span> <span class="string">-p</span> <span class="number">6379</span><span class="string">:6379</span> <span class="string">redis:5.0</span></span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>使用外部机器连接 redis</li>
+</ol>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">./redis-cli.exe</span> <span class="string">-h</span> <span class="number">192.168</span><span class="number">.149</span><span class="number">.135</span> <span class="string">-p</span> <span class="number">6379</span></span><br></pre></td></tr></table></figure>
+<h2 id="三、Dockerfile">三、Dockerfile</h2>
+<h3 id="3-1-Docker-镜像原理">3.1 Docker 镜像原理</h3>
+<blockquote>
+<ul>
+<li>Docker 镜像的本质是什么？
+<ul>
+<li>是一个分层文件系统</li>
+</ul>
+</li>
+<li>Docker 中一个 CentOS 镜像为什么只有 200MB，而一个 centos 操作系统的 iso 文件要几个 G？
+<ul>
+<li>CentOS 的 iso 镜像文件包含 bootfs 和 rootfs，而 docker 的 centos 镜像复用了操作系统的 bootfs，只有 rootfs 和其他镜像层</li>
+</ul>
+</li>
+<li>Docker 中一个 Tomcat 镜像为什么有 680MB，而一个 tomcat 安装包只要 70 多 MB？
+<ul>
+<li>由于 docker 中镜像是分层的，tomcat 一个安装包虽然只有 70 多 MB，但也需要依赖与父镜像和基础镜像，所有整个对外暴露的 tomcat 镜像大小有差不多 700MB。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>下面为原理讲解：<br>
+<img src="https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/image.7klmm4fsfyg0.webp" alt="image"></p>
+<ul>
+<li>linux 文件系统由 boottfs 和 rootfs 两部分组成
+<ul>
+<li>bootfs：包含 bootloader(引导加载程序)和 kernel(内核)</li>
+<li>rootfs：root 文件系统，典型的 /dev,/bin,/etc 等标准目录和文件</li>
+<li>不同的 linux 发行版，bootfs 基本一样，而 rootfs 不同，如 ubuntu，centos 等。</li>
+</ul>
+</li>
+<li>Docker 镜像原理
+<ul>
+<li>Docker 镜像是由特殊的文件系统叠加而成</li>
+<li>最底端是 bootfs，并使用宿主机的 bootfs</li>
+<li>第二层是 root 文件系统 rootfs，成为 base image</li>
+<li>再往上可以叠加其他的镜像文件</li>
+<li>只读镜像不可修改，如果需要对镜像 tomcat 做修改，Docker 在最顶层提供了可加载一个读写文件系统作为容器</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/image.4799tc2g20y0.webp" alt="image"></p>
+<h3 id="3-2-Docker-镜像如何制作">3.2 Docker 镜像如何制作</h3>
+<ol>
+<li>
+<p>容器转为镜像</p>
+<ul>
+<li>docker commit 容器 id 镜像名称：版本号 【数据卷内容不会 commit 到 tar 文件中】</li>
+<li>docker save -o 压缩文件名称 自定义镜像名：版本</li>
+<li>docker load -i 压缩文件名称</li>
+</ul>
+</li>
+<li>
+<p>commit</p>
+<ul>
+<li>将容器转化为一个镜像</li>
+<li>‘docker commit -m ‘ubuntu with vim wget node yum’ -a liugezhou tender_saha liugezhou/ubuntu:node12’ 这个node12很重要，表示tag</li>
+<li>‘docker push liugezhou/ubuntu:node12’ 直接推送到仓库</li>
+</ul>
+</li>
+<li>
+<p>dockerfile</p>
+</li>
+</ol>
+<h3 id="3-3-DockerFile-概念以及作用">3.3 DockerFile 概念以及作用</h3>
+<blockquote>
+<ul>
+<li>DockerFile 是一个文本文件</li>
+<li>包含了一条条的指令</li>
+<li>每一条指令构建一层，基于基础镜像，最终构建出一个新的镜像</li>
+<li>对于开发人员：可以为开发团队提供一个完全一致的开发环境</li>
+<li>对于测试人员：可以直接拿开发时所构建的镜像或者通过 DockerFile 文件构建一个新的镜像开始工作</li>
+<li>对于运维人员：在部署时，可以实现应用的无缝移植</li>
+</ul>
+</blockquote>
+<h3 id="3-4-Docker-关键字">3.4 Docker 关键字</h3>
+<blockquote>
+<p>FROM：指定父镜像–指定 dockerfiel 基于哪个 image 构建<br>
+MAINTAINER：作者信息–用来标明这个 dockerfile 谁写的<br>
+LABLE：标签<br>
+RUN: 执行 linux 命令 --默认是 /bin/sh，RUN command 或者 Run [“command”,“param1”,“param2”]<br>
+EXPOSE：暴露端口<br>
+CMD：容器启动命令<br>
+COPY：复制文件–build 的时候复制文件到 image 中<br>
+ADD：添加文件–可以来源于远程服务<br>
+ENV：环境变量<br>
+VOLUMN：定义外部可以挂载的数据卷–启动容器的时候用-v 绑定 volume 目录<br>
+WORKDIR：工作目录–指定容器内部的工作目录，没有就创建</p>
+</blockquote>
+<h3 id="3-5-案例">3.5 案例</h3>
+<blockquote>
+<p>案例一：定义 DockerFile，发布 spring-boot 项目</p>
+<ul>
+<li>定义父镜像：FROM java:8</li>
+<li>定义作者信息：MAINTAINER liugezhou<a href="mailto:18231133236@163.com">18231133236@163.com</a></li>
+<li>将 jar 包添加到容器 ： ADD springboot.jar app.jar</li>
+<li>定义容器启动执行命令：CMD java -jar app.jar</li>
+</ul>
+<p>通过 dockerfile 构建镜像： docker build -f dockerfile 文件路径 -t 镜像名称：版本</p>
+</blockquote>
+<blockquote>
+<p>案例二：自定义 centos 镜像，默认登录路径为 /usr,可以使用 vim</p>
+<ul>
+<li>定义父镜像：FROM centos:7</li>
+<li>定义作者信息：MAINTAINER liugezhou<a href="mailto:18231133236@163.com">18231133236@163.com</a></li>
+<li>执行安装 vim 命令： RUN yum install -y vim</li>
+<li>定义默认的工作目录 WORKDIR /usr</li>
+<li>定义容器启动执行的命令：CMD /bin/bash</li>
+</ul>
+<p>操作：</p>
+<ul>
+<li>cd /Users/liugezhou/Desktop/demo/dockerfiles</li>
+<li>vi centos_dockerfile</li>
+<li>将上面内容写入到 centos_dockerfile 中</li>
+<li>docker build -t ./centos_dockerfile mycentos:1 .</li>
+</ul>
+<p>此时，查看镜像列表：docker images<br>
+然后，进入查看目录与 vim 命令是否生效：docker run -it --name=c4 mycentos</p>
+</blockquote>
+<h2 id="四、docker-compose">四、docker compose</h2>
+<h3 id="4-1-Docker-服务编排">4.1 Docker 服务编排</h3>
+<blockquote>
+<p>服务编排：按照一定的业务规则批量管理容器</p>
+<p>Docker Compose：Docker Compose 是一个编排多容器分布式部署的工具 ，提供命令集管理容器化应用的完整开发周期，包括服务构建、启动和停止。<br>
+使用步骤：</p>
+<ol>
+<li>利用 Dockerfile 定义运行环境镜像</li>
+<li>使用 docker-compose.yml 定义组成应用的各服务</li>
+<li>运行 docker-compose up 启动应用</li>
+</ol>
+</blockquote>
+<h3 id="4-2-Docker-Compose-安装-使用">4.2 Docker Compose 安装 &amp; 使用</h3>
+<blockquote>
+<ul>
+<li>curl -L <a target="_blank" rel="noopener" href="https://github.com/docker/compose/releases/download/1.22.0/docker-compose-%60uname">https://github.com/docker/compose/releases/download/1.22.0/docker-compose-`uname</a> -s<code>-</code>uname -m` -o /usr/local/bin/docker-compose</li>
+<li>chmod +x /usr/local/bin/docker-compose</li>
+<li>查看docker-compose版本：<code>docker-compose --version</code></li>
+<li>docker-compose 卸载 <strong>rm /usr/local/bin/docker-compose</strong></li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>cd /Users/liumingzhou/Desktop/demo</li>
+<li>mkdir docker-compose</li>
+<li>cd docker-compose</li>
+<li>vim docker-compose.yml</li>
+</ul>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version</span>: <span class="string">&#x27;3&#x27;</span></span><br><span class="line"><span class="attr">services</span>:</span><br><span class="line">  <span class="attr">nginx</span>:</span><br><span class="line">   <span class="attr">image</span>: nginx</span><br><span class="line">   <span class="attr">ports</span>:</span><br><span class="line">    - <span class="number">80</span>:<span class="number">80</span></span><br><span class="line">   <span class="attr">links</span>:</span><br><span class="line">    - app</span><br><span class="line">   <span class="attr">volumes</span>:</span><br><span class="line">    - ./nginx/conf.<span class="property">d</span>:<span class="regexp">/etc/</span>nginx/conf.<span class="property">d</span></span><br><span class="line">  <span class="attr">app</span>:</span><br><span class="line">    <span class="attr">image</span>: app</span><br><span class="line">    <span class="attr">expose</span>:</span><br><span class="line">      - <span class="string">&quot;8080&quot;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>mkdir -p ./nginx/conf.d</li>
+<li>cd nginx/conf.d</li>
+<li>vim test.conf</li>
+</ul>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen <span class="number">80</span>;</span><br><span class="line">    access_log off;</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">        proxy_pass <span class="attr">http</span>:<span class="comment">//app:8080;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>cd /Users/liumingzhou/Desktop/demo/docker-compose</li>
+<li>docker-compose up</li>
+</ul>
+</blockquote>
+<h2 id="五、Docker-私有仓库">五、Docker 私有仓库</h2>
+<h3 id="5-1-搭建私有仓库">5.1 搭建私有仓库</h3>
+<blockquote>
+<p>1、拉取私有仓库镜像</p>
+<ul>
+<li>docker pull registry</li>
+</ul>
+<p>2、启动私有仓库容器</p>
+<ul>
+<li>docker run -id --name=registry -p 5000:5000 registry</li>
+</ul>
+<p>3、打开浏览器 输入地址 <a target="_blank" rel="noopener" href="http://xn--5mqq6g52d62kn3k0a6264a">http://私有仓库服务器</a> ip:5000/v2/_catalog，<br>
+看到{“repositories”:[]} 表示私有仓库 搭建成功<br>
+4、修改 daemon.json</p>
+<ul>
+<li>vim /etc/docker/daemon.json</li>
+<li>在上述文件中添加一个 key，保存退出。此步用于让 docker 信任私有仓库地址；注意将私有仓库服务器 ip 修改为自己私有仓库服务器真实 ip</li>
+<li>{“insecure-registries”:[“私有仓库服务器 ip:5000”]}</li>
+</ul>
+<p>5、重启 docker 服务</p>
+<ul>
+<li>systemctl restart docker</li>
+<li>docker start registry</li>
+</ul>
+</blockquote>
+<h3 id="5-2-上传镜像到私有仓库">5.2 上传镜像到私有仓库</h3>
+<blockquote>
+<p>1、标记镜像为私有仓库的镜像<br>
+docker tag centos:7 私有仓库服务器 IP:5000/centos:7<br>
+2、上传标记的镜像<br>
+docker push 私有仓库服务器 IP:5000/centos:7</p>
+</blockquote>
+<h3 id="5-3-从私有仓库拉取镜像">5.3 从私有仓库拉取镜像</h3>
+<blockquote>
+<p>docker pull 私有仓库服务器 ip:5000/centos:7</p>
+</blockquote>
+<h2 id="六、Docker-相关概念">六、Docker 相关概念</h2>
+<p><img src="https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/image.5j5a1fna9340.webp" alt="image"></p>
+<blockquote>
+<p>docker 容器与传统虚拟机比较</p>
+<ul>
+<li>相同：容器和虚拟机具有相似的资源隔离和分配优势</li>
+<li>不同：容器虚拟化的是操作系统，虚拟机虚拟化的是硬件；传统虚拟机可以运行不同的操作系统，容器只能运行统一类型操作系统。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/image.xisha1ny828.webp" alt="image"></p>
+</blockquote>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>Docker</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2021-09-05</p><p><span>最后更新：</span>2022-12-14</p><p><span>原始链接：</span><a href="/021-Docker相关/">https://blog.liugezhou.online/021-Docker%E7%9B%B8%E5%85%B3/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/021-Docker%E7%9B%B8%E5%85%B3/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/服务端"><i class="fa fa-tag">服务端</i></a></div><div class="post-nav"><a class="pre" href="/022-babel/">Babel有关基础内容</a><a class="next" href="/020-%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/">运维相关</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

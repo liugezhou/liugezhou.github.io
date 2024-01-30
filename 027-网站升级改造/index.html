@@ -1,0 +1,621 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="博客网站升级改造"><meta name="twitter:description" content="&lt;h2 id=&quot;背景&quot;&gt;背景&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;之前搭建的个人博客网站于 2020 年 8 月停更，不觉间，时间已过去了两年时间。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;这个五一，想着将之前在语雀的一些文章输出誊到博客。&lt;br&gt;
+于是跟着之前懵懂产出的三篇博客搭建记录为引，万万没想到，写的真是有点糙，之前的项目不能友好的启动了。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;在经过一番错误查找后，由于clone的主题以及修改的主题文件代码未成功提交，项目再次启动缺失主题文件，不能复原。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;然后就想着，索性重新建一下吧，为以后能记录生活、做个笔记提供一个温暖的床。&lt;br&gt;
+这篇博客用来记录重新搭建博客的每一个步骤，每一个旅程，每一个错误，走一步写一步，不让悲剧重现。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;初次预览&quot;&gt;初次预览&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;依然使用 HEXO 搭建。本次搭建是在重新阅读了一遍 HEXO 官方文档开始的。&lt;br&gt;
+本地需要 Node 环境以及 Git 环境即可。&lt;br&gt;
+然后，本地全局安装 hexo-cli,我的本地版本为：4.3.0&lt;br&gt;
+找到某一目录，依次执行以下操作，初次搭建成功。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight stata&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;mkdir&lt;/span&gt; blog&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;cd&lt;/span&gt; blog&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;npm install -&lt;span class=&quot;keyword&quot;&gt;g&lt;/span&gt; hexo-&lt;span class=&quot;keyword&quot;&gt;cli&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;hexo init liugezhou &lt;span class=&quot;comment&quot;&gt;// 目录介绍略&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;cd&lt;/span&gt; liugezhou&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;npm install&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;hexo new &lt;span class=&quot;string&quot;&gt;&amp;quot;just test it &amp;quot;&lt;/span&gt; &lt;span class=&quot;comment&quot;&gt;//source下新建一个博文&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;hexo new page -p &lt;span class=&quot;keyword&quot;&gt;about&lt;/span&gt;/index &lt;span class=&quot;string&quot;&gt;&amp;quot;About me&amp;quot;&lt;/span&gt; &lt;span class=&quot;comment&quot;&gt;//source下新建about目录,index.md文件，博文名称为 About me&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;hexo &lt;span class=&quot;keyword&quot;&gt;g&lt;/span&gt;   &lt;span class=&quot;comment&quot;&gt;// 生成静态文件&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;hexo s   &lt;span class=&quot;comment&quot;&gt;// 本地启动，预览内容&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;hexo &lt;span class=&quot;keyword&quot;&gt;d&lt;/span&gt;   &lt;span class=&quot;comment&quot;&gt;// 网站部署，暂时掠过&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;hexo clean  &lt;span class=&quot;comment&quot;&gt;//清除缓存文件db.json和public&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;自定义配置文件路径&quot;&gt;自定义配置文件路径&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;目录中，最重要的一个配置文件是&lt;code&gt;_config.yml&lt;/code&gt;,官方提供一个命令，可以不使用默认的文件配置&lt;br&gt;
+hexo server --config custom.yml&lt;br&gt;
+hexo generate --config custom.yml,custom2.yml&lt;br&gt;
+后期直接修改themes配置即可。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;新建文章注意点&quot;&gt;新建文章注意点&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;hexo new 的时候，默认使用的是 post 布局，这是在&lt;code&gt;_config.yml &lt;/code&gt;中配置的，我们可以修改 &lt;code&gt;scaffolds&lt;/code&gt; 下的 &lt;code&gt;post&lt;/code&gt; 布局，也可以新建一个布局(&lt;a href=&quot;http://blog.md&quot;&gt;blog.md&lt;/a&gt;,使用 hexo new blog “my custom blog”)，想要默认使用新布局的话，直接修改&lt;code&gt;_config.yml&lt;/code&gt;中的&lt;code&gt;default_layout&lt;/code&gt;设置 即可。&lt;br&gt;
+post 为新文章&lt;br&gt;
+page 为新的页面&lt;br&gt;
+draft 为草稿文件。可通过 hexo publish &lt;code&gt;&amp;lt;fileName&amp;gt;&lt;/code&gt;命令移动到_post 文件下&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;站点部署-这里记录了在部署过程中的两个问题以及解决流程&quot;&gt;站点部署(这里记录了在部署过程中的两个问题以及解决流程)&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;部署此站点，&lt;a href=&quot;http://xn--github-vp7iqqn3ge8jn8c381c7b7dea433cjm2g.io&quot;&gt;不占用之前已被使用的github.io&lt;/a&gt;，在 Github 上新建一个项目名称为 blog,然后根据github中提示在我们刚刚新建的项目下依次执行：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight routeros&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;git init&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;git &lt;span class=&quot;built_in&quot;&gt;add&lt;/span&gt; .&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;git commit -m &lt;span class=&quot;string&quot;&gt;&amp;#x27;first commit&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;git branch -M main&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;git remote &lt;span class=&quot;built_in&quot;&gt;add&lt;/span&gt; origin &lt;span class=&quot;string&quot;&gt;&amp;#x27;Your repository&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;git push -u origin main&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;然后进入到&lt;a href=&quot;https://github.com/marketplace/travis-ci&quot;&gt;Travis CI&lt;/a&gt;,为自己新建的项目 blog 添加配置，过程略,&lt;a href=&quot;https://hexo.io/zh-cn/docs/github-pages&quot;&gt;参考&lt;/a&gt;。&lt;br&gt;
+(配置过程中遇到信用卡的问题，鼓捣了半天)&lt;br&gt;
+注册新建成功后：&lt;br&gt;
+回到 我们本地的blog 项目，根目录下新建 .travis.yml&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight yaml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;sudo:&lt;/span&gt; &lt;span class=&quot;literal&quot;&gt;false&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;language:&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;node_js&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;node_js:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;bullet&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;12&lt;/span&gt; &lt;span class=&quot;comment&quot;&gt;# use nodejs v10 LTS&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;cache:&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;npm&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;branches:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;only:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;bullet&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;master&lt;/span&gt; &lt;span class=&quot;comment&quot;&gt;# build master branch only&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;script:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;bullet&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;hexo&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;generate&lt;/span&gt; &lt;span class=&quot;comment&quot;&gt;# generate static files&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;deploy:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;provider:&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;pages&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;skip-cleanup:&lt;/span&gt; &lt;span class=&quot;literal&quot;&gt;true&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;github-token:&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;$GH_TOKEN&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;keep-history:&lt;/span&gt; &lt;span class=&quot;literal&quot;&gt;true&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;on:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;attr&quot;&gt;branch:&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;master&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;local-dir:&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;public&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;在代码推送后，travis 控制台报错：The engine “node” is incompatible with this module. Expected version “&amp;gt;=12.13.0”. Got “10.24.1”，由于使用最新的hexo版本，node版本要求为12以上，于是修改 上述文件的node_js 版本为 12&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;然后，再次提交代码，并没有触发 travis 的 job，于是继续提交代码，travis 的任务还是没有变动。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;接着，继续在 travis 里面点击同步账号，等待一段时间之后，依然不行。找了半天没有头绪。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;再接着，终于在 travis 的 request 中看到了错误提示：提交的代码记录为 Branch “main” not included per configuration,于是猜想可能是上述 travis.yml 文件中填写的分支为默认的 master，而我新建的默认分支是 main，于是修改.travis.yml 中的 master 为 main，push 代码，&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;此刻：可喜可贺，发生了改变，且换成了新的错误：&lt;br&gt;
+gh-token is invalid.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;于是，回到 Github-&amp;gt;Setting-&amp;gt;Developer settings-&amp;gt;Personal access tokens，重新生成了一下 access tokens,notes 为 blog,并在 Travis 中重新配置 GH_TOKEN，只是将 GH_TOKEN 的值写成 blog 写了进去。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;依然不行，猜想是由于在生成 Personal access token 的时候，并没有直接显示密码，所以导致在 travis 中的密码配置不正确。&lt;br&gt;
+于是，现在要解决的问题就是这个 Personal access token 没有显示的问题。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;然后找了几个小时，文档也看了个遍，还在被窝里躺了二十分钟看官方说明，最终就是因为在生成 token 的时候，就是不显示那个生成的仅仅出现一次的 token，无奈采取另一种办法，下载一个客户端，看是否可以生成 token。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;然后 Github 客户端下载，挂了梯子也很缓慢，经过一番时间下载之后，里面没有生成 PAT 的选项，于是卸载 Github 客户端。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;于是又想到，是不是因为浏览器的插件原因，Github 在生成 token 的时候出于安全考虑，所以不显示这个 token？&lt;br&gt;
+然后，我就将浏览器的全部插件关闭，再次生成 token，依然不起作用。。。。。。&lt;br&gt;
+再然后，又重新注册了一个 github 账号，依照之前方式生成 token，依然不行。&lt;/p&gt;
+&lt;p&gt;最后的最后，他奶奶的，整到晚上一点半，换了个浏览器，再次登录、执行此流程。。。。。。可以了！！！！！！&lt;/p&gt;
+&lt;p&gt;接着回到 travis 中，重新配置 GH_TOKEN 的密码，点击 Restart build，然后在 &lt;a href=&quot;https://liugezhou.github.io/blog%EF%BC%8C%E5%8F%AF%E4%BB%A5%E8%AE%BF%E9%97%AE%E4%BA%86&quot;&gt;https://liugezhou.github.io/blog，可以访问了&lt;/a&gt;.&lt;br&gt;
+此刻项目还是乱码状态，但是 travis 的自动化配置总算是好了。&lt;/p&gt;
+&lt;p&gt;此时，来到 Github 下 blog 项目中，看到 Setting 设置中的 Pages 中 Source 已经自动切换成了分支 gh-pages&lt;br&gt;
+然后关于部署到页面上的乱码问题，看 HEXO 文档，是由于_config.yml 文件中，url 与 root 的编写不对。&lt;br&gt;
+之前配置为：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight dts&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;symbol&quot;&gt;url:&lt;/span&gt; https:&lt;span class=&quot;comment&quot;&gt;//liugezhou.github.io/liugezhou&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;symbol&quot;&gt;root:&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;/liugezhou/&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;而由于我新建的项目是在Github上一个名为blog的项目，于是修改_config.yml&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight dts&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;symbol&quot;&gt;url:&lt;/span&gt; https:&lt;span class=&quot;comment&quot;&gt;//liugezhou.github.io/blog&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;symbol&quot;&gt;root:&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;/blog/&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;再次push代码，travis自动部署，等待几分钟后，访问&lt;a href=&quot;https://liugezhou.github.io/blog%EF%BC%8C%E6%AD%A4%E5%88%BB%E7%9A%84%E7%BA%BF%E4%B8%8A%E6%B5%8B%E8%AF%95%E5%8D%9A%E5%AE%A2%E5%86%85%E5%AE%B9%E6%98%BE%E7%A4%BA%E4%B8%8E%E6%9C%AC%E5%9C%B0%E7%9B%B8%E5%90%8C%E3%80%82&quot;&gt;https://liugezhou.github.io/blog，此刻的线上测试博客内容显示与本地相同。&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;其它部署-了解&quot;&gt;其它部署(了解)&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;除了travis一键部署外，还有直接使用hexo deploy的方式，之前的博客使用的就是此方法，这里只对此方式的部署，再次做个记录。&lt;br&gt;
+首先，执行hexo deploy之前，再现有代码上需要做几个准备&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;_config.yml 中需要配置deploy\type\repo\branch等参数&lt;/li&gt;
+&lt;li&gt;需要安装： npm i hexo-deploy-git --save&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;当执行 hexo deploy的时候，过程就是将public下的目录推送至_config.yml下设置的远程仓库的branch分支，并覆盖其内容。&lt;br&gt;
+然后，一般远程仓库分为分支一和分支二，比如刚才我们建设的代码处于分之一，那么需要将_config.yml下的branch设置为分支二，然后推送分之一代码，会自动将生成的public文件推送到分支二中，且需要查看仓库Pages中设置Source的分支确保为分支二，这样分支一为hexo开发代码，分支二为生产的站点文件。&lt;br&gt;
+简单说就是通过hexo generate生成的public下的站点文件代码，可以复制到任何你想复制的地方，此为生成的静态站点。&lt;/p&gt;
+&lt;p&gt;对于我上文已经提到的Travis流程，不需要自己设置仓库的第二分支，Travis CI流程已经全部搞定，且默认生成的public下的文件推送至gh-pages分支了，并且项目设置的Pages中Source也自动切换至gh-pages&lt;/p&gt;
+&lt;p&gt;bingo，接下来一步就是更换主题、文章内容的迁移、博客填充了。但是在此之前，对HEXO文档做进一步的学习、整理。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;模板&quot;&gt;模板&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;在进行我们博客搭建前，我们再对HEXO文档的目标内容做一个记录&lt;br&gt;
+各页面对应的模板名称为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;index     首页&lt;/li&gt;
+&lt;li&gt;post      文章内容&lt;/li&gt;
+&lt;li&gt;page      分页&lt;/li&gt;
+&lt;li&gt;archive   归档&lt;/li&gt;
+&lt;li&gt;category  分类归档&lt;/li&gt;
+&lt;li&gt;tags      标签归档&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;主题&quot;&gt;主题&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;只需要在theme下新建一个任意名称的文件夹，然后修改_config下的them设置为此定义的任意文件夹名称，那么主题就切换了。&lt;br&gt;
+主题可能含有的结构有：_config.yml、languages、layout、scripts、source&lt;br&gt;
+_config.yml :与HEXO配置文件不同，且修改时会自动更新，不需要重启hexo s&lt;br&gt;
+layout :  模版文件决定网站内容的呈现方式，可食用ejs渲染。&lt;br&gt;
+自己的主题内容，发布流程见网站。&lt;br&gt;
+撸到这里的时候，想着得自己开发个主题吧，但是审美、UI以及主题开发的流程还不是很熟悉，遥想之前的主题，是在clone其它主题之后的再修改，这样代码coding要少的多了，所以此次主题切换，还是根据在别人的主题基础下，添加自己想要的一些功能。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;查找主题&quot;&gt;查找主题&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;之前博客内容，之前clone的主题是：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;git &lt;span class=&quot;built_in&quot;&gt;clone&lt;/span&gt; https://github.com/Haojen/hexo-theme-Anisina.git themes/lmz&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;我很喜欢这个主题集成的一些第三方服务，比如搜索、统计、七牛云集成、评论等等，于是基于这个主题再来体验一番。&lt;br&gt;
+由于本地配置了ssh，于是本次采用ssh的克隆方式&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight jboss-cli&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;cd&lt;/span&gt; themes&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;git clone git@github.com&lt;span class=&quot;function&quot;&gt;:Haojen&lt;/span&gt;/hexo-theme-Anisina.git&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;//&lt;/span&gt; 修改themes下hexo-theme-Anisina为liugezhou&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;//&lt;/span&gt; 修改根_config下为liugezhou&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;..&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;hexo clean&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;hexo g&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;hexo s&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;此时，本地预览，成功。&lt;/p&gt;
+&lt;p&gt;删除主题内容：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;.github文件，&lt;/li&gt;
+&lt;li&gt;.git文件  (为了提交代码的时候，主题也提交上去✨✨✨✨✨)&lt;/li&gt;
+&lt;li&gt;删除Screenshots文件夹&lt;br&gt;
+修改_config.yml文件,内容略&lt;a href=&quot;https://haojen.github.io/2017/05/09/Anisina-%E4%B8%AD%E6%96%87%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/&quot;&gt;可参考&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;改造&quot;&gt;改造&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;就在开始着手准备此主题的改造，发现作者一个新的主题,且更新年份为两年内，于是删除刚刚clone的主题。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;回到之前的查找主题步骤，重新执行之前流程：只是仓库改为：git@github.com:Haojen/hexo-theme-Claudia.git&lt;br&gt;
+按照&lt;a href=&quot;https://github.com/Haojen/hexo-theme-Claudia/blob/master/README-CN.md&quot;&gt;这里&lt;/a&gt;进行一个简单的配置后，代码提交发布成功。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;每一篇博文中，加入&lt;code&gt;&amp;lt;!--more --&amp;gt;&lt;/code&gt;可隐藏后面内容。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;评论系统：Valine&quot;&gt;评论系统：Valine&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;接着是引入评论系统：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;首先登录：&lt;a href=&quot;https://console.leancloud.cn&quot;&gt;https://console.leancloud.cn&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;创建应用&lt;/li&gt;
+&lt;li&gt;进入应用后，在设置-》应用凭证，可查看到AppID和AppKey，然后将其值在六个周主题中找到comment_valine，enable设置为true且填入appId和appKey，此时重启应用便可以看到评论系统。&lt;/li&gt;
+&lt;li&gt;经测试，评论的内容可在数据存储-&amp;gt;结构化数据-&amp;gt;Comment中查看到。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;而此时由于项目会把主题文件上传到Github，造成key值泄漏，于是我们需要采取一个方法，使得项目为Public，但key值是公开的。&lt;br&gt;
+于是查找资料，在设置-安全中心中有一个Web安全域名，将我们的博客域名添加进去，这个时候即使别人拿到key值也是不可以使用的了.&lt;br&gt;
+也因此找到之前博客评论、文章统计缺失的原因：之前博客域名为&lt;a href=&quot;https://liugezhou.online&quot;&gt;https://liugezhou.online&lt;/a&gt;,而由于博客不再使用此域名维护后，改为了liugezhou.github.io的域名，安全设置导致统计消失。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;百度统计&quot;&gt;百度统计&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;对百度统计进行一个小的配置：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;进入百度统计官网&lt;/li&gt;
+&lt;li&gt;管理-&amp;gt; 新建站点-&amp;gt;获取代码，代码中值抽出hm.src中问好后的值，配置在主题下_config.yml的ba_track_id即可。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;更换主题&quot;&gt;更换主题&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;在体验了一天，上文主题后，想看一下自己文章的目录，还是不可以，于是找到了一个新的主题，非常的简洁且舒适。&lt;br&gt;
+之前的一系列配置，主要是在主题下的_config.yml中的valine评论、百度统计。&lt;br&gt;
+于是，更改主题就显得非常的简单，操作如下：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;cd&lt;/span&gt; themes&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;git &lt;span class=&quot;built_in&quot;&gt;clone&lt;/span&gt; https://github.com/tufu9441/maupassant-hexo.git themes/maupassant&lt;/span&gt;  &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;npm install hexo-renderer-pug --save  (已安装)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;npm install hexo-renderer-sass --save (已安装)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;将hexo目录下_config.yml改为maupassant,删除maupassant下的.git，方便主题修改后的提交。&lt;br&gt;
+然后接下里就是主题下_config.yml以及代码修改，过程总体略(&lt;a href=&quot;https://www.haomwei.com/technology/maupassant-hexo.html&quot;&gt;参考这里&lt;/a&gt;)&lt;br&gt;
+这个主题很cool，一些配置还要文档说明很全面。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;博文内容迁移和改造过程&quot;&gt;博文内容迁移和改造过程&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;主要是将语雀内容和之前博客内容迁移过来(语雀有导出Markdown的功能以及一些博客有存档)。&lt;br&gt;
+基于对过去博文的一个尊重，每篇文章再次改造，对于一些技术类文章加入了description摘要和toc的显示目录功能，使用PicX图床神器，舍弃七牛云，尝试以后博客加入图片。&lt;br&gt;
+对早期的一些文章抄袭严重，或许有些过时的文章删去,一些质量不好的文章若全部出于原创就暂时保留。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;图床&quot;&gt;图床&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;博客里的图片使用&lt;a href=&quot;https://picx.xpoet.cn/&quot;&gt;PicX图床神器&lt;/a&gt;,配合Github新建项目使用。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
+&lt;p&gt;&lt;font color=blue&gt;更新说明：博客搭建完毕的总结与TODOLIST。&lt;/font&gt;&lt;br&gt;
+&lt;font color=blue&gt; 更新时间：2022-05-05&lt;/font&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;博客搭建完毕了，根据主题配置，主要集成的功能有：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;菜单栏&lt;/li&gt;
+&lt;li&gt;关于-单页面&lt;/li&gt;
+&lt;li&gt;标签页&lt;/li&gt;
+&lt;li&gt;历史页&lt;/li&gt;
+&lt;li&gt;百度PV浏览量统计&lt;/li&gt;
+&lt;li&gt;valine评论系统 SDK出错，这里更换了源码的SDK。&lt;/li&gt;
+&lt;li&gt;图床功能&lt;/li&gt;
+&lt;li&gt;文章字数统计、阅读时间&lt;/li&gt;
+&lt;li&gt;文章目录&lt;/li&gt;
+&lt;li&gt;文末文章声明&lt;/li&gt;
+&lt;li&gt;本地搜索&lt;/li&gt;
+&lt;li&gt;一键切换皮肤等&lt;/li&gt;
+&lt;li&gt;文章阅读量统计&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;邮件推送&quot;&gt;邮件推送&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;虽然其实，根据产品小儿美的设计哲学，不应该让网站变得臃肿不堪，但是邮件的推送还是忍不住要加。下面是在集成邮件推送功能中做的一些过程记录：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;(2022-05-15)&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;说来惭愧，这个valine评论系统由于自带的邮件通知取消了，需要集成第三方的邮件通知，而第三方的邮件通知说明文档写的倒是很详细，但是第三方插件依托的是leanCloud，而leanCloud的git代码直接部署的功能又下线了(后来知道并没有)，需要与lean-cli进行一个简单的学习，到这我感觉效率有点慢下来的。于是想着还是换个评论系统把。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;然后瞄准了gitalk，而gitalk是在Github的Settings/Developer Setting/OAuth Apps中配置的，于是新建了一个gitalk应用，其中依然出现Client secrets生成不显示的问题(然后再次基于safari浏览器生成查看)。&lt;br&gt;
+接着配置Homepage URL和Authorization callback URL，由于是新建的项目blog，&lt;a href=&quot;http://xn--XXX-628d3wh8ni6lit2ahz4a3vd.github.io&quot;&gt;不是出于基础的XXX.github.io&lt;/a&gt;,所以这里都填写的是&lt;a href=&quot;https://liugezhou.github.io/blog&quot;&gt;https://liugezhou.github.io/blog&lt;/a&gt;&lt;br&gt;
+gitalk项目的repo值的配置，在该项目下issues进行查看，最终知道这个repo值指的是仓库名称，实例gitalk的时候id改为md5格式(theme已经做了处理)，且主题自带的admin只需要输入一个值就可以(gitalk实例化的时候是需要传入数组的，而theme已经集成了)&lt;br&gt;
+然后配置也能成功，但是不知道是否是因为OAuth Apps的配置错误，修改了一些参数依旧还是出现Github-api接口返回的No properties–未找到相关的issues进行评论。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;于是，我应该去继续深入一下OAuth Apps的相关内容。但是这个期间，墙太高，梯子断，网络一直圈圈叉叉，所以暂停一下&lt;br&gt;
+接着就想去看看友言评论系统吧，网速还是转圈圈。&lt;br&gt;
+接着看下畅言评论系统吧，网速终于不转圈了，然后配置后很快显示，但游客需要登录，且第三方评论为微博、qq、手机号，并且相关数据存储在畅言服务器，于是pass&lt;br&gt;
+于是这么转了一圈之后，还是使用valine最方便，虽然没有评论的邮件通知。&lt;/p&gt;
+&lt;p&gt;又过了两天之后，决心使用lean cloud去部署，然后意外发现，之前有个点理解错了，即并不需要进行lean-cli部署项目的学习，在一个没有发现的Git 部署按钮那里，跟着Valine-admin项目说明配置即可。&lt;br&gt;
+接着又添加了定时任务(测试了一下邮件的回复，通知还挺快，但是不清楚定时任务到底是否正确，按下不表)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;接着由于我的网站域名是 &lt;a href=&quot;https://liugezhou.github.io/blog&quot;&gt;https://liugezhou.github.io/blog&lt;/a&gt;, 这个/blog需要在clone下来的&lt;strong&gt;Valine-admin&lt;/strong&gt;项目进行局部更改，在leancloud中的云引擎-设置添加新的变量：SITE_URL_REALLY,然后push代码，leanCloud重新部署。&lt;br&gt;
+然后分别测试:匿名、不匿名不带邮件、带邮件、第三方对第三方回复邮件通知。&lt;br&gt;
+接着将valine的配置 avatar改成了monsterid&lt;br&gt;
+再然后，看到了valine的配置有notify自带通知～～～～，由于整了半天，于是这个notify值就暂时不测试了，这里做个记录，如果leanCloud出现故障，或者有时间再来测试theme主题自带的。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;deploy&quot;&gt;deploy&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;2022年6月12日更新&lt;br&gt;
+由于Travis网站缓慢，再加上生成的token过期，于是直接使用hexo自带的deploy部署，需要的依赖为：hexo-deployer-git。&lt;br&gt;
+在Hexo的config.yml下配置deploy即可(type\repo\branches\message)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;加入豆瓣读书、电影、游戏&quot;&gt;加入豆瓣读书、电影、游戏&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;2022年6月27日更新，加入豆瓣读书。根据&lt;a href=&quot;https://blog.csdn.net/m0_55001211/article/details/121628395&quot;&gt;这篇文章&lt;/a&gt;的第二种方法。&lt;br&gt;
+添加依赖为：&lt;code&gt;hexo-douban&lt;/code&gt;&lt;br&gt;
+分别配置根目录与主题目录_conifg.yml文件。&lt;br&gt;
+本地启动：&lt;code&gt;hexo clean &amp;amp;&amp;amp; hexo douban -bgm &amp;amp;&amp;amp; hexo g &amp;amp;&amp;amp; hexo s&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;域名更换&quot;&gt;域名更换&lt;/h2&gt;
+&lt;p&gt;2022年7月8日更新。&lt;br&gt;
+在每次写文章的时候，贴的地址都是 &lt;a href=&quot;https://blog.liugezhou.online/blog&quot;&gt;https://blog.liugezhou.online/blog&lt;/a&gt;&lt;br&gt;
+这个后缀总是很难看，于是这次更新将老版本的域名改为带/blog的，新的不带/blog的后缀的。&lt;br&gt;
+操作步骤为：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Github仓库/liugezhou.github.io 暂时更改为_blog&lt;/li&gt;
+&lt;li&gt;Github仓库/blog 更改名称为：&lt;a href=&quot;http://liugezhou.github.io&quot;&gt;liugezhou.github.io&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;重新拉取：&lt;a href=&quot;http://liugezhou.github.io&quot;&gt;liugezhou.github.io&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://liugezhou.github.io&quot;&gt;liugezhou.github.io&lt;/a&gt; 仓库main分之下，将deploy配置等项目中带/blog的路径去除&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&quot;修改&quot;&gt;修改&lt;/h2&gt;
+&lt;p&gt;2023年1月10日，去掉了网站中的豆瓣相关、历史、标签五个页面。&lt;/p&gt;
+"><meta name="twitter:image"><title>博客网站升级改造 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">博客网站升级改造</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">博客网站升级改造</h1><div class="post-meta">2022-05-02<span> | </span><span class="category"><a href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 4.6k</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 17</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/027-%E7%BD%91%E7%AB%99%E5%8D%87%E7%BA%A7%E6%94%B9%E9%80%A0/#vcomment"><span class="valine-comment-count" data-xid="/027-%E7%BD%91%E7%AB%99%E5%8D%87%E7%BA%A7%E6%94%B9%E9%80%A0/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9D%E6%AC%A1%E9%A2%84%E8%A7%88"><span class="toc-text">初次预览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84"><span class="toc-text">自定义配置文件路径</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B0%E5%BB%BA%E6%96%87%E7%AB%A0%E6%B3%A8%E6%84%8F%E7%82%B9"><span class="toc-text">新建文章注意点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%99%E7%82%B9%E9%83%A8%E7%BD%B2-%E8%BF%99%E9%87%8C%E8%AE%B0%E5%BD%95%E4%BA%86%E5%9C%A8%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E4%B8%A4%E4%B8%AA%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%B5%81%E7%A8%8B"><span class="toc-text">站点部署(这里记录了在部署过程中的两个问题以及解决流程)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E5%AE%83%E9%83%A8%E7%BD%B2-%E4%BA%86%E8%A7%A3"><span class="toc-text">其它部署(了解)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF"><span class="toc-text">模板</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E9%A2%98"><span class="toc-text">主题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E6%89%BE%E4%B8%BB%E9%A2%98"><span class="toc-text">查找主题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%B9%E9%80%A0"><span class="toc-text">改造</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F%EF%BC%9AValine"><span class="toc-text">评论系统：Valine</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%99%BE%E5%BA%A6%E7%BB%9F%E8%AE%A1"><span class="toc-text">百度统计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98"><span class="toc-text">更换主题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%9A%E6%96%87%E5%86%85%E5%AE%B9%E8%BF%81%E7%A7%BB%E5%92%8C%E6%94%B9%E9%80%A0%E8%BF%87%E7%A8%8B"><span class="toc-text">博文内容迁移和改造过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%BE%E5%BA%8A"><span class="toc-text">图床</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%82%AE%E4%BB%B6%E6%8E%A8%E9%80%81"><span class="toc-text">邮件推送</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#deploy"><span class="toc-text">deploy</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A0%E5%85%A5%E8%B1%86%E7%93%A3%E8%AF%BB%E4%B9%A6%E3%80%81%E7%94%B5%E5%BD%B1%E3%80%81%E6%B8%B8%E6%88%8F"><span class="toc-text">加入豆瓣读书、电影、游戏</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%9F%E5%90%8D%E6%9B%B4%E6%8D%A2"><span class="toc-text">域名更换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9"><span class="toc-text">修改</span></a></li></ol></div></div><div class="post-content"><h2 id="背景">背景</h2>
+<blockquote>
+<p>之前搭建的个人博客网站于 2020 年 8 月停更，不觉间，时间已过去了两年时间。</p>
+</blockquote>
+<blockquote>
+<p>这个五一，想着将之前在语雀的一些文章输出誊到博客。<br>
+于是跟着之前懵懂产出的三篇博客搭建记录为引，万万没想到，写的真是有点糙，之前的项目不能友好的启动了。</p>
+</blockquote>
+<blockquote>
+<p>在经过一番错误查找后，由于clone的主题以及修改的主题文件代码未成功提交，项目再次启动缺失主题文件，不能复原。</p>
+</blockquote>
+<blockquote>
+<p>然后就想着，索性重新建一下吧，为以后能记录生活、做个笔记提供一个温暖的床。<br>
+这篇博客用来记录重新搭建博客的每一个步骤，每一个旅程，每一个错误，走一步写一步，不让悲剧重现。</p>
+</blockquote>
+<h2 id="初次预览">初次预览</h2>
+<blockquote>
+<p>依然使用 HEXO 搭建。本次搭建是在重新阅读了一遍 HEXO 官方文档开始的。<br>
+本地需要 Node 环境以及 Git 环境即可。<br>
+然后，本地全局安装 hexo-cli,我的本地版本为：4.3.0<br>
+找到某一目录，依次执行以下操作，初次搭建成功。</p>
+</blockquote>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">mkdir</span> blog</span><br><span class="line"><span class="keyword">cd</span> blog</span><br><span class="line">npm install -<span class="keyword">g</span> hexo-<span class="keyword">cli</span></span><br><span class="line">hexo init liugezhou <span class="comment">// 目录介绍略</span></span><br><span class="line"><span class="keyword">cd</span> liugezhou</span><br><span class="line">npm install</span><br><span class="line">hexo new <span class="string">&quot;just test it &quot;</span> <span class="comment">//source下新建一个博文</span></span><br><span class="line">hexo new page -p <span class="keyword">about</span>/index <span class="string">&quot;About me&quot;</span> <span class="comment">//source下新建about目录,index.md文件，博文名称为 About me</span></span><br><span class="line">hexo <span class="keyword">g</span>   <span class="comment">// 生成静态文件</span></span><br><span class="line">hexo s   <span class="comment">// 本地启动，预览内容</span></span><br><span class="line">hexo <span class="keyword">d</span>   <span class="comment">// 网站部署，暂时掠过</span></span><br><span class="line">hexo clean  <span class="comment">//清除缓存文件db.json和public</span></span><br></pre></td></tr></table></figure>
+<h2 id="自定义配置文件路径">自定义配置文件路径</h2>
+<blockquote>
+<p>目录中，最重要的一个配置文件是<code>_config.yml</code>,官方提供一个命令，可以不使用默认的文件配置<br>
+hexo server --config custom.yml<br>
+hexo generate --config custom.yml,custom2.yml<br>
+后期直接修改themes配置即可。</p>
+</blockquote>
+<h2 id="新建文章注意点">新建文章注意点</h2>
+<blockquote>
+<p>hexo new 的时候，默认使用的是 post 布局，这是在<code>_config.yml </code>中配置的，我们可以修改 <code>scaffolds</code> 下的 <code>post</code> 布局，也可以新建一个布局(<a target="_blank" rel="noopener" href="http://blog.md">blog.md</a>,使用 hexo new blog “my custom blog”)，想要默认使用新布局的话，直接修改<code>_config.yml</code>中的<code>default_layout</code>设置 即可。<br>
+post 为新文章<br>
+page 为新的页面<br>
+draft 为草稿文件。可通过 hexo publish <code>&lt;fileName&gt;</code>命令移动到_post 文件下</p>
+</blockquote>
+<h2 id="站点部署-这里记录了在部署过程中的两个问题以及解决流程">站点部署(这里记录了在部署过程中的两个问题以及解决流程)</h2>
+<blockquote>
+<p>部署此站点，<a target="_blank" rel="noopener" href="http://xn--github-vp7iqqn3ge8jn8c381c7b7dea433cjm2g.io">不占用之前已被使用的github.io</a>，在 Github 上新建一个项目名称为 blog,然后根据github中提示在我们刚刚新建的项目下依次执行：</p>
+</blockquote>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br><span class="line">git <span class="built_in">add</span> .</span><br><span class="line">git commit -m <span class="string">&#x27;first commit&#x27;</span></span><br><span class="line">git branch -M main</span><br><span class="line">git remote <span class="built_in">add</span> origin <span class="string">&#x27;Your repository&#x27;</span></span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>然后进入到<a target="_blank" rel="noopener" href="https://github.com/marketplace/travis-ci">Travis CI</a>,为自己新建的项目 blog 添加配置，过程略,<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/github-pages">参考</a>。<br>
+(配置过程中遇到信用卡的问题，鼓捣了半天)<br>
+注册新建成功后：<br>
+回到 我们本地的blog 项目，根目录下新建 .travis.yml</p>
+</blockquote>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">sudo:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">language:</span> <span class="string">node_js</span></span><br><span class="line"><span class="attr">node_js:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="number">12</span> <span class="comment"># use nodejs v10 LTS</span></span><br><span class="line"><span class="attr">cache:</span> <span class="string">npm</span></span><br><span class="line"><span class="attr">branches:</span></span><br><span class="line">  <span class="attr">only:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">master</span> <span class="comment"># build master branch only</span></span><br><span class="line"><span class="attr">script:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">hexo</span> <span class="string">generate</span> <span class="comment"># generate static files</span></span><br><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">provider:</span> <span class="string">pages</span></span><br><span class="line">  <span class="attr">skip-cleanup:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">github-token:</span> <span class="string">$GH_TOKEN</span></span><br><span class="line">  <span class="attr">keep-history:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">on:</span></span><br><span class="line">    <span class="attr">branch:</span> <span class="string">master</span></span><br><span class="line">  <span class="attr">local-dir:</span> <span class="string">public</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>在代码推送后，travis 控制台报错：The engine “node” is incompatible with this module. Expected version “&gt;=12.13.0”. Got “10.24.1”，由于使用最新的hexo版本，node版本要求为12以上，于是修改 上述文件的node_js 版本为 12</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>然后，再次提交代码，并没有触发 travis 的 job，于是继续提交代码，travis 的任务还是没有变动。</p>
+</blockquote>
+<blockquote>
+<p>接着，继续在 travis 里面点击同步账号，等待一段时间之后，依然不行。找了半天没有头绪。</p>
+</blockquote>
+<blockquote>
+<p>再接着，终于在 travis 的 request 中看到了错误提示：提交的代码记录为 Branch “main” not included per configuration,于是猜想可能是上述 travis.yml 文件中填写的分支为默认的 master，而我新建的默认分支是 main，于是修改.travis.yml 中的 master 为 main，push 代码，</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>此刻：可喜可贺，发生了改变，且换成了新的错误：<br>
+gh-token is invalid.</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>于是，回到 Github-&gt;Setting-&gt;Developer settings-&gt;Personal access tokens，重新生成了一下 access tokens,notes 为 blog,并在 Travis 中重新配置 GH_TOKEN，只是将 GH_TOKEN 的值写成 blog 写了进去。</p>
+</blockquote>
+<blockquote>
+<p>依然不行，猜想是由于在生成 Personal access token 的时候，并没有直接显示密码，所以导致在 travis 中的密码配置不正确。<br>
+于是，现在要解决的问题就是这个 Personal access token 没有显示的问题。</p>
+</blockquote>
+<blockquote>
+<p>然后找了几个小时，文档也看了个遍，还在被窝里躺了二十分钟看官方说明，最终就是因为在生成 token 的时候，就是不显示那个生成的仅仅出现一次的 token，无奈采取另一种办法，下载一个客户端，看是否可以生成 token。</p>
+</blockquote>
+<blockquote>
+<p>然后 Github 客户端下载，挂了梯子也很缓慢，经过一番时间下载之后，里面没有生成 PAT 的选项，于是卸载 Github 客户端。</p>
+</blockquote>
+<blockquote>
+<p>于是又想到，是不是因为浏览器的插件原因，Github 在生成 token 的时候出于安全考虑，所以不显示这个 token？<br>
+然后，我就将浏览器的全部插件关闭，再次生成 token，依然不起作用。。。。。。<br>
+再然后，又重新注册了一个 github 账号，依照之前方式生成 token，依然不行。</p>
+<p>最后的最后，他奶奶的，整到晚上一点半，换了个浏览器，再次登录、执行此流程。。。。。。可以了！！！！！！</p>
+<p>接着回到 travis 中，重新配置 GH_TOKEN 的密码，点击 Restart build，然后在 <a target="_blank" rel="noopener" href="https://liugezhou.github.io/blog%EF%BC%8C%E5%8F%AF%E4%BB%A5%E8%AE%BF%E9%97%AE%E4%BA%86">https://liugezhou.github.io/blog，可以访问了</a>.<br>
+此刻项目还是乱码状态，但是 travis 的自动化配置总算是好了。</p>
+<p>此时，来到 Github 下 blog 项目中，看到 Setting 设置中的 Pages 中 Source 已经自动切换成了分支 gh-pages<br>
+然后关于部署到页面上的乱码问题，看 HEXO 文档，是由于_config.yml 文件中，url 与 root 的编写不对。<br>
+之前配置为：</p>
+</blockquote>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">url:</span> https:<span class="comment">//liugezhou.github.io/liugezhou</span></span><br><span class="line"><span class="symbol">root:</span> <span class="keyword">/liugezhou/</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>而由于我新建的项目是在Github上一个名为blog的项目，于是修改_config.yml</p>
+</blockquote>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">url:</span> https:<span class="comment">//liugezhou.github.io/blog</span></span><br><span class="line"><span class="symbol">root:</span> <span class="keyword">/blog/</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>再次push代码，travis自动部署，等待几分钟后，访问<a target="_blank" rel="noopener" href="https://liugezhou.github.io/blog%EF%BC%8C%E6%AD%A4%E5%88%BB%E7%9A%84%E7%BA%BF%E4%B8%8A%E6%B5%8B%E8%AF%95%E5%8D%9A%E5%AE%A2%E5%86%85%E5%AE%B9%E6%98%BE%E7%A4%BA%E4%B8%8E%E6%9C%AC%E5%9C%B0%E7%9B%B8%E5%90%8C%E3%80%82">https://liugezhou.github.io/blog，此刻的线上测试博客内容显示与本地相同。</a></p>
+</blockquote>
+<h2 id="其它部署-了解">其它部署(了解)</h2>
+<blockquote>
+<p>除了travis一键部署外，还有直接使用hexo deploy的方式，之前的博客使用的就是此方法，这里只对此方式的部署，再次做个记录。<br>
+首先，执行hexo deploy之前，再现有代码上需要做几个准备</p>
+<ul>
+<li>_config.yml 中需要配置deploy\type\repo\branch等参数</li>
+<li>需要安装： npm i hexo-deploy-git --save</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>当执行 hexo deploy的时候，过程就是将public下的目录推送至_config.yml下设置的远程仓库的branch分支，并覆盖其内容。<br>
+然后，一般远程仓库分为分支一和分支二，比如刚才我们建设的代码处于分之一，那么需要将_config.yml下的branch设置为分支二，然后推送分之一代码，会自动将生成的public文件推送到分支二中，且需要查看仓库Pages中设置Source的分支确保为分支二，这样分支一为hexo开发代码，分支二为生产的站点文件。<br>
+简单说就是通过hexo generate生成的public下的站点文件代码，可以复制到任何你想复制的地方，此为生成的静态站点。</p>
+<p>对于我上文已经提到的Travis流程，不需要自己设置仓库的第二分支，Travis CI流程已经全部搞定，且默认生成的public下的文件推送至gh-pages分支了，并且项目设置的Pages中Source也自动切换至gh-pages</p>
+<p>bingo，接下来一步就是更换主题、文章内容的迁移、博客填充了。但是在此之前，对HEXO文档做进一步的学习、整理。</p>
+</blockquote>
+<h2 id="模板">模板</h2>
+<blockquote>
+<p>在进行我们博客搭建前，我们再对HEXO文档的目标内容做一个记录<br>
+各页面对应的模板名称为：</p>
+<ul>
+<li>index     首页</li>
+<li>post      文章内容</li>
+<li>page      分页</li>
+<li>archive   归档</li>
+<li>category  分类归档</li>
+<li>tags      标签归档</li>
+</ul>
+</blockquote>
+<h2 id="主题">主题</h2>
+<blockquote>
+<p>只需要在theme下新建一个任意名称的文件夹，然后修改_config下的them设置为此定义的任意文件夹名称，那么主题就切换了。<br>
+主题可能含有的结构有：_config.yml、languages、layout、scripts、source<br>
+_config.yml :与HEXO配置文件不同，且修改时会自动更新，不需要重启hexo s<br>
+layout :  模版文件决定网站内容的呈现方式，可食用ejs渲染。<br>
+自己的主题内容，发布流程见网站。<br>
+撸到这里的时候，想着得自己开发个主题吧，但是审美、UI以及主题开发的流程还不是很熟悉，遥想之前的主题，是在clone其它主题之后的再修改，这样代码coding要少的多了，所以此次主题切换，还是根据在别人的主题基础下，添加自己想要的一些功能。</p>
+</blockquote>
+<h2 id="查找主题">查找主题</h2>
+<blockquote>
+<p>之前博客内容，之前clone的主题是：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/Haojen/hexo-theme-Anisina.git themes/lmz</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>我很喜欢这个主题集成的一些第三方服务，比如搜索、统计、七牛云集成、评论等等，于是基于这个主题再来体验一番。<br>
+由于本地配置了ssh，于是本次采用ssh的克隆方式</p>
+</blockquote>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cd</span> themes</span><br><span class="line">git clone git@github.com<span class="function">:Haojen</span>/hexo-theme-Anisina.git</span><br><span class="line"><span class="string">//</span> 修改themes下hexo-theme-Anisina为liugezhou</span><br><span class="line"><span class="string">//</span> 修改根_config下为liugezhou</span><br><span class="line"><span class="keyword">cd</span> <span class="string">..</span></span><br><span class="line">hexo clean</span><br><span class="line">hexo g</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>此时，本地预览，成功。</p>
+<p>删除主题内容：</p>
+<ul>
+<li>.github文件，</li>
+<li>.git文件  (为了提交代码的时候，主题也提交上去✨✨✨✨✨)</li>
+<li>删除Screenshots文件夹<br>
+修改_config.yml文件,内容略<a target="_blank" rel="noopener" href="https://haojen.github.io/2017/05/09/Anisina-%E4%B8%AD%E6%96%87%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">可参考</a></li>
+</ul>
+</blockquote>
+<h2 id="改造">改造</h2>
+<blockquote>
+<p>就在开始着手准备此主题的改造，发现作者一个新的主题,且更新年份为两年内，于是删除刚刚clone的主题。</p>
+</blockquote>
+<blockquote>
+<p>回到之前的查找主题步骤，重新执行之前流程：只是仓库改为：git@github.com:Haojen/hexo-theme-Claudia.git<br>
+按照<a target="_blank" rel="noopener" href="https://github.com/Haojen/hexo-theme-Claudia/blob/master/README-CN.md">这里</a>进行一个简单的配置后，代码提交发布成功。</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>每一篇博文中，加入<code>&lt;!--more --&gt;</code>可隐藏后面内容。</li>
+</ul>
+</blockquote>
+<h2 id="评论系统：Valine">评论系统：Valine</h2>
+<blockquote>
+<p>接着是引入评论系统：</p>
+<ul>
+<li>首先登录：<a target="_blank" rel="noopener" href="https://console.leancloud.cn">https://console.leancloud.cn</a></li>
+<li>创建应用</li>
+<li>进入应用后，在设置-》应用凭证，可查看到AppID和AppKey，然后将其值在六个周主题中找到comment_valine，enable设置为true且填入appId和appKey，此时重启应用便可以看到评论系统。</li>
+<li>经测试，评论的内容可在数据存储-&gt;结构化数据-&gt;Comment中查看到。</li>
+</ul>
+<p>而此时由于项目会把主题文件上传到Github，造成key值泄漏，于是我们需要采取一个方法，使得项目为Public，但key值是公开的。<br>
+于是查找资料，在设置-安全中心中有一个Web安全域名，将我们的博客域名添加进去，这个时候即使别人拿到key值也是不可以使用的了.<br>
+也因此找到之前博客评论、文章统计缺失的原因：之前博客域名为<a target="_blank" rel="noopener" href="https://liugezhou.online">https://liugezhou.online</a>,而由于博客不再使用此域名维护后，改为了liugezhou.github.io的域名，安全设置导致统计消失。</p>
+</blockquote>
+<h2 id="百度统计">百度统计</h2>
+<blockquote>
+<p>对百度统计进行一个小的配置：</p>
+<ul>
+<li>进入百度统计官网</li>
+<li>管理-&gt; 新建站点-&gt;获取代码，代码中值抽出hm.src中问好后的值，配置在主题下_config.yml的ba_track_id即可。</li>
+</ul>
+</blockquote>
+<h2 id="更换主题">更换主题</h2>
+<blockquote>
+<p>在体验了一天，上文主题后，想看一下自己文章的目录，还是不可以，于是找到了一个新的主题，非常的简洁且舒适。<br>
+之前的一系列配置，主要是在主题下的_config.yml中的valine评论、百度统计。<br>
+于是，更改主题就显得非常的简单，操作如下：</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cd</span> themes</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git <span class="built_in">clone</span> https://github.com/tufu9441/maupassant-hexo.git themes/maupassant</span>  </span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">npm install hexo-renderer-pug --save  (已安装)</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">npm install hexo-renderer-sass --save (已安装)</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>将hexo目录下_config.yml改为maupassant,删除maupassant下的.git，方便主题修改后的提交。<br>
+然后接下里就是主题下_config.yml以及代码修改，过程总体略(<a target="_blank" rel="noopener" href="https://www.haomwei.com/technology/maupassant-hexo.html">参考这里</a>)<br>
+这个主题很cool，一些配置还要文档说明很全面。</p>
+</blockquote>
+<h2 id="博文内容迁移和改造过程">博文内容迁移和改造过程</h2>
+<blockquote>
+<p>主要是将语雀内容和之前博客内容迁移过来(语雀有导出Markdown的功能以及一些博客有存档)。<br>
+基于对过去博文的一个尊重，每篇文章再次改造，对于一些技术类文章加入了description摘要和toc的显示目录功能，使用PicX图床神器，舍弃七牛云，尝试以后博客加入图片。<br>
+对早期的一些文章抄袭严重，或许有些过时的文章删去,一些质量不好的文章若全部出于原创就暂时保留。</p>
+</blockquote>
+<h2 id="图床">图床</h2>
+<blockquote>
+<p>博客里的图片使用<a target="_blank" rel="noopener" href="https://picx.xpoet.cn/">PicX图床神器</a>,配合Github新建项目使用。</p>
+</blockquote>
+<h2 id="总结">总结</h2>
+<p><font color=blue>更新说明：博客搭建完毕的总结与TODOLIST。</font><br>
+<font color=blue> 更新时间：2022-05-05</font></p>
+<blockquote>
+<p>博客搭建完毕了，根据主题配置，主要集成的功能有：</p>
+<ul>
+<li>菜单栏</li>
+<li>关于-单页面</li>
+<li>标签页</li>
+<li>历史页</li>
+<li>百度PV浏览量统计</li>
+<li>valine评论系统 SDK出错，这里更换了源码的SDK。</li>
+<li>图床功能</li>
+<li>文章字数统计、阅读时间</li>
+<li>文章目录</li>
+<li>文末文章声明</li>
+<li>本地搜索</li>
+<li>一键切换皮肤等</li>
+<li>文章阅读量统计</li>
+</ul>
+</blockquote>
+<h2 id="邮件推送">邮件推送</h2>
+<blockquote>
+<p>虽然其实，根据产品小儿美的设计哲学，不应该让网站变得臃肿不堪，但是邮件的推送还是忍不住要加。下面是在集成邮件推送功能中做的一些过程记录：</p>
+</blockquote>
+<p>(2022-05-15)</p>
+<blockquote>
+<p>说来惭愧，这个valine评论系统由于自带的邮件通知取消了，需要集成第三方的邮件通知，而第三方的邮件通知说明文档写的倒是很详细，但是第三方插件依托的是leanCloud，而leanCloud的git代码直接部署的功能又下线了(后来知道并没有)，需要与lean-cli进行一个简单的学习，到这我感觉效率有点慢下来的。于是想着还是换个评论系统把。</p>
+</blockquote>
+<blockquote>
+<p>然后瞄准了gitalk，而gitalk是在Github的Settings/Developer Setting/OAuth Apps中配置的，于是新建了一个gitalk应用，其中依然出现Client secrets生成不显示的问题(然后再次基于safari浏览器生成查看)。<br>
+接着配置Homepage URL和Authorization callback URL，由于是新建的项目blog，<a target="_blank" rel="noopener" href="http://xn--XXX-628d3wh8ni6lit2ahz4a3vd.github.io">不是出于基础的XXX.github.io</a>,所以这里都填写的是<a target="_blank" rel="noopener" href="https://liugezhou.github.io/blog">https://liugezhou.github.io/blog</a><br>
+gitalk项目的repo值的配置，在该项目下issues进行查看，最终知道这个repo值指的是仓库名称，实例gitalk的时候id改为md5格式(theme已经做了处理)，且主题自带的admin只需要输入一个值就可以(gitalk实例化的时候是需要传入数组的，而theme已经集成了)<br>
+然后配置也能成功，但是不知道是否是因为OAuth Apps的配置错误，修改了一些参数依旧还是出现Github-api接口返回的No properties–未找到相关的issues进行评论。</p>
+</blockquote>
+<blockquote>
+<p>于是，我应该去继续深入一下OAuth Apps的相关内容。但是这个期间，墙太高，梯子断，网络一直圈圈叉叉，所以暂停一下<br>
+接着就想去看看友言评论系统吧，网速还是转圈圈。<br>
+接着看下畅言评论系统吧，网速终于不转圈了，然后配置后很快显示，但游客需要登录，且第三方评论为微博、qq、手机号，并且相关数据存储在畅言服务器，于是pass<br>
+于是这么转了一圈之后，还是使用valine最方便，虽然没有评论的邮件通知。</p>
+<p>又过了两天之后，决心使用lean cloud去部署，然后意外发现，之前有个点理解错了，即并不需要进行lean-cli部署项目的学习，在一个没有发现的Git 部署按钮那里，跟着Valine-admin项目说明配置即可。<br>
+接着又添加了定时任务(测试了一下邮件的回复，通知还挺快，但是不清楚定时任务到底是否正确，按下不表)</p>
+</blockquote>
+<blockquote>
+<p>接着由于我的网站域名是 <a target="_blank" rel="noopener" href="https://liugezhou.github.io/blog">https://liugezhou.github.io/blog</a>, 这个/blog需要在clone下来的<strong>Valine-admin</strong>项目进行局部更改，在leancloud中的云引擎-设置添加新的变量：SITE_URL_REALLY,然后push代码，leanCloud重新部署。<br>
+然后分别测试:匿名、不匿名不带邮件、带邮件、第三方对第三方回复邮件通知。<br>
+接着将valine的配置 avatar改成了monsterid<br>
+再然后，看到了valine的配置有notify自带通知～～～～，由于整了半天，于是这个notify值就暂时不测试了，这里做个记录，如果leanCloud出现故障，或者有时间再来测试theme主题自带的。</p>
+</blockquote>
+<h2 id="deploy">deploy</h2>
+<blockquote>
+<p>2022年6月12日更新<br>
+由于Travis网站缓慢，再加上生成的token过期，于是直接使用hexo自带的deploy部署，需要的依赖为：hexo-deployer-git。<br>
+在Hexo的config.yml下配置deploy即可(type\repo\branches\message)</p>
+</blockquote>
+<h2 id="加入豆瓣读书、电影、游戏">加入豆瓣读书、电影、游戏</h2>
+<blockquote>
+<p>2022年6月27日更新，加入豆瓣读书。根据<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_55001211/article/details/121628395">这篇文章</a>的第二种方法。<br>
+添加依赖为：<code>hexo-douban</code><br>
+分别配置根目录与主题目录_conifg.yml文件。<br>
+本地启动：<code>hexo clean &amp;&amp; hexo douban -bgm &amp;&amp; hexo g &amp;&amp; hexo s</code></p>
+</blockquote>
+<h2 id="域名更换">域名更换</h2>
+<p>2022年7月8日更新。<br>
+在每次写文章的时候，贴的地址都是 <a href="https://blog.liugezhou.online/blog">https://blog.liugezhou.online/blog</a><br>
+这个后缀总是很难看，于是这次更新将老版本的域名改为带/blog的，新的不带/blog的后缀的。<br>
+操作步骤为：</p>
+<ol>
+<li>Github仓库/liugezhou.github.io 暂时更改为_blog</li>
+<li>Github仓库/blog 更改名称为：<a target="_blank" rel="noopener" href="http://liugezhou.github.io">liugezhou.github.io</a></li>
+<li>重新拉取：<a target="_blank" rel="noopener" href="http://liugezhou.github.io">liugezhou.github.io</a></li>
+<li><a target="_blank" rel="noopener" href="http://liugezhou.github.io">liugezhou.github.io</a> 仓库main分之下，将deploy配置等项目中带/blog的路径去除</li>
+</ol>
+<h2 id="修改">修改</h2>
+<p>2023年1月10日，去掉了网站中的豆瓣相关、历史、标签五个页面。</p>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>博客网站升级改造</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2022-05-02</p><p><span>最后更新：</span>2022-05-04</p><p><span>原始链接：</span><a href="/027-网站升级改造/">https://blog.liugezhou.online/027-%E7%BD%91%E7%AB%99%E5%8D%87%E7%BA%A7%E6%94%B9%E9%80%A0/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/027-%E7%BD%91%E7%AB%99%E5%8D%87%E7%BA%A7%E6%94%B9%E9%80%A0/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/HEXO"><i class="fa fa-tag">HEXO</i></a></div><div class="post-nav"><a class="pre" href="/202218(5.1-5.8)/">每周小结(*55):博客定位</a><a class="next" href="/202217(4.25-5.1)/">每周小结(*54):个人博客升级</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

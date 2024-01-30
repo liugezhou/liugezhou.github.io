@@ -1,0 +1,265 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="Git进阶"><meta name="twitter:description" content="&lt;h3 id=&quot;一、tag相关&quot;&gt;一、tag相关&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;1-1.显示所有的tag&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;git tag&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;1-2. 查看某个版本系统的tag(过滤查看)&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;git tag -l 'v1.0.*'&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;1-3. 创建标签&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;git tag -a v1.0.0 -m '内容'&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;git tag v1.0.0&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;1-4.查看标签的详情&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;git show v1.0.0&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;1-5.推送标签&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;推送单个分支tag：&lt;code&gt;git push origin v1.0.0&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;推送本地所有tag：&lt;code&gt;git push origin --tags&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;1-6.删除标签&lt;/strong&gt;&lt;br&gt;
+删除本地标签&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;git tag -d v1.0.0&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;删除远程标签&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;git push origin :refs/tags/v1.0.0&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;1-7.完整的打tag&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;git add *&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;git commit -m 'v1.0.0'&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;git tag v1.0.0&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;git push&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;git push origin v1.0.0&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;1-8.给指定的commit号加tag&lt;/strong&gt;&lt;br&gt;
+打tag不必要在head上打，也可以在之前的版本上打tag，需要知道某个提交对象的校验和(通过git log获取，取校验和的前几位数字即可)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;git tag -a v1.0.3 9fedrf -m 'my tag'&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;二、stash&quot;&gt;二、stash&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;git stash的内容与branch无关&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2-1 &lt;code&gt;git stash&lt;/code&gt;&lt;/strong&gt;&lt;br&gt;
+保存当前工作进度，会把暂存区和工作区的改动保存起来，执行完这个命令后，执行git status会发现当前是一个干净的工作区，没有任何改动.&lt;/p&gt;
+&lt;p&gt;可以使用 &lt;code&gt;git stash save 'message'&lt;/code&gt; 添加一些注释&lt;br&gt;
+PS：stash是本地的，不会通过git push 命令上传到git server上。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2-2 &lt;code&gt;git stash list&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;显示保存进度的列表，也就是说 git stash可以多次执行。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2-3 &lt;code&gt;git stash pop&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;恢复之前缓存的工作目录，且将缓存堆栈中的第一个stash删除&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;git stash apply&lt;/code&gt; 会将缓存区的第一个stash应用到工作目录，而不会删除相应的stash存储。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;2-4 &lt;code&gt;git stash drop [stash-id]&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;删除一个存储的进度。如果不指定stash_id,则默认删除最新的存储进度。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2-5 &lt;code&gt;git stash clear&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;删除所有存储的进度&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2-6 查看制定的 &lt;code&gt;stash diff&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;可以使用 git stash show stash@{0}查看stash的文件目录&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2-7 暂存未跟踪或忽略的文件&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;git stash 默认不会缓存在工作目录中的新文件、被忽略的文件。&lt;br&gt;
+git stash 命令提供了参数用户缓存上面两种类型的文件，使用 &lt;code&gt;-u&lt;/code&gt; 可以 stash  untracked 的文件。使用 &lt;code&gt;-a&lt;/code&gt; 可以 stash 所有的文件。&lt;/p&gt;
+&lt;h3 id=&quot;三、reset&quot;&gt;三、reset&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;soft&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;有时候，我们在本地 git add &amp;amp;&amp;amp; git commit -m ‘’ 之后，我们想要撤回commit.&lt;br&gt;
+这个时候可以使用如下命令成功撤回了commit ，且本地文件会保留不会删除&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git reset --soft HEAD^ &lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;hard&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;如果代码已经push到仓库，但是本地想要去回退到某个版本&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;git reset --hard HEAD^&lt;/code&gt;  — 回退到上一个版本&lt;br&gt;
+&lt;code&gt;git reset --hard &amp;lt;commitID&amp;gt;&lt;/code&gt; – 回退到制定commit版本&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;如果代码在本地修改了一部分，想要全部舍弃，回退到远程仓库的状态&lt;br&gt;
+&lt;code&gt;git reset --hard origin/main&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id=&quot;四、git-log&quot;&gt;四、git log&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;git shortlog -sn&lt;/code&gt;&lt;br&gt;
+数据从大到小，查看一个项目的提交者和提交次数。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;git log --stat&lt;/code&gt;&lt;br&gt;
+与 git log 相比，除了 author、Date、提交信息外，还可以看到提交的文件、文件行数。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;git diff --shortstat &amp;quot;@&amp;#123;n days ago&amp;#125;&amp;quot;&lt;/code&gt;&lt;br&gt;
+统计 n 天前至现在文件改动数、代码行数添加数、代码行数删减数&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;git log --since=2022-01-01 --until=2022-12-31 --pretty=tformat: --numstat | awk '&amp;#123; add += $1; subs += $2; loc += $1 - $2 &amp;#125; END &amp;#123; printf &amp;quot;added lines: %s, removed lines: %s, total lines: %s\n&amp;quot;, add, subs, loc &amp;#125;'&lt;/code&gt;&lt;br&gt;
+统计一段时间内，添加和删除的代码行数&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;五、其它&quot;&gt;五、其它&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;git update-ref -d HEAD&lt;/code&gt;&lt;br&gt;
+重设第一个commit&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;git pull --rebase A master:dev&lt;/code&gt;&lt;br&gt;
+fork了一个仓库(fork),本地仓库(origin),想要拉取 fork 仓库的最新提交：&lt;br&gt;
+git remote add fork ‘fork url’&lt;br&gt;
+然后执行上面命令，就可以拉取最新 master 分支的提交到本地分支 dev&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+"><meta name="twitter:image"><title>Git进阶 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Git进阶</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Git进阶</h1><div class="post-meta">2021-08-08<span> | </span><span class="category"><a href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 952</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 4</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/018-git%20%E7%9B%B8%E5%85%B3/#vcomment"><span class="valine-comment-count" data-xid="/018-git%20%E7%9B%B8%E5%85%B3/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81tag%E7%9B%B8%E5%85%B3"><span class="toc-text">一、tag相关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81stash"><span class="toc-text">二、stash</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81reset"><span class="toc-text">三、reset</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81git-log"><span class="toc-text">四、git log</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%85%B6%E5%AE%83"><span class="toc-text">五、其它</span></a></li></ol></div></div><div class="post-content"><h3 id="一、tag相关">一、tag相关</h3>
+<p><strong>1-1.显示所有的tag</strong></p>
+<ul>
+<li><code>git tag</code></li>
+</ul>
+<p><strong>1-2. 查看某个版本系统的tag(过滤查看)</strong></p>
+<ul>
+<li><code>git tag -l 'v1.0.*'</code></li>
+</ul>
+<p><strong>1-3. 创建标签</strong></p>
+<ul>
+<li><code>git tag -a v1.0.0 -m '内容'</code></li>
+<li><code>git tag v1.0.0</code></li>
+</ul>
+<p><strong>1-4.查看标签的详情</strong></p>
+<ul>
+<li><code>git show v1.0.0</code></li>
+</ul>
+<p><strong>1-5.推送标签</strong></p>
+<ul>
+<li>推送单个分支tag：<code>git push origin v1.0.0</code></li>
+<li>推送本地所有tag：<code>git push origin --tags</code></li>
+</ul>
+<p><strong>1-6.删除标签</strong><br>
+删除本地标签</p>
+<ul>
+<li><code>git tag -d v1.0.0</code></li>
+</ul>
+<p>删除远程标签</p>
+<ul>
+<li><code>git push origin :refs/tags/v1.0.0</code></li>
+</ul>
+<p><strong>1-7.完整的打tag</strong></p>
+<ul>
+<li><code>git add *</code></li>
+<li><code>git commit -m 'v1.0.0'</code></li>
+<li><code>git tag v1.0.0</code></li>
+<li><code>git push</code></li>
+<li><code>git push origin v1.0.0</code></li>
+</ul>
+<p><strong>1-8.给指定的commit号加tag</strong><br>
+打tag不必要在head上打，也可以在之前的版本上打tag，需要知道某个提交对象的校验和(通过git log获取，取校验和的前几位数字即可)</p>
+<ul>
+<li><code>git tag -a v1.0.3 9fedrf -m 'my tag'</code></li>
+</ul>
+<h3 id="二、stash">二、stash</h3>
+<p><code>git stash的内容与branch无关</code></p>
+<p><strong>2-1 <code>git stash</code></strong><br>
+保存当前工作进度，会把暂存区和工作区的改动保存起来，执行完这个命令后，执行git status会发现当前是一个干净的工作区，没有任何改动.</p>
+<p>可以使用 <code>git stash save 'message'</code> 添加一些注释<br>
+PS：stash是本地的，不会通过git push 命令上传到git server上。</p>
+<p><strong>2-2 <code>git stash list</code></strong></p>
+<p>显示保存进度的列表，也就是说 git stash可以多次执行。</p>
+<p><strong>2-3 <code>git stash pop</code></strong></p>
+<ul>
+<li>恢复之前缓存的工作目录，且将缓存堆栈中的第一个stash删除</li>
+<li><code>git stash apply</code> 会将缓存区的第一个stash应用到工作目录，而不会删除相应的stash存储。</li>
+</ul>
+<p><strong>2-4 <code>git stash drop [stash-id]</code></strong></p>
+<p>删除一个存储的进度。如果不指定stash_id,则默认删除最新的存储进度。</p>
+<p><strong>2-5 <code>git stash clear</code></strong></p>
+<p>删除所有存储的进度</p>
+<p><strong>2-6 查看制定的 <code>stash diff</code></strong></p>
+<p>可以使用 git stash show stash@{0}查看stash的文件目录</p>
+<p><strong>2-7 暂存未跟踪或忽略的文件</strong></p>
+<p>git stash 默认不会缓存在工作目录中的新文件、被忽略的文件。<br>
+git stash 命令提供了参数用户缓存上面两种类型的文件，使用 <code>-u</code> 可以 stash  untracked 的文件。使用 <code>-a</code> 可以 stash 所有的文件。</p>
+<h3 id="三、reset">三、reset</h3>
+<p><strong>soft</strong></p>
+<p>有时候，我们在本地 git add &amp;&amp; git commit -m ‘’ 之后，我们想要撤回commit.<br>
+这个时候可以使用如下命令成功撤回了commit ，且本地文件会保留不会删除</p>
+<p><code>git reset --soft HEAD^ </code></p>
+<p><strong>hard</strong></p>
+<p>如果代码已经push到仓库，但是本地想要去回退到某个版本</p>
+<blockquote>
+<p><code>git reset --hard HEAD^</code>  — 回退到上一个版本<br>
+<code>git reset --hard &lt;commitID&gt;</code> – 回退到制定commit版本</p>
+</blockquote>
+<p>如果代码在本地修改了一部分，想要全部舍弃，回退到远程仓库的状态<br>
+<code>git reset --hard origin/main</code></p>
+<h3 id="四、git-log">四、git log</h3>
+<ol>
+<li>
+<p><code>git shortlog -sn</code><br>
+数据从大到小，查看一个项目的提交者和提交次数。</p>
+</li>
+<li>
+<p><code>git log --stat</code><br>
+与 git log 相比，除了 author、Date、提交信息外，还可以看到提交的文件、文件行数。</p>
+</li>
+<li>
+<p><code>git diff --shortstat &quot;@&#123;n days ago&#125;&quot;</code><br>
+统计 n 天前至现在文件改动数、代码行数添加数、代码行数删减数</p>
+</li>
+<li>
+<p><code>git log --since=2022-01-01 --until=2022-12-31 --pretty=tformat: --numstat | awk '&#123; add += $1; subs += $2; loc += $1 - $2 &#125; END &#123; printf &quot;added lines: %s, removed lines: %s, total lines: %s\n&quot;, add, subs, loc &#125;'</code><br>
+统计一段时间内，添加和删除的代码行数</p>
+</li>
+</ol>
+<h3 id="五、其它">五、其它</h3>
+<ol>
+<li>
+<p><code>git update-ref -d HEAD</code><br>
+重设第一个commit</p>
+</li>
+<li>
+<p><code>git pull --rebase A master:dev</code><br>
+fork了一个仓库(fork),本地仓库(origin),想要拉取 fork 仓库的最新提交：<br>
+git remote add fork ‘fork url’<br>
+然后执行上面命令，就可以拉取最新 master 分支的提交到本地分支 dev</p>
+</li>
+</ol>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>Git进阶</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2021-08-08</p><p><span>最后更新：</span>2022-12-20</p><p><span>原始链接：</span><a href="/018-git 相关/">https://blog.liugezhou.online/018-git%20%E7%9B%B8%E5%85%B3/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/018-git%20%E7%9B%B8%E5%85%B3/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/CSS"><i class="fa fa-tag">CSS</i></a></div><div class="post-nav"><a class="pre" href="/Week31-%E8%84%9A%E6%89%8B%E6%9E%B6%E5%8F%91%E5%B8%83%E6%A8%A1%E5%9D%97%E4%BA%91%E5%8F%91%E5%B8%83%E5%8A%9F%E8%83%BD%E5%BC%80%E5%8F%91/">Week31-脚手架发布模块云发布功能开发</a><a class="next" href="/017-CSS-%E4%BC%AA%E7%B1%BB%E5%92%8C%E4%BC%AA%E5%85%83%E7%B4%A0/">CSS-伪类和伪元素</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

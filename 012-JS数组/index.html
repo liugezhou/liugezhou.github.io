@@ -1,0 +1,347 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="JavaScript数组"><meta name="twitter:description" content="&lt;p&gt;&lt;font color=blue&gt;更新说明：对文章排版以及内容格式做了调整。&lt;/font&gt;&lt;br&gt;
+&lt;font color=blue&gt; 更新时间：2022-05-04&lt;/font&gt;&lt;/p&gt;
+&lt;h2 id=&quot;构造函数Array&quot;&gt;构造函数Array&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Array是JavaScript的原生对象，同时也是一个构造函数，可以用它生产新的数组，但由于Array作为构造函数的行为不一致，因此不建议使用。&lt;/li&gt;
+&lt;li&gt;new Array等同于 Array，加不加new一点影响都没有。&lt;/li&gt;
+&lt;li&gt;Array.of()返回由所有参数值组成的数组&lt;/li&gt;
+&lt;li&gt;Array.from()将具有iterator接口的对象转为数组&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; a = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;title class_&quot;&gt;Array&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; a_b = &lt;span class=&quot;title class_&quot;&gt;Array&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; b = [&lt;span class=&quot;literal&quot;&gt;undefined&lt;/span&gt;, &lt;span class=&quot;literal&quot;&gt;undefined&lt;/span&gt;, &lt;span class=&quot;literal&quot;&gt;undefined&lt;/span&gt;];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;a[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;] === &lt;span class=&quot;literal&quot;&gt;undefined&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;b[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;] === &lt;span class=&quot;literal&quot;&gt;undefined&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; a &lt;span class=&quot;comment&quot;&gt;// false&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; b &lt;span class=&quot;comment&quot;&gt;// true&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; c = &lt;span class=&quot;title class_&quot;&gt;Array&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;of&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;6&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;6&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;6&lt;/span&gt;)  &lt;span class=&quot;comment&quot;&gt;// [6,6,6]&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;静态方法&quot;&gt;静态方法&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Array.isArray()&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;该方法返回一个布尔值，表示参数是否为数组，以来弥补typeof的不足。&lt;/p&gt;
+&lt;h2 id=&quot;实例方法&quot;&gt;实例方法&lt;/h2&gt;
+&lt;h3 id=&quot;valueOf-toString&quot;&gt;valueOf()  toString()&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;首先这个valueOf()是所有对象都拥有的方法，表示对该对象求值。然后，这个数组的valueOf方法返回数组本身。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;let arr = [1,2,3];&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;arr.valueOf() //[1,2,3]&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这个toString()方法也是对象的通用方法，数组的toString()方法返回数组的字符串形式。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;arr.toString()  // 1,2,3&lt;/p&gt;
+&lt;h3 id=&quot;push-pop&quot;&gt;push()   pop()&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;push()方法在数组末尾添加一个或多个元素，返回添加元素后数组的长度，会改变原数组。&lt;/li&gt;
+&lt;li&gt;pop()方法 删除数组的最后一个元素，返回删除的元素，会改变原数组。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;shift-unshift&quot;&gt;shift()  unshift()&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;shift()方法 删除数组的第一个元素，返回删除的元素，会改变原数组。&lt;/li&gt;
+&lt;li&gt;unshift()方法 在数组的开头添加一个或多个元素，返回添加元素后的数组长度，会改变原数组。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;join&quot;&gt;join()&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;join()方法以指定的参数作为分隔符，将所有数组成员连接为一个字符串返回，不提供参数，默认以逗号连接。&lt;/li&gt;
+&lt;li&gt;字符串：Array.prototype.join.call(‘hello’,‘-’)  =&amp;gt;  h-e-l-l-o&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;concat&quot;&gt;concat()&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;concat()方法用于多数组的合并，将新数组的成员，添加到原数组成员的后部，返回一个新数组，原数组成员不变。&lt;br&gt;
+除了数组作为参数，也可以接受其它类型的值作为参数。如果参数为对象，那么为浅拷贝：原对象发生改变，新生成的数组对象的值跟着发生改变。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;reverse&quot;&gt;reverse()&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;reverse 用于颠倒排列数组元素，返回改变后的数组，该方法将改变原数组。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;slice&quot;&gt;slice()&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;slice方法可从已有的数组中返回选定的元素–&lt;strong&gt;返回一个新的数组&lt;/strong&gt;，且&lt;strong&gt;原数组不会发生改变&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;语法：arrayObject.slice(start,end)&lt;/li&gt;
+&lt;li&gt;start: 必填字段，规定从何处开始(索引0)选择。如果为负数，则是从数据尾部开始算起的位置。&lt;/li&gt;
+&lt;li&gt;end：可选字段，不包含该元素,如果包含该参数，则结果不包含该索引处的值。&lt;/li&gt;
+&lt;li&gt;重要应用是将一个类数组的对象转化为真正的数组：Array.prototype.slice.call({ 0: ‘a’, 1: ‘b’, length: 2 })&lt;/li&gt;
+&lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;“web/entry-runtime.js”.slice(3)  -&amp;gt; “entry-runtime.js”&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;splice&quot;&gt;splice()&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;splice方法用于删除原数组的一部分成员，并可以在删除的位置添加新的数组成员，&lt;strong&gt;返回值&lt;/strong&gt;是被删除的元素，该方法会改变原数组。&lt;/li&gt;
+&lt;li&gt;参数说明：第一个参数为删除的&lt;strong&gt;开始位置&lt;/strong&gt;，第二个参数为删除的&lt;strong&gt;参数个数&lt;/strong&gt;，如果后面还有参数，表示要被插入数组的新元素。起始位置如果是负数，表示从倒数位置开始删除。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;sort&quot;&gt;sort()&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;sort方法对数组成员进行排序，默认按照&lt;strong&gt;字典顺序&lt;/strong&gt;排序。排序后，原数组发生改变。&lt;/li&gt;
+&lt;li&gt;按照自定义方式排序，可传入函数作为参数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;map&quot;&gt;map()&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;map()方法将数组的所有成员依次传入参数函数，然后把每一次的执行结果组成一个新数组返回，注意数组数组中的值是原始数据类型，确实不会改变原数组，但是如果值为引用数据类型，那么会对原数组进行更改。&lt;/li&gt;
+&lt;li&gt;map&lt;strong&gt;接受一个函数作为参数&lt;/strong&gt;，参数依次为：&lt;strong&gt;当前成员、当前位置、数组本身&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;map还可以接受第二个参数，用来绑定回调函数内部的this变量。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;forEach&quot;&gt;forEach()&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;forEach()与map()方法很相似，也是对数组的所有成员依次执行参数函数。包含参数、第二个参数等与map完全一致，只是forEach不返回值，&lt;strong&gt;只是用来操作数据。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;filter&quot;&gt;filter()&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;filter用于过滤数组成员，满足条件的成员组成一个新数组返回。&lt;/li&gt;
+&lt;li&gt;**接受一个函数作为参数，**参数依次为：&lt;strong&gt;当前成员、当前位置、数组本身&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;数组的所有成员执行该函数，返回结果为&lt;strong&gt;true&lt;/strong&gt;的成员组成一个新数组返回。该方法不会改变原数组。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;find&quot;&gt;find()&lt;/h3&gt;
+&lt;p&gt;数组实例的find()方法，用于找出第一个符合条件的数组成员。它的参数是一个回调函数，所有数组成员依次执行该回调函数，直到找出第一个返回值为true的成员，然后返回该成员。如果没有符合条件的成员，则返回undefined。&lt;/p&gt;
+&lt;h3 id=&quot;includes&quot;&gt;includes()&lt;/h3&gt;
+&lt;p&gt;判断一个数组中是否包含某个选项 [1, 2, 3].includes(2)&lt;/p&gt;
+&lt;h3 id=&quot;flat-flatMap&quot;&gt;flat()  flatMap()&lt;/h3&gt;
+&lt;p&gt;数组的成员有时还是数组，Array.prototype.flat()用于将嵌套的数组“拉平”，变成一维的数组。该方法返回一个新数组，对原数据没有影响。&lt;br&gt;
+以将flat(n)方法的参数写成一个整数，表示想要拉平的层数，默认为1。如果不管有多少层嵌套，都要转成一维数组，可以用Infinity关键字作为参数。&lt;/p&gt;
+&lt;p&gt;flatMap()方法对原数组的每个成员执行一个函数（相当于执行Array.prototype.map()），然后对返回值组成的数组执行flat()方法。该方法返回一个新数组，不改变原数组。&lt;/p&gt;
+&lt;h3 id=&quot;some-every&quot;&gt;some()  every()&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;与map、forEach、filter一样接受一个函数作为参数，且函数内参数一致。&lt;/li&gt;
+&lt;li&gt;some为只要一个成员的返回值是true，则整个some方法就返回true。&lt;/li&gt;
+&lt;li&gt;every为所有成员的返回值是true，则整个every方法就返回true。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;reduce-reduceRight&quot;&gt;reduce()  reduceRight&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;reduce和reduceRight方法依次处理数组的每个成员，最终累计为一个值。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;4&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;].&lt;span class=&quot;title function_&quot;&gt;reduce&lt;/span&gt;(&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;a,b&lt;/span&gt;)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	&lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; a + b&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// reduce方法求出数组所有成员的和。&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;reduce方法和reduceRight方法的第一个参数都是一个函数，该函数接受以下四个参数&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;累积变量 – 默认为数组的第一个成员   必选&lt;/li&gt;
+&lt;li&gt;当前变量 – 默认为数组的第二个成员   必选&lt;/li&gt;
+&lt;li&gt;当前位置 – 从0开始				 可选&lt;/li&gt;
+&lt;li&gt;原数组						 可选&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;indexOf-lastIndexOf&quot;&gt;indexOf   lastIndexOf()&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;indexOf方法返回给定元素在数组中第一次出现的位置，如果没有则为-1.&lt;/li&gt;
+&lt;li&gt;indexOf还可以接收第二个参数，表示搜索的开始位置。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+"><meta name="twitter:image"><title>JavaScript数组 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">JavaScript数组</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">JavaScript数组</h1><div class="post-meta">2021-03-26<span> | </span><span class="category"><a href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 1.7k</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 6</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/012-JS%E6%95%B0%E7%BB%84/#vcomment"><span class="valine-comment-count" data-xid="/012-JS%E6%95%B0%E7%BB%84/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0Array"><span class="toc-text">构造函数Array</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95"><span class="toc-text">静态方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B%E6%96%B9%E6%B3%95"><span class="toc-text">实例方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#valueOf-toString"><span class="toc-text">valueOf()  toString()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#push-pop"><span class="toc-text">push()   pop()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shift-unshift"><span class="toc-text">shift()  unshift()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#join"><span class="toc-text">join()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#concat"><span class="toc-text">concat()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reverse"><span class="toc-text">reverse()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#slice"><span class="toc-text">slice()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#splice"><span class="toc-text">splice()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sort"><span class="toc-text">sort()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#map"><span class="toc-text">map()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#forEach"><span class="toc-text">forEach()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#filter"><span class="toc-text">filter()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#find"><span class="toc-text">find()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#includes"><span class="toc-text">includes()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#flat-flatMap"><span class="toc-text">flat()  flatMap()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#some-every"><span class="toc-text">some()  every()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reduce-reduceRight"><span class="toc-text">reduce()  reduceRight</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#indexOf-lastIndexOf"><span class="toc-text">indexOf   lastIndexOf()</span></a></li></ol></li></ol></div></div><div class="post-content"><p><font color=blue>更新说明：对文章排版以及内容格式做了调整。</font><br>
+<font color=blue> 更新时间：2022-05-04</font></p>
+<h2 id="构造函数Array">构造函数Array</h2>
+<ul>
+<li>Array是JavaScript的原生对象，同时也是一个构造函数，可以用它生产新的数组，但由于Array作为构造函数的行为不一致，因此不建议使用。</li>
+<li>new Array等同于 Array，加不加new一点影响都没有。</li>
+<li>Array.of()返回由所有参数值组成的数组</li>
+<li>Array.from()将具有iterator接口的对象转为数组</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="keyword">new</span> <span class="title class_">Array</span>(<span class="number">3</span>);</span><br><span class="line"><span class="keyword">let</span> a_b = <span class="title class_">Array</span>(<span class="number">3</span>)</span><br><span class="line"><span class="keyword">let</span> b = [<span class="literal">undefined</span>, <span class="literal">undefined</span>, <span class="literal">undefined</span>];</span><br><span class="line"></span><br><span class="line">a[<span class="number">0</span>] === <span class="literal">undefined</span></span><br><span class="line">b[<span class="number">0</span>] === <span class="literal">undefined</span></span><br><span class="line"><span class="number">0</span> <span class="keyword">in</span> a <span class="comment">// false</span></span><br><span class="line"><span class="number">0</span> <span class="keyword">in</span> b <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> c = <span class="title class_">Array</span>.<span class="title function_">of</span>(<span class="number">6</span>,<span class="number">6</span>,<span class="number">6</span>)  <span class="comment">// [6,6,6]</span></span><br></pre></td></tr></table></figure>
+<h2 id="静态方法">静态方法</h2>
+<blockquote>
+<ul>
+<li><strong>Array.isArray()</strong></li>
+</ul>
+</blockquote>
+<p>该方法返回一个布尔值，表示参数是否为数组，以来弥补typeof的不足。</p>
+<h2 id="实例方法">实例方法</h2>
+<h3 id="valueOf-toString">valueOf()  toString()</h3>
+<blockquote>
+<ul>
+<li>首先这个valueOf()是所有对象都拥有的方法，表示对该对象求值。然后，这个数组的valueOf方法返回数组本身。</li>
+</ul>
+</blockquote>
+<p>let arr = [1,2,3];</p>
+<blockquote>
+<p>arr.valueOf() //[1,2,3]</p>
+<ul>
+<li>这个toString()方法也是对象的通用方法，数组的toString()方法返回数组的字符串形式。</li>
+</ul>
+</blockquote>
+<p>arr.toString()  // 1,2,3</p>
+<h3 id="push-pop">push()   pop()</h3>
+<blockquote>
+<ul>
+<li>push()方法在数组末尾添加一个或多个元素，返回添加元素后数组的长度，会改变原数组。</li>
+<li>pop()方法 删除数组的最后一个元素，返回删除的元素，会改变原数组。</li>
+</ul>
+</blockquote>
+<h3 id="shift-unshift">shift()  unshift()</h3>
+<blockquote>
+<ul>
+<li>shift()方法 删除数组的第一个元素，返回删除的元素，会改变原数组。</li>
+<li>unshift()方法 在数组的开头添加一个或多个元素，返回添加元素后的数组长度，会改变原数组。</li>
+</ul>
+</blockquote>
+<h3 id="join">join()</h3>
+<blockquote>
+<ul>
+<li>join()方法以指定的参数作为分隔符，将所有数组成员连接为一个字符串返回，不提供参数，默认以逗号连接。</li>
+<li>字符串：Array.prototype.join.call(‘hello’,‘-’)  =&gt;  h-e-l-l-o</li>
+</ul>
+</blockquote>
+<h3 id="concat">concat()</h3>
+<blockquote>
+<p>concat()方法用于多数组的合并，将新数组的成员，添加到原数组成员的后部，返回一个新数组，原数组成员不变。<br>
+除了数组作为参数，也可以接受其它类型的值作为参数。如果参数为对象，那么为浅拷贝：原对象发生改变，新生成的数组对象的值跟着发生改变。</p>
+</blockquote>
+<h3 id="reverse">reverse()</h3>
+<blockquote>
+<p>reverse 用于颠倒排列数组元素，返回改变后的数组，该方法将改变原数组。</p>
+</blockquote>
+<h3 id="slice">slice()</h3>
+<blockquote>
+<ul>
+<li>slice方法可从已有的数组中返回选定的元素–<strong>返回一个新的数组</strong>，且<strong>原数组不会发生改变</strong>。</li>
+<li>语法：arrayObject.slice(start,end)</li>
+<li>start: 必填字段，规定从何处开始(索引0)选择。如果为负数，则是从数据尾部开始算起的位置。</li>
+<li>end：可选字段，不包含该元素,如果包含该参数，则结果不包含该索引处的值。</li>
+<li>重要应用是将一个类数组的对象转化为真正的数组：Array.prototype.slice.call({ 0: ‘a’, 1: ‘b’, length: 2 })</li>
+<li></li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>“web/entry-runtime.js”.slice(3)  -&gt; “entry-runtime.js”</li>
+</ul>
+</blockquote>
+<h3 id="splice">splice()</h3>
+<blockquote>
+<ul>
+<li>splice方法用于删除原数组的一部分成员，并可以在删除的位置添加新的数组成员，<strong>返回值</strong>是被删除的元素，该方法会改变原数组。</li>
+<li>参数说明：第一个参数为删除的<strong>开始位置</strong>，第二个参数为删除的<strong>参数个数</strong>，如果后面还有参数，表示要被插入数组的新元素。起始位置如果是负数，表示从倒数位置开始删除。</li>
+</ul>
+</blockquote>
+<h3 id="sort">sort()</h3>
+<blockquote>
+<ul>
+<li>sort方法对数组成员进行排序，默认按照<strong>字典顺序</strong>排序。排序后，原数组发生改变。</li>
+<li>按照自定义方式排序，可传入函数作为参数</li>
+</ul>
+</blockquote>
+<h3 id="map">map()</h3>
+<blockquote>
+<ul>
+<li>map()方法将数组的所有成员依次传入参数函数，然后把每一次的执行结果组成一个新数组返回，注意数组数组中的值是原始数据类型，确实不会改变原数组，但是如果值为引用数据类型，那么会对原数组进行更改。</li>
+<li>map<strong>接受一个函数作为参数</strong>，参数依次为：<strong>当前成员、当前位置、数组本身</strong>。</li>
+<li>map还可以接受第二个参数，用来绑定回调函数内部的this变量。</li>
+</ul>
+</blockquote>
+<h3 id="forEach">forEach()</h3>
+<blockquote>
+<ul>
+<li>forEach()与map()方法很相似，也是对数组的所有成员依次执行参数函数。包含参数、第二个参数等与map完全一致，只是forEach不返回值，<strong>只是用来操作数据。</strong></li>
+</ul>
+</blockquote>
+<h3 id="filter">filter()</h3>
+<blockquote>
+<ul>
+<li>filter用于过滤数组成员，满足条件的成员组成一个新数组返回。</li>
+<li>**接受一个函数作为参数，**参数依次为：<strong>当前成员、当前位置、数组本身</strong>。</li>
+<li>数组的所有成员执行该函数，返回结果为<strong>true</strong>的成员组成一个新数组返回。该方法不会改变原数组。</li>
+</ul>
+</blockquote>
+<h3 id="find">find()</h3>
+<p>数组实例的find()方法，用于找出第一个符合条件的数组成员。它的参数是一个回调函数，所有数组成员依次执行该回调函数，直到找出第一个返回值为true的成员，然后返回该成员。如果没有符合条件的成员，则返回undefined。</p>
+<h3 id="includes">includes()</h3>
+<p>判断一个数组中是否包含某个选项 [1, 2, 3].includes(2)</p>
+<h3 id="flat-flatMap">flat()  flatMap()</h3>
+<p>数组的成员有时还是数组，Array.prototype.flat()用于将嵌套的数组“拉平”，变成一维的数组。该方法返回一个新数组，对原数据没有影响。<br>
+以将flat(n)方法的参数写成一个整数，表示想要拉平的层数，默认为1。如果不管有多少层嵌套，都要转成一维数组，可以用Infinity关键字作为参数。</p>
+<p>flatMap()方法对原数组的每个成员执行一个函数（相当于执行Array.prototype.map()），然后对返回值组成的数组执行flat()方法。该方法返回一个新数组，不改变原数组。</p>
+<h3 id="some-every">some()  every()</h3>
+<blockquote>
+<ul>
+<li>与map、forEach、filter一样接受一个函数作为参数，且函数内参数一致。</li>
+<li>some为只要一个成员的返回值是true，则整个some方法就返回true。</li>
+<li>every为所有成员的返回值是true，则整个every方法就返回true。</li>
+</ul>
+</blockquote>
+<h3 id="reduce-reduceRight">reduce()  reduceRight</h3>
+<blockquote>
+<ul>
+<li>reduce和reduceRight方法依次处理数组的每个成员，最终累计为一个值。</li>
+</ul>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>].<span class="title function_">reduce</span>(<span class="keyword">function</span>(<span class="params">a,b</span>)&#123;</span><br><span class="line">	<span class="keyword">return</span> a + b</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// reduce方法求出数组所有成员的和。</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>reduce方法和reduceRight方法的第一个参数都是一个函数，该函数接受以下四个参数</p>
+<ul>
+<li>累积变量 – 默认为数组的第一个成员   必选</li>
+<li>当前变量 – 默认为数组的第二个成员   必选</li>
+<li>当前位置 – 从0开始				 可选</li>
+<li>原数组						 可选</li>
+</ul>
+</blockquote>
+<h3 id="indexOf-lastIndexOf">indexOf   lastIndexOf()</h3>
+<blockquote>
+<ul>
+<li>indexOf方法返回给定元素在数组中第一次出现的位置，如果没有则为-1.</li>
+<li>indexOf还可以接收第二个参数，表示搜索的开始位置。</li>
+</ul>
+</blockquote>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>JavaScript数组</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2021-03-26</p><p><span>最后更新：</span>2022-05-04</p><p><span>原始链接：</span><a href="/012-JS数组/">https://blog.liugezhou.online/012-JS%E6%95%B0%E7%BB%84/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/012-JS%E6%95%B0%E7%BB%84/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/JavaScript"><i class="fa fa-tag">JavaScript</i></a></div><div class="post-nav"><a class="pre" href="/013-webpack/">Webpack全基础</a><a class="next" href="/Week16-%E7%BC%96%E8%BE%91%E5%99%A8%E6%9C%8D%E5%8A%A1%E7%AB%AFAPI%E5%BC%80%E5%8F%91/">Week16-编辑器服务端API开发</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

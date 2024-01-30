@@ -1,0 +1,301 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="阶段六：浏览器中的网络"><meta name="twitter:description" content="&lt;h2 id=&quot;29-HTTP-1：HTTP-性能优化&quot;&gt;29 | HTTP/1：HTTP 性能优化&lt;/h2&gt;
+&lt;h3 id=&quot;超文本传输协议-HTTP-0-9&quot;&gt;超文本传输协议 HTTP/0.9&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;HTTP/0.9 是在 1991 年提出。&lt;br&gt;
+主要用于学术交流-在网络之间传递 HTML 超文本内容，所以被称为&lt;strong&gt;超文本传输协议(HyperText Transfer Protocol)&lt;/strong&gt;。&lt;br&gt;
+过程是：客户端根据 IP 地址、端口号和服务器建立 TCP 连接，建立连接后，发送一个 GET 请求行消息来获取 html，服务器接收到这个 Get 请求，将数据以 &lt;strong&gt;ASCII 字符流&lt;/strong&gt;返回给客户端，html 传输完成，断开连接。&lt;br&gt;
+特点是：只有一个请求行，没有 HTTP 请求头和请求体；服务器也没有返回头信息，只有返回的数据；返回的文件内容是以 ASCII 字符流来传输的。&lt;/p&gt;
+&lt;p&gt;关键词：1991 年、学术交流、Get、超文本内容、ASCII&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;被浏览器推动的-HTTP-1-0&quot;&gt;被浏览器推动的 HTTP/1.0&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;新兴网络的发展，浏览器需要展示的内容不单单是 HTML 文件，还有 JS、CSS、图片、音频、视频等不同类型的文件，也就是说 HTTP1.0 的核心诉求就是要&lt;strong&gt;支持多种类型的文件下载&lt;/strong&gt;，且文件格式不再局限于 ASCII 编码了。&lt;br&gt;
+为了满足多种类型文件的传输，HTTP/1.0 引入了&lt;strong&gt;请求头和响应头&lt;/strong&gt;。&lt;br&gt;
+请求头的内容有：服务器返回的文件类型、文件压缩方式、提供什么语言文件、文件的具体编码：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight ada&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;accept&lt;/span&gt;: text/html&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;accept&lt;/span&gt;-encoding: gzip, deflate, br&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;accept&lt;/span&gt;-Charset: ISO-&lt;span class=&quot;number&quot;&gt;8859&lt;/span&gt;-&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,utf-&lt;span class=&quot;number&quot;&gt;8&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;accept&lt;/span&gt;-language: zh-CN,zh&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;除了对多文件的增强外，还根据实际需求引入了几个新增的典型特性：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;引入了**状态码 **&lt;/li&gt;
+&lt;li&gt;为了减轻服务器压力，HTTP/1.0 提供了 Cache 机制，用来缓存下载过的数据&lt;/li&gt;
+&lt;li&gt;在请求头中加入了&lt;strong&gt;用户代理&lt;/strong&gt;的字段(为了统计客户端的信息–比如 Windows 和 MacOS 用户数量为多少)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;HTTP/1.0 关键词:多种类型文件、请求头和响应头、状态码、Cache 机制、用户代理&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;缝缝补补的-HTTP-1-1&quot;&gt;缝缝补补的 HTTP/1.1&lt;/h3&gt;
+&lt;h4 id=&quot;改进持久性连接&quot;&gt;改进持久性连接&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;随着发展，一个页面可能包含几百个外部资源文件，为了解决每次下载都需要建立 TCP 连接，HTTP/1.1 中增加了持久性连接的方法，特点是可以&lt;strong&gt;在一个 TCP 连接上传输多个 HTTP 请求&lt;/strong&gt;，只要浏览器或者服务器没有明确断开连接，那么持久性连接就会使得该 TCP 连接一直保持。&lt;br&gt;
+然后，这么做就减少了服务器的负担，提升了 HTTP 的请求时长，他的持久性连接是默认开启的，如果想关闭通过 Connection:close。&lt;br&gt;
+目前，浏览器对于同一个域名，默认允许建立 6 个 TCP 持久连接。&lt;br&gt;
+如果想增加 TCP 的连接，可以使用一种叫做&lt;strong&gt;域名分片&lt;/strong&gt;的技术：把该站点下面的资源放在多个域名下。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;不成熟的-HTTP-管线化&quot;&gt;不成熟的 HTTP 管线化&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如果 TCP 通道中的某个请求因为某些原因没有及时返回，那就会阻塞后面的所有请求，这就是著名的&lt;strong&gt;队头阻塞&lt;/strong&gt;问题。&lt;br&gt;
+HTTP/1.1 使用了管线化技术，但是不成熟。&lt;br&gt;
+HTTP/1.1 的管线化技术是将多个 HTTP 请求整批发送给服务器的技术。虽然整批发送了请求，但是服务器依然需要根据请求顺序来回复浏览器的请求。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;提供虚拟主机的支持&quot;&gt;提供虚拟主机的支持&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;随着虚拟主机发展，一台主机可以绑定多个虚拟主机，每个虚拟主机都可以有自己的单独域名。&lt;br&gt;
+于是，HTTP/1.1 的请求头中添加了 Host 字段，用来表示当前的域名地址。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;对动态生成的内容提供了完美支持&quot;&gt;对动态生成的内容提供了完美支持&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;在 HTTP/1.0 那会，浏览器根据响应头中设置的服务器告诉的数据大小来进行数据的接收，但随着服务器端发展，服务器返回的内容为动态生成，也就在传输数据的时候不知道最终的数据大小是多少，这个时候浏览器也就不知道到底接收多少数据。&lt;br&gt;
+于是，HTTP/1.1 引入了&lt;strong&gt;Chunk transfer&lt;/strong&gt;机制，服务器将数据分割成任意大小的数据块，每个数据块发送时会附上上个数据的长度，最后一个使用零长度来作为发送数据完成的标志，于是也就提供了对动态内容的支持。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;客户端-Cookire、安全机制&quot;&gt;客户端 Cookire、安全机制&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;添加 Cookie。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;HTTP/1.1 关键词：&lt;strong&gt;改进持久性连接&lt;/strong&gt;、添加了 Host 字段、Chunk transfer 机制、Cookie、解决队头阻塞问题使用用不成熟的管线化技术。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;30-｜-HTTP-2：如何提升网络速度？&quot;&gt;30 ｜ HTTP/2：如何提升网络速度？&lt;/h2&gt;
+&lt;h3 id=&quot;HTTP-1-1-的主要问题&quot;&gt;HTTP/1.1 的主要问题&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;HTTP/1.1 的核心问题是：&lt;strong&gt;对宽带的利用率不理想&lt;/strong&gt;。&lt;br&gt;
+宽带是指每秒最大能发送或者接收的字节数，我们把每秒能发送的最大字节数称为&lt;strong&gt;上行宽带&lt;/strong&gt;，每秒能接受的最大字节数称为&lt;strong&gt;下行宽带&lt;/strong&gt;。出现宽带利用率的问题，主要有三个原因导致：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;TCP 的慢启动：慢启动是 指刚开始的时候 TCP 协议它会采用一种非常慢的速度去发送数据，然后慢慢加快发生数据的速度，这是 TCP 这个协议为减少网络阻塞的一种策略，我们无法改变。&lt;/li&gt;
+&lt;li&gt;开启了多条 TCP 连接，那么这些连接会竞争固定的宽带,会影响关键资源的下载速度。&lt;/li&gt;
+&lt;li&gt;HTTP/1.1 的队头阻塞问题:持久化连接可以共用一个通道，且同一时刻只能处理一个请求，请求没结束前，其它请求只能处于阻塞状态。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;HTTP-2-的多路复用&quot;&gt;HTTP/2 的多路复用&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;针对 HTTP/1.1 的问题，队头阻塞是由于 TCP 本身机制导致的，所以 HTTP/2.0 就针对了如何规避 TCP 的慢启动和 TCP 连接之间的宽带竞争下手。&lt;br&gt;
+HTTP/2 的解决思路是一个域名只使用一个&lt;strong&gt;TCP 长连接&lt;/strong&gt;来传输数据，这样整个页面的资源下载只需要一次慢启动，且避免了多个 TCP 连接竞争宽带的问题。&lt;br&gt;
+当然如果一个域名使用一个TCP长连接，那么针对队头阻塞问题，请求完一个请求再去发送另一个请求无疑是非常慢的，所以 HTTP/2 需要实现&lt;strong&gt;资源的并行请求&lt;/strong&gt;：也就是任何时候都可以将请求发送给服务器。&lt;/p&gt;
+&lt;p&gt;一句话总结 HTTP/2 为：一个域名只使用一个 TCP 长连接和解决队头阻塞问题。 也就是最具颠覆性的&lt;strong&gt;多路复用机制&lt;/strong&gt;。&lt;br&gt;
+多路复用机制的过程：是说每一个请求都一有一个对应的ID，服务端拿到这些请求的ID和内容后，自行决定哪些是关键资源，然后立即将关键资源返回。好处就是优先处理关键资源请求。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;多路复用的实现&quot;&gt;多路复用的实现&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;HTTP/2添加了一个二进制分帧层。&lt;br&gt;
+然后客户端发送过来的请求，经过这个层，进行处理给他们编号(帧)，然后发送给服务器。&lt;br&gt;
+服务器接收到请求，将相同编号的进行合并成一条完整信息进行一次处理，然后再返回给这个二进制分帧层。&lt;br&gt;
+二进制分帧层再将响应数据拆开，然后返回给客户端。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;HTTP-2其他特性-基于二进制分帧层&quot;&gt;HTTP/2其他特性-基于二进制分帧层&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;可以设置请求的优先级&lt;/li&gt;
+&lt;li&gt;服务器推送：HTTP2可以直接将数据提前推送至客户端&lt;/li&gt;
+&lt;li&gt;头部压缩：对请求头和响应头做了压缩。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;其它&quot;&gt;其它&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;HTTP/2没必要使用雪碧图了。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;31｜HTTP-3：甩掉TCP、TLS-的包袱，构建高效网络&quot;&gt;31｜HTTP/3：甩掉TCP、TLS 的包袱，构建高效网络&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本文的学习目录为：先分析HTTP2的主要缺陷三条，然后解决方法一条的展开：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;TCP的队头阻塞&quot;&gt;TCP的队头阻塞&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;TCP的队头阻塞是由于TCP是为了单连接而设计的，这样的设计导致的是：在传输数据过程中如果发生丢包，那么TCP连接就会处于暂停状态，等待重新传过来的包。&lt;br&gt;
+在TCP的传输过程中，由于单个数据包的丢失而造成的阻塞称为TCP上的队头阻塞。&lt;br&gt;
+相对于HTTP/1.1发生丢包还比较看的过去，因为HTTP/1.1为每个域名开启了6个TCP连接，其中一个发生丢包不会影响其它五个，而对HTTP2来说，由于只有一个TCP连接通道，若任何一次请求发生丢包，则会阻塞TCP连接中的所有请求。&lt;br&gt;
+然后通过HTTP2与HTTP1.1比较，当这个丢包率超过了2%的时候，HTTP1.1的传输效率反而比HTTP2要好。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;TCP建立连接的延时&quot;&gt;TCP建立连接的延时&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;除了TCP队头阻塞，TCP握手也是影响传输效率的一个重要因素。&lt;br&gt;
+网络延迟又称为RTT(Round Trip Time),指的是浏览器发起一个数据包到服务器，服务器再返回数据包到浏览器的整个往返时间。&lt;br&gt;
+建立TCP连接的时候，三次握手使得需要消耗完1.5个RTT才能进行数据传输，如果有TLS连接，还需要1～2个RTT。也就是说，传输数据之前就需要花掉3～4个RTT，而一个RTT的时间可能是10毫秒以内，也就是总共需要消耗30～40毫秒，如果与服务器相隔较远，那么可能需要300-400毫秒，这个时候看到页面的效率就变慢了。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;TCP协议僵化&quot;&gt;TCP协议僵化&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;目前掌握来看，HTTP2 的主要问题有TCP的队头阻塞和建立连接延迟的缺点，然后想要改进TCP协议才进行升级，比较困难，原因主要是因为&lt;strong&gt;中间设备的僵化&lt;/strong&gt;。&lt;br&gt;
+为了保障互联网的正常工作，我们需要在各处搭建各种设备，这个设备就是指中间设备，包括路由器、防火墙、交互机等，这些中间设计使用了大量TCP的特性且更新较少，因此如果客户端升级TCP协议，这些中间设备由于升级的困难，因此行不通。&lt;br&gt;
+除了中间设备外，操作系统也是TCP协议僵化的一个主要原因。因为TCP协议都是通过操作系统内核实现的，应用程序只能使用而不能修改。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;QUIC协议&quot;&gt;QUIC协议&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;解决思路是绕过TCP协议，发明一个TCP和UDP之外的新的传输协议，HTTP/3就选择了一个折衷的方法–基于UDP协议实现类似于TCP的&lt;strong&gt;多路数据流、传输可靠性&lt;/strong&gt;等功能，这套功能就称为QUIC协议。&lt;br&gt;
+QUIC协议集合了以下几个功能点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;实现了类似TCP的流量控制、传输可靠性的功能。&lt;/li&gt;
+&lt;li&gt;集成TLS加密功能：最重要的是减少了握手花费的RTT个数。&lt;/li&gt;
+&lt;li&gt;实现了HTTP/2的多路复用功能。&lt;/li&gt;
+&lt;li&gt;实现了快速握手功能。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+"><meta name="twitter:image"><title>阶段六：浏览器中的网络 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">阶段六：浏览器中的网络</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">阶段六：浏览器中的网络</h1><div class="post-meta">2022-04-18<span> | </span><span class="category"><a href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 2.8k</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 10</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/A6%E9%98%B6%E6%AE%B5%E5%85%AD%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E7%BD%91%E7%BB%9C/#vcomment"><span class="valine-comment-count" data-xid="/A6%E9%98%B6%E6%AE%B5%E5%85%AD%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E7%BD%91%E7%BB%9C/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#29-HTTP-1%EF%BC%9AHTTP-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="toc-text">29 | HTTP&#x2F;1：HTTP 性能优化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE-HTTP-0-9"><span class="toc-text">超文本传输协议 HTTP&#x2F;0.9</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A2%AB%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8E%A8%E5%8A%A8%E7%9A%84-HTTP-1-0"><span class="toc-text">被浏览器推动的 HTTP&#x2F;1.0</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%9D%E7%BC%9D%E8%A1%A5%E8%A1%A5%E7%9A%84-HTTP-1-1"><span class="toc-text">缝缝补补的 HTTP&#x2F;1.1</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%94%B9%E8%BF%9B%E6%8C%81%E4%B9%85%E6%80%A7%E8%BF%9E%E6%8E%A5"><span class="toc-text">改进持久性连接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E6%88%90%E7%86%9F%E7%9A%84-HTTP-%E7%AE%A1%E7%BA%BF%E5%8C%96"><span class="toc-text">不成熟的 HTTP 管线化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E4%BE%9B%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA%E7%9A%84%E6%94%AF%E6%8C%81"><span class="toc-text">提供虚拟主机的支持</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%B9%E5%8A%A8%E6%80%81%E7%94%9F%E6%88%90%E7%9A%84%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E4%BA%86%E5%AE%8C%E7%BE%8E%E6%94%AF%E6%8C%81"><span class="toc-text">对动态生成的内容提供了完美支持</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF-Cookire%E3%80%81%E5%AE%89%E5%85%A8%E6%9C%BA%E5%88%B6"><span class="toc-text">客户端 Cookire、安全机制</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#30-%EF%BD%9C-HTTP-2%EF%BC%9A%E5%A6%82%E4%BD%95%E6%8F%90%E5%8D%87%E7%BD%91%E7%BB%9C%E9%80%9F%E5%BA%A6%EF%BC%9F"><span class="toc-text">30 ｜ HTTP&#x2F;2：如何提升网络速度？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP-1-1-%E7%9A%84%E4%B8%BB%E8%A6%81%E9%97%AE%E9%A2%98"><span class="toc-text">HTTP&#x2F;1.1 的主要问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP-2-%E7%9A%84%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8"><span class="toc-text">HTTP&#x2F;2 的多路复用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-text">多路复用的实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#HTTP-2%E5%85%B6%E4%BB%96%E7%89%B9%E6%80%A7-%E5%9F%BA%E4%BA%8E%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%88%86%E5%B8%A7%E5%B1%82"><span class="toc-text">HTTP&#x2F;2其他特性-基于二进制分帧层</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B6%E5%AE%83"><span class="toc-text">其它</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#31%EF%BD%9CHTTP-3%EF%BC%9A%E7%94%A9%E6%8E%89TCP%E3%80%81TLS-%E7%9A%84%E5%8C%85%E8%A2%B1%EF%BC%8C%E6%9E%84%E5%BB%BA%E9%AB%98%E6%95%88%E7%BD%91%E7%BB%9C"><span class="toc-text">31｜HTTP&#x2F;3：甩掉TCP、TLS 的包袱，构建高效网络</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP%E7%9A%84%E9%98%9F%E5%A4%B4%E9%98%BB%E5%A1%9E"><span class="toc-text">TCP的队头阻塞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%BB%B6%E6%97%B6"><span class="toc-text">TCP建立连接的延时</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP%E5%8D%8F%E8%AE%AE%E5%83%B5%E5%8C%96"><span class="toc-text">TCP协议僵化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#QUIC%E5%8D%8F%E8%AE%AE"><span class="toc-text">QUIC协议</span></a></li></ol></li></ol></div></div><div class="post-content"><h2 id="29-HTTP-1：HTTP-性能优化">29 | HTTP/1：HTTP 性能优化</h2>
+<h3 id="超文本传输协议-HTTP-0-9">超文本传输协议 HTTP/0.9</h3>
+<blockquote>
+<p>HTTP/0.9 是在 1991 年提出。<br>
+主要用于学术交流-在网络之间传递 HTML 超文本内容，所以被称为<strong>超文本传输协议(HyperText Transfer Protocol)</strong>。<br>
+过程是：客户端根据 IP 地址、端口号和服务器建立 TCP 连接，建立连接后，发送一个 GET 请求行消息来获取 html，服务器接收到这个 Get 请求，将数据以 <strong>ASCII 字符流</strong>返回给客户端，html 传输完成，断开连接。<br>
+特点是：只有一个请求行，没有 HTTP 请求头和请求体；服务器也没有返回头信息，只有返回的数据；返回的文件内容是以 ASCII 字符流来传输的。</p>
+<p>关键词：1991 年、学术交流、Get、超文本内容、ASCII</p>
+</blockquote>
+<h3 id="被浏览器推动的-HTTP-1-0">被浏览器推动的 HTTP/1.0</h3>
+<blockquote>
+<p>新兴网络的发展，浏览器需要展示的内容不单单是 HTML 文件，还有 JS、CSS、图片、音频、视频等不同类型的文件，也就是说 HTTP1.0 的核心诉求就是要<strong>支持多种类型的文件下载</strong>，且文件格式不再局限于 ASCII 编码了。<br>
+为了满足多种类型文件的传输，HTTP/1.0 引入了<strong>请求头和响应头</strong>。<br>
+请求头的内容有：服务器返回的文件类型、文件压缩方式、提供什么语言文件、文件的具体编码：</p>
+</blockquote>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">accept</span>: text/html</span><br><span class="line"><span class="keyword">accept</span>-encoding: gzip, deflate, br</span><br><span class="line"><span class="keyword">accept</span>-Charset: ISO-<span class="number">8859</span>-<span class="number">1</span>,utf-<span class="number">8</span></span><br><span class="line"><span class="keyword">accept</span>-language: zh-CN,zh</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>除了对多文件的增强外，还根据实际需求引入了几个新增的典型特性：</p>
+<ul>
+<li>引入了**状态码 **</li>
+<li>为了减轻服务器压力，HTTP/1.0 提供了 Cache 机制，用来缓存下载过的数据</li>
+<li>在请求头中加入了<strong>用户代理</strong>的字段(为了统计客户端的信息–比如 Windows 和 MacOS 用户数量为多少)</li>
+</ul>
+<p>HTTP/1.0 关键词:多种类型文件、请求头和响应头、状态码、Cache 机制、用户代理</p>
+</blockquote>
+<h3 id="缝缝补补的-HTTP-1-1">缝缝补补的 HTTP/1.1</h3>
+<h4 id="改进持久性连接">改进持久性连接</h4>
+<blockquote>
+<p>随着发展，一个页面可能包含几百个外部资源文件，为了解决每次下载都需要建立 TCP 连接，HTTP/1.1 中增加了持久性连接的方法，特点是可以<strong>在一个 TCP 连接上传输多个 HTTP 请求</strong>，只要浏览器或者服务器没有明确断开连接，那么持久性连接就会使得该 TCP 连接一直保持。<br>
+然后，这么做就减少了服务器的负担，提升了 HTTP 的请求时长，他的持久性连接是默认开启的，如果想关闭通过 Connection:close。<br>
+目前，浏览器对于同一个域名，默认允许建立 6 个 TCP 持久连接。<br>
+如果想增加 TCP 的连接，可以使用一种叫做<strong>域名分片</strong>的技术：把该站点下面的资源放在多个域名下。</p>
+</blockquote>
+<h4 id="不成熟的-HTTP-管线化">不成熟的 HTTP 管线化</h4>
+<blockquote>
+<p>如果 TCP 通道中的某个请求因为某些原因没有及时返回，那就会阻塞后面的所有请求，这就是著名的<strong>队头阻塞</strong>问题。<br>
+HTTP/1.1 使用了管线化技术，但是不成熟。<br>
+HTTP/1.1 的管线化技术是将多个 HTTP 请求整批发送给服务器的技术。虽然整批发送了请求，但是服务器依然需要根据请求顺序来回复浏览器的请求。</p>
+</blockquote>
+<h4 id="提供虚拟主机的支持">提供虚拟主机的支持</h4>
+<blockquote>
+<p>随着虚拟主机发展，一台主机可以绑定多个虚拟主机，每个虚拟主机都可以有自己的单独域名。<br>
+于是，HTTP/1.1 的请求头中添加了 Host 字段，用来表示当前的域名地址。</p>
+</blockquote>
+<h4 id="对动态生成的内容提供了完美支持">对动态生成的内容提供了完美支持</h4>
+<blockquote>
+<p>在 HTTP/1.0 那会，浏览器根据响应头中设置的服务器告诉的数据大小来进行数据的接收，但随着服务器端发展，服务器返回的内容为动态生成，也就在传输数据的时候不知道最终的数据大小是多少，这个时候浏览器也就不知道到底接收多少数据。<br>
+于是，HTTP/1.1 引入了<strong>Chunk transfer</strong>机制，服务器将数据分割成任意大小的数据块，每个数据块发送时会附上上个数据的长度，最后一个使用零长度来作为发送数据完成的标志，于是也就提供了对动态内容的支持。</p>
+</blockquote>
+<h4 id="客户端-Cookire、安全机制">客户端 Cookire、安全机制</h4>
+<blockquote>
+<p>添加 Cookie。</p>
+</blockquote>
+<blockquote>
+<p>HTTP/1.1 关键词：<strong>改进持久性连接</strong>、添加了 Host 字段、Chunk transfer 机制、Cookie、解决队头阻塞问题使用用不成熟的管线化技术。</p>
+</blockquote>
+<h2 id="30-｜-HTTP-2：如何提升网络速度？">30 ｜ HTTP/2：如何提升网络速度？</h2>
+<h3 id="HTTP-1-1-的主要问题">HTTP/1.1 的主要问题</h3>
+<blockquote>
+<p>HTTP/1.1 的核心问题是：<strong>对宽带的利用率不理想</strong>。<br>
+宽带是指每秒最大能发送或者接收的字节数，我们把每秒能发送的最大字节数称为<strong>上行宽带</strong>，每秒能接受的最大字节数称为<strong>下行宽带</strong>。出现宽带利用率的问题，主要有三个原因导致：</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>TCP 的慢启动：慢启动是 指刚开始的时候 TCP 协议它会采用一种非常慢的速度去发送数据，然后慢慢加快发生数据的速度，这是 TCP 这个协议为减少网络阻塞的一种策略，我们无法改变。</li>
+<li>开启了多条 TCP 连接，那么这些连接会竞争固定的宽带,会影响关键资源的下载速度。</li>
+<li>HTTP/1.1 的队头阻塞问题:持久化连接可以共用一个通道，且同一时刻只能处理一个请求，请求没结束前，其它请求只能处于阻塞状态。</li>
+</ul>
+</blockquote>
+<h3 id="HTTP-2-的多路复用">HTTP/2 的多路复用</h3>
+<blockquote>
+<p>针对 HTTP/1.1 的问题，队头阻塞是由于 TCP 本身机制导致的，所以 HTTP/2.0 就针对了如何规避 TCP 的慢启动和 TCP 连接之间的宽带竞争下手。<br>
+HTTP/2 的解决思路是一个域名只使用一个<strong>TCP 长连接</strong>来传输数据，这样整个页面的资源下载只需要一次慢启动，且避免了多个 TCP 连接竞争宽带的问题。<br>
+当然如果一个域名使用一个TCP长连接，那么针对队头阻塞问题，请求完一个请求再去发送另一个请求无疑是非常慢的，所以 HTTP/2 需要实现<strong>资源的并行请求</strong>：也就是任何时候都可以将请求发送给服务器。</p>
+<p>一句话总结 HTTP/2 为：一个域名只使用一个 TCP 长连接和解决队头阻塞问题。 也就是最具颠覆性的<strong>多路复用机制</strong>。<br>
+多路复用机制的过程：是说每一个请求都一有一个对应的ID，服务端拿到这些请求的ID和内容后，自行决定哪些是关键资源，然后立即将关键资源返回。好处就是优先处理关键资源请求。</p>
+</blockquote>
+<h4 id="多路复用的实现">多路复用的实现</h4>
+<blockquote>
+<p>HTTP/2添加了一个二进制分帧层。<br>
+然后客户端发送过来的请求，经过这个层，进行处理给他们编号(帧)，然后发送给服务器。<br>
+服务器接收到请求，将相同编号的进行合并成一条完整信息进行一次处理，然后再返回给这个二进制分帧层。<br>
+二进制分帧层再将响应数据拆开，然后返回给客户端。</p>
+</blockquote>
+<h4 id="HTTP-2其他特性-基于二进制分帧层">HTTP/2其他特性-基于二进制分帧层</h4>
+<blockquote>
+<ul>
+<li>可以设置请求的优先级</li>
+<li>服务器推送：HTTP2可以直接将数据提前推送至客户端</li>
+<li>头部压缩：对请求头和响应头做了压缩。</li>
+</ul>
+</blockquote>
+<h4 id="其它">其它</h4>
+<blockquote>
+<p>HTTP/2没必要使用雪碧图了。</p>
+</blockquote>
+<h2 id="31｜HTTP-3：甩掉TCP、TLS-的包袱，构建高效网络">31｜HTTP/3：甩掉TCP、TLS 的包袱，构建高效网络</h2>
+<blockquote>
+<p>本文的学习目录为：先分析HTTP2的主要缺陷三条，然后解决方法一条的展开：</p>
+</blockquote>
+<h3 id="TCP的队头阻塞">TCP的队头阻塞</h3>
+<blockquote>
+<p>TCP的队头阻塞是由于TCP是为了单连接而设计的，这样的设计导致的是：在传输数据过程中如果发生丢包，那么TCP连接就会处于暂停状态，等待重新传过来的包。<br>
+在TCP的传输过程中，由于单个数据包的丢失而造成的阻塞称为TCP上的队头阻塞。<br>
+相对于HTTP/1.1发生丢包还比较看的过去，因为HTTP/1.1为每个域名开启了6个TCP连接，其中一个发生丢包不会影响其它五个，而对HTTP2来说，由于只有一个TCP连接通道，若任何一次请求发生丢包，则会阻塞TCP连接中的所有请求。<br>
+然后通过HTTP2与HTTP1.1比较，当这个丢包率超过了2%的时候，HTTP1.1的传输效率反而比HTTP2要好。</p>
+</blockquote>
+<h3 id="TCP建立连接的延时">TCP建立连接的延时</h3>
+<blockquote>
+<p>除了TCP队头阻塞，TCP握手也是影响传输效率的一个重要因素。<br>
+网络延迟又称为RTT(Round Trip Time),指的是浏览器发起一个数据包到服务器，服务器再返回数据包到浏览器的整个往返时间。<br>
+建立TCP连接的时候，三次握手使得需要消耗完1.5个RTT才能进行数据传输，如果有TLS连接，还需要1～2个RTT。也就是说，传输数据之前就需要花掉3～4个RTT，而一个RTT的时间可能是10毫秒以内，也就是总共需要消耗30～40毫秒，如果与服务器相隔较远，那么可能需要300-400毫秒，这个时候看到页面的效率就变慢了。</p>
+</blockquote>
+<h3 id="TCP协议僵化">TCP协议僵化</h3>
+<blockquote>
+<p>目前掌握来看，HTTP2 的主要问题有TCP的队头阻塞和建立连接延迟的缺点，然后想要改进TCP协议才进行升级，比较困难，原因主要是因为<strong>中间设备的僵化</strong>。<br>
+为了保障互联网的正常工作，我们需要在各处搭建各种设备，这个设备就是指中间设备，包括路由器、防火墙、交互机等，这些中间设计使用了大量TCP的特性且更新较少，因此如果客户端升级TCP协议，这些中间设备由于升级的困难，因此行不通。<br>
+除了中间设备外，操作系统也是TCP协议僵化的一个主要原因。因为TCP协议都是通过操作系统内核实现的，应用程序只能使用而不能修改。</p>
+</blockquote>
+<h3 id="QUIC协议">QUIC协议</h3>
+<blockquote>
+<p>解决思路是绕过TCP协议，发明一个TCP和UDP之外的新的传输协议，HTTP/3就选择了一个折衷的方法–基于UDP协议实现类似于TCP的<strong>多路数据流、传输可靠性</strong>等功能，这套功能就称为QUIC协议。<br>
+QUIC协议集合了以下几个功能点：</p>
+<ul>
+<li>实现了类似TCP的流量控制、传输可靠性的功能。</li>
+<li>集成TLS加密功能：最重要的是减少了握手花费的RTT个数。</li>
+<li>实现了HTTP/2的多路复用功能。</li>
+<li>实现了快速握手功能。</li>
+</ul>
+</blockquote>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>阶段六：浏览器中的网络</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2022-04-18</p><p><span>最后更新：</span>2022-04-18</p><p><span>原始链接：</span><a href="/A6阶段六：浏览器中的网络/">https://blog.liugezhou.online/A6%E9%98%B6%E6%AE%B5%E5%85%AD%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E7%BD%91%E7%BB%9C/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/A6%E9%98%B6%E6%AE%B5%E5%85%AD%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E7%BD%91%E7%BB%9C/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/浏览器工作原理"><i class="fa fa-tag">浏览器工作原理</i></a></div><div class="post-nav"><a class="pre" href="/A7%E9%98%B6%E6%AE%B5%E4%B8%83%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%89%E5%85%A8/">阶段七：浏览器安全</a><a class="next" href="/202215(4.11-4.17)/">每周小结(*52):有话好好说</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

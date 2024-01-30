@@ -1,0 +1,239 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="Babel有关基础内容"><meta name="twitter:description" content="&lt;p&gt;&lt;font color=blue&gt;更新说明：对文章排版以及内容格式做了调整。&lt;/font&gt;&lt;br&gt;
+&lt;font color=blue&gt; 更新时间：2022-05-04&lt;/font&gt;&lt;/p&gt;
+&lt;h2 id=&quot;背景&quot;&gt;背景&lt;/h2&gt;
+&lt;p&gt;项目中babel的设置一团遭，确实有必要搞懂这个babel。有的项目中直接在配置文件.babelrc中配置好，有的在main.js中全局import 这个polyfill，有的是在webpack中配置，有的引入了大量的第三方babel插件，这样可不行啊，如果不对babel有个全面的认知，在面对这些一系列满眼的配置下去修改，就有点力不从心。&lt;br&gt;
+本文，抽丝剥茧，彻底的搞懂babel，并测试、去实践修改babe的配置。&lt;/p&gt;
+&lt;h2 id=&quot;一、babel基础介绍&quot;&gt;一、babel基础介绍&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;babel是什么？&lt;br&gt;
+&lt;a href=&quot;https://babeljs.io/&quot;&gt;Babel&lt;/a&gt; 是一个广泛使用的 ES6 转码器，可以将 ES6 代码转为 ES5 代码，从而在老版本的浏览器执行。这意味着，你可以用 ES6 的方式编写程序，又不用担心现有环境是否支持。&lt;/li&gt;
+&lt;li&gt;Babel的基本工作原理&lt;br&gt;
+主要分为 parsing、transforming、printing三个阶段&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;parsing为解析阶段，将ES6代码进行词法分析和语法分析转换成抽象语法树&lt;/li&gt;
+&lt;li&gt;transforming为转换阶段，将抽象语法树进行变换操作&lt;/li&gt;
+&lt;li&gt;printing为生成阶段，通过babel-generator生成对应的代码。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;配置文件.babelrc的基本格式&lt;br&gt;
+首先，我们先对babel配置的基本格式有个浅显的了解：他是个对象、他的两个属性都是数组，他们分别是presets和plugins。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;string&quot;&gt;&amp;quot;presets&amp;quot;&lt;/span&gt;: [],&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;string&quot;&gt;&amp;quot;plugins&amp;quot;&lt;/span&gt;: []&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;接着我们在介绍这两个属性前，了解下babel的插件与预设的概念。&lt;/p&gt;
+&lt;h2 id=&quot;二、babel插件与预设&quot;&gt;二、babel插件与预设&lt;/h2&gt;
+&lt;p&gt;在继续上面的问题之前，这里我们需要深刻的晓得：babel的核心是&lt;strong&gt;插件&lt;/strong&gt;，babel的所有工作都是由插件完成的。然后我们去查看babel的插件列表：&lt;a href=&quot;https://babeljs.io/docs/en/plugins-list&quot;&gt;https://babeljs.io/docs/en/plugins-list&lt;/a&gt;，部分截图如下&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/babel.5z62x05kn300.webp&quot; alt=&quot;babel&quot;&gt;&lt;/p&gt;
+&lt;p&gt;其中arrow-functions(也就是ES6的箭头函数)对应的插件是@babel/plugin-transform-arrow-functions&lt;br&gt;
+如果要使用这个插件，需要安装：npm install --save-dev @babel/plugin-transform-arrow-functions&lt;br&gt;
+这个插件作用就是将ES6的箭头函数转化为ES5写法。&lt;br&gt;
+&lt;img src=&quot;https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/babel.1pbhb3j4a5s0.webp&quot; alt=&quot;babel&quot;&gt;&lt;/p&gt;
+&lt;p&gt;进入到这个方法的详情页，如上图，我们看到：&lt;strong&gt;This plugin is included in @babel/preset-env&lt;/strong&gt;&lt;br&gt;
+也就是说这个插件以及其他各种单个插件都放在了@babel/preset-env这个包中。之所以要&lt;strong&gt;included到一个里面&lt;/strong&gt;，是因为我们总不能一个一个插件的安装引入，官方就提供了一个包：&lt;br&gt;
+&lt;strong&gt;嘿，兄弟，我把一些你们都会用到的一系列的插件包在一块，你们就不用单个安装了，只需要执行下面的命令&lt;/strong&gt;：&lt;br&gt;
+npm install --save-dev @babel/preset-env’&lt;/p&gt;
+&lt;p&gt;此时，这个preset-env(一系列插件的集合)，安装好后，我们就可以去配置文件里面配置了。&lt;br&gt;
+【这个presets叫做“预设”：预设可以看成是一组插件或者配置项的集合。】&lt;/p&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;string&quot;&gt;&amp;quot;plugins&amp;quot;&lt;/span&gt;: [],&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;string&quot;&gt;&amp;quot;presets&amp;quot;&lt;/span&gt;: [&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;&amp;quot;@babel/preset-env&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  ]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;三、✨✨✨垫片-polyfill的使用&quot;&gt;三、✨✨✨垫片-polyfill的使用&lt;/h2&gt;
+&lt;p&gt;垫片就是我们平时早已知道的babel-polyfill。&lt;br&gt;
+为什么引入了babel还需要引入babel-polyfill呢。&lt;br&gt;
+这是因为babel将ES6代码是分成了两种情况进行转换的：&lt;strong&gt;语法层和API层&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;语法层就是let const 箭头函数 class这些&lt;/li&gt;
+&lt;li&gt;API层就是 includes Promise  map这些，因此上面的preset-env预设只是对语法层进行了转换，需要对低版本的ES6上的API进行转换就需要polyfill了。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;之前的项目中，我们的使用方式如下：&lt;br&gt;
+首先，我们需要安装它：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;npm install @babel/polyfill -S&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;关于项目中使用polyfill，有好多种写法，我们这里需要对他们的每个写法都了然于胸，才会 知道如何真正优化配置。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;type1:&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;在 node/React/Vue中使用,可能需要在入口文件最上层引入：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;require(‘@babel/polyfill’)&lt;/li&gt;
+&lt;li&gt;import '@babel/polyfill&amp;quot;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;type2:&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;在webpack中可以通过配置文件加入：&lt;br&gt;
+module.exports = {&lt;br&gt;
+entry: [“@babel/polyfill”, “./app/js”],&lt;br&gt;
+};&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;string&quot;&gt;&amp;quot;plugins&amp;quot;&lt;/span&gt;: [],&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;string&quot;&gt;&amp;quot;presets&amp;quot;&lt;/span&gt;: [&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    [&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &lt;span class=&quot;string&quot;&gt;&amp;quot;@babel/preset-env&amp;quot;&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;string&quot;&gt;&amp;quot;useBuiltIns&amp;quot;&lt;/span&gt;:&lt;span class=&quot;string&quot;&gt;&amp;quot;usage&amp;quot;&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;string&quot;&gt;&amp;quot;modules&amp;quot;&lt;/span&gt;: &lt;span class=&quot;literal&quot;&gt;false&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    ]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  ]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;这样引入polyfill，存在的一个问题是打出的包非常的大。&lt;br&gt;
+这里有一个很重要的配置 useBuiltIns : usage&lt;br&gt;
+它的含义是当我们在做polyfill填充的时候，在一些低版本不存在的特性的时候，并不会把全部加载，只是根据业务代码进行加载==》按需加载&lt;/p&gt;
+&lt;h2 id=&quot;四、-babel-plugin-transform-runtime&quot;&gt;四、@babel/plugin-transform-runtime&lt;/h2&gt;
+&lt;p&gt;看到一些资料说，引入的polyfill会污染全局变量，意思是别人如果使用了我们的类库，就可能造成这种问题，这里还未搞懂为什么会污染全局变量(暂且记下这个结论)，按我的理解，如果我们是开发自己的项目，不会对外提供，那么是不是就不需要去解决这个问题？&lt;/p&gt;
+&lt;p&gt;总之，babel为了解决这个&lt;strong&gt;污染全局变量&lt;/strong&gt;以及&lt;strong&gt;代码冗余&lt;/strong&gt;的问题，为我们提供了一个插件@babel/plugin-transform-runtime&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;npm install --save-dev @babel/plugin-transform-runtime&lt;/li&gt;
+&lt;li&gt;npm install --save-dev @babel/runtime&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;添加到配置文件中代码如下：&lt;/p&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;string&quot;&gt;&amp;quot;plugins&amp;quot;&lt;/span&gt;: [&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    [&lt;span class=&quot;string&quot;&gt;&amp;quot;@babel/plugin-transform-runtime&amp;quot;&lt;/span&gt;,&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &lt;span class=&quot;string&quot;&gt;&amp;quot;corejs&amp;quot;&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  ],&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;string&quot;&gt;&amp;quot;presets&amp;quot;&lt;/span&gt;: [&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    [&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &lt;span class=&quot;string&quot;&gt;&amp;quot;@babel/preset-env&amp;quot;&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;string&quot;&gt;&amp;quot;useBuiltIns&amp;quot;&lt;/span&gt;:&lt;span class=&quot;string&quot;&gt;&amp;quot;usage&amp;quot;&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;string&quot;&gt;&amp;quot;modules&amp;quot;&lt;/span&gt;: &lt;span class=&quot;literal&quot;&gt;false&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;string&quot;&gt;&amp;quot;corejs&amp;quot;&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    ]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  ]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;五、babel的几个包&quot;&gt;五、babel的几个包&lt;/h2&gt;
+&lt;p&gt;最后我们总结一下有关babel的几个包&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;@babel/cli&lt;br&gt;
+一般情况下，我们在项目中是不会安装@babel/cli这个包的，因为这个包的作用是：如果我们想在命令行使用才需要安装，即只是一个终端cli工具。&lt;/li&gt;
+&lt;li&gt;@babel/core&lt;br&gt;
+这个是babel的核心包，拆分成了三个模块:parser/traverse/generator，如果需要以编程的方式来使用 Babel，可以使用 babel-core 这个包。&lt;br&gt;
+若是想要用babel-loader把es6的代码转换成为es5的代码，那么需要对应版本的babel-core。&lt;/li&gt;
+&lt;li&gt;@babel/preset-env&lt;br&gt;
+预设：预先设定一组插件，方便我们对插件集成配置管理。&lt;/li&gt;
+&lt;li&gt;@babel/polyfill&lt;br&gt;
+为浏览器不支持的API提供对应的兼容性代码，很明显如果你不提供，如果在不支持的浏览器里面使用了新API，那么你的页面就会挂掉,@babel-polyfill带来的一些问题以及介绍后续再说。&lt;/li&gt;
+&lt;li&gt;@babel/plugin-*&lt;br&gt;
+babel插件机制、方便扩展、集成。&lt;/li&gt;
+&lt;li&gt;@babel/plugin-transform-runtime&lt;br&gt;
+，解决转译语法层时出现的代码冗余、解决转译api层出现的全局变量污染&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;六、小结&quot;&gt;六、小结&lt;/h2&gt;
+&lt;p&gt;Babel 是一个工具链，主要用于将采用ECMAScript 2015+ 语法编写的代码转换为向后兼容的JavaScript 语法，以便能够运行在当前和旧版本的浏览器或其他环境中。&lt;br&gt;
+这里的重点是这个 + 号，差不多的理解为：  所以现在的项目有些不会使用polyfiil，但不会出现问题，是因为写的ES代码几乎都没有什么新的特性，浏览器差不多都支持了，为了保险起见后续新API的标准推出，有的项目才会装这个polyfill     吧。&lt;/p&gt;
+"><meta name="twitter:image"><title>Babel有关基础内容 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Babel有关基础内容</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Babel有关基础内容</h1><div class="post-meta">2021-09-09<span> | </span><span class="category"><a href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 1.8k</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 6</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/022-babel/#vcomment"><span class="valine-comment-count" data-xid="/022-babel/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81babel%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D"><span class="toc-text">一、babel基础介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81babel%E6%8F%92%E4%BB%B6%E4%B8%8E%E9%A2%84%E8%AE%BE"><span class="toc-text">二、babel插件与预设</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E2%9C%A8%E2%9C%A8%E2%9C%A8%E5%9E%AB%E7%89%87-polyfill%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-text">三、✨✨✨垫片-polyfill的使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81-babel-plugin-transform-runtime"><span class="toc-text">四、@babel&#x2F;plugin-transform-runtime</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81babel%E7%9A%84%E5%87%A0%E4%B8%AA%E5%8C%85"><span class="toc-text">五、babel的几个包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%B0%8F%E7%BB%93"><span class="toc-text">六、小结</span></a></li></ol></div></div><div class="post-content"><p><font color=blue>更新说明：对文章排版以及内容格式做了调整。</font><br>
+<font color=blue> 更新时间：2022-05-04</font></p>
+<h2 id="背景">背景</h2>
+<p>项目中babel的设置一团遭，确实有必要搞懂这个babel。有的项目中直接在配置文件.babelrc中配置好，有的在main.js中全局import 这个polyfill，有的是在webpack中配置，有的引入了大量的第三方babel插件，这样可不行啊，如果不对babel有个全面的认知，在面对这些一系列满眼的配置下去修改，就有点力不从心。<br>
+本文，抽丝剥茧，彻底的搞懂babel，并测试、去实践修改babe的配置。</p>
+<h2 id="一、babel基础介绍">一、babel基础介绍</h2>
+<ol>
+<li>babel是什么？<br>
+<a target="_blank" rel="noopener" href="https://babeljs.io/">Babel</a> 是一个广泛使用的 ES6 转码器，可以将 ES6 代码转为 ES5 代码，从而在老版本的浏览器执行。这意味着，你可以用 ES6 的方式编写程序，又不用担心现有环境是否支持。</li>
+<li>Babel的基本工作原理<br>
+主要分为 parsing、transforming、printing三个阶段</li>
+</ol>
+<ul>
+<li>parsing为解析阶段，将ES6代码进行词法分析和语法分析转换成抽象语法树</li>
+<li>transforming为转换阶段，将抽象语法树进行变换操作</li>
+<li>printing为生成阶段，通过babel-generator生成对应的代码。</li>
+</ul>
+<ol start="3">
+<li>配置文件.babelrc的基本格式<br>
+首先，我们先对babel配置的基本格式有个浅显的了解：他是个对象、他的两个属性都是数组，他们分别是presets和plugins。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;presets&quot;</span>: [],</span><br><span class="line">  <span class="string">&quot;plugins&quot;</span>: []</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接着我们在介绍这两个属性前，了解下babel的插件与预设的概念。</p>
+<h2 id="二、babel插件与预设">二、babel插件与预设</h2>
+<p>在继续上面的问题之前，这里我们需要深刻的晓得：babel的核心是<strong>插件</strong>，babel的所有工作都是由插件完成的。然后我们去查看babel的插件列表：<a target="_blank" rel="noopener" href="https://babeljs.io/docs/en/plugins-list">https://babeljs.io/docs/en/plugins-list</a>，部分截图如下</p>
+<p><img src="https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/babel.5z62x05kn300.webp" alt="babel"></p>
+<p>其中arrow-functions(也就是ES6的箭头函数)对应的插件是@babel/plugin-transform-arrow-functions<br>
+如果要使用这个插件，需要安装：npm install --save-dev @babel/plugin-transform-arrow-functions<br>
+这个插件作用就是将ES6的箭头函数转化为ES5写法。<br>
+<img src="https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/babel.1pbhb3j4a5s0.webp" alt="babel"></p>
+<p>进入到这个方法的详情页，如上图，我们看到：<strong>This plugin is included in @babel/preset-env</strong><br>
+也就是说这个插件以及其他各种单个插件都放在了@babel/preset-env这个包中。之所以要<strong>included到一个里面</strong>，是因为我们总不能一个一个插件的安装引入，官方就提供了一个包：<br>
+<strong>嘿，兄弟，我把一些你们都会用到的一系列的插件包在一块，你们就不用单个安装了，只需要执行下面的命令</strong>：<br>
+npm install --save-dev @babel/preset-env’</p>
+<p>此时，这个preset-env(一系列插件的集合)，安装好后，我们就可以去配置文件里面配置了。<br>
+【这个presets叫做“预设”：预设可以看成是一组插件或者配置项的集合。】</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;plugins&quot;</span>: [],</span><br><span class="line">  <span class="string">&quot;presets&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;@babel/preset-env&quot;</span></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="三、✨✨✨垫片-polyfill的使用">三、✨✨✨垫片-polyfill的使用</h2>
+<p>垫片就是我们平时早已知道的babel-polyfill。<br>
+为什么引入了babel还需要引入babel-polyfill呢。<br>
+这是因为babel将ES6代码是分成了两种情况进行转换的：<strong>语法层和API层</strong>。</p>
+<ul>
+<li>语法层就是let const 箭头函数 class这些</li>
+<li>API层就是 includes Promise  map这些，因此上面的preset-env预设只是对语法层进行了转换，需要对低版本的ES6上的API进行转换就需要polyfill了。</li>
+</ul>
+<p>之前的项目中，我们的使用方式如下：<br>
+首先，我们需要安装它：</p>
+<ul>
+<li>npm install @babel/polyfill -S</li>
+</ul>
+<p>关于项目中使用polyfill，有好多种写法，我们这里需要对他们的每个写法都了然于胸，才会 知道如何真正优化配置。</p>
+<p><strong>type1:</strong></p>
+<blockquote>
+<p>在 node/React/Vue中使用,可能需要在入口文件最上层引入：</p>
+<ul>
+<li>require(‘@babel/polyfill’)</li>
+<li>import '@babel/polyfill&quot;</li>
+</ul>
+</blockquote>
+<p><strong>type2:</strong></p>
+<blockquote>
+<p>在webpack中可以通过配置文件加入：<br>
+module.exports = {<br>
+entry: [“@babel/polyfill”, “./app/js”],<br>
+};</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;plugins&quot;</span>: [],</span><br><span class="line">  <span class="string">&quot;presets&quot;</span>: [</span><br><span class="line">    [</span><br><span class="line">      <span class="string">&quot;@babel/preset-env&quot;</span>,</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="string">&quot;useBuiltIns&quot;</span>:<span class="string">&quot;usage&quot;</span>,</span><br><span class="line">        <span class="string">&quot;modules&quot;</span>: <span class="literal">false</span></span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样引入polyfill，存在的一个问题是打出的包非常的大。<br>
+这里有一个很重要的配置 useBuiltIns : usage<br>
+它的含义是当我们在做polyfill填充的时候，在一些低版本不存在的特性的时候，并不会把全部加载，只是根据业务代码进行加载==》按需加载</p>
+<h2 id="四、-babel-plugin-transform-runtime">四、@babel/plugin-transform-runtime</h2>
+<p>看到一些资料说，引入的polyfill会污染全局变量，意思是别人如果使用了我们的类库，就可能造成这种问题，这里还未搞懂为什么会污染全局变量(暂且记下这个结论)，按我的理解，如果我们是开发自己的项目，不会对外提供，那么是不是就不需要去解决这个问题？</p>
+<p>总之，babel为了解决这个<strong>污染全局变量</strong>以及<strong>代码冗余</strong>的问题，为我们提供了一个插件@babel/plugin-transform-runtime</p>
+<ul>
+<li>npm install --save-dev @babel/plugin-transform-runtime</li>
+<li>npm install --save-dev @babel/runtime</li>
+</ul>
+<p>添加到配置文件中代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;plugins&quot;</span>: [</span><br><span class="line">    [<span class="string">&quot;@babel/plugin-transform-runtime&quot;</span>,&#123;</span><br><span class="line">      <span class="string">&quot;corejs&quot;</span>:<span class="number">3</span></span><br><span class="line">    &#125;]</span><br><span class="line">  ],</span><br><span class="line">  <span class="string">&quot;presets&quot;</span>: [</span><br><span class="line">    [</span><br><span class="line">      <span class="string">&quot;@babel/preset-env&quot;</span>,</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="string">&quot;useBuiltIns&quot;</span>:<span class="string">&quot;usage&quot;</span>,</span><br><span class="line">        <span class="string">&quot;modules&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">        <span class="string">&quot;corejs&quot;</span>:<span class="number">3</span></span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="五、babel的几个包">五、babel的几个包</h2>
+<p>最后我们总结一下有关babel的几个包</p>
+<ul>
+<li>@babel/cli<br>
+一般情况下，我们在项目中是不会安装@babel/cli这个包的，因为这个包的作用是：如果我们想在命令行使用才需要安装，即只是一个终端cli工具。</li>
+<li>@babel/core<br>
+这个是babel的核心包，拆分成了三个模块:parser/traverse/generator，如果需要以编程的方式来使用 Babel，可以使用 babel-core 这个包。<br>
+若是想要用babel-loader把es6的代码转换成为es5的代码，那么需要对应版本的babel-core。</li>
+<li>@babel/preset-env<br>
+预设：预先设定一组插件，方便我们对插件集成配置管理。</li>
+<li>@babel/polyfill<br>
+为浏览器不支持的API提供对应的兼容性代码，很明显如果你不提供，如果在不支持的浏览器里面使用了新API，那么你的页面就会挂掉,@babel-polyfill带来的一些问题以及介绍后续再说。</li>
+<li>@babel/plugin-*<br>
+babel插件机制、方便扩展、集成。</li>
+<li>@babel/plugin-transform-runtime<br>
+，解决转译语法层时出现的代码冗余、解决转译api层出现的全局变量污染</li>
+</ul>
+<h2 id="六、小结">六、小结</h2>
+<p>Babel 是一个工具链，主要用于将采用ECMAScript 2015+ 语法编写的代码转换为向后兼容的JavaScript 语法，以便能够运行在当前和旧版本的浏览器或其他环境中。<br>
+这里的重点是这个 + 号，差不多的理解为：  所以现在的项目有些不会使用polyfiil，但不会出现问题，是因为写的ES代码几乎都没有什么新的特性，浏览器差不多都支持了，为了保险起见后续新API的标准推出，有的项目才会装这个polyfill     吧。</p>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>Babel有关基础内容</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2021-09-09</p><p><span>最后更新：</span>2022-05-04</p><p><span>原始链接：</span><a href="/022-babel/">https://blog.liugezhou.online/022-babel/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/022-babel/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/JavaScript"><i class="fa fa-tag">JavaScript</i></a></div><div class="post-nav"><a class="pre" href="/023-CSS%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0/">CSS中常用的一些函数</a><a class="next" href="/021-Docker%E7%9B%B8%E5%85%B3/">Docker</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

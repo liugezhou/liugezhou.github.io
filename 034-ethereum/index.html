@@ -1,0 +1,227 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="以太坊基础笔记"><meta name="twitter:description" content="&lt;p&gt;&lt;img src=&quot;https://cdn.statically.io/gh/liugezhou/image@master/web3/000_ether.png&quot; alt=&quot;ethereum&quot;&gt;&lt;/p&gt;
+&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+&lt;p&gt;这篇文章用来记录在学习以太坊的过程中,一些相关的基本概念和 solidity 语言的相关基础语法等。&lt;/p&gt;
+&lt;h1&gt;以太坊基础&lt;/h1&gt;
+&lt;h2 id=&quot;涉及工具&quot;&gt;涉及工具&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;https://cdn.statically.io/gh/liugezhou/image@master/web3/001_tools.png&quot; alt=&quot;tools&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;区块链发展简史&quot;&gt;区块链发展简史&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;https://cdn.statically.io/gh/liugezhou/image@master/web3/002_history.png&quot; alt=&quot;history&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://cloud.tencent.com/developer/news/175867&quot;&gt;EOS是什么&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&quot;以太坊中的重要概念&quot;&gt;以太坊中的重要概念&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;https://cdn.statically.io/gh/liugezhou/image@master/web3/003_concept.png&quot; alt=&quot;concept&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;以太坊的货币&quot;&gt;以太坊的货币&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;以太坊 &lt;code&gt;ethereum&lt;/code&gt; ,货币为 以太 &lt;code&gt;ether&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;2014年7/8月 众筹发行大约 7200万以太币(矿前)，后经过挖矿产生，每年被限制不超过 7200万的25%，未来产量变化不确定。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://etherscan.io/stat/supply&quot;&gt;以太币供应量查询&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;以太币单位&quot;&gt;以太币单位&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;https://cdn.statically.io/gh/liugezhou/image@master/web3/004_wei.png&quot; alt=&quot;wei&quot;&gt;&lt;/p&gt;
+&lt;h1&gt;Solidity&lt;/h1&gt;
+&lt;h2 id=&quot;变量&quot;&gt;变量&lt;/h2&gt;
+&lt;h3 id=&quot;基本类型&quot;&gt;基本类型&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;int&lt;/code&gt; (整型)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;uint&lt;/code&gt; (无符号整型)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bool&lt;/code&gt; (布尔类型)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;address&lt;/code&gt; (地址类型)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;string&lt;/code&gt; (字符串)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;byte&lt;/code&gt; (字节)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;引用类型&quot;&gt;引用类型&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;bytes32&lt;/code&gt; (字节数组)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mapping(type =&amp;gt; type)&lt;/code&gt; (一对一映射)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;strut&lt;/code&gt;  结构体&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Type[8]&lt;/code&gt;  定长数组&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Type[]&lt;/code&gt;  动态数组&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;strut&lt;/code&gt;  结构体&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;一些结构&quot;&gt;一些结构&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;strut&lt;/code&gt;  结构体&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;enum&lt;/code&gt; (枚举类型)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;contract&lt;/code&gt;  合约&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;function&lt;/code&gt;  函数&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;event&lt;/code&gt;   事件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;modifier&lt;/code&gt;  修饰符&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;存储方式&quot;&gt;存储方式&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;storage&lt;/code&gt;: 成员变量，永久保存在状态树中(付费)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;memory&lt;/code&gt;:局部变量，临时存储(值传递)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;calldata&lt;/code&gt;: 函数参数变量(临时存储的一个数据位置)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;表达式&quot;&gt;表达式&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;逻辑运算符： &lt;code&gt;and&lt;/code&gt; 、&lt;code&gt;or&lt;/code&gt;、 &lt;code&gt;not&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;关系运算符:  &lt;code&gt;==&lt;/code&gt;、 &lt;code&gt;=&lt;/code&gt; 、&lt;code&gt;&amp;gt;&lt;/code&gt;、 &lt;code&gt;&amp;lt;=&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;位运算符: &lt;code&gt;&amp;amp;&lt;/code&gt;、&lt;code&gt;|&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;条件运算符: &lt;code&gt;?:&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;算数运算符: &lt;code&gt;+&lt;/code&gt; 、&lt;code&gt;-&lt;/code&gt;、 &lt;code&gt;*&lt;/code&gt;、 &lt;code&gt;/&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;控制流程&quot;&gt;控制流程&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;if, else, while, do, for, switch, continue, break, return&lt;/code&gt;&lt;/p&gt;
+&lt;h2 id=&quot;内置对象-block&quot;&gt;内置对象 block&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;Block 在调用某个方法的时候，solidity会提供一个block的变量，把当前块的信息返回。 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;block.coinbase()&lt;/code&gt;: 返回挖掘此块的节点地址&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;block.difficulty()&lt;/code&gt;: 返回当前区块的难度&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;block.gaslimit()&lt;/code&gt;: 返回当前块的最大燃气量&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;block.limit()&lt;/code&gt;: 返回当前区块的gas消耗限制&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;block.number()&lt;/code&gt;: 返回链上当前块高、编号&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;block.timestamp()&lt;/code&gt;: 返回当前区块的时间戳&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;内置对象-msg&quot;&gt;内置对象 msg&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;msg.sender()&lt;/code&gt;: 返回当前调用合约的发送者的地址&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;msg.gas()&lt;/code&gt;: 返回燃料的消耗量&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;msg.sig()&lt;/code&gt;: 返回数据的前四个字节&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;msg.value&lt;/code&gt;: 返回发送消息的数量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;内置其他函数&quot;&gt;内置其他函数&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;account.balance()&lt;/code&gt;: 返回地的址余额（以wei为单位）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;address.transfer()&lt;/code&gt;: 在两个账户之间转移ether&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;assert(bool condition,string memory reason)&lt;/code&gt;:自信某一条件一定成立，用于安全设计，如果不成立，扣光所有gas&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;require(bool condition,string memory reason)&lt;/code&gt;:温和认定某条件成立，如果不满足，退回剩余的gas&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;revert(string memory reason)&lt;/code&gt;:终止合约执行，并还原状态变更&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;now()&lt;/code&gt;: 返回当前时间的时间戳（秒）&lt;/li&gt;
+&lt;li&gt;随机数：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight stylus&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;random = &lt;span class=&quot;built_in&quot;&gt;uint&lt;/span&gt;(&lt;span class=&quot;built_in&quot;&gt;keccak256&lt;/span&gt;(abi&lt;span class=&quot;selector-class&quot;&gt;.encodePacked&lt;/span&gt;(msg&lt;span class=&quot;selector-class&quot;&gt;.sender&lt;/span&gt;,block&lt;span class=&quot;selector-class&quot;&gt;.difficulty&lt;/span&gt;,now)))&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+"><meta name="twitter:image" content="https://cdn.statically.io/gh/liugezhou/image@master/web3/000_ether.png"><title>以太坊基础笔记 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">以太坊基础笔记</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">以太坊基础笔记</h1><div class="post-meta">2023-02-17<span> | </span><span class="category"><a href="/categories/Web3/">Web3</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 629</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 2</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/034-ethereum/#vcomment"><span class="valine-comment-count" data-xid="/034-ethereum/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">以太坊基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B6%89%E5%8F%8A%E5%B7%A5%E5%85%B7"><span class="toc-text">涉及工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%BA%E5%9D%97%E9%93%BE%E5%8F%91%E5%B1%95%E7%AE%80%E5%8F%B2"><span class="toc-text">区块链发展简史</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A5%E5%A4%AA%E5%9D%8A%E4%B8%AD%E7%9A%84%E9%87%8D%E8%A6%81%E6%A6%82%E5%BF%B5"><span class="toc-text">以太坊中的重要概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A5%E5%A4%AA%E5%9D%8A%E7%9A%84%E8%B4%A7%E5%B8%81"><span class="toc-text">以太坊的货币</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A5%E5%A4%AA%E5%B8%81%E5%8D%95%E4%BD%8D"><span class="toc-text">以太币单位</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">Solidity</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%98%E9%87%8F"><span class="toc-text">变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B"><span class="toc-text">基本类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B"><span class="toc-text">引用类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E7%BB%93%E6%9E%84"><span class="toc-text">一些结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E6%96%B9%E5%BC%8F"><span class="toc-text">存储方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-text">表达式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E6%B5%81%E7%A8%8B"><span class="toc-text">控制流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E7%BD%AE%E5%AF%B9%E8%B1%A1-block"><span class="toc-text">内置对象 block</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E7%BD%AE%E5%AF%B9%E8%B1%A1-msg"><span class="toc-text">内置对象 msg</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E7%BD%AE%E5%85%B6%E4%BB%96%E5%87%BD%E6%95%B0"><span class="toc-text">内置其他函数</span></a></li></ol></li></ol></div></div><div class="post-content"><p><img src="https://cdn.statically.io/gh/liugezhou/image@master/web3/000_ether.png" alt="ethereum"></p>
+<span id="more"></span>
+<p>这篇文章用来记录在学习以太坊的过程中,一些相关的基本概念和 solidity 语言的相关基础语法等。</p>
+<h1>以太坊基础</h1>
+<h2 id="涉及工具">涉及工具</h2>
+<p><img src="https://cdn.statically.io/gh/liugezhou/image@master/web3/001_tools.png" alt="tools"></p>
+<h2 id="区块链发展简史">区块链发展简史</h2>
+<p><img src="https://cdn.statically.io/gh/liugezhou/image@master/web3/002_history.png" alt="history"></p>
+<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/news/175867">EOS是什么</a></p>
+<h2 id="以太坊中的重要概念">以太坊中的重要概念</h2>
+<p><img src="https://cdn.statically.io/gh/liugezhou/image@master/web3/003_concept.png" alt="concept"></p>
+<h2 id="以太坊的货币">以太坊的货币</h2>
+<ul>
+<li>以太坊 <code>ethereum</code> ,货币为 以太 <code>ether</code></li>
+<li>2014年7/8月 众筹发行大约 7200万以太币(矿前)，后经过挖矿产生，每年被限制不超过 7200万的25%，未来产量变化不确定。</li>
+<li><a target="_blank" rel="noopener" href="https://etherscan.io/stat/supply">以太币供应量查询</a></li>
+</ul>
+<h2 id="以太币单位">以太币单位</h2>
+<p><img src="https://cdn.statically.io/gh/liugezhou/image@master/web3/004_wei.png" alt="wei"></p>
+<h1>Solidity</h1>
+<h2 id="变量">变量</h2>
+<h3 id="基本类型">基本类型</h3>
+<ul>
+<li><code>int</code> (整型)</li>
+<li><code>uint</code> (无符号整型)</li>
+<li><code>bool</code> (布尔类型)</li>
+<li><code>address</code> (地址类型)</li>
+<li><code>string</code> (字符串)</li>
+<li><code>byte</code> (字节)</li>
+</ul>
+<h3 id="引用类型">引用类型</h3>
+<ul>
+<li><code>bytes32</code> (字节数组)</li>
+<li><code>mapping(type =&gt; type)</code> (一对一映射)</li>
+<li><code>strut</code>  结构体</li>
+<li><code>Type[8]</code>  定长数组</li>
+<li><code>Type[]</code>  动态数组</li>
+<li><code>strut</code>  结构体</li>
+</ul>
+<h2 id="一些结构">一些结构</h2>
+<ul>
+<li><code>strut</code>  结构体</li>
+<li><code>enum</code> (枚举类型)</li>
+<li><code>contract</code>  合约</li>
+<li><code>function</code>  函数</li>
+<li><code>event</code>   事件</li>
+<li><code>modifier</code>  修饰符</li>
+</ul>
+<h2 id="存储方式">存储方式</h2>
+<ul>
+<li><code>storage</code>: 成员变量，永久保存在状态树中(付费)</li>
+<li><code>memory</code>:局部变量，临时存储(值传递)</li>
+<li><code>calldata</code>: 函数参数变量(临时存储的一个数据位置)</li>
+</ul>
+<h2 id="表达式">表达式</h2>
+<ul>
+<li>逻辑运算符： <code>and</code> 、<code>or</code>、 <code>not</code></li>
+<li>关系运算符:  <code>==</code>、 <code>=</code> 、<code>&gt;</code>、 <code>&lt;=</code></li>
+<li>位运算符: <code>&amp;</code>、<code>|</code></li>
+<li>条件运算符: <code>?:</code></li>
+<li>算数运算符: <code>+</code> 、<code>-</code>、 <code>*</code>、 <code>/</code></li>
+</ul>
+<h2 id="控制流程">控制流程</h2>
+<p><code>if, else, while, do, for, switch, continue, break, return</code></p>
+<h2 id="内置对象-block">内置对象 block</h2>
+<pre><code>Block 在调用某个方法的时候，solidity会提供一个block的变量，把当前块的信息返回。 
+</code></pre>
+<ul>
+<li><code>block.coinbase()</code>: 返回挖掘此块的节点地址</li>
+<li><code>block.difficulty()</code>: 返回当前区块的难度</li>
+<li><code>block.gaslimit()</code>: 返回当前块的最大燃气量</li>
+<li><code>block.limit()</code>: 返回当前区块的gas消耗限制</li>
+<li><code>block.number()</code>: 返回链上当前块高、编号</li>
+<li><code>block.timestamp()</code>: 返回当前区块的时间戳</li>
+</ul>
+<h2 id="内置对象-msg">内置对象 msg</h2>
+<ul>
+<li><code>msg.sender()</code>: 返回当前调用合约的发送者的地址</li>
+<li><code>msg.gas()</code>: 返回燃料的消耗量</li>
+<li><code>msg.sig()</code>: 返回数据的前四个字节</li>
+<li><code>msg.value</code>: 返回发送消息的数量</li>
+</ul>
+<h2 id="内置其他函数">内置其他函数</h2>
+<ul>
+<li><code>account.balance()</code>: 返回地的址余额（以wei为单位）</li>
+<li><code>address.transfer()</code>: 在两个账户之间转移ether</li>
+<li><code>assert(bool condition,string memory reason)</code>:自信某一条件一定成立，用于安全设计，如果不成立，扣光所有gas</li>
+<li><code>require(bool condition,string memory reason)</code>:温和认定某条件成立，如果不满足，退回剩余的gas</li>
+<li><code>revert(string memory reason)</code>:终止合约执行，并还原状态变更</li>
+<li><code>now()</code>: 返回当前时间的时间戳（秒）</li>
+<li>随机数：</li>
+</ul>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random = <span class="built_in">uint</span>(<span class="built_in">keccak256</span>(abi<span class="selector-class">.encodePacked</span>(msg<span class="selector-class">.sender</span>,block<span class="selector-class">.difficulty</span>,now)))</span><br></pre></td></tr></table></figure>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>以太坊基础笔记</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2023-02-17</p><p><span>最后更新：</span>2024-01-29</p><p><span>原始链接：</span><a href="/034-ethereum/">https://blog.liugezhou.online/034-ethereum/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/034-ethereum/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/ethereum"><i class="fa fa-tag">ethereum</i></a></div><div class="post-nav"><a class="pre" href="/202307-No96/">每周小结(*96):十分钟冥想</a><a class="next" href="/033-web3js%E5%AE%9E%E6%88%98%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/">web3js 实战基本操作</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

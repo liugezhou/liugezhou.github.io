@@ -1,0 +1,337 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="CentOS_Docker_Nginx_Node_Jenkins"><meta name="twitter:description" content="&lt;p&gt;&lt;font color=blue&gt;更新说明：对文章排版以及内容格式做了调整。&lt;/font&gt;&lt;br&gt;
+&lt;font color=blue&gt; 更新时间：2022-05-04&lt;/font&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;此篇博客总结背景：&lt;br&gt;
+&lt;a href=&quot;https://mp.weixin.qq.com/s/Mjh7JU4GhDva2wn7VVbq4Q&quot;&gt;https://mp.weixin.qq.com/s/Mjh7JU4GhDva2wn7VVbq4Q&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;CentOs&quot;&gt;CentOs&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;本地拷贝文件到远程服务器&lt;br&gt;
+scp output.txt root@xx.xx.xx.xx:/data/&lt;br&gt;
+scp /Users/liumingzhou/Descktop/demo/*	root@xx.xx.xx.xx:/data/&lt;/li&gt;
+&lt;li&gt;本地连接远程CentOs服务器&lt;br&gt;
+ssh -p 22 root@xx.xx.xx.xx&lt;/li&gt;
+&lt;li&gt;yum切换为阿里源&lt;br&gt;
+cd /etc/yum.repo.d/&lt;br&gt;
+curl -o /etc/yum.repos.d/CentOS-Base.repo &lt;a href=&quot;https://mirrors.aliyun.com/repo/Centos-8.repo&quot;&gt;https://mirrors.aliyun.com/repo/Centos-8.repo&lt;/a&gt;&lt;br&gt;
+yum makecache&lt;/li&gt;
+&lt;li&gt;将 test目录下所有文件&lt;strong&gt;复制&lt;/strong&gt;到 newtest目录下&lt;br&gt;
+cp -r /root/test/* /root/newtest&lt;/li&gt;
+&lt;li&gt;将 test目录下所有文件&lt;strong&gt;移动&lt;/strong&gt;到 newtest目录下&lt;br&gt;
+mv /root/test/* /root/newtest&lt;/li&gt;
+&lt;li&gt;检查端口被哪个进程占用&lt;br&gt;
+netstat -lnp | grep 8080   kill -9 8080&lt;br&gt;
+lsof -i:8900 	/ kill -9 PID&lt;/li&gt;
+&lt;li&gt;查看当前Centos操作系统发行版信息&lt;br&gt;
+cat /etc/redhat-release&lt;/li&gt;
+&lt;li&gt;列出该目录下的所有文件路径&lt;br&gt;
+find .&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;Nginx&quot;&gt;Nginx&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;yum安装nginx&lt;br&gt;
+yum install -y nginx&lt;br&gt;
+nginx 【启动nginx】&lt;/li&gt;
+&lt;li&gt;ngiinx查找本地目录&lt;br&gt;
+nginx -t&lt;/li&gt;
+&lt;li&gt;nginx重启&lt;br&gt;
+nginx -c /usr/local/etc/nginx/nginx.conf&lt;br&gt;
+nginx -s reload&lt;/li&gt;
+&lt;li&gt;反向代理配置&lt;br&gt;
+访问路径：/api/getUser&lt;br&gt;
+如下代码，proxy_pass中带着 &lt;code&gt;/&lt;/code&gt;,代理到后端的路径为：&lt;a href=&quot;http://127.0.0.1:18081/&quot;&gt;http://127.0.0.1:18081/&lt;/a&gt;getUser&lt;br&gt;
+如果，不带 &lt;code&gt;/&lt;/code&gt;时，代理到后端的路径为：&lt;a href=&quot;http://127.0.0.1:18081/getUser&quot;&gt;http://127.0.0.1:18081/api/getUser&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight css&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;server &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    listen       &lt;span class=&quot;number&quot;&gt;80&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    server_name  www.&lt;span class=&quot;number&quot;&gt;123&lt;/span&gt;&lt;span class=&quot;selector-class&quot;&gt;.com&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    location /api/ &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        proxy_pass http://&lt;span class=&quot;number&quot;&gt;127.0&lt;/span&gt;.&lt;span class=&quot;number&quot;&gt;0.1&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;18081&lt;/span&gt;/;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;Centos-Node环境&quot;&gt;Centos-Node环境&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;nvm查看Node版本列表&lt;br&gt;
+nvm list-remote&lt;/li&gt;
+&lt;li&gt;安装node版本&lt;br&gt;
+nvm install 14&lt;/li&gt;
+&lt;li&gt;查看当前node版本&lt;br&gt;
+nvm current  || node -v&lt;/li&gt;
+&lt;li&gt;npm配置淘宝源&lt;br&gt;
+npm config set registry &lt;a href=&quot;https://registry.npm.taobao.org&quot;&gt;https://registry.npm.taobao.org&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;npm查看当前源&lt;br&gt;
+npm get registry&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;Centos-Docker&quot;&gt;Centos-Docker&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;Centos上安装Docker
+&lt;ol&gt;
+&lt;li&gt;需要安装 device-mapper-persistent-data [高级存储]和 lvm2 [逻辑磁盘分区]两个依赖
+&lt;ol&gt;
+&lt;li&gt;yum install -y yum-utils device-mapper-persistent-data lvm2&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;安装完毕后，将阿里云Docker镜像添加进去，加速Docker安装
+&lt;ol&gt;
+&lt;li&gt;sudo yum-config-manager --add-repo &lt;a href=&quot;http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo&quot;&gt;http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;启动Docker
+&lt;ol&gt;
+&lt;li&gt;systemctl start docker&lt;/li&gt;
+&lt;li&gt;docker -v --查看Docker安装版本信息&lt;/li&gt;
+&lt;li&gt;chkconfig docker on --开机启动&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;Docker常见命令
+&lt;ol&gt;
+&lt;li&gt;docker version/docker info	--查看docker版本&lt;/li&gt;
+&lt;li&gt;docker pull &lt;image-name&gt;:&lt;tag&gt;	--下载镜像&lt;/li&gt;
+&lt;li&gt;docker images		--查看本地已经安装好的镜像&lt;/li&gt;
+&lt;li&gt;docker rmi &lt;images-id&gt;		– 删除本地安装的某镜像&lt;/li&gt;
+&lt;li&gt;docker ps -a		 --显示本地启动的所有容器&lt;/li&gt;
+&lt;li&gt;docker start/stop/restart imageID   – 容器的启动/关闭/重启&lt;/li&gt;
+&lt;li&gt;docker rm containerID	–	删除一个容器&lt;/li&gt;
+&lt;li&gt;docker instapect &lt;container-id&gt;	--查看容器信息&lt;/li&gt;
+&lt;li&gt;docker logs &lt;container-id&gt;	--查看容器日志&lt;/li&gt;
+&lt;li&gt;docker built -t &lt;name&gt;	–	自定义创建image容器&lt;/li&gt;
+&lt;li&gt;docker exec -it &lt;container-id&gt;/bin/sh	--进入控制台&lt;/li&gt;
+&lt;li&gt;docker run -p 81:80		--从image文件生成容器&lt;/li&gt;
+&lt;li&gt;docker cp [container-id]:[/Users/liu/Desktop]		--文件拷贝&lt;/li&gt;
+&lt;li&gt;docker run -it ubuntu:tag /bin/sh		--启动ubuntu 镜像&lt;/li&gt;
+&lt;li&gt;docker run -p 81/80 -d --name nginx1 nginx&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;Docker内配置nginx容器&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;https://cdn.nlark.com/yuque/0/2021/png/358819/1623587645864-c743dce2-55da-427b-b24e-227ec7e91da5.png#clientId=u6e986a30-d22b-4&amp;amp;from=paste&amp;amp;height=516&amp;amp;id=ud7b803a7&amp;amp;margin=%5Bobject%20Object%5D&amp;amp;name=image.png&amp;amp;originHeight=1732&amp;amp;originWidth=1452&amp;amp;originalType=binary&amp;amp;ratio=2&amp;amp;size=430565&amp;amp;status=done&amp;amp;style=none&amp;amp;taskId=u7ae7306b-c74d-4dc3-99e3-643dd093bbd&amp;amp;width=433&quot; alt=&quot;image.png&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;Centos–Jenkins&quot;&gt;Centos–Jenkins&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;因为Jenkins是Java编写的持续构建平台，所以安装Java必不可少。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用yum包管理器安装openjdk&lt;br&gt;
+yum install -y java&lt;/li&gt;
+&lt;li&gt;使用国内镜像加速安装Jenkins
+&lt;ol&gt;
+&lt;li&gt;cd /data&lt;/li&gt;
+&lt;li&gt;wget &lt;a href=&quot;https://mirrors.tuna.tsinghua.edu.cn/jenkins/redhat-stable/jenkins-2.277.2-1.1.noarch.rpm&quot;&gt;https://mirrors.tuna.tsinghua.edu.cn/jenkins/redhat-stable/jenkins-2.277.2-1.1.noarch.rpm&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;sudo yum install jenkins-2.277.2-1.1.noarch.rpm&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;启动Jenkins
+&lt;ol&gt;
+&lt;li&gt;sevice jenkins start  （Jenkins第一次启动时间较长）&lt;/li&gt;
+&lt;li&gt;service jenkins restart restart		--重启jenkins&lt;/li&gt;
+&lt;li&gt;sevice jenkins restart stop	--停止Jenkins&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;解锁Jenkins
+&lt;ol&gt;
+&lt;li&gt;解锁界面	[cat /var/lib/jenkins/secrets/initialAdminPassword     --查看密码]&lt;/li&gt;
+&lt;li&gt;下载插件	[更换插件源–将/var/lib/jenkins/updates/default.json 内的插件源地址替换成清华大学的源地址，将 google 替换为 baidu 即可]&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight css&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;sed -&lt;span class=&quot;selector-tag&quot;&gt;i&lt;/span&gt; &amp;#x27;s/http:\/\/updates.jenkins-ci.org\/download/https:\/\/mirrors.tuna.tsinghua.edu.cn\/jenkins/g&lt;span class=&quot;string&quot;&gt;&amp;#x27; /var/lib/jenkins/updates/default.json &amp;amp;&amp;amp; sed -i &amp;#x27;&lt;/span&gt;s/http:\/\/www.google.com/https:\/\/www.baidu.com/g&lt;span class=&quot;string&quot;&gt;&amp;#x27; /var/lib/jenkins/updates/default.json&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;c. 完成安装–注册管理员账户&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;测试安装&lt;br&gt;
+点击 Jenkins 首页 -&amp;gt; 左侧导航 -&amp;gt; 新建任务 -&amp;gt; Freestyle project(构建一个自由风格的软件项目)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;后续步骤暂不整理，直接查看文首链接。&lt;/p&gt;
+"><meta name="twitter:image"><title>CentOS_Docker_Nginx_Node_Jenkins | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">CentOS_Docker_Nginx_Node_Jenkins</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">CentOS_Docker_Nginx_Node_Jenkins</h1><div class="post-meta">2021-06-13<span> | </span><span class="category"><a href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 943</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 4</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/016-CentOS_Docker_Nginx_Node_Jenkins/#vcomment"><span class="valine-comment-count" data-xid="/016-CentOS_Docker_Nginx_Node_Jenkins/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#CentOs"><span class="toc-text">CentOs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nginx"><span class="toc-text">Nginx</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Centos-Node%E7%8E%AF%E5%A2%83"><span class="toc-text">Centos-Node环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Centos-Docker"><span class="toc-text">Centos-Docker</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Centos%E2%80%93Jenkins"><span class="toc-text">Centos–Jenkins</span></a></li></ol></div></div><div class="post-content"><p><font color=blue>更新说明：对文章排版以及内容格式做了调整。</font><br>
+<font color=blue> 更新时间：2022-05-04</font></p>
+<blockquote>
+<p>此篇博客总结背景：<br>
+<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/Mjh7JU4GhDva2wn7VVbq4Q">https://mp.weixin.qq.com/s/Mjh7JU4GhDva2wn7VVbq4Q</a></p>
+</blockquote>
+<h2 id="CentOs">CentOs</h2>
+<blockquote>
+<ul>
+<li>本地拷贝文件到远程服务器<br>
+scp output.txt root@xx.xx.xx.xx:/data/<br>
+scp /Users/liumingzhou/Descktop/demo/*	root@xx.xx.xx.xx:/data/</li>
+<li>本地连接远程CentOs服务器<br>
+ssh -p 22 root@xx.xx.xx.xx</li>
+<li>yum切换为阿里源<br>
+cd /etc/yum.repo.d/<br>
+curl -o /etc/yum.repos.d/CentOS-Base.repo <a target="_blank" rel="noopener" href="https://mirrors.aliyun.com/repo/Centos-8.repo">https://mirrors.aliyun.com/repo/Centos-8.repo</a><br>
+yum makecache</li>
+<li>将 test目录下所有文件<strong>复制</strong>到 newtest目录下<br>
+cp -r /root/test/* /root/newtest</li>
+<li>将 test目录下所有文件<strong>移动</strong>到 newtest目录下<br>
+mv /root/test/* /root/newtest</li>
+<li>检查端口被哪个进程占用<br>
+netstat -lnp | grep 8080   kill -9 8080<br>
+lsof -i:8900 	/ kill -9 PID</li>
+<li>查看当前Centos操作系统发行版信息<br>
+cat /etc/redhat-release</li>
+<li>列出该目录下的所有文件路径<br>
+find .</li>
+</ul>
+</blockquote>
+<h2 id="Nginx">Nginx</h2>
+<blockquote>
+<ul>
+<li>yum安装nginx<br>
+yum install -y nginx<br>
+nginx 【启动nginx】</li>
+<li>ngiinx查找本地目录<br>
+nginx -t</li>
+<li>nginx重启<br>
+nginx -c /usr/local/etc/nginx/nginx.conf<br>
+nginx -s reload</li>
+<li>反向代理配置<br>
+访问路径：/api/getUser<br>
+如下代码，proxy_pass中带着 <code>/</code>,代理到后端的路径为：<a target="_blank" rel="noopener" href="http://127.0.0.1:18081/">http://127.0.0.1:18081/</a>getUser<br>
+如果，不带 <code>/</code>时，代理到后端的路径为：<a target="_blank" rel="noopener" href="http://127.0.0.1:18081/getUser">http://127.0.0.1:18081/api/getUser</a></li>
+</ul>
+</blockquote>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen       <span class="number">80</span>;</span><br><span class="line">    server_name  www.<span class="number">123</span><span class="selector-class">.com</span>;</span><br><span class="line"></span><br><span class="line">    location /api/ &#123;</span><br><span class="line">        proxy_pass http://<span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">18081</span>/;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Centos-Node环境">Centos-Node环境</h2>
+<blockquote>
+<ul>
+<li>nvm查看Node版本列表<br>
+nvm list-remote</li>
+<li>安装node版本<br>
+nvm install 14</li>
+<li>查看当前node版本<br>
+nvm current  || node -v</li>
+<li>npm配置淘宝源<br>
+npm config set registry <a target="_blank" rel="noopener" href="https://registry.npm.taobao.org">https://registry.npm.taobao.org</a></li>
+<li>npm查看当前源<br>
+npm get registry</li>
+</ul>
+</blockquote>
+<h2 id="Centos-Docker">Centos-Docker</h2>
+<blockquote>
+<ul>
+<li>Centos上安装Docker
+<ol>
+<li>需要安装 device-mapper-persistent-data [高级存储]和 lvm2 [逻辑磁盘分区]两个依赖
+<ol>
+<li>yum install -y yum-utils device-mapper-persistent-data lvm2</li>
+</ol>
+</li>
+<li>安装完毕后，将阿里云Docker镜像添加进去，加速Docker安装
+<ol>
+<li>sudo yum-config-manager --add-repo <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo">http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</a></li>
+</ol>
+</li>
+<li>启动Docker
+<ol>
+<li>systemctl start docker</li>
+<li>docker -v --查看Docker安装版本信息</li>
+<li>chkconfig docker on --开机启动</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>Docker常见命令
+<ol>
+<li>docker version/docker info	--查看docker版本</li>
+<li>docker pull <image-name>:<tag>	--下载镜像</li>
+<li>docker images		--查看本地已经安装好的镜像</li>
+<li>docker rmi <images-id>		– 删除本地安装的某镜像</li>
+<li>docker ps -a		 --显示本地启动的所有容器</li>
+<li>docker start/stop/restart imageID   – 容器的启动/关闭/重启</li>
+<li>docker rm containerID	–	删除一个容器</li>
+<li>docker instapect <container-id>	--查看容器信息</li>
+<li>docker logs <container-id>	--查看容器日志</li>
+<li>docker built -t <name>	–	自定义创建image容器</li>
+<li>docker exec -it <container-id>/bin/sh	--进入控制台</li>
+<li>docker run -p 81:80		--从image文件生成容器</li>
+<li>docker cp [container-id]:[/Users/liu/Desktop]		--文件拷贝</li>
+<li>docker run -it ubuntu:tag /bin/sh		--启动ubuntu 镜像</li>
+<li>docker run -p 81/80 -d --name nginx1 nginx</li>
+</ol>
+</li>
+<li>Docker内配置nginx容器</li>
+</ul>
+</blockquote>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/358819/1623587645864-c743dce2-55da-427b-b24e-227ec7e91da5.png#clientId=u6e986a30-d22b-4&amp;from=paste&amp;height=516&amp;id=ud7b803a7&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1732&amp;originWidth=1452&amp;originalType=binary&amp;ratio=2&amp;size=430565&amp;status=done&amp;style=none&amp;taskId=u7ae7306b-c74d-4dc3-99e3-643dd093bbd&amp;width=433" alt="image.png"></p>
+<h2 id="Centos–Jenkins">Centos–Jenkins</h2>
+<blockquote>
+<p>因为Jenkins是Java编写的持续构建平台，所以安装Java必不可少。</p>
+<ul>
+<li>使用yum包管理器安装openjdk<br>
+yum install -y java</li>
+<li>使用国内镜像加速安装Jenkins
+<ol>
+<li>cd /data</li>
+<li>wget <a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/jenkins/redhat-stable/jenkins-2.277.2-1.1.noarch.rpm">https://mirrors.tuna.tsinghua.edu.cn/jenkins/redhat-stable/jenkins-2.277.2-1.1.noarch.rpm</a></li>
+<li>sudo yum install jenkins-2.277.2-1.1.noarch.rpm</li>
+</ol>
+</li>
+<li>启动Jenkins
+<ol>
+<li>sevice jenkins start  （Jenkins第一次启动时间较长）</li>
+<li>service jenkins restart restart		--重启jenkins</li>
+<li>sevice jenkins restart stop	--停止Jenkins</li>
+</ol>
+</li>
+<li>解锁Jenkins
+<ol>
+<li>解锁界面	[cat /var/lib/jenkins/secrets/initialAdminPassword     --查看密码]</li>
+<li>下载插件	[更换插件源–将/var/lib/jenkins/updates/default.json 内的插件源地址替换成清华大学的源地址，将 google 替换为 baidu 即可]</li>
+</ol>
+</li>
+</ul>
+</blockquote>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -<span class="selector-tag">i</span> &#x27;s/http:\/\/updates.jenkins-ci.org\/download/https:\/\/mirrors.tuna.tsinghua.edu.cn\/jenkins/g<span class="string">&#x27; /var/lib/jenkins/updates/default.json &amp;&amp; sed -i &#x27;</span>s/http:\/\/www.google.com/https:\/\/www.baidu.com/g<span class="string">&#x27; /var/lib/jenkins/updates/default.json</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>c. 完成安装–注册管理员账户</p>
+<ul>
+<li>测试安装<br>
+点击 Jenkins 首页 -&gt; 左侧导航 -&gt; 新建任务 -&gt; Freestyle project(构建一个自由风格的软件项目)</li>
+</ul>
+</blockquote>
+<p>后续步骤暂不整理，直接查看文首链接。</p>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>CentOS_Docker_Nginx_Node_Jenkins</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2021-06-13</p><p><span>最后更新：</span>2022-05-04</p><p><span>原始链接：</span><a href="/016-CentOS_Docker_Nginx_Node_Jenkins/">https://blog.liugezhou.online/016-CentOS_Docker_Nginx_Node_Jenkins/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/016-CentOS_Docker_Nginx_Node_Jenkins/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/服务端"><i class="fa fa-tag">服务端</i></a></div><div class="post-nav"><a class="pre" href="/Week17-%E7%BC%96%E8%BE%91%E5%99%A8%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%B0%83%E7%94%A8%E7%AC%AC%E4%B8%89%E6%96%B9%E6%9C%8D%E5%8A%A1/">Week17-编辑器服务端调用第三方服务</a><a class="next" href="/015-Redis/">Redis</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="Redis"><meta name="twitter:description" content="&lt;p&gt;&lt;font color=blue&gt;更新说明：对文章排版以及内容格式做了调整。&lt;/font&gt;&lt;br&gt;
+&lt;font color=blue&gt; 更新时间：2022-05-04&lt;/font&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;NoSql = Not Only SQL&lt;/li&gt;
+&lt;li&gt;Key - Value 存储：字符串 String｜字符串列表 list｜有序集合 sorted set｜hash｜字符串集合set&lt;/li&gt;
+&lt;li&gt;09年开发完成&lt;/li&gt;
+&lt;li&gt;C语言开发&lt;/li&gt;
+&lt;li&gt;每秒能写8.1万次，能读11万次&lt;/li&gt;
+&lt;li&gt;应用场景：缓存、任务队列、网站访问统计、应用排行榜、数据过期处理，分布式集群里的session处理&lt;/li&gt;
+&lt;li&gt;CentOs-6.5 安装：
+&lt;ul&gt;
+&lt;li&gt;下载源码后，对源码进行编译，&lt;em&gt;&lt;strong&gt;编译需要一个gcc环境&lt;/strong&gt;&lt;/em&gt;。yum install gcc-c++&lt;/li&gt;
+&lt;li&gt;将下载好的源码上传至服务器 /root下&lt;/li&gt;
+&lt;li&gt;tar -zxvf redis-x.x.x.tar.gz&lt;/li&gt;
+&lt;li&gt;cd  redis-x.x.x&lt;/li&gt;
+&lt;li&gt;make&lt;/li&gt;
+&lt;li&gt;make PREFIX=/usr/local/redis install&lt;/li&gt;
+&lt;li&gt;cd /usr/local/redis/bin --存在一些可执行文件&lt;/li&gt;
+&lt;li&gt;cd ~/redis.x.x.x&lt;/li&gt;
+&lt;li&gt;cp redis.conf /usr/local/redis&lt;/li&gt;
+&lt;li&gt;cd /usr/local/redis/bin&lt;/li&gt;
+&lt;li&gt;前端启动：&lt;em&gt;&lt;strong&gt;redis-server&lt;/strong&gt;&lt;/em&gt;(窗口不能关闭)&lt;/li&gt;
+&lt;li&gt;后端启动：修改配置文件&lt;/li&gt;
+&lt;li&gt;vim redis.conf&lt;/li&gt;
+&lt;li&gt;修改 daemonize yes&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;em&gt;redis-server redis.conf&lt;/em&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;验证启动：ps -ef | grep redis&lt;/li&gt;
+&lt;li&gt;停止启动：kill -9 PID  ||  redis-cli shutdown&lt;/li&gt;
+&lt;li&gt;进入命令行交互：&lt;strong&gt;_redis-cli _&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Jedis:Jedis是Redis官方首先的Java客户端开发包&lt;/li&gt;
+&lt;li&gt;Key不要过长–不建议超过1024&lt;/li&gt;
+&lt;li&gt;存储String：
+&lt;ul&gt;
+&lt;li&gt;以二进制方式操作&lt;/li&gt;
+&lt;li&gt;其value数据长度最多不超过512M&lt;/li&gt;
+&lt;li&gt;赋值**_ set_&lt;strong&gt;、取值&lt;/strong&gt;_ get_&lt;strong&gt;、删值 &lt;em&gt;&lt;strong&gt;del&lt;/strong&gt;&lt;/em&gt;、&lt;/strong&gt;&lt;em&gt;inc&lt;/em&gt;&lt;strong&gt;r num、&lt;/strong&gt;&lt;em&gt;incrby&lt;/em&gt;** num 5、&lt;strong&gt;&lt;em&gt;append&lt;/em&gt;&lt;/strong&gt; num 5&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;存储Hash：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;String Key和String Value的map容器&lt;/li&gt;
+&lt;li&gt;每一个Hash可以存储4294967268个键值对&lt;/li&gt;
+&lt;li&gt;赋值**&lt;em&gt;：hset&lt;/em&gt;** myhash username jack&lt;/li&gt;
+&lt;li&gt;赋值：&lt;strong&gt;&lt;em&gt;hset&lt;/em&gt;&lt;/strong&gt; myhash age 18&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;_        hmset_&lt;/strong&gt; myhsh username roose age 21&lt;/li&gt;
+&lt;li&gt;取值：&lt;strong&gt;&lt;em&gt;hget&lt;/em&gt;&lt;/strong&gt; myhash username ==&amp;gt; jack&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;_ hmget_&lt;/strong&gt; myhash username age&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;em&gt;hgetall&lt;/em&gt;&lt;/strong&gt; myhash&lt;/li&gt;
+&lt;li&gt;删除一个：&lt;strong&gt;&lt;em&gt;hdel&lt;/em&gt;&lt;/strong&gt; myhash username&lt;/li&gt;
+&lt;li&gt;删除全部：&lt;strong&gt;&lt;em&gt;del&lt;/em&gt;&lt;/strong&gt; myhash&lt;/li&gt;
+&lt;li&gt;增加数字： &lt;em&gt;&lt;strong&gt;hincrby&lt;/strong&gt;&lt;/em&gt; myhash age  5&lt;/li&gt;
+&lt;li&gt;判断属性中的某个值是否存在：&lt;strong&gt;&lt;em&gt;hexists&lt;/em&gt;&lt;/strong&gt; myhash username&lt;/li&gt;
+&lt;li&gt;获取属性数量 ： &lt;strong&gt;&lt;em&gt;hlen&lt;/em&gt;&lt;/strong&gt; myhash == 2&lt;/li&gt;
+&lt;li&gt;获取所有属性名称：&lt;strong&gt;&lt;em&gt;hkeys&lt;/em&gt;&lt;/strong&gt; myhash&lt;/li&gt;
+&lt;li&gt;获取所有值： &lt;strong&gt;hvals&lt;/strong&gt; myhash&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;12&quot;&gt;
+&lt;li&gt;存储list：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;ArrayList使用数组方式：&lt;/li&gt;
+&lt;li&gt;LinkedList使用双向链接方式：&lt;/li&gt;
+&lt;li&gt;双向链表中增加数据&lt;/li&gt;
+&lt;li&gt;双向链表中删除数据&lt;/li&gt;
+&lt;li&gt;两端添加：
+&lt;ul&gt;
+&lt;li&gt;lpush mylist a b c --&amp;gt; c,b,a&lt;/li&gt;
+&lt;li&gt;lpush mylist 1 2 3 --&amp;gt; 3 2 1 c b a&lt;/li&gt;
+&lt;li&gt;rpush mylist2 a b c&lt;/li&gt;
+&lt;li&gt;rpush mylist2 1 2 3&lt;/li&gt;
+&lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;查看列表:
+&lt;ul&gt;
+&lt;li&gt;lrange mylist  (start,end)&lt;/li&gt;
+&lt;li&gt;lrange mylist 0 5 --&amp;gt; 3 2 1 c b a&lt;/li&gt;
+&lt;li&gt;lrange mylist2 0 -2 a b c 1 2&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;两端弹出：
+&lt;ul&gt;
+&lt;li&gt;lpop mylist2 --&amp;gt; 3&lt;/li&gt;
+&lt;li&gt;lrange mylish  --&amp;gt;2 1 c b a&lt;/li&gt;
+&lt;li&gt;rpop mylist2 --&amp;gt; 3&lt;/li&gt;
+&lt;li&gt;lrange mylist2 --&amp;gt; a b  c 1 2&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;获取列表元素个数:
+&lt;ul&gt;
+&lt;li&gt;llen mylish  --&amp;gt;返回元素个数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;扩展命令
+&lt;ul&gt;
+&lt;li&gt;lpushx mylist2 (mylist2这个值存在才会在头部插入)&lt;/li&gt;
+&lt;li&gt;lrem mylist2 2 3（从头开始删除2个3）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;13&quot;&gt;
+&lt;li&gt;存储Set：不允许出现重复的元素&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;添加元素
+&lt;ul&gt;
+&lt;li&gt;sadd myset a b c&lt;/li&gt;
+&lt;li&gt;sadd myset  1 2 3&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;删除元素
+&lt;ul&gt;
+&lt;li&gt;srem myset 1 2&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;获得集合中的元素
+&lt;ul&gt;
+&lt;li&gt;smembers myset --&amp;gt; c b a 3&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;判断元素是否存在
+&lt;ul&gt;
+&lt;li&gt;sismember myset 3&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;14&quot;&gt;
+&lt;li&gt;keys通用操作&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;**keys ***&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;keys my?&lt;/strong&gt;  ：查看以my开头的key&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;del&lt;/strong&gt; my1 my2 my3 ：删除这些key&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;exists&lt;/strong&gt; my1   ：查看my1是否存在&lt;/li&gt;
+&lt;li&gt;r&lt;strong&gt;ename&lt;/strong&gt; old new ：重命名&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;expire&lt;/strong&gt; newkey 1000 :过期时间&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;type key&lt;/strong&gt;:查看某个key的类型&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;15&quot;&gt;
+&lt;li&gt;redis特性&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;多数据库
+&lt;ul&gt;
+&lt;li&gt;16个数据库 0-15 （客户端默认0）&lt;/li&gt;
+&lt;li&gt;select 1  — 选择1号数据库&lt;/li&gt;
+&lt;li&gt;move key 2 ---- 将1中的key移动到2&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Redis事务
+&lt;ul&gt;
+&lt;li&gt;multi :开启事务&lt;/li&gt;
+&lt;li&gt;exec ：提交事务&lt;/li&gt;
+&lt;li&gt;discard：回滚操作&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;16&quot;&gt;
+&lt;li&gt;redis的持久化概述&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;RDB持久化：默认支持不需要配置：在指定时间间隔内，将数据写入到磁盘
+&lt;ul&gt;
+&lt;li&gt;redis.conf: save 900 /save 300 10 /save 60 10000 (默认支持)–可以查看保存的路径在 &lt;strong&gt;dump.rdb&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;AOF持久化
+&lt;ul&gt;
+&lt;li&gt;优势：更高的数据安全–每一次变动都会记录到磁盘中。&lt;/li&gt;
+&lt;li&gt;劣势：内容文件大、效率低&lt;/li&gt;
+&lt;li&gt;需要进行相应配置–redi.conf ==&amp;gt;appendonly yes --&amp;gt;写入到appendonly.aof&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;无持久化&lt;/li&gt;
+&lt;li&gt;同时使用RDB和AOF&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;17&quot;&gt;
+&lt;li&gt;服务器查看redis路径&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;ps -ef | grep redis&lt;/li&gt;
+&lt;li&gt;whereis  redis&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;18&quot;&gt;
+&lt;li&gt;查看本地是否安装redis：brew info redis&lt;/li&gt;
+&lt;li&gt;批量删除某个规则的 redisKey：&lt;/li&gt;
+&lt;li&gt;[root@node1 src]# ./redis-cli -h 127.0.0.1 -p 6379 keys “java_suisui*” | xargs ./redis-cli -h 127.0.0.1 -p 6379 del&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+"><meta name="twitter:image"><title>Redis | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Redis</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Redis</h1><div class="post-meta">2021-06-01<span> | </span><span class="category"><a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 996</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 4</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/015-Redis/#vcomment"><span class="valine-comment-count" data-xid="/015-Redis/"></span><span> 条评论</span></a><div class="post-content"><p><font color=blue>更新说明：对文章排版以及内容格式做了调整。</font><br>
+<font color=blue> 更新时间：2022-05-04</font></p>
+<blockquote>
+<ol>
+<li>NoSql = Not Only SQL</li>
+<li>Key - Value 存储：字符串 String｜字符串列表 list｜有序集合 sorted set｜hash｜字符串集合set</li>
+<li>09年开发完成</li>
+<li>C语言开发</li>
+<li>每秒能写8.1万次，能读11万次</li>
+<li>应用场景：缓存、任务队列、网站访问统计、应用排行榜、数据过期处理，分布式集群里的session处理</li>
+<li>CentOs-6.5 安装：
+<ul>
+<li>下载源码后，对源码进行编译，<em><strong>编译需要一个gcc环境</strong></em>。yum install gcc-c++</li>
+<li>将下载好的源码上传至服务器 /root下</li>
+<li>tar -zxvf redis-x.x.x.tar.gz</li>
+<li>cd  redis-x.x.x</li>
+<li>make</li>
+<li>make PREFIX=/usr/local/redis install</li>
+<li>cd /usr/local/redis/bin --存在一些可执行文件</li>
+<li>cd ~/redis.x.x.x</li>
+<li>cp redis.conf /usr/local/redis</li>
+<li>cd /usr/local/redis/bin</li>
+<li>前端启动：<em><strong>redis-server</strong></em>(窗口不能关闭)</li>
+<li>后端启动：修改配置文件</li>
+<li>vim redis.conf</li>
+<li>修改 daemonize yes</li>
+<li><strong><em>redis-server redis.conf</em></strong></li>
+<li>验证启动：ps -ef | grep redis</li>
+<li>停止启动：kill -9 PID  ||  redis-cli shutdown</li>
+<li>进入命令行交互：<strong>_redis-cli _</strong></li>
+</ul>
+</li>
+<li>Jedis:Jedis是Redis官方首先的Java客户端开发包</li>
+<li>Key不要过长–不建议超过1024</li>
+<li>存储String：
+<ul>
+<li>以二进制方式操作</li>
+<li>其value数据长度最多不超过512M</li>
+<li>赋值**_ set_<strong>、取值</strong>_ get_<strong>、删值 <em><strong>del</strong></em>、</strong><em>inc</em><strong>r num、</strong><em>incrby</em>** num 5、<strong><em>append</em></strong> num 5</li>
+</ul>
+</li>
+<li>存储Hash：</li>
+</ol>
+<ul>
+<li>String Key和String Value的map容器</li>
+<li>每一个Hash可以存储4294967268个键值对</li>
+<li>赋值**<em>：hset</em>** myhash username jack</li>
+<li>赋值：<strong><em>hset</em></strong> myhash age 18</li>
+<li><strong>_        hmset_</strong> myhsh username roose age 21</li>
+<li>取值：<strong><em>hget</em></strong> myhash username ==&gt; jack</li>
+<li><strong>_ hmget_</strong> myhash username age</li>
+<li><strong><em>hgetall</em></strong> myhash</li>
+<li>删除一个：<strong><em>hdel</em></strong> myhash username</li>
+<li>删除全部：<strong><em>del</em></strong> myhash</li>
+<li>增加数字： <em><strong>hincrby</strong></em> myhash age  5</li>
+<li>判断属性中的某个值是否存在：<strong><em>hexists</em></strong> myhash username</li>
+<li>获取属性数量 ： <strong><em>hlen</em></strong> myhash == 2</li>
+<li>获取所有属性名称：<strong><em>hkeys</em></strong> myhash</li>
+<li>获取所有值： <strong>hvals</strong> myhash</li>
+</ul>
+<ol start="12">
+<li>存储list：</li>
+</ol>
+<ul>
+<li>ArrayList使用数组方式：</li>
+<li>LinkedList使用双向链接方式：</li>
+<li>双向链表中增加数据</li>
+<li>双向链表中删除数据</li>
+<li>两端添加：
+<ul>
+<li>lpush mylist a b c --&gt; c,b,a</li>
+<li>lpush mylist 1 2 3 --&gt; 3 2 1 c b a</li>
+<li>rpush mylist2 a b c</li>
+<li>rpush mylist2 1 2 3</li>
+<li></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>查看列表:
+<ul>
+<li>lrange mylist  (start,end)</li>
+<li>lrange mylist 0 5 --&gt; 3 2 1 c b a</li>
+<li>lrange mylist2 0 -2 a b c 1 2</li>
+</ul>
+</li>
+<li>两端弹出：
+<ul>
+<li>lpop mylist2 --&gt; 3</li>
+<li>lrange mylish  --&gt;2 1 c b a</li>
+<li>rpop mylist2 --&gt; 3</li>
+<li>lrange mylist2 --&gt; a b  c 1 2</li>
+</ul>
+</li>
+<li>获取列表元素个数:
+<ul>
+<li>llen mylish  --&gt;返回元素个数</li>
+</ul>
+</li>
+<li>扩展命令
+<ul>
+<li>lpushx mylist2 (mylist2这个值存在才会在头部插入)</li>
+<li>lrem mylist2 2 3（从头开始删除2个3）</li>
+</ul>
+</li>
+</ul>
+<ol start="13">
+<li>存储Set：不允许出现重复的元素</li>
+</ol>
+<ul>
+<li>添加元素
+<ul>
+<li>sadd myset a b c</li>
+<li>sadd myset  1 2 3</li>
+</ul>
+</li>
+<li>删除元素
+<ul>
+<li>srem myset 1 2</li>
+</ul>
+</li>
+<li>获得集合中的元素
+<ul>
+<li>smembers myset --&gt; c b a 3</li>
+</ul>
+</li>
+<li>判断元素是否存在
+<ul>
+<li>sismember myset 3</li>
+</ul>
+</li>
+</ul>
+<ol start="14">
+<li>keys通用操作</li>
+</ol>
+<ul>
+<li>**keys ***</li>
+<li><strong>keys my?</strong>  ：查看以my开头的key</li>
+<li><strong>del</strong> my1 my2 my3 ：删除这些key</li>
+<li><strong>exists</strong> my1   ：查看my1是否存在</li>
+<li>r<strong>ename</strong> old new ：重命名</li>
+<li><strong>expire</strong> newkey 1000 :过期时间</li>
+<li><strong>type key</strong>:查看某个key的类型</li>
+</ul>
+<ol start="15">
+<li>redis特性</li>
+</ol>
+<ul>
+<li>多数据库
+<ul>
+<li>16个数据库 0-15 （客户端默认0）</li>
+<li>select 1  — 选择1号数据库</li>
+<li>move key 2 ---- 将1中的key移动到2</li>
+</ul>
+</li>
+<li>Redis事务
+<ul>
+<li>multi :开启事务</li>
+<li>exec ：提交事务</li>
+<li>discard：回滚操作</li>
+</ul>
+</li>
+</ul>
+<ol start="16">
+<li>redis的持久化概述</li>
+</ol>
+<ul>
+<li>RDB持久化：默认支持不需要配置：在指定时间间隔内，将数据写入到磁盘
+<ul>
+<li>redis.conf: save 900 /save 300 10 /save 60 10000 (默认支持)–可以查看保存的路径在 <strong>dump.rdb</strong></li>
+</ul>
+</li>
+<li>AOF持久化
+<ul>
+<li>优势：更高的数据安全–每一次变动都会记录到磁盘中。</li>
+<li>劣势：内容文件大、效率低</li>
+<li>需要进行相应配置–redi.conf ==&gt;appendonly yes --&gt;写入到appendonly.aof</li>
+</ul>
+</li>
+<li>无持久化</li>
+<li>同时使用RDB和AOF</li>
+</ul>
+<ol start="17">
+<li>服务器查看redis路径</li>
+</ol>
+<ul>
+<li>ps -ef | grep redis</li>
+<li>whereis  redis</li>
+</ul>
+<ol start="18">
+<li>查看本地是否安装redis：brew info redis</li>
+<li>批量删除某个规则的 redisKey：</li>
+<li>[root@node1 src]# ./redis-cli -h 127.0.0.1 -p 6379 keys “java_suisui*” | xargs ./redis-cli -h 127.0.0.1 -p 6379 del</li>
+</ol>
+</blockquote>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>Redis</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2021-06-01</p><p><span>最后更新：</span>2022-05-04</p><p><span>原始链接：</span><a href="/015-Redis/">https://blog.liugezhou.online/015-Redis/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/015-Redis/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/服务端"><i class="fa fa-tag">服务端</i></a></div><div class="post-nav"><a class="pre" href="/016-CentOS_Docker_Nginx_Node_Jenkins/">CentOS_Docker_Nginx_Node_Jenkins</a><a class="next" href="/014-IDEA%20%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90mapper/">IDEA 自动生成mapper</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

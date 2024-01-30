@@ -1,0 +1,397 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="Week16-编辑器服务端API开发"><meta name="twitter:description" content="&lt;p&gt;&lt;font color=blue&gt;更新说明：对文章目录排版做了调整。&lt;/font&gt;&lt;br&gt;
+&lt;font color=blue&gt; 更新时间：2022-05-04&lt;/font&gt;&lt;/p&gt;
+&lt;h2 id=&quot;第一章：周介绍&quot;&gt;第一章：周介绍&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;1-1 介绍&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;需求指导设计，设计指导开发。无设计不开发。&lt;/li&gt;
+&lt;li&gt;服务端技术方案设计的方法&lt;/li&gt;
+&lt;li&gt;B端和编辑器基本功能API&lt;/li&gt;
+&lt;li&gt;技术方案设计文档&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;第二章：技术方案设计&quot;&gt;第二章：技术方案设计&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;2-1 技术方案设计-章介绍&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;领导技术方案设计、评审技术方案设计。&lt;/strong&gt;&lt;br&gt;
+主要产出：server端技术方案设计&lt;br&gt;
+主要内容：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;接口设计&lt;/li&gt;
+&lt;li&gt;选择Restful,而不是&lt;strong&gt;GraphQL&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;数据库设计&lt;/li&gt;
+&lt;li&gt;sever端整体设计&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：正视技术方案设计，设计会节约时间。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;2-2 接口设计-整理所有接口&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;接口设计应该是在需求后的第一设计，接口设计好之后，前后端可以并行开发，互不影响。&lt;/li&gt;
+&lt;li&gt;接口设计是和需求对接最亲密的部分。&lt;/li&gt;
+&lt;li&gt;功能范围确认–根据功能设计接口&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;统一的输出格式：&lt;/p&gt;
+&lt;figure class=&quot;highlight typescript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	&lt;span class=&quot;attr&quot;&gt;erron&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;data&lt;/span&gt;:&amp;#123;.....&amp;#125;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;message&lt;/span&gt;:&lt;span class=&quot;string&quot;&gt;&amp;#x27;&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;strong&gt;2-3 接口设计-关于预览和数据统计&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;作品统计/预览作品  单独独立&lt;/li&gt;
+&lt;li&gt;发布–标识位&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;2-4 介绍GraphQL的使用和特点&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;为什么选择Restful API，而没有选择GraphQL&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;GraphQL(Graph Query Language) 图查询语言。&lt;/li&gt;
+&lt;li&gt;意思是擅长处理&amp;quot;图&amp;quot;数据结构的查询，即多个数据对象，各个之间还有关联关系。&lt;/li&gt;
+&lt;li&gt;核心概念：schema  rootValue&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;2-5 选择Restful API 而非 GraphQL&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;应用场景&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;数据关系比较复杂&lt;/li&gt;
+&lt;li&gt;前端查询需求多变&lt;/li&gt;
+&lt;li&gt;有一个独立的数据提供方，对接很多使用方，不能一一定制开发&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/16-1.1sb04ia0rla8.webp&quot; alt=&quot;16-1&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2-6 数据库设计-数据表结构&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;注意，使用sequelize和mongoose，会自动创建id/createAt和updateAt,无需再自己手动创建。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户表 --讲了一下用户表的表结构&lt;/li&gt;
+&lt;li&gt;作品/模版–讲了一下作品表的表结构&lt;/li&gt;
+&lt;li&gt;渠道 – 同上&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;2-7 数据库设计-代码演示&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;src/models下的model设计&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;2-8 server端架构设计&lt;/strong&gt;&lt;br&gt;
+&lt;img src=&quot;https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/16-2.6ulmnnc0qfk0.webp&quot; alt=&quot;16-2&quot;&gt;&lt;br&gt;
+&lt;strong&gt;2-9 技术方案设计-章总结&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;领导技术方案设、评审技术方案设计&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;第三章：基础功能开发&quot;&gt;第三章：基础功能开发&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;3-1 章介绍&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;登录功能设计&lt;/li&gt;
+&lt;li&gt;用户信息接口&lt;/li&gt;
+&lt;li&gt;作品接口&lt;/li&gt;
+&lt;li&gt;模板接口&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;3-2 登录功能设计-获取验证码&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;初次获取验证码&lt;/li&gt;
+&lt;li&gt;再次获取验证码&lt;/li&gt;
+&lt;li&gt;登录验证&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;3-3 登录功能设计-划重点&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;缓存 – 禁止频繁发送&lt;/li&gt;
+&lt;li&gt;短信服务的提示和报警&lt;/li&gt;
+&lt;li&gt;短信发送失败，不会缓存，可立即重新生成验证码&lt;/li&gt;
+&lt;li&gt;短信服务挂掉，报警&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;3-4 制定开发规范&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;拉新分支 feature-xxx / fix-xxx/ hotfix-xxx&lt;/li&gt;
+&lt;li&gt;commit：参考cz-config,js&lt;/li&gt;
+&lt;li&gt;往dev分之提交 pr Pull Requerst&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;3-5 用户信息接口-获取登录验证码&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;接口&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;获取手机短信验证码&lt;/li&gt;
+&lt;li&gt;登录(包含注册)&lt;/li&gt;
+&lt;li&gt;获取用户信息&lt;/li&gt;
+&lt;li&gt;修改用户信息&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;代码演示&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;routers/users.js&lt;/li&gt;
+&lt;li&gt;controller/users/&lt;/li&gt;
+&lt;li&gt;service/users.js&lt;/li&gt;
+&lt;li&gt;chache/users&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;test&lt;/strong&gt;/apis/users,js&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;3&lt;/strong&gt;-6 用户信息接口-登录&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本节课读代码&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;3-7 用户信息接口-接口测试&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;讲的个鸡毛-依然是读代码&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;3-8 作品接口-创建作品&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;接口&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;创建空白作品&lt;/li&gt;
+&lt;li&gt;复制作品(通过模版创建)&lt;/li&gt;
+&lt;li&gt;删除作品&lt;/li&gt;
+&lt;li&gt;恢复作品&lt;/li&gt;
+&lt;li&gt;转增作品&lt;/li&gt;
+&lt;li&gt;我的作品列表(搜索 分页)&lt;/li&gt;
+&lt;li&gt;我的回收列表(搜索 分页)&lt;/li&gt;
+&lt;li&gt;查询单个作品信息&lt;/li&gt;
+&lt;li&gt;保存作品&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;代码演示&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;routes/works.js&lt;/li&gt;
+&lt;li&gt;controller/works.js&lt;/li&gt;
+&lt;li&gt;service/works.js&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;test&lt;/strong&gt;/api/works.js&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;3-9 作品接口-查询、更新和复制&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;同上代码演示&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;3-10 作品接口-接口测试&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;这个课程讲的真是垃圾。&lt;br&gt;
+你以为讲源码吗？或者课程代码是多难，拿着代码讲一遍，怎么想的？&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;3-11 模版接口&lt;/strong&gt;&lt;/p&gt;
+"><meta name="twitter:image"><title>Week16-编辑器服务端API开发 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Week16-编辑器服务端API开发</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Week16-编辑器服务端API开发</h1><div class="post-meta">2021-03-23<span> | </span><span class="category"><a href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 963</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 3</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/Week16-%E7%BC%96%E8%BE%91%E5%99%A8%E6%9C%8D%E5%8A%A1%E7%AB%AFAPI%E5%BC%80%E5%8F%91/#vcomment"><span class="valine-comment-count" data-xid="/Week16-%E7%BC%96%E8%BE%91%E5%99%A8%E6%9C%8D%E5%8A%A1%E7%AB%AFAPI%E5%BC%80%E5%8F%91/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E5%91%A8%E4%BB%8B%E7%BB%8D"><span class="toc-text">第一章：周介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88%E8%AE%BE%E8%AE%A1"><span class="toc-text">第二章：技术方案设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%9F%BA%E7%A1%80%E5%8A%9F%E8%83%BD%E5%BC%80%E5%8F%91"><span class="toc-text">第三章：基础功能开发</span></a></li></ol></div></div><div class="post-content"><p><font color=blue>更新说明：对文章目录排版做了调整。</font><br>
+<font color=blue> 更新时间：2022-05-04</font></p>
+<h2 id="第一章：周介绍">第一章：周介绍</h2>
+<p><strong>1-1 介绍</strong></p>
+<blockquote>
+<ul>
+<li>需求指导设计，设计指导开发。无设计不开发。</li>
+<li>服务端技术方案设计的方法</li>
+<li>B端和编辑器基本功能API</li>
+<li>技术方案设计文档</li>
+</ul>
+</blockquote>
+<h2 id="第二章：技术方案设计">第二章：技术方案设计</h2>
+<p><strong>2-1 技术方案设计-章介绍</strong></p>
+<blockquote>
+<p><strong>领导技术方案设计、评审技术方案设计。</strong><br>
+主要产出：server端技术方案设计<br>
+主要内容：</p>
+<ul>
+<li>接口设计</li>
+<li>选择Restful,而不是<strong>GraphQL</strong></li>
+<li>数据库设计</li>
+<li>sever端整体设计</li>
+</ul>
+<p><strong>注意</strong>：正视技术方案设计，设计会节约时间。</p>
+</blockquote>
+<p><strong>2-2 接口设计-整理所有接口</strong></p>
+<blockquote>
+<ul>
+<li>接口设计应该是在需求后的第一设计，接口设计好之后，前后端可以并行开发，互不影响。</li>
+<li>接口设计是和需求对接最亲密的部分。</li>
+<li>功能范围确认–根据功能设计接口</li>
+</ul>
+</blockquote>
+<p>统一的输出格式：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="attr">erron</span>:<span class="number">0</span>,</span><br><span class="line">  <span class="attr">data</span>:&#123;.....&#125;,</span><br><span class="line">  <span class="attr">message</span>:<span class="string">&#x27;&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>2-3 接口设计-关于预览和数据统计</strong></p>
+<blockquote>
+<ul>
+<li>作品统计/预览作品  单独独立</li>
+<li>发布–标识位</li>
+</ul>
+</blockquote>
+<p><strong>2-4 介绍GraphQL的使用和特点</strong></p>
+<blockquote>
+<p>为什么选择Restful API，而没有选择GraphQL</p>
+<ul>
+<li>GraphQL(Graph Query Language) 图查询语言。</li>
+<li>意思是擅长处理&quot;图&quot;数据结构的查询，即多个数据对象，各个之间还有关联关系。</li>
+<li>核心概念：schema  rootValue</li>
+</ul>
+</blockquote>
+<p><strong>2-5 选择Restful API 而非 GraphQL</strong></p>
+<blockquote>
+<p>应用场景</p>
+<ul>
+<li>数据关系比较复杂</li>
+<li>前端查询需求多变</li>
+<li>有一个独立的数据提供方，对接很多使用方，不能一一定制开发</li>
+</ul>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/16-1.1sb04ia0rla8.webp" alt="16-1"></p>
+<p><strong>2-6 数据库设计-数据表结构</strong></p>
+<blockquote>
+<p>注意，使用sequelize和mongoose，会自动创建id/createAt和updateAt,无需再自己手动创建。</p>
+<ul>
+<li>用户表 --讲了一下用户表的表结构</li>
+<li>作品/模版–讲了一下作品表的表结构</li>
+<li>渠道 – 同上</li>
+</ul>
+</blockquote>
+<p><strong>2-7 数据库设计-代码演示</strong></p>
+<blockquote>
+<p>src/models下的model设计</p>
+</blockquote>
+<p><strong>2-8 server端架构设计</strong><br>
+<img src="https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/16-2.6ulmnnc0qfk0.webp" alt="16-2"><br>
+<strong>2-9 技术方案设计-章总结</strong></p>
+<blockquote>
+<p>领导技术方案设、评审技术方案设计</p>
+</blockquote>
+<h2 id="第三章：基础功能开发">第三章：基础功能开发</h2>
+<p><strong>3-1 章介绍</strong></p>
+<blockquote>
+<ul>
+<li>登录功能设计</li>
+<li>用户信息接口</li>
+<li>作品接口</li>
+<li>模板接口</li>
+</ul>
+</blockquote>
+<p><strong>3-2 登录功能设计-获取验证码</strong></p>
+<blockquote>
+<ul>
+<li>初次获取验证码</li>
+<li>再次获取验证码</li>
+<li>登录验证</li>
+</ul>
+</blockquote>
+<p><strong>3-3 登录功能设计-划重点</strong></p>
+<blockquote>
+<ul>
+<li>缓存 – 禁止频繁发送</li>
+<li>短信服务的提示和报警</li>
+<li>短信发送失败，不会缓存，可立即重新生成验证码</li>
+<li>短信服务挂掉，报警</li>
+</ul>
+</blockquote>
+<p><strong>3-4 制定开发规范</strong></p>
+<blockquote>
+<ul>
+<li>拉新分支 feature-xxx / fix-xxx/ hotfix-xxx</li>
+<li>commit：参考cz-config,js</li>
+<li>往dev分之提交 pr Pull Requerst</li>
+</ul>
+</blockquote>
+<p><strong>3-5 用户信息接口-获取登录验证码</strong><br>
+<strong>接口</strong></p>
+<blockquote>
+<ul>
+<li>获取手机短信验证码</li>
+<li>登录(包含注册)</li>
+<li>获取用户信息</li>
+<li>修改用户信息</li>
+</ul>
+</blockquote>
+<p><strong>代码演示</strong></p>
+<blockquote>
+<ul>
+<li>routers/users.js</li>
+<li>controller/users/</li>
+<li>service/users.js</li>
+<li>chache/users</li>
+<li><strong>test</strong>/apis/users,js</li>
+</ul>
+</blockquote>
+<p><strong>3</strong>-6 用户信息接口-登录</p>
+<blockquote>
+<p>本节课读代码</p>
+</blockquote>
+<p><strong>3-7 用户信息接口-接口测试</strong></p>
+<blockquote>
+<p>讲的个鸡毛-依然是读代码</p>
+</blockquote>
+<p><strong>3-8 作品接口-创建作品</strong><br>
+<strong>接口</strong></p>
+<blockquote>
+<ul>
+<li>创建空白作品</li>
+<li>复制作品(通过模版创建)</li>
+<li>删除作品</li>
+<li>恢复作品</li>
+<li>转增作品</li>
+<li>我的作品列表(搜索 分页)</li>
+<li>我的回收列表(搜索 分页)</li>
+<li>查询单个作品信息</li>
+<li>保存作品</li>
+</ul>
+</blockquote>
+<p><strong>代码演示</strong></p>
+<blockquote>
+<ul>
+<li>routes/works.js</li>
+<li>controller/works.js</li>
+<li>service/works.js</li>
+<li><strong>test</strong>/api/works.js</li>
+</ul>
+</blockquote>
+<p><strong>3-9 作品接口-查询、更新和复制</strong></p>
+<blockquote>
+<p>同上代码演示</p>
+</blockquote>
+<p><strong>3-10 作品接口-接口测试</strong></p>
+<blockquote>
+<p>这个课程讲的真是垃圾。<br>
+你以为讲源码吗？或者课程代码是多难，拿着代码讲一遍，怎么想的？</p>
+</blockquote>
+<p><strong>3-11 模版接口</strong></p>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>Week16-编辑器服务端API开发</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2021-03-23</p><p><span>最后更新：</span>2022-05-04</p><p><span>原始链接：</span><a href="/Week16-编辑器服务端API开发/">https://blog.liugezhou.online/Week16-%E7%BC%96%E8%BE%91%E5%99%A8%E6%9C%8D%E5%8A%A1%E7%AB%AFAPI%E5%BC%80%E5%8F%91/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/Week16-%E7%BC%96%E8%BE%91%E5%99%A8%E6%9C%8D%E5%8A%A1%E7%AB%AFAPI%E5%BC%80%E5%8F%91/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/Web架构之脚手架"><i class="fa fa-tag">Web架构之脚手架</i></a></div><div class="post-nav"><a class="pre" href="/012-JS%E6%95%B0%E7%BB%84/">JavaScript数组</a><a class="next" href="/Week15-%E6%9C%8D%E5%8A%A1%E7%AB%AF%20CI_CD%EF%BC%9AGithub%20%E8%87%AA%E5%8A%A8%E5%8C%96/">Week15-服务端 CI_CD：Github 自动化</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

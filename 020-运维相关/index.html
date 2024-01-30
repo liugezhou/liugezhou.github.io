@@ -1,0 +1,585 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="运维相关"><meta name="twitter:description" content="&lt;p&gt;&lt;font color=blue&gt;更新说明：对文章排版以及内容格式做了调整。&lt;/font&gt;&lt;br&gt;
+&lt;font color=blue&gt; 更新时间：2022-05-04&lt;/font&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;服务器配置：&lt;br&gt;
+数据库rds、redis、nacos、nginx、node、git、域名、OSS、java、maven&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;安装Java-maven-nginx-Mysal&quot;&gt;&lt;a href=&quot;https://juejin.cn/post/6883785131052498958&quot;&gt;安装Java\maven\nginx\Mysal&lt;/a&gt;&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;JAVA&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;yum install java-1.8.0-openjdk :&lt;/li&gt;
+&lt;li&gt;java -version&lt;/li&gt;
+&lt;li&gt;vim /etc/profile.d/java.sh&lt;/li&gt;
+&lt;li&gt;JAVA_HOME=“/usr/lib/jvm/java-1.8.0-openjdk”&lt;/li&gt;
+&lt;li&gt;source /etc/profile.d/java.sh&lt;/li&gt;
+&lt;li&gt;验证：echo $JAVA_HOME -&amp;gt;输出目录即为正确&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;MAVEN&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;yum install -y maven&lt;/li&gt;
+&lt;li&gt;mvn --version&lt;/li&gt;
+&lt;li&gt;vim /etc/maven/setting.xml&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight xml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;localRepository&lt;/span&gt;&amp;gt;&lt;/span&gt;/opt/maven_repo&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;localRepository&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;mirror&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;id&lt;/span&gt;&amp;gt;&lt;/span&gt;alimaven&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;id&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;mirrorOf&lt;/span&gt;&amp;gt;&lt;/span&gt;central&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;mirrorOf&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;name&lt;/span&gt;&amp;gt;&lt;/span&gt;aliyun maven&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;name&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;url&lt;/span&gt;&amp;gt;&lt;/span&gt;https://maven.aliyun.com/repository/central&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;url&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;mirror&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;mirror&lt;/span&gt;&amp;gt;&lt;/span&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;id&lt;/span&gt;&amp;gt;&lt;/span&gt;aliyun-maven&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;id&lt;/span&gt;&amp;gt;&lt;/span&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;mirrorOf&lt;/span&gt;&amp;gt;&lt;/span&gt;*&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;mirrorOf&lt;/span&gt;&amp;gt;&lt;/span&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;name&lt;/span&gt;&amp;gt;&lt;/span&gt;aliyun maven&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;name&lt;/span&gt;&amp;gt;&lt;/span&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;url&lt;/span&gt;&amp;gt;&lt;/span&gt;http://maven.aliyun.com/nexus/content/groups/public&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;url&lt;/span&gt;&amp;gt;&lt;/span&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;mirror&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Nginx&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;yum install -y nginx&lt;/li&gt;
+&lt;li&gt;端口开放&lt;/li&gt;
+&lt;li&gt;nginx -s start&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Mysql8&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;yum localinstall &lt;a href=&quot;https://repo.mysql.com//mysql80-community-release-el7-1.noarch.rpm&quot;&gt;https://repo.mysql.com//mysql80-community-release-el7-1.noarch.rpm&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;systemctl start mysqld&lt;/li&gt;
+&lt;li&gt;systemctl status mysqld&lt;/li&gt;
+&lt;li&gt;grep ‘temporary password’ /var/log/mysqld.log（若无直接跳过）&lt;/li&gt;
+&lt;li&gt;mysql -uroot -p
+&lt;ul&gt;
+&lt;li&gt;use mysql;&lt;/li&gt;
+&lt;li&gt;ALTER USER ‘root’@‘localhost’ IDENTIFIED BY ‘newpassword’;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;create user test_user@‘%’ identified by ‘password’;
+&lt;ul&gt;
+&lt;li&gt;·%· 表示可以在任意远程主机登录&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;grant all on databasename.tablename to ‘username’@‘%’ with grant option;
+&lt;ul&gt;
+&lt;li&gt;privileges可以为select/ insert /update/all&lt;/li&gt;
+&lt;li&gt;tablename可以为*&lt;/li&gt;
+&lt;li&gt;with grant option 【该用户可授权】&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;flush privileges;   刷新权限表&lt;/li&gt;
+&lt;li&gt;SET PASSWORD FOR ‘username’@‘host’ = PASSWORD(‘newpassword’);&lt;/li&gt;
+&lt;li&gt;SET PASSWORD = PASSWORD(“newpassword”); --当前登陆用户&lt;/li&gt;
+&lt;li&gt;REVOKE privilege ON databasename.tablename FROM ‘username’@‘host’; -撤销用户权限&lt;/li&gt;
+&lt;li&gt;drop user ‘username’@‘host’ --删除用户&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;安装git&quot;&gt;安装git&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;yum install git  =&amp;gt; git --version&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;安装配置nacos&quot;&gt;安装配置nacos&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;下载 nacos-server-$version.zip 包&lt;/li&gt;
+&lt;li&gt;tar -xvf nacos-server-$version.tar.gz&lt;/li&gt;
+&lt;li&gt;默认情况为单实例启动,本服务器设置集群&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;nacos集群设置&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;mysql创建数据库 nacos&lt;/li&gt;
+&lt;li&gt;将nacos-mysql脚本倒入到数据库&lt;/li&gt;
+&lt;li&gt;修改config/application.properties
+&lt;ul&gt;
+&lt;li&gt;If use MySQL as datasource:   注释打开&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;spring.datasource.platform=mysql&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;设置用户名密码为mysql新建的用户/密码&lt;/li&gt;
+&lt;li&gt;配置cluster
+&lt;ul&gt;
+&lt;li&gt;cp cluster.conf.example cluster.conf&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight xml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;172.31.0.8:8848&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;172.31.0.8:8850&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;172.31.0.8:8860&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;将 /data/nacos/nacos  改名称  mv nacos/ nacos8848&lt;/li&gt;
+&lt;li&gt;cp -r nacos8848 nacos8860&lt;/li&gt;
+&lt;li&gt;cp -r nacos8848 nacos8850&lt;/li&gt;
+&lt;li&gt;修改8860与8850端口号：application.properties&lt;/li&gt;
+&lt;li&gt;然后分别启动&lt;/li&gt;
+&lt;li&gt;接着看之前单实例的配置：–本地没配置，如果有配置应该先倒出然后再倒入最新启动的&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/image.7f88td0nf0w0.webp&quot; alt=&quot;image&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/image.7942uutpjcg0.webp&quot; alt=&quot;image&quot;&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;nginx配置–直接放入到nginx.conf即可&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight xml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;upstream nacos_cluster&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	server 127.0.0.1:8848;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	server 127.0.0.1:8849;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	server 127.0.0.1:8850;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;server &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	listen 8848;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	server_namelocahost;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	localtions / &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;		proxy_pass http://nacos_cluster;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;		proxy_set_header Host $host:$server_port;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;nginx重启即可。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;安装redis&quot;&gt;&lt;a href=&quot;https://www.4spaces.org/centos-8-install-redis/&quot;&gt;安装redis&lt;/a&gt;&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;yum install redis&lt;/li&gt;
+&lt;li&gt;systemctl start redis&lt;/li&gt;
+&lt;li&gt;systemctl enable redis [开机启动]&lt;/li&gt;
+&lt;li&gt;/etc/redis.conf   [允许远程连接  注释掉 bind:127.0.0.1]&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;#&lt;/code&gt; requirepass foobared  [密码登录：注释掉该行，将footbared改为 your password]&lt;/li&gt;
+&lt;li&gt;修改 daemonize no（第128行） 为 daemonize yes&lt;/li&gt;
+&lt;li&gt;开放安全组：6379&lt;/li&gt;
+&lt;li&gt;redis-server /etc/redis.conf  启动！&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;telnet&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.opss.cn/5167.html&quot;&gt;https://www.opss.cn/5167.html&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;安装NVM&quot;&gt;安装NVM&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;安装CentOS系统上的默认nodejs:   yum module install nodejs&lt;/li&gt;
+&lt;li&gt;安装nvm: curl -o- &lt;a href=&quot;https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh&quot;&gt;https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh&lt;/a&gt; | bash&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;安装pm2&quot;&gt;安装pm2&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;服务器上node版本为14 安装pm2&lt;br&gt;
+npm i pm2 -g&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;安装Docker&quot;&gt;安装Docker&lt;/h2&gt;
+&lt;p&gt;配置mysql/redis/tomcat/nginx&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;yum install -y yum-utils device-mapper-persistent-data lvm2&lt;/li&gt;
+&lt;li&gt;yum-config-manager --add-repo &lt;a href=&quot;http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo&quot;&gt;http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;yum install docker-ce -y&lt;/li&gt;
+&lt;li&gt;systemctl start docker&lt;/li&gt;
+&lt;li&gt;docker -v&lt;/li&gt;
+&lt;li&gt;设置开机启动: &lt;strong&gt;chkconfig docker on&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;systemctl enable docker&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.yuque.com/liugezhou/front-end/wp1neo&quot;&gt;&lt;strong&gt;Docker应用部署&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;java:8&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;docker pull java:8&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;mysql&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;cd /root&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;mkdir mysql&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;docker run -id \&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-p 3307:3306 \&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;--name=c_mysql \&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-v $PWD/conf:/etc/mysql/conf.d \&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-v $PWD/logs:/logs \&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-v $PWD/data:/var/lib/mysql \&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-e MYSQL_ROOT_PASSWORD=****** \&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;mysql:5.7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;nginx&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;cd /root&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;mkdir nginx&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;cd nginx&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;mkdir conf&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;**cd conf **&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;vim nginx.conf [内容见下方]&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;cd /root&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;新建容器&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;docker run -id --name=c_nginx \&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-p &lt;span class=&quot;number&quot;&gt;8880&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;80&lt;/span&gt; \&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-v $PWD/conf/nginx.&lt;span class=&quot;property&quot;&gt;conf&lt;/span&gt;:&lt;span class=&quot;regexp&quot;&gt;/etc/&lt;/span&gt;nginx/nginx.&lt;span class=&quot;property&quot;&gt;conf&lt;/span&gt; \&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-v $PWD/&lt;span class=&quot;attr&quot;&gt;logs&lt;/span&gt;:&lt;span class=&quot;regexp&quot;&gt;/var/&lt;/span&gt;log/nginx \&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-v $PWD/&lt;span class=&quot;attr&quot;&gt;html&lt;/span&gt;:&lt;span class=&quot;regexp&quot;&gt;/usr/&lt;/span&gt;share/nginx/html \&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;nginx&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;30&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// /root/nginx/conf/nginx.conf&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;user  nginx;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;worker_processes  &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;error_log  /&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt;/log/nginx/error.&lt;span class=&quot;property&quot;&gt;log&lt;/span&gt; warn;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;pid        /&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt;/run/nginx.&lt;span class=&quot;property&quot;&gt;pid&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;events &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    worker_connections  &lt;span class=&quot;number&quot;&gt;1024&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;http &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    include       /etc/nginx/mime.&lt;span class=&quot;property&quot;&gt;types&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    default_type  application/octet-stream;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    log_format  main  &lt;span class=&quot;string&quot;&gt;&amp;#x27;$remote_addr - $remote_user [$time_local] &amp;quot;$request&amp;quot; &amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                      &lt;span class=&quot;string&quot;&gt;&amp;#x27;$status $body_bytes_sent &amp;quot;$http_referer&amp;quot; &amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                      &lt;span class=&quot;string&quot;&gt;&amp;#x27;&amp;quot;$http_user_agent&amp;quot; &amp;quot;$http_x_forwarded_for&amp;quot;&amp;#x27;&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    access_log  /&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt;/log/nginx/access.&lt;span class=&quot;property&quot;&gt;log&lt;/span&gt;  main;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    sendfile        on;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;`#`&lt;/span&gt;tcp_nopush     on;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    keepalive_timeout  &lt;span class=&quot;number&quot;&gt;65&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;`#`&lt;/span&gt;gzip  on;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    include /etc/nginx/conf.&lt;span class=&quot;property&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;comment&quot;&gt;/*.conf;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;&amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;tomcat&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;cd /root&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;mkdir tomcat&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;docker run -id --name=c_tomcat \&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-p 8080:8080 \&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-v $PWD:/usr/local/tomcat/webapps \&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;tomcat&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;// 在/root/tomcat/test/index.html，开放8080端口测试&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;redis&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;redis由于需要配置密码登录以及远程连接等，而服务器已配好.&lt;/li&gt;
+&lt;li&gt;**因此这里不再安装，**下面为启动命令(没有文件映射)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;docker run -id --name=c_redis -p &lt;span class=&quot;number&quot;&gt;6379&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;6379&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;redis&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;5.0&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;测试：redis-cli.&lt;span class=&quot;property&quot;&gt;exe&lt;/span&gt; -h &lt;span class=&quot;number&quot;&gt;192.168&lt;/span&gt;&lt;span class=&quot;number&quot;&gt;.149&lt;/span&gt;&lt;span class=&quot;number&quot;&gt;.135&lt;/span&gt; -p &lt;span class=&quot;number&quot;&gt;6379&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;strong&gt;Docker搭建私有仓库&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;docker pull registry&lt;/li&gt;
+&lt;li&gt;docker run -id --name=registry -p 5000:5000 registry&lt;/li&gt;
+&lt;li&gt;输入地址 &lt;a href=&quot;http://xn--ip-xd3cw3mfxfowofno8a6207a:5000/v2/_catalog&quot;&gt;http://私有仓库服务器ip:5000/v2/_catalog&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;修改daemon.json
+&lt;ul&gt;
+&lt;li&gt;{“insecure-registries”:[“私有仓库服务器ip:5000”]}&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;systemctl restart docker&lt;/li&gt;
+&lt;li&gt;docker start registry&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;在CentOS 8上添加Jenkins存储库&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;由于Jenkins在CentOS 8存储库中不可用，因此我们将手动将Jenkins存储库添加到系统中。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;首先添加Jenkins Key&lt;br&gt;
+&lt;code&gt;#&lt;/code&gt; rpm --import &lt;a href=&quot;https://pkg.jenkins.io/redhat-stable/jenkins.io.key&quot;&gt;https://pkg.jenkins.io/redhat-stable/jenkins.io.key&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;将Jenkins的存储库追加到CentOS 8&lt;br&gt;
+＃cd /etc/yum.repos.d&lt;br&gt;
+＃curl -O &lt;a href=&quot;https://pkg.jenkins.io/redhat-stable/jenkins.repo&quot;&gt;https://pkg.jenkins.io/redhat-stable/jenkins.repo&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;安装Jenkins&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;dnf install jenkins&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;验证状态&lt;br&gt;
+&lt;code&gt;#&lt;/code&gt; systemctl start jenkins&lt;br&gt;
+&lt;code&gt;#&lt;/code&gt; systemctl status jenkins&lt;/li&gt;
+&lt;li&gt;修改端口&lt;br&gt;
+&lt;code&gt;# &lt;/code&gt;vi  /etc/sysconfig/jenkins&lt;/li&gt;
+&lt;li&gt;浏览&lt;br&gt;
+&lt;code&gt;#&lt;/code&gt; &lt;a href=&quot;http://server-IP:8081&quot;&gt;http://server-IP:8081&lt;/a&gt; || 输入密码 || 安装插件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;Tips&quot;&gt;Tips&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;服务终端总是断开：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;vi /etc/ssh/sshd_config&lt;/li&gt;
+&lt;li&gt;修改 ClientAliveInterval 和 ClientAliveCountMax&lt;/li&gt;
+&lt;li&gt;重启：systemctl restart sshd.service&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+"><meta name="twitter:image"><title>运维相关 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">运维相关</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">运维相关</h1><div class="post-meta">2021-09-02<span> | </span><span class="category"><a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 1.3k</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 6</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/020-%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/#vcomment"><span class="valine-comment-count" data-xid="/020-%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Java-maven-nginx-Mysal"><span class="toc-text">安装Java\maven\nginx\Mysal</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85git"><span class="toc-text">安装git</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEnacos"><span class="toc-text">安装配置nacos</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85redis"><span class="toc-text">安装redis</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85NVM"><span class="toc-text">安装NVM</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85pm2"><span class="toc-text">安装pm2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Docker"><span class="toc-text">安装Docker</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Tips"><span class="toc-text">Tips</span></a></li></ol></div></div><div class="post-content"><p><font color=blue>更新说明：对文章排版以及内容格式做了调整。</font><br>
+<font color=blue> 更新时间：2022-05-04</font></p>
+<blockquote>
+<p>服务器配置：<br>
+数据库rds、redis、nacos、nginx、node、git、域名、OSS、java、maven</p>
+</blockquote>
+<h2 id="安装Java-maven-nginx-Mysal"><a target="_blank" rel="noopener" href="https://juejin.cn/post/6883785131052498958">安装Java\maven\nginx\Mysal</a></h2>
+<blockquote>
+<p><strong>JAVA</strong></p>
+<ul>
+<li>yum install java-1.8.0-openjdk :</li>
+<li>java -version</li>
+<li>vim /etc/profile.d/java.sh</li>
+<li>JAVA_HOME=“/usr/lib/jvm/java-1.8.0-openjdk”</li>
+<li>source /etc/profile.d/java.sh</li>
+<li>验证：echo $JAVA_HOME -&gt;输出目录即为正确</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><strong>MAVEN</strong></p>
+<ul>
+<li>yum install -y maven</li>
+<li>mvn --version</li>
+<li>vim /etc/maven/setting.xml</li>
+</ul>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">localRepository</span>&gt;</span>/opt/maven_repo<span class="tag">&lt;/<span class="name">localRepository</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>alimaven<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>aliyun maven<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url</span>&gt;</span>https://maven.aliyun.com/repository/central<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mirror</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>aliyun-maven<span class="tag">&lt;/<span class="name">id</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>*<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>aliyun maven<span class="tag">&lt;/<span class="name">name</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://maven.aliyun.com/nexus/content/groups/public<span class="tag">&lt;/<span class="name">url</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>Nginx</strong></p>
+<ul>
+<li>yum install -y nginx</li>
+<li>端口开放</li>
+<li>nginx -s start</li>
+</ul>
+</blockquote>
+<p><strong>Mysql8</strong></p>
+<blockquote>
+<ul>
+<li>yum localinstall <a target="_blank" rel="noopener" href="https://repo.mysql.com//mysql80-community-release-el7-1.noarch.rpm">https://repo.mysql.com//mysql80-community-release-el7-1.noarch.rpm</a></li>
+<li>systemctl start mysqld</li>
+<li>systemctl status mysqld</li>
+<li>grep ‘temporary password’ /var/log/mysqld.log（若无直接跳过）</li>
+<li>mysql -uroot -p
+<ul>
+<li>use mysql;</li>
+<li>ALTER USER ‘root’@‘localhost’ IDENTIFIED BY ‘newpassword’;</li>
+</ul>
+</li>
+<li>create user test_user@‘%’ identified by ‘password’;
+<ul>
+<li>·%· 表示可以在任意远程主机登录</li>
+</ul>
+</li>
+<li>grant all on databasename.tablename to ‘username’@‘%’ with grant option;
+<ul>
+<li>privileges可以为select/ insert /update/all</li>
+<li>tablename可以为*</li>
+<li>with grant option 【该用户可授权】</li>
+</ul>
+</li>
+<li>flush privileges;   刷新权限表</li>
+<li>SET PASSWORD FOR ‘username’@‘host’ = PASSWORD(‘newpassword’);</li>
+<li>SET PASSWORD = PASSWORD(“newpassword”); --当前登陆用户</li>
+<li>REVOKE privilege ON databasename.tablename FROM ‘username’@‘host’; -撤销用户权限</li>
+<li>drop user ‘username’@‘host’ --删除用户</li>
+</ul>
+</blockquote>
+<h2 id="安装git">安装git</h2>
+<blockquote>
+<ul>
+<li>yum install git  =&gt; git --version</li>
+</ul>
+</blockquote>
+<h2 id="安装配置nacos">安装配置nacos</h2>
+<blockquote>
+<ul>
+<li>下载 nacos-server-$version.zip 包</li>
+<li>tar -xvf nacos-server-$version.tar.gz</li>
+<li>默认情况为单实例启动,本服务器设置集群</li>
+</ul>
+</blockquote>
+<p><strong>nacos集群设置</strong></p>
+<blockquote>
+<ul>
+<li>mysql创建数据库 nacos</li>
+<li>将nacos-mysql脚本倒入到数据库</li>
+<li>修改config/application.properties
+<ul>
+<li>If use MySQL as datasource:   注释打开</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><strong>spring.datasource.platform=mysql</strong></p>
+<blockquote>
+<ul>
+<li>设置用户名密码为mysql新建的用户/密码</li>
+<li>配置cluster
+<ul>
+<li>cp cluster.conf.example cluster.conf</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">172.31.0.8:8848</span><br><span class="line">172.31.0.8:8850</span><br><span class="line">172.31.0.8:8860</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>将 /data/nacos/nacos  改名称  mv nacos/ nacos8848</li>
+<li>cp -r nacos8848 nacos8860</li>
+<li>cp -r nacos8848 nacos8850</li>
+<li>修改8860与8850端口号：application.properties</li>
+<li>然后分别启动</li>
+<li>接着看之前单实例的配置：–本地没配置，如果有配置应该先倒出然后再倒入最新启动的</li>
+</ul>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/image.7f88td0nf0w0.webp" alt="image"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/liugezhou/image@master/img/image.7942uutpjcg0.webp" alt="image"></p>
+<blockquote>
+<ul>
+<li>nginx配置–直接放入到nginx.conf即可</li>
+</ul>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">upstream nacos_cluster&#123;</span><br><span class="line">	server 127.0.0.1:8848;</span><br><span class="line">	server 127.0.0.1:8849;</span><br><span class="line">	server 127.0.0.1:8850;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">	listen 8848;</span><br><span class="line">	server_namelocahost;</span><br><span class="line">	localtions / &#123;</span><br><span class="line">		proxy_pass http://nacos_cluster;</span><br><span class="line">		proxy_set_header Host $host:$server_port;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>nginx重启即可。</p>
+</blockquote>
+<h2 id="安装redis"><a target="_blank" rel="noopener" href="https://www.4spaces.org/centos-8-install-redis/">安装redis</a></h2>
+<blockquote>
+<ul>
+<li>yum install redis</li>
+<li>systemctl start redis</li>
+<li>systemctl enable redis [开机启动]</li>
+<li>/etc/redis.conf   [允许远程连接  注释掉 bind:127.0.0.1]</li>
+<li><code>#</code> requirepass foobared  [密码登录：注释掉该行，将footbared改为 your password]</li>
+<li>修改 daemonize no（第128行） 为 daemonize yes</li>
+<li>开放安全组：6379</li>
+<li>redis-server /etc/redis.conf  启动！</li>
+</ul>
+</blockquote>
+<p><strong>telnet</strong></p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.opss.cn/5167.html">https://www.opss.cn/5167.html</a></p>
+</blockquote>
+<h2 id="安装NVM">安装NVM</h2>
+<blockquote>
+<ul>
+<li>安装CentOS系统上的默认nodejs:   yum module install nodejs</li>
+<li>安装nvm: curl -o- <a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh">https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh</a> | bash</li>
+</ul>
+</blockquote>
+<h2 id="安装pm2">安装pm2</h2>
+<blockquote>
+<p>服务器上node版本为14 安装pm2<br>
+npm i pm2 -g</p>
+</blockquote>
+<h2 id="安装Docker">安装Docker</h2>
+<p>配置mysql/redis/tomcat/nginx</p>
+<blockquote>
+<ul>
+<li>yum install -y yum-utils device-mapper-persistent-data lvm2</li>
+<li>yum-config-manager --add-repo <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo">http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</a></li>
+<li>yum install docker-ce -y</li>
+<li>systemctl start docker</li>
+<li>docker -v</li>
+<li>设置开机启动: <strong>chkconfig docker on</strong></li>
+<li>systemctl enable docker</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.yuque.com/liugezhou/front-end/wp1neo"><strong>Docker应用部署</strong></a></p>
+<ul>
+<li><strong>java:8</strong>
+<ul>
+<li>docker pull java:8</li>
+</ul>
+</li>
+<li><strong>mysql</strong>
+<ul>
+<li><strong>cd /root</strong></li>
+<li><strong>mkdir mysql</strong></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker run -id \</span><br><span class="line">-p 3307:3306 \</span><br><span class="line">--name=c_mysql \</span><br><span class="line">-v $PWD/conf:/etc/mysql/conf.d \</span><br><span class="line">-v $PWD/logs:/logs \</span><br><span class="line">-v $PWD/data:/var/lib/mysql \</span><br><span class="line">-e MYSQL_ROOT_PASSWORD=****** \</span><br><span class="line">mysql:5.7</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><strong>nginx</strong>
+<ul>
+<li><strong>cd /root</strong></li>
+<li><strong>mkdir nginx</strong></li>
+<li><strong>cd nginx</strong></li>
+<li><strong>mkdir conf</strong></li>
+<li>**cd conf **</li>
+<li><strong>vim nginx.conf [内容见下方]</strong></li>
+<li><strong>cd /root</strong></li>
+<li><strong>新建容器</strong></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker run -id --name=c_nginx \</span><br><span class="line">-p <span class="number">8880</span>:<span class="number">80</span> \</span><br><span class="line">-v $PWD/conf/nginx.<span class="property">conf</span>:<span class="regexp">/etc/</span>nginx/nginx.<span class="property">conf</span> \</span><br><span class="line">-v $PWD/<span class="attr">logs</span>:<span class="regexp">/var/</span>log/nginx \</span><br><span class="line">-v $PWD/<span class="attr">html</span>:<span class="regexp">/usr/</span>share/nginx/html \</span><br><span class="line">nginx</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// /root/nginx/conf/nginx.conf</span></span><br><span class="line">user  nginx;</span><br><span class="line">worker_processes  <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">error_log  /<span class="keyword">var</span>/log/nginx/error.<span class="property">log</span> warn;</span><br><span class="line">pid        /<span class="keyword">var</span>/run/nginx.<span class="property">pid</span>;</span><br><span class="line"></span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  <span class="number">1024</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    include       /etc/nginx/mime.<span class="property">types</span>;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line"></span><br><span class="line">    log_format  main  <span class="string">&#x27;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#x27;</span></span><br><span class="line">                      <span class="string">&#x27;$status $body_bytes_sent &quot;$http_referer&quot; &#x27;</span></span><br><span class="line">                      <span class="string">&#x27;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    access_log  /<span class="keyword">var</span>/log/nginx/access.<span class="property">log</span>  main;</span><br><span class="line"></span><br><span class="line">    sendfile        on;</span><br><span class="line">    <span class="string">`#`</span>tcp_nopush     on;</span><br><span class="line"></span><br><span class="line">    keepalive_timeout  <span class="number">65</span>;</span><br><span class="line"></span><br><span class="line">    <span class="string">`#`</span>gzip  on;</span><br><span class="line"></span><br><span class="line">    include /etc/nginx/conf.<span class="property">d</span><span class="comment">/*.conf;</span></span><br><span class="line"><span class="comment">&#125;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><strong>tomcat</strong></li>
+<li><strong>cd /root</strong></li>
+<li><strong>mkdir tomcat</strong></li>
+</ul>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker run -id --name=c_tomcat \</span><br><span class="line">-p 8080:8080 \</span><br><span class="line">-v $PWD:/usr/local/tomcat/webapps \</span><br><span class="line">tomcat</span><br><span class="line"></span><br><span class="line">// 在/root/tomcat/test/index.html，开放8080端口测试</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><strong>redis</strong>
+<ul>
+<li>redis由于需要配置密码登录以及远程连接等，而服务器已配好.</li>
+<li>**因此这里不再安装，**下面为启动命令(没有文件映射)</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run -id --name=c_redis -p <span class="number">6379</span>:<span class="number">6379</span> <span class="attr">redis</span>:<span class="number">5.0</span></span><br><span class="line">测试：redis-cli.<span class="property">exe</span> -h <span class="number">192.168</span><span class="number">.149</span><span class="number">.135</span> -p <span class="number">6379</span></span><br></pre></td></tr></table></figure>
+<p><strong>Docker搭建私有仓库</strong></p>
+<blockquote>
+<ul>
+<li>docker pull registry</li>
+<li>docker run -id --name=registry -p 5000:5000 registry</li>
+<li>输入地址 <a target="_blank" rel="noopener" href="http://xn--ip-xd3cw3mfxfowofno8a6207a:5000/v2/_catalog">http://私有仓库服务器ip:5000/v2/_catalog</a></li>
+<li>修改daemon.json
+<ul>
+<li>{“insecure-registries”:[“私有仓库服务器ip:5000”]}</li>
+</ul>
+</li>
+<li>systemctl restart docker</li>
+<li>docker start registry</li>
+</ul>
+</blockquote>
+<p><strong>在CentOS 8上添加Jenkins存储库</strong></p>
+<blockquote>
+<p>由于Jenkins在CentOS 8存储库中不可用，因此我们将手动将Jenkins存储库添加到系统中。</p>
+<ul>
+<li>首先添加Jenkins Key<br>
+<code>#</code> rpm --import <a target="_blank" rel="noopener" href="https://pkg.jenkins.io/redhat-stable/jenkins.io.key">https://pkg.jenkins.io/redhat-stable/jenkins.io.key</a></li>
+<li>将Jenkins的存储库追加到CentOS 8<br>
+＃cd /etc/yum.repos.d<br>
+＃curl -O <a target="_blank" rel="noopener" href="https://pkg.jenkins.io/redhat-stable/jenkins.repo">https://pkg.jenkins.io/redhat-stable/jenkins.repo</a></li>
+<li>安装Jenkins</li>
+</ul>
+</blockquote>
+<p><strong>dnf install jenkins</strong></p>
+<blockquote>
+<ul>
+<li>验证状态<br>
+<code>#</code> systemctl start jenkins<br>
+<code>#</code> systemctl status jenkins</li>
+<li>修改端口<br>
+<code># </code>vi  /etc/sysconfig/jenkins</li>
+<li>浏览<br>
+<code>#</code> <a target="_blank" rel="noopener" href="http://server-IP:8081">http://server-IP:8081</a> || 输入密码 || 安装插件</li>
+</ul>
+</blockquote>
+<h2 id="Tips">Tips</h2>
+<blockquote>
+<ol>
+<li>服务终端总是断开：</li>
+</ol>
+<ul>
+<li>vi /etc/ssh/sshd_config</li>
+<li>修改 ClientAliveInterval 和 ClientAliveCountMax</li>
+<li>重启：systemctl restart sshd.service</li>
+</ul>
+</blockquote>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>运维相关</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2021-09-02</p><p><span>最后更新：</span>2022-05-04</p><p><span>原始链接：</span><a href="/020-运维相关/">https://blog.liugezhou.online/020-%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/020-%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/服务端"><i class="fa fa-tag">服务端</i></a></div><div class="post-nav"><a class="pre" href="/021-Docker%E7%9B%B8%E5%85%B3/">Docker</a><a class="next" href="/Week33-%E7%BB%84%E4%BB%B6%E5%B9%B3%E5%8F%B0%E5%BC%80%E5%8F%91/">Week33-组件平台开发</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

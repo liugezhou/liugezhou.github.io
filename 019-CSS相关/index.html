@@ -1,0 +1,759 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="CSS相关"><meta name="twitter:description" content="&lt;p&gt;&lt;font color=blue&gt;更新说明：对文章排版以及内容格式做了调整。&lt;/font&gt;&lt;br&gt;
+&lt;font color=blue&gt; 更新时间：2022-05-04&lt;/font&gt;&lt;/p&gt;
+&lt;h2 id=&quot;1-rem&quot;&gt;1. rem&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;默认字号&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;rem是相对html根元素来说的；浏览器默认的font-size为16px，也就是说默认 1rem为16px。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;鉴于此，一些网页定义 根元素 font-size为10/16 = 0.675em，那么这个时候1rem为10px。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;16px为继承值&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;而使用rem前，一般都需要加入一些js代码，通过判断屏幕宽度去计算根[html]的font-size,代码为：&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; &lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title function_&quot;&gt;autoRootFontSize&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;variable language_&quot;&gt;document&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;documentElement&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;style&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;fontSize&lt;/span&gt; = &lt;span class=&quot;title class_&quot;&gt;Math&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;min&lt;/span&gt;(screen.&lt;span class=&quot;property&quot;&gt;width&lt;/span&gt;, &lt;span class=&quot;variable language_&quot;&gt;document&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;documentElement&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;getBoundingClientRect&lt;/span&gt;().&lt;span class=&quot;property&quot;&gt;width&lt;/span&gt;) / &lt;span class=&quot;number&quot;&gt;750&lt;/span&gt; * &lt;span class=&quot;number&quot;&gt;32&lt;/span&gt; + &lt;span class=&quot;string&quot;&gt;&amp;#x27;px&amp;#x27;&lt;/span&gt;;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;variable language_&quot;&gt;window&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;addEventListener&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;resize&amp;#x27;&lt;/span&gt;, autoRootFontSize);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;title function_&quot;&gt;autoRootFontSize&lt;/span&gt;();&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;)();&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;而不需要使用js去计算font-size，直接使用CSS的为解决问题的重点：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;/* 基于UI width=750px DPR=2的页面 */&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;html &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    font-&lt;span class=&quot;attr&quot;&gt;size&lt;/span&gt;: &lt;span class=&quot;title function_&quot;&gt;calc&lt;/span&gt;(100vw / &lt;span class=&quot;number&quot;&gt;7.5&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;2-vw-vh&quot;&gt;2. vw vh&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;vw:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;1vh表示屏幕可视宽度的1%&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;vh:&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;1vh表示屏幕可视高度的1%&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;calc：&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;calc()函数用于动态计算长度值,可以组合不同的单位,特别需要注意的是运算符前后都需要保留一个空格&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;dpr：&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;window.devicePixedlRatio (物理像素),就是一个比例，IPhone4开始，dpr为2 ，这个东西的作用是设计稿用750px，一个按钮的设计为100px，那么CSS书写就是50px，详细一点的解释为：&lt;/strong&gt;&lt;a href=&quot;https://juejin.cn/post/6844903704567644167&quot;&gt;https://juejin.cn/post/6844903704567644167&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;3-使用nth-child-选择指定元素&quot;&gt;3. 使用nth-child()选择指定元素&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;#demo p:nth-child(2):表示id为demo的元素下的第二个p标签&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;4-使用writing-mode排版竖文&quot;&gt;4. 使用writing-mode排版竖文&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;writing-mode:vertical-lr&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;5-使用-text-align-last对齐两端文本&quot;&gt;5. 使用 text-align-last对齐两端文本&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;text-align-last:justify&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;6-css一行文本超出&quot;&gt;6. css一行文本超出&lt;/h2&gt;
+&lt;figure class=&quot;highlight css&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;selector-tag&quot;&gt;p&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	&lt;span class=&quot;attribute&quot;&gt;overflow&lt;/span&gt;:hidden;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attribute&quot;&gt;white-space&lt;/span&gt;:nowrap;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attribute&quot;&gt;text-overflow&lt;/span&gt;:ellipsis;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;7-多行文本超出&quot;&gt;7.多行文本超出&lt;/h2&gt;
+&lt;figure class=&quot;highlight css&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;selector-class&quot;&gt;.div&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	&lt;span class=&quot;attribute&quot;&gt;display&lt;/span&gt;: -webkit-box;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  -webkit-box-orient:vertical;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  -webkit-line-clamp:&lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attribute&quot;&gt;overflow&lt;/span&gt;:hidden&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;8-iOS手机容器滚动条滑动不流畅&quot;&gt;8.iOS手机容器滚动条滑动不流畅&lt;/h2&gt;
+&lt;figure class=&quot;highlight css&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;selector-class&quot;&gt;.div&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	&lt;span class=&quot;attribute&quot;&gt;overflow&lt;/span&gt;:auto;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  -webkit-box-scrolling:touch;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;9-使用CSS写出一个三角形图表&quot;&gt;9.使用CSS写出一个三角形图表&lt;/h2&gt;
+&lt;figure class=&quot;highlight css&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;selector-class&quot;&gt;.div&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	&lt;span class=&quot;attribute&quot;&gt;height&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attribute&quot;&gt;width&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attribute&quot;&gt;border&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;10px&lt;/span&gt; solid #transparent;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attribute&quot;&gt;border-top-color&lt;/span&gt;:red;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;10-contenteditable&quot;&gt;10.contenteditable&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;html中大部分标签是不可以编辑的，但是添加了contentditable属性后，标签会变成可编辑状态。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;11-CSS边框&quot;&gt;11. CSS边框&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本节回顾两个属性&lt;code&gt;border-radius&lt;/code&gt;、&lt;code&gt;box-shadow&lt;/code&gt;&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;属性&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;th&gt;扩展&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;border-radius&lt;/td&gt;
+&lt;td&gt;给div元素添加圆角的边框&lt;br&gt;border-radius 属性是一个最多可指定四个 border -*- radius 属性的复合属性&lt;br&gt;&lt;br&gt;若跟四个值其顺序是：&lt;br&gt;左上角、右上角、右下角、左下角&lt;/td&gt;
+&lt;td&gt;~~border-top-left-radius&lt;br&gt;border-top-right-radius&lt;br&gt;border-bottom-right-radius&lt;br&gt;border-bottom-left-radius&lt;br&gt;~~推荐写法:&lt;br&gt;border-radius:20px&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;box-shadow&lt;/td&gt;
+&lt;td&gt;该属性可以设置一个或多个下拉阴影的框&lt;br&gt;语法：&lt;br&gt;box-shadow:h-shadow v-shadow blur spread color inset&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;h-shadow&lt;/code&gt;  水平阴影位置–必填值（允许负值）&lt;br&gt;&lt;code&gt;v-shadow&lt;/code&gt;  垂直阴影位置–必填值（允许负值） &lt;br&gt;&lt;code&gt;blur&lt;/code&gt;  可选值–模糊距离&lt;br&gt;&lt;code&gt;spread&lt;/code&gt;  可选值–阴影的大小&lt;br&gt; &lt;code&gt;color&lt;/code&gt;  可选值-颜色&lt;br&gt;&lt;code&gt;inset&lt;/code&gt;  可选值 --从外内的阴影（开始时）改变阴影内侧阴影&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;border-image&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;12-CSS3背景&quot;&gt;12.CSS3背景&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本节回顾以下背景属性：&lt;code&gt;bacground-image&lt;/code&gt;、 &lt;code&gt;background-size&lt;/code&gt;、 &lt;code&gt;background-origin&lt;/code&gt;、 &lt;code&gt;background-clip&lt;/code&gt;&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;属性&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;th&gt;扩展&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;background-image&lt;/td&gt;
+&lt;td&gt;添加背景图片(允许在元素上添加多个背景图像)&lt;/td&gt;
+&lt;td&gt;background: url(flower.png) right bottom no-repeat, url(summertrack.png) left top repeat;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;background-size&lt;/td&gt;
+&lt;td&gt;指定背景图像的大小–该大小是相对于父元素的高度和宽度的百分比&lt;/td&gt;
+&lt;td&gt;background-size:20px 60px;&lt;br&gt;background-size:100% 100%;&lt;br&gt;background-size:cover–保持图像纵横比并将图像缩放成完全覆盖背景定位的最小大小&lt;br&gt;background-size:contain–保持图像的纵横比并将图像缩放成将适合背景定位区域的最大大小。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;background-origin&lt;/td&gt;
+&lt;td&gt;该属性指定了背景图像的位置区域&lt;/td&gt;
+&lt;td&gt;content-box&lt;br&gt;padding-box&lt;br&gt;border-box&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;background-clip&lt;/td&gt;
+&lt;td&gt;该裁剪属性是指从指定位置开始绘制&lt;/td&gt;
+&lt;td&gt;content-box&lt;br&gt;padding-box&lt;br&gt;border-box&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;13-CSS3的渐变&quot;&gt;13.CSS3的渐变&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;对CSS3渐变的高效使用，可以提升网站一个Level。&lt;br&gt;
+我们来回顾：线性渐变（Linear Gradients）和径向渐变（Radial Gradients）&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;线性渐变（Linerar Gradients）：&lt;br&gt;
+从上到下（默认）：&lt;code&gt;background:linear-gradient(red,blue,...)&lt;/code&gt;&lt;br&gt;
+从左到右： &lt;code&gt;background:linear-gradient(to right,red,blue,...)&lt;/code&gt;&lt;br&gt;
+从左上角到右下角度： &lt;code&gt;background:linear-gradient(to right bottom,red,blue,...)&lt;/code&gt;&lt;br&gt;
+角度定义：&lt;code&gt;background:linear-gradient(45deg,red,blue,...)&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;径向渐变（Radial Gradients）:&lt;br&gt;
+颜色结点均匀分布（默认情况下）:&lt;code&gt;background:radial-gradient(red,green,blue)&lt;/code&gt;&lt;br&gt;
+颜色结点不均匀分布：&lt;code&gt;background:radial-gradient(red 10%,green 20%,blue 30%)&lt;/code&gt;&lt;br&gt;
+设置形状：&lt;code&gt;background: radial-gradient(circle | ellipse, red, yellow, green);&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;14-CSS3文本效果&quot;&gt;14.CSS3文本效果&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;这里我们来回顾以下文本效果的以下几个属性：&lt;code&gt;text-shadow&lt;/code&gt;、&lt;code&gt;text-overflow&lt;/code&gt;、&lt;code&gt;word-wrap&lt;/code&gt;、&lt;code&gt;word-break&lt;/code&gt;&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;属性&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;th&gt;扩展&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;text-shadow&lt;/td&gt;
+&lt;td&gt;文本阴影&lt;br&gt;语法：&lt;br&gt;text-shadow: h-shadow v-shadow blur color;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;h-shadow&lt;/code&gt;  水平阴影位置–必填值（允许负值）&lt;br&gt;&lt;code&gt;v-shadow&lt;/code&gt;  垂直阴影位置–必填值（允许负值） &lt;br&gt;&lt;code&gt;blur&lt;/code&gt;  可选值–模糊距离&lt;br&gt;&lt;code&gt;spread&lt;/code&gt;  可选值–阴影的大小&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;text-overflow&lt;/td&gt;
+&lt;td&gt;文本溢出属性指定应向用户如何显示溢出内容（clip、ellipsis、string）&lt;/td&gt;
+&lt;td&gt;clip --修剪文本&lt;br&gt;ellipsis–显示省略号代替被修剪的文本&lt;br&gt;string – 使用给定的字符串来代表被修剪的文本&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;word-wrap&lt;/td&gt;
+&lt;td&gt;允许对长的不可分割的单词进行分割并换行到下一行。（normal、break-word）&lt;/td&gt;
+&lt;td&gt;normal–只在允许的断字点换行&lt;br&gt;break-word–在长单词或URL地址内部进行换行&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;word-break&lt;/td&gt;
+&lt;td&gt;规定非中日韩文本的换行规则&lt;/td&gt;
+&lt;td&gt;normal–使用浏览器默认的换行规则。&lt;br&gt;break-all–允许在单词内换行。&lt;br&gt;keep-all–只能在半角空格或连字符处换行。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;15-2D转换&quot;&gt;15.2D转换&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;transform:translate(x,y)、rotate(angle)、scale(x,y)、skew(x-angle,y-angle)、matrix()&lt;br&gt;
+移动、旋转、放大缩小、倾斜。&lt;br&gt;
+不展开叙述。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;16-CSS3过渡-CSS3动画&quot;&gt;16.CSS3过渡 || CSS3动画&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;过渡属性&lt;br&gt;
+&lt;code&gt;transition&lt;/code&gt;:简写属性，用于在一个属性中设置四个过渡属性。&lt;br&gt;
+&lt;code&gt;transition-property&lt;/code&gt;:规定应用过渡的CSS属性的名称。&lt;br&gt;
+&lt;code&gt;transition-duration&lt;/code&gt;：定义过渡效果花费的时间。默认为0&lt;br&gt;
+&lt;code&gt;transition-timing-function&lt;/code&gt;:规定过渡效果的时间曲线&lt;br&gt;
+&lt;code&gt;transition-delay&lt;/code&gt;:规定过渡效果何时开始&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;动画属性&lt;br&gt;
+|属性|描述|&lt;br&gt;
+|—|—|&lt;br&gt;
+|&lt;code&gt;@keyframse&lt;/code&gt;|规定动画|&lt;br&gt;
+|&lt;code&gt;animation&lt;/code&gt;|所有动画的简写属性，除了&lt;code&gt;animation-play-state&lt;/code&gt;属性 |&lt;br&gt;
+|语法：|&lt;code&gt;animation: name duration timing-function delay iteration-count direction fill-mode play-state;&lt;/code&gt;|&lt;br&gt;
+|&lt;code&gt;animation-name&lt;/code&gt;|规定@keyframes动画的名称 |&lt;br&gt;
+|&lt;code&gt;animation-duration&lt;/code&gt;|规定动画完成一个周期所花费封秒或毫秒 |&lt;br&gt;
+|&lt;code&gt;animation-timing-function&lt;/code&gt;|规定动画的速度曲线：默认为[ease（低速-加快-变慢）] |&lt;br&gt;
+| 其它值|linear(匀速)、ease-in(动画以低速开始)、ease-out(动画以低速结束)、ease-in-out(动画以低速开始和结束) |&lt;br&gt;
+|&lt;code&gt;animation-fill-mode&lt;/code&gt;|规定当动画不播放时（当动画完成或者延迟未开始播放时），要应用到的元素的样式。|&lt;br&gt;
+|&lt;code&gt;animation-delay&lt;/code&gt;|规定动画何时开始  |&lt;br&gt;
+|&lt;code&gt;animation-iteration-count&lt;/code&gt;|规定动画被播放的次数   [infinite]无限次  |&lt;br&gt;
+|&lt;code&gt;animation-direction&lt;/code&gt;|规定动画是否在下一周期逆向地播放。默认是[normal]  |&lt;br&gt;
+|animation-direction – reverse|动画反向播放|&lt;br&gt;
+|animation-direction --alternate|动画在奇数次（1、3、5…）正向播放，在偶数次（2、4、6…）反向播放。|&lt;br&gt;
+|animation-direction–alternate-reverse|动画在奇数次（1、3、5…）反向播放，在偶数次（2、4、6…）正向播放|&lt;br&gt;
+|&lt;code&gt;animation-play-state&lt;/code&gt;|规定动画是否正在运行或暂停。默认是[running]|&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;17-CSS3多列&quot;&gt;17.CSS3多列&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;关于CSS3的多列属性我好像还真没用到过，看到了就记录一下吧。&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;属性&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;column-count&lt;/td&gt;
+&lt;td&gt;指定了需要将一段文字分隔的列数&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;column-gap&lt;/td&gt;
+&lt;td&gt;该属性指定了列与列之间的缝隙&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;column-rule-width&lt;/td&gt;
+&lt;td&gt;指定了两列的边框厚度&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;column-rule-style&lt;/td&gt;
+&lt;td&gt;指定了列与列之间的边框样式（solid | dotted）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;column-rule-color&lt;/td&gt;
+&lt;td&gt;指定了两列的边框颜色&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;column-rule&lt;/td&gt;
+&lt;td&gt;是上述三个属性的缩写&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;column-span&lt;/td&gt;
+&lt;td&gt;指定元素跨越所有列&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;column-width&lt;/td&gt;
+&lt;td&gt;指定了列的宽度&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;18-CSS3用户界面&quot;&gt;18.CSS3用户界面&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;属性&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;resizing&lt;/td&gt;
+&lt;td&gt;指定一个元素是否应该由用户去调整大小&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;box-sizing&lt;/td&gt;
+&lt;td&gt;当你设置一个元素为box-sizing:border-box时，此元素的内边距和边框便不再增加它的宽度了&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;outline-offset&lt;/td&gt;
+&lt;td&gt;对轮廓进行偏移，并在超出边框边缘的位置绘制轮廓&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;19-CSS3图片&quot;&gt;19.CSS3图片&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;响应式图片&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code&gt;img&amp;#123;
+    max-width:100%;
+    height:auto;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;图片文本&lt;br&gt;
+定义图片文本的时候结合position:relative和position:absolute。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;响应式图片相册&lt;br&gt;
+在这里正确用好这几个属性：&lt;code&gt;box-sizing:border&lt;/code&gt;、&lt;code&gt;@media&lt;/code&gt;、&lt;code&gt;clear:both&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;20-CSS3多媒体查询&quot;&gt;20.CSS3多媒体查询&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;CSS3多媒体类型&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;值&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;all&lt;/td&gt;
+&lt;td&gt;用于所有多媒体类型设备&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;print&lt;/td&gt;
+&lt;td&gt;用于打印机&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;screen&lt;/td&gt;
+&lt;td&gt;用于电脑屏幕、平板、智能手机等&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;speech&lt;/td&gt;
+&lt;td&gt;用于屏幕阅读器&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/blockquote&gt;
+"><meta name="twitter:image"><title>CSS相关 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">CSS相关</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">CSS相关</h1><div class="post-meta">2021-08-25<span> | </span><span class="category"><a href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 2.1k</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 8</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/019-CSS%E7%9B%B8%E5%85%B3/#vcomment"><span class="valine-comment-count" data-xid="/019-CSS%E7%9B%B8%E5%85%B3/"></span><span> 条评论</span></a><div class="post-content"><p><font color=blue>更新说明：对文章排版以及内容格式做了调整。</font><br>
+<font color=blue> 更新时间：2022-05-04</font></p>
+<h2 id="1-rem">1. rem</h2>
+<p><strong>默认字号</strong></p>
+<blockquote>
+<ul>
+<li>
+<p>rem是相对html根元素来说的；浏览器默认的font-size为16px，也就是说默认 1rem为16px。</p>
+</li>
+<li>
+<p>鉴于此，一些网页定义 根元素 font-size为10/16 = 0.675em，那么这个时候1rem为10px。</p>
+</li>
+<li>
+<p>16px为继承值</p>
+</li>
+<li>
+<p>而使用rem前，一般都需要加入一些js代码，通过判断屏幕宽度去计算根[html]的font-size,代码为：</p>
+</li>
+</ul>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line"> <span class="keyword">function</span> <span class="title function_">autoRootFontSize</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">style</span>.<span class="property">fontSize</span> = <span class="title class_">Math</span>.<span class="title function_">min</span>(screen.<span class="property">width</span>, <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="title function_">getBoundingClientRect</span>().<span class="property">width</span>) / <span class="number">750</span> * <span class="number">32</span> + <span class="string">&#x27;px&#x27;</span>;&#125;</span><br><span class="line">  <span class="variable language_">window</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;resize&#x27;</span>, autoRootFontSize);</span><br><span class="line">  <span class="title function_">autoRootFontSize</span>();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>而不需要使用js去计算font-size，直接使用CSS的为解决问题的重点：</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 基于UI width=750px DPR=2的页面 */</span></span><br><span class="line">html &#123;</span><br><span class="line">    font-<span class="attr">size</span>: <span class="title function_">calc</span>(100vw / <span class="number">7.5</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-vw-vh">2. vw vh</h2>
+<blockquote>
+<p><strong>vw:</strong></p>
+<ul>
+<li><strong>1vh表示屏幕可视宽度的1%</strong></li>
+</ul>
+</blockquote>
+<p><strong>vh:</strong></p>
+<blockquote>
+<ul>
+<li><strong>1vh表示屏幕可视高度的1%</strong></li>
+</ul>
+</blockquote>
+<p><strong>calc：</strong></p>
+<blockquote>
+<ul>
+<li><strong>calc()函数用于动态计算长度值,可以组合不同的单位,特别需要注意的是运算符前后都需要保留一个空格</strong></li>
+</ul>
+</blockquote>
+<p><strong>dpr：</strong></p>
+<blockquote>
+<ul>
+<li><strong>window.devicePixedlRatio (物理像素),就是一个比例，IPhone4开始，dpr为2 ，这个东西的作用是设计稿用750px，一个按钮的设计为100px，那么CSS书写就是50px，详细一点的解释为：</strong><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903704567644167">https://juejin.cn/post/6844903704567644167</a></li>
+</ul>
+</blockquote>
+<h2 id="3-使用nth-child-选择指定元素">3. 使用nth-child()选择指定元素</h2>
+<blockquote>
+<p>#demo p:nth-child(2):表示id为demo的元素下的第二个p标签</p>
+</blockquote>
+<h2 id="4-使用writing-mode排版竖文">4. 使用writing-mode排版竖文</h2>
+<blockquote>
+<p>writing-mode:vertical-lr</p>
+</blockquote>
+<h2 id="5-使用-text-align-last对齐两端文本">5. 使用 text-align-last对齐两端文本</h2>
+<blockquote>
+<p>text-align-last:justify</p>
+</blockquote>
+<h2 id="6-css一行文本超出">6. css一行文本超出</h2>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">p</span>&#123;</span><br><span class="line">	<span class="attribute">overflow</span>:hidden;</span><br><span class="line">  <span class="attribute">white-space</span>:nowrap;</span><br><span class="line">  <span class="attribute">text-overflow</span>:ellipsis;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="7-多行文本超出">7.多行文本超出</h2>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.div</span>&#123;</span><br><span class="line">	<span class="attribute">display</span>: -webkit-box;</span><br><span class="line">  -webkit-box-orient:vertical;</span><br><span class="line">  -webkit-line-clamp:<span class="number">3</span>;</span><br><span class="line">  <span class="attribute">overflow</span>:hidden</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="8-iOS手机容器滚动条滑动不流畅">8.iOS手机容器滚动条滑动不流畅</h2>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.div</span> &#123;</span><br><span class="line">	<span class="attribute">overflow</span>:auto;</span><br><span class="line">  -webkit-box-scrolling:touch;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="9-使用CSS写出一个三角形图表">9.使用CSS写出一个三角形图表</h2>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.div</span> &#123;</span><br><span class="line">	<span class="attribute">height</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">width</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">border</span>:<span class="number">10px</span> solid #transparent;</span><br><span class="line">  <span class="attribute">border-top-color</span>:red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="10-contenteditable">10.contenteditable</h2>
+<blockquote>
+<p>html中大部分标签是不可以编辑的，但是添加了contentditable属性后，标签会变成可编辑状态。</p>
+</blockquote>
+<h2 id="11-CSS边框">11. CSS边框</h2>
+<blockquote>
+<p>本节回顾两个属性<code>border-radius</code>、<code>box-shadow</code></p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+<th>扩展</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>border-radius</td>
+<td>给div元素添加圆角的边框<br>border-radius 属性是一个最多可指定四个 border -*- radius 属性的复合属性<br><br>若跟四个值其顺序是：<br>左上角、右上角、右下角、左下角</td>
+<td>~~border-top-left-radius<br>border-top-right-radius<br>border-bottom-right-radius<br>border-bottom-left-radius<br>~~推荐写法:<br>border-radius:20px</td>
+</tr>
+<tr>
+<td>box-shadow</td>
+<td>该属性可以设置一个或多个下拉阴影的框<br>语法：<br>box-shadow:h-shadow v-shadow blur spread color inset</td>
+<td><code>h-shadow</code>  水平阴影位置–必填值（允许负值）<br><code>v-shadow</code>  垂直阴影位置–必填值（允许负值） <br><code>blur</code>  可选值–模糊距离<br><code>spread</code>  可选值–阴影的大小<br> <code>color</code>  可选值-颜色<br><code>inset</code>  可选值 --从外内的阴影（开始时）改变阴影内侧阴影</td>
+</tr>
+<tr>
+<td>border-image</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<h2 id="12-CSS3背景">12.CSS3背景</h2>
+<blockquote>
+<p>本节回顾以下背景属性：<code>bacground-image</code>、 <code>background-size</code>、 <code>background-origin</code>、 <code>background-clip</code></p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+<th>扩展</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>background-image</td>
+<td>添加背景图片(允许在元素上添加多个背景图像)</td>
+<td>background: url(flower.png) right bottom no-repeat, url(summertrack.png) left top repeat;</td>
+</tr>
+<tr>
+<td>background-size</td>
+<td>指定背景图像的大小–该大小是相对于父元素的高度和宽度的百分比</td>
+<td>background-size:20px 60px;<br>background-size:100% 100%;<br>background-size:cover–保持图像纵横比并将图像缩放成完全覆盖背景定位的最小大小<br>background-size:contain–保持图像的纵横比并将图像缩放成将适合背景定位区域的最大大小。</td>
+</tr>
+<tr>
+<td>background-origin</td>
+<td>该属性指定了背景图像的位置区域</td>
+<td>content-box<br>padding-box<br>border-box</td>
+</tr>
+<tr>
+<td>background-clip</td>
+<td>该裁剪属性是指从指定位置开始绘制</td>
+<td>content-box<br>padding-box<br>border-box</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<h2 id="13-CSS3的渐变">13.CSS3的渐变</h2>
+<blockquote>
+<p>对CSS3渐变的高效使用，可以提升网站一个Level。<br>
+我们来回顾：线性渐变（Linear Gradients）和径向渐变（Radial Gradients）</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>
+<p>线性渐变（Linerar Gradients）：<br>
+从上到下（默认）：<code>background:linear-gradient(red,blue,...)</code><br>
+从左到右： <code>background:linear-gradient(to right,red,blue,...)</code><br>
+从左上角到右下角度： <code>background:linear-gradient(to right bottom,red,blue,...)</code><br>
+角度定义：<code>background:linear-gradient(45deg,red,blue,...)</code></p>
+</li>
+<li>
+<p>径向渐变（Radial Gradients）:<br>
+颜色结点均匀分布（默认情况下）:<code>background:radial-gradient(red,green,blue)</code><br>
+颜色结点不均匀分布：<code>background:radial-gradient(red 10%,green 20%,blue 30%)</code><br>
+设置形状：<code>background: radial-gradient(circle | ellipse, red, yellow, green);</code></p>
+</li>
+</ul>
+</blockquote>
+<h2 id="14-CSS3文本效果">14.CSS3文本效果</h2>
+<blockquote>
+<p>这里我们来回顾以下文本效果的以下几个属性：<code>text-shadow</code>、<code>text-overflow</code>、<code>word-wrap</code>、<code>word-break</code></p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+<th>扩展</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text-shadow</td>
+<td>文本阴影<br>语法：<br>text-shadow: h-shadow v-shadow blur color;</td>
+<td><code>h-shadow</code>  水平阴影位置–必填值（允许负值）<br><code>v-shadow</code>  垂直阴影位置–必填值（允许负值） <br><code>blur</code>  可选值–模糊距离<br><code>spread</code>  可选值–阴影的大小</td>
+</tr>
+<tr>
+<td>text-overflow</td>
+<td>文本溢出属性指定应向用户如何显示溢出内容（clip、ellipsis、string）</td>
+<td>clip --修剪文本<br>ellipsis–显示省略号代替被修剪的文本<br>string – 使用给定的字符串来代表被修剪的文本</td>
+</tr>
+<tr>
+<td>word-wrap</td>
+<td>允许对长的不可分割的单词进行分割并换行到下一行。（normal、break-word）</td>
+<td>normal–只在允许的断字点换行<br>break-word–在长单词或URL地址内部进行换行</td>
+</tr>
+<tr>
+<td>word-break</td>
+<td>规定非中日韩文本的换行规则</td>
+<td>normal–使用浏览器默认的换行规则。<br>break-all–允许在单词内换行。<br>keep-all–只能在半角空格或连字符处换行。</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<h2 id="15-2D转换">15.2D转换</h2>
+<blockquote>
+<p>transform:translate(x,y)、rotate(angle)、scale(x,y)、skew(x-angle,y-angle)、matrix()<br>
+移动、旋转、放大缩小、倾斜。<br>
+不展开叙述。</p>
+</blockquote>
+<h2 id="16-CSS3过渡-CSS3动画">16.CSS3过渡 || CSS3动画</h2>
+<blockquote>
+<ul>
+<li>
+<p>过渡属性<br>
+<code>transition</code>:简写属性，用于在一个属性中设置四个过渡属性。<br>
+<code>transition-property</code>:规定应用过渡的CSS属性的名称。<br>
+<code>transition-duration</code>：定义过渡效果花费的时间。默认为0<br>
+<code>transition-timing-function</code>:规定过渡效果的时间曲线<br>
+<code>transition-delay</code>:规定过渡效果何时开始</p>
+</li>
+<li>
+<p>动画属性<br>
+|属性|描述|<br>
+|—|—|<br>
+|<code>@keyframse</code>|规定动画|<br>
+|<code>animation</code>|所有动画的简写属性，除了<code>animation-play-state</code>属性 |<br>
+|语法：|<code>animation: name duration timing-function delay iteration-count direction fill-mode play-state;</code>|<br>
+|<code>animation-name</code>|规定@keyframes动画的名称 |<br>
+|<code>animation-duration</code>|规定动画完成一个周期所花费封秒或毫秒 |<br>
+|<code>animation-timing-function</code>|规定动画的速度曲线：默认为[ease（低速-加快-变慢）] |<br>
+| 其它值|linear(匀速)、ease-in(动画以低速开始)、ease-out(动画以低速结束)、ease-in-out(动画以低速开始和结束) |<br>
+|<code>animation-fill-mode</code>|规定当动画不播放时（当动画完成或者延迟未开始播放时），要应用到的元素的样式。|<br>
+|<code>animation-delay</code>|规定动画何时开始  |<br>
+|<code>animation-iteration-count</code>|规定动画被播放的次数   [infinite]无限次  |<br>
+|<code>animation-direction</code>|规定动画是否在下一周期逆向地播放。默认是[normal]  |<br>
+|animation-direction – reverse|动画反向播放|<br>
+|animation-direction --alternate|动画在奇数次（1、3、5…）正向播放，在偶数次（2、4、6…）反向播放。|<br>
+|animation-direction–alternate-reverse|动画在奇数次（1、3、5…）反向播放，在偶数次（2、4、6…）正向播放|<br>
+|<code>animation-play-state</code>|规定动画是否正在运行或暂停。默认是[running]|</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="17-CSS3多列">17.CSS3多列</h2>
+<blockquote>
+<p>关于CSS3的多列属性我好像还真没用到过，看到了就记录一下吧。</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>column-count</td>
+<td>指定了需要将一段文字分隔的列数</td>
+</tr>
+<tr>
+<td>column-gap</td>
+<td>该属性指定了列与列之间的缝隙</td>
+</tr>
+<tr>
+<td>column-rule-width</td>
+<td>指定了两列的边框厚度</td>
+</tr>
+<tr>
+<td>column-rule-style</td>
+<td>指定了列与列之间的边框样式（solid | dotted）</td>
+</tr>
+<tr>
+<td>column-rule-color</td>
+<td>指定了两列的边框颜色</td>
+</tr>
+<tr>
+<td>column-rule</td>
+<td>是上述三个属性的缩写</td>
+</tr>
+<tr>
+<td>column-span</td>
+<td>指定元素跨越所有列</td>
+</tr>
+<tr>
+<td>column-width</td>
+<td>指定了列的宽度</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<h2 id="18-CSS3用户界面">18.CSS3用户界面</h2>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>resizing</td>
+<td>指定一个元素是否应该由用户去调整大小</td>
+</tr>
+<tr>
+<td>box-sizing</td>
+<td>当你设置一个元素为box-sizing:border-box时，此元素的内边距和边框便不再增加它的宽度了</td>
+</tr>
+<tr>
+<td>outline-offset</td>
+<td>对轮廓进行偏移，并在超出边框边缘的位置绘制轮廓</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<h2 id="19-CSS3图片">19.CSS3图片</h2>
+<blockquote>
+<ul>
+<li>响应式图片</li>
+</ul>
+</blockquote>
+<pre><code>img&#123;
+    max-width:100%;
+    height:auto;
+&#125;
+</code></pre>
+<blockquote>
+<ul>
+<li>图片文本<br>
+定义图片文本的时候结合position:relative和position:absolute。</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>响应式图片相册<br>
+在这里正确用好这几个属性：<code>box-sizing:border</code>、<code>@media</code>、<code>clear:both</code></li>
+</ul>
+</blockquote>
+<h2 id="20-CSS3多媒体查询">20.CSS3多媒体查询</h2>
+<blockquote>
+<p>CSS3多媒体类型</p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>all</td>
+<td>用于所有多媒体类型设备</td>
+</tr>
+<tr>
+<td>print</td>
+<td>用于打印机</td>
+</tr>
+<tr>
+<td>screen</td>
+<td>用于电脑屏幕、平板、智能手机等</td>
+</tr>
+<tr>
+<td>speech</td>
+<td>用于屏幕阅读器</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>CSS相关</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2021-08-25</p><p><span>最后更新：</span>2022-05-04</p><p><span>原始链接：</span><a href="/019-CSS相关/">https://blog.liugezhou.online/019-CSS%E7%9B%B8%E5%85%B3/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/019-CSS%E7%9B%B8%E5%85%B3/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/CSS"><i class="fa fa-tag">CSS</i></a></div><div class="post-nav"><a class="pre" href="/Week33-%E7%BB%84%E4%BB%B6%E5%B9%B3%E5%8F%B0%E5%BC%80%E5%8F%91/">Week33-组件平台开发</a><a class="next" href="/Week32-%E8%84%9A%E6%89%8B%E6%9E%B6%E7%BB%84%E4%BB%B6%E5%8F%91%E5%B8%83%E5%8A%9F%E8%83%BD%E5%BC%80%E5%8F%91/">Week32-脚手架组件发布功能开发</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

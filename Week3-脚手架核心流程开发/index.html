@@ -1,0 +1,749 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="Week3-脚手架核心流程开发"><meta name="twitter:description" content="&lt;p&gt;&lt;font color=blue&gt;更新说明：对文章目录排版做了调整。&lt;/font&gt;&lt;br&gt;
+&lt;font color=blue&gt; 更新时间：2022-05-04&lt;/font&gt;&lt;/p&gt;
+&lt;h2 id=&quot;第一章：本周导学&quot;&gt;第一章：本周导学&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;本周整体内容介绍和学习方法&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;标题&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;脚手架需求分析和架构设计，核心流程开发&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;收获&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;架构设计和技术方案设计全过程&lt;/li&gt;
+&lt;li&gt;脚手架核心流程和commander框架&lt;/li&gt;
+&lt;li&gt;如何让Node项目支持ES Module&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;主要内容&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;脚手架需求分析和架构设计&lt;/li&gt;
+&lt;li&gt;脚手架模块拆分策略和core模块技术方案&lt;/li&gt;
+&lt;li&gt;脚手架执行准备过程实现&lt;/li&gt;
+&lt;li&gt;脚手架命令注册实现(基于commander)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;加餐&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Node项目如何支持ES Module&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;第二章：脚手架整体架构设计&quot;&gt;第二章：脚手架整体架构设计&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;2-1 大厂是如何做项目的&lt;/strong&gt;&lt;br&gt;
+&lt;img src=&quot;https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/3-1.6id7710dpwk0.webp&quot; alt=&quot;3-1&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2-2 前端研发过程中的痛点和需求分析&lt;/strong&gt;&lt;br&gt;
+&lt;img src=&quot;https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/3-2.6ic0nprs1e00.webp&quot; alt=&quot;3-2&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2-3 加餐：大厂的git操作规范是怎样的？&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;clone下来的项目 master分支是不做开发的，我们会新建一个dev分支，上线以后会新建一个release分支。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/3-3.4sujpjgc1p40.webp&quot; alt=&quot;3-3&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2-4 高端操作：脚手架架构设计+绘制架构图 /  2-5 架构设计图绘图技巧分享&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/3-4.3xuy7m03daw0.webp&quot; alt=&quot;3-4&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;第三章-脚手架模块拆分策略和core模块技术方案&quot;&gt;第三章 脚手架模块拆分策略和core模块技术方案&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;3-1 脚手架模块拆分策略&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;核心流程：core&lt;/li&gt;
+&lt;li&gt;命令：      commands  【初始化、发布、清除缓存】&lt;/li&gt;
+&lt;li&gt;模型层：   models       【Command命令 、 Project项目 、 Component组件 、 Npm模块 、 Git仓库】&lt;/li&gt;
+&lt;li&gt;支撑模块：utils           【Git操作 、 云构建 、 工具方法 、 API请求、 Git API】&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;3-2 core模块技术方案&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;准备阶段：&lt;br&gt;
+&lt;img src=&quot;https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/3-5.1i5lq7mn8h5s.webp&quot; alt=&quot;3-5&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;第四章：脚手架执行准备过程实现&quot;&gt;第四章：脚手架执行准备过程实现&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;4-1 脚手架框架代码拆包+import-local应用&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;mkdir cloudscope-cli&lt;/li&gt;
+&lt;li&gt;cd cloudscope-cli&lt;/li&gt;
+&lt;li&gt;npm init -y&lt;/li&gt;
+&lt;li&gt;添加 .gitignore文件&lt;/li&gt;
+&lt;li&gt;lerna init&lt;/li&gt;
+&lt;li&gt;lerna create cli &amp;amp; lerna create utils&lt;/li&gt;
+&lt;li&gt;mkdir  commands &amp;amp; mkdir models &amp;amp; mkdir core  &amp;amp; mkdir utils&lt;/li&gt;
+&lt;li&gt;将packages下core移到外层core、utils移到外层utils,删除packages目录&lt;/li&gt;
+&lt;li&gt;修改lerna.json文件：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;string&quot;&gt;&amp;quot;packages&amp;quot;&lt;/span&gt;: [&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;&amp;quot;core/*&amp;quot;&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;&amp;quot;commands/*&amp;quot;&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;&amp;quot;models/*&amp;quot;&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;&amp;quot;utils/*&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  ],&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;string&quot;&gt;&amp;quot;version&amp;quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&amp;quot;1.0.4&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;在cloudscope-cli/core/cli下新建bin/index.js文件&lt;/li&gt;
+&lt;li&gt;修改  cloudscope-cli/core/cli下的package.json配置文件，添加如下代码&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;……&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; &lt;span class=&quot;string&quot;&gt;&amp;quot;bin&amp;quot;&lt;/span&gt;: &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;&amp;quot;cloudscope-cli&amp;quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&amp;quot;bin/index.js&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#125;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; ……&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; &lt;span class=&quot;string&quot;&gt;&amp;quot;dependencies&amp;quot;&lt;/span&gt;: &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;&amp;quot;@cloudscope-cli/utils&amp;quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&amp;quot;file:../../utils/utils&amp;quot;&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;&amp;quot;import-local&amp;quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&amp;quot;^3.0.2&amp;quot;&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;&amp;quot;npmlog&amp;quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&amp;quot;^4.1.2&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#125;,&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;cd core/cli&lt;/li&gt;
+&lt;li&gt;npm install&lt;/li&gt;
+&lt;li&gt;在cloudscope-cli/core/cli/bin/index.js下添加如下代码：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#! /usr/bin/env node&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; importLocal = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;import-local&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;(importLocal(__filename))&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;npmlog&amp;#x27;&lt;/span&gt;).&lt;span class=&quot;title function_&quot;&gt;info&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;cli&amp;#x27;&lt;/span&gt;,&lt;span class=&quot;string&quot;&gt;&amp;#x27;正在使用 cloudscope-cli 本地版本&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;../lib&amp;#x27;&lt;/span&gt;)(process.&lt;span class=&quot;property&quot;&gt;argv&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;slice&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;))&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;在cloudscope-cli/core/cli/lib/index.js 文件中添加一行日志文件&lt;/li&gt;
+&lt;li&gt;npm link&lt;/li&gt;
+&lt;li&gt;cloudscope-cli:即可看到输出日志&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;git代码提交扩展&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;我将此代码通过分支的形式，对每一次的代码提交，都在一个特殊的分支进行代码提交。&lt;br&gt;
+本节提交到该分支：&lt;a href=&quot;https://github.com/liugezhou/cloudscope-cli/tree/lesson01&quot;&gt; lesson01&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;下面是分支提交小记录。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;git checkout -b lesson01&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;git add . &amp;amp;&amp;amp; git commit -m 'lesson01 for init ’ &amp;amp;&amp;amp; git push origin lesson01&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;git checkout main&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;git merge lesson01&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;git push&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;删除本地分支  git branch -D lesson01&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如果后面我们想要修改该分支代码并提交到该分支，我们就可以：&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;git checkout -b temp origin/lesson01&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;4-2 检查版本号功能开发（require加载资源类型讲解+npmlog封装)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;从本节开始本地新建分支 lesson02，最后将此分支代码推送至远程仓库&lt;a href=&quot;https://github.com/liugezhou/cloudscope-cli&quot;&gt;cloudscope-cli&lt;/a&gt;。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;本节代码开发过程中在命令行用到的命令：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;utils下新建log包： lerna create @cloudscope-cli/log utils&lt;/li&gt;
+&lt;li&gt;log下安装npmlog包： lerna add npmjs utils/log&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;其它记录的小知识点&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;require加载资源的类型：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;.js      ： 必须输出一个module.exports || exports.&lt;/li&gt;
+&lt;li&gt;.json   :  会通过JSON.parse()对该文件进行解析，并输出一个对象&lt;/li&gt;
+&lt;li&gt;.node  ： c++的一个插件，它的实现原理是通过 process.dlopen去打开一个c++插件，通常不使用。&lt;/li&gt;
+&lt;li&gt;any     ：会通过.js引擎进行解析&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;npmlog源码：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;default level:  info，可以通过传入的参数进行level定制。&lt;/li&gt;
+&lt;li&gt;源码中存在的 log.addLevel()才可以打印，我们也可以通过这个方法定制自己的打印设置。（可以设置名字、value值大小，字体色、背景色等）&lt;/li&gt;
+&lt;li&gt;可以通过 log.heading定制输日志输出的前置。同时可以通过headingStyle做样式修改。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;4-3 最低Node版本检查功能开发&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;检查Node版本号的原因以及解决办法：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;这是因为一些低版本的Node API在低版本是不支持的，因此要设置一个最低的Node版本号。&lt;/li&gt;
+&lt;li&gt;拿到本地版本号的方法为：process.version&lt;/li&gt;
+&lt;li&gt;版本号比对：第三方库 semver。&lt;/li&gt;
+&lt;li&gt;抛出异常颜色输出：第三方库 colors:引用’colors/safe’,使用：colors.red(‘’)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;4-4 root账号启动检查和自动降级功能开发&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;检查账号权限原因以及解决方法：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;如果是使用root权限，一些文件就没有可读或者修改权限，因此需要对用户进行查询与降级处理&lt;/li&gt;
+&lt;li&gt;通过process.geteuid() 获取登录用户的ID ,501为普通用户，0 为超级管理员(root)&lt;/li&gt;
+&lt;li&gt;检查第三方库：root-check。使用方法引入一下调用即可降级。&lt;/li&gt;
+&lt;li&gt;root-check实现原理：调用downgrade-root 库 -&amp;gt; 判断是否为root权限 -&amp;gt; 若是通过process.env.SUDO_UID或者默认 defaultUid() 获取各个操作系统的uid&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;4-5 用户主目录检查功能开发&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;user-home:可以实现跨操作系统获取用户主目录的功能。&lt;/li&gt;
+&lt;li&gt;path-exists:判断文件目录是否存在&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;user-home实现：调用os-homedir库，再调用os库，若os库有homedir直接返回，若没有直接拿process.env.home(),还是没有就拼接 ‘/Users/'+process.env.USER&lt;/li&gt;
+&lt;li&gt;path-exists实现：直接调用fs的accessSync(path)方法。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;4-6 入参检查和debug模式开发&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;这里就进行如参检查，是要判断是否进入调试模式，如果带有 --debug参数，我们要进行log的level设置。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;实现方式：使用minimist第三方库。&lt;/li&gt;
+&lt;li&gt;查看是否包含debug参数，直接：require(‘minimist’)(process.argv.slice(2)).debug即可。&lt;/li&gt;
+&lt;li&gt;若上值为true，直接修改log.level即可。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;4-7 环境变量检查功能开发&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;检查环境变量，我们使用第三方库：dotenv。&lt;/li&gt;
+&lt;li&gt;用法：require(‘dotenv’).config({ path: ‘’ }) ：若不传参数，我们在当前目录下拿到.env文件中的变量，之后就可以直接在process.env中使用了。支持传入path变量。&lt;/li&gt;
+&lt;li&gt;环境变量其实就是一个全局变量,如果我们有很多的环境变量需要使用，可以直接在.env文件宏进行配置&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;4-8 通用npm API模块封装 | &lt;strong&gt;4-9 npm全局更新功能开发&lt;/strong&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;准备阶段的最后一个功能：检查我们的这个脚手架是否为最新版本&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;步骤：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;获取当前版本号与模块名: pkg.version | &lt;a href=&quot;http://pkg.name&quot;&gt;pkg.name&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;调用npm API获取所有模版号：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;npm提供了这样一个API: &lt;a href=&quot;https://registry.npmjs.org/cloudscope-cli/core&quot;&gt;https://registry.npmjs.org/cloudscope-cli/core&lt;/a&gt; ,可以获得该包的所有版本号,要从这里拿到所有版本号，我们需要使用第三方库 axios,同时我们也需要添加一个用来url拼接的库：url-join，可以帮助我们进行多参数的拼接，以及我们进行版本对比的第三方库 semver。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;获取所有版本号，比对哪些版本号是大于当前版本号&lt;/li&gt;
+&lt;li&gt;获取最新的版本号，提示用户更新到此版本。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;将以上代码提交支仓库远程cloudscope-cli的分支 &lt;a href=&quot;https://github.com/liugezhou/cloudscope-cli/tree/lesson02&quot;&gt;lesson02&lt;/a&gt;，并合并至main分支。&lt;br&gt;
+**&lt;/p&gt;
+&lt;h2 id=&quot;第五章：脚手架命令注册实现-基于commander）&quot;&gt;第五章：脚手架命令注册实现(基于commander）&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;5-1 快速实现一个commander脚手架 ｜ 5-2 commander脚手架全局配置&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;之前在学习命令注册的时候，使用的是yrags，本节使用另一个库 commander去实现命令注册&lt;br&gt;
+本节代码提交至：&lt;a href=&quot;https://github.com/liugezhou/liugezhou-yargs-demo&quot;&gt;liugezhou-yargs-demo&lt;/a&gt;&lt;br&gt;
+其中 bin/yargs.js是之前学习yargs的demo代码。&lt;br&gt;
+bin/commander.js是本节关于commander的代码。&lt;/p&gt;
+&lt;p&gt;我们在这个库的基础上，学习commander的简单用法.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;首先，安装npm i -S commander&lt;/li&gt;
+&lt;li&gt;然后，在bin/index.js中：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#!/usr/bin/env node&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; commander = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;commander&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; pkg = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;../package.json&amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 获取commander的单例&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// const &amp;#123;program&amp;#125; = commander&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 手动实例化一个Command示例&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; program = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; commander.&lt;span class=&quot;title class_&quot;&gt;Command&lt;/span&gt;()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;program&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  .&lt;span class=&quot;title function_&quot;&gt;name&lt;/span&gt;(&lt;span class=&quot;title class_&quot;&gt;Object&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;keys&lt;/span&gt;(pkg.&lt;span class=&quot;property&quot;&gt;bin&lt;/span&gt;)[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;])&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  .&lt;span class=&quot;title function_&quot;&gt;usage&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;&amp;lt;command&amp;gt; [options]&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  .&lt;span class=&quot;title function_&quot;&gt;version&lt;/span&gt;(pkg.&lt;span class=&quot;property&quot;&gt;version&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  .&lt;span class=&quot;title function_&quot;&gt;option&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;-d, --debug&amp;#x27;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&amp;#x27;是否开启调试模式&amp;#x27;&lt;/span&gt;, &lt;span class=&quot;literal&quot;&gt;false&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  .&lt;span class=&quot;title function_&quot;&gt;option&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;-e, --envName  &amp;lt;envName&amp;gt;&amp;#x27;&lt;/span&gt; , &lt;span class=&quot;string&quot;&gt;&amp;#x27;环境变量&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  .&lt;span class=&quot;title function_&quot;&gt;parse&lt;/span&gt;(process.&lt;span class=&quot;property&quot;&gt;argv&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; options = program.&lt;span class=&quot;title function_&quot;&gt;opts&lt;/span&gt;()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;variable language_&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(options.&lt;span class=&quot;property&quot;&gt;debug&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  program.&lt;span class=&quot;title function_&quot;&gt;outputHelp&lt;/span&gt;()   &lt;span class=&quot;comment&quot;&gt;//打印出帮助信息&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;liugezhou-test -V,即可看到输入版本号。&lt;/li&gt;
+&lt;li&gt;liugezhou-test -d  // true&lt;br&gt;
+&lt;strong&gt;5-3 commander脚手架命令注册的两种方法&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;课程所讲内容：commander命令注册有两种方式：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;comman API注册命令&lt;/li&gt;
+&lt;li&gt;addCommand API 注册命令&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;现在默认安装commander时，已更新到7.0.0，sam老师写法还是6.X，可参考 &lt;a href=&quot;https://github.com/tj/commander.js/blob/HEAD/Readme_zh-CN.md&quot;&gt;commader for git&lt;/a&gt; 配置。本节内容就是对官方文档更新用法之后的学习笔记：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Commander.js :&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;完整的node.js命令行解决方法&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;声明commander变量&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;为简化声明，Commander提供了一个全局对象&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &amp;#123; program &amp;#125; = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;commander&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;program.&lt;span class=&quot;title function_&quot;&gt;version&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;0.0.1&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;若程序较为复杂，用户需要以多种方式来使用Commander，如单元测试等，可采用创建本地Commander对象的方法&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &amp;#123;&lt;span class=&quot;title class_&quot;&gt;Command&lt;/span&gt; &amp;#125; = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;commander&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; program = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;title class_&quot;&gt;Command&lt;/span&gt;();&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;program.&lt;span class=&quot;title function_&quot;&gt;version&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;0.0.1&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;选项&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;program&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//Commander 使用.option() 方法来定义选项，同时可以附加选项的简介&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	.&lt;span class=&quot;title function_&quot;&gt;option&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;-d,--debug&amp;#x27;&lt;/span&gt;,&lt;span class=&quot;string&quot;&gt;&amp;#x27;booelan&amp;#x27;&lt;/span&gt;) &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//选项可以设置一个默认值。&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	.&lt;span class=&quot;title function_&quot;&gt;option&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;-c, --cheese &amp;lt;type&amp;gt;&amp;#x27;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&amp;#x27;add the specified type of cheese&amp;#x27;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&amp;#x27;blue&amp;#x27;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//必填选项&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	.requiredOption(&lt;span class=&quot;string&quot;&gt;&amp;#x27;-n, --name &amp;lt;type&amp;gt;&amp;#x27;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&amp;#x27;name must have cheese&amp;#x27;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//通过program.parse(arguments)方法处理参数&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;program.&lt;span class=&quot;title function_&quot;&gt;parse&lt;/span&gt;(process.&lt;span class=&quot;property&quot;&gt;argv&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; ret = program.&lt;span class=&quot;title function_&quot;&gt;opts&lt;/span&gt;()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; debug = ret.&lt;span class=&quot;property&quot;&gt;debug&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol start=&quot;4&quot;&gt;
+&lt;li&gt;命令&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;program.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//参数支持必须&amp;lt;&amp;gt;,可选[]&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	&lt;span class=&quot;title function_&quot;&gt;command&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;clone &amp;lt;source&amp;gt; [destination]&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//在参数名后加上...来声明可变参数，且只有最后一个参数支持这种用法&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;program&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    .&lt;span class=&quot;title function_&quot;&gt;command&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;rmdir &amp;lt;dirs...&amp;gt;&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    .&lt;span class=&quot;title function_&quot;&gt;action&lt;/span&gt;(&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; (&lt;span class=&quot;params&quot;&gt;dirs&lt;/span&gt;) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      dirs.&lt;span class=&quot;title function_&quot;&gt;forEach&lt;/span&gt;(&lt;span class=&quot;function&quot;&gt;(&lt;span class=&quot;params&quot;&gt;dir&lt;/span&gt;) =&amp;gt;&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;variable language_&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;rmdir %s&amp;#x27;&lt;/span&gt;, dir);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;strong&gt;5-4 commander注册命令的两种高级用法 ｜5-5 再讲3条commander的高级用法&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;监听所有命令输入 : arguments&lt;/li&gt;
+&lt;li&gt;脚手架串行使用&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;program&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   .&lt;span class=&quot;title function_&quot;&gt;command&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;install [name]&amp;#x27;&lt;/span&gt;,&lt;span class=&quot;string&quot;&gt;&amp;#x27;install package&amp;#x27;&lt;/span&gt;,&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;     &lt;span class=&quot;attr&quot;&gt;executableFile&lt;/span&gt;:&lt;span class=&quot;string&quot;&gt;&amp;#x27;vue&amp;#x27;&lt;/span&gt;，&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  		&lt;span class=&quot;attr&quot;&gt;isDefault&lt;/span&gt;:&lt;span class=&quot;literal&quot;&gt;true&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;     &lt;span class=&quot;attr&quot;&gt;hidden&lt;/span&gt;:&lt;span class=&quot;literal&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;comment&quot;&gt;//command的隐藏&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   &amp;#125;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   .&lt;span class=&quot;title function_&quot;&gt;alias&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;i&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;高级定制help信息&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;program.&lt;em&gt;outputHelp()&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;_ program.helpInformation() = function(){}_&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;program.on(‘–help’),function(){ console.log(‘your help information’}&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;4&quot;&gt;
+&lt;li&gt;高级定制debug模式&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;program.&lt;span class=&quot;title function_&quot;&gt;on&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;optins:debug&amp;#x27;&lt;/span&gt;,&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;(program.&lt;span class=&quot;property&quot;&gt;debug&lt;/span&gt;)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  process.&lt;span class=&quot;property&quot;&gt;env&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;LOG_LEVEL&lt;/span&gt; = &lt;span class=&quot;string&quot;&gt;&amp;#x27;verbose&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;ol start=&quot;5&quot;&gt;
+&lt;li&gt;对未知命令监听二：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;program.&lt;span class=&quot;title function_&quot;&gt;on&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;command:*&amp;#x27;&lt;/span&gt;,&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;obj&lt;/span&gt;)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &lt;span class=&quot;variable language_&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(obj)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &lt;span class=&quot;variable language_&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;未知的命令：&amp;#x27;&lt;/span&gt; + obj[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;])&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; avaliableCommands = program.&lt;span class=&quot;property&quot;&gt;commands&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;map&lt;/span&gt;( &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;params&quot;&gt;cmd&lt;/span&gt; =&amp;gt;&lt;/span&gt; cmd.&lt;span class=&quot;title function_&quot;&gt;name&lt;/span&gt;())&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &lt;span class=&quot;variable language_&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;可用命令：&amp;#x27;&lt;/span&gt;+ avaliableCommands.&lt;span class=&quot;title function_&quot;&gt;join&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;,&amp;#x27;&lt;/span&gt;))&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#125;)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;第六章-Node项目如何支持ES-Module【加餐】&quot;&gt;第六章 Node项目如何支持ES Module【加餐】&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;6-1 通过webpack完成ES Module资源构建&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;模块化&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;CMD/AMD/require.js&lt;/li&gt;
+&lt;li&gt;CommonJS: 加载：require(), 输出：module.exports() || exports.x&lt;/li&gt;
+&lt;li&gt;ES Module: 加载： import, 输出 export.default || export function || export const&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;实现&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;npm i -D webpack webpack-cli&lt;/li&gt;
+&lt;li&gt;touch webpack-config.js&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//webpack-config.js&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; path = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;path&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable language_&quot;&gt;module&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;exports&lt;/span&gt; = &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;entry&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&amp;#x27;./bin/core.js&amp;#x27;&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;output&lt;/span&gt;:&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;attr&quot;&gt;path&lt;/span&gt;:path.&lt;span class=&quot;title function_&quot;&gt;join&lt;/span&gt;(__dirname,&lt;span class=&quot;string&quot;&gt;&amp;#x27;/dist&amp;#x27;&lt;/span&gt;),&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;attr&quot;&gt;filename&lt;/span&gt;:&lt;span class=&quot;string&quot;&gt;&amp;#x27;core.js&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#125;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;mode&lt;/span&gt;:&lt;span class=&quot;string&quot;&gt;&amp;#x27;development&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// index.js&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;#! &lt;span class=&quot;regexp&quot;&gt;/usr/&lt;/span&gt;bin/env node&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;./core&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// core.js&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; utils &lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&amp;#x27;./utils&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;title function_&quot;&gt;utils&lt;/span&gt;()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// utils&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable language_&quot;&gt;module&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;exports&lt;/span&gt; = &lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;variable language_&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;kskaksk&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;在package.json中添加两个script，分别为 “build”:“webpack&amp;quot;和&amp;quot;dev”:“webpack -w”&lt;/li&gt;
+&lt;li&gt;上面代码通过 npm run build 打包后，将上面index.js中的require修改为 require(“…/dist/core.js”)&lt;/li&gt;
+&lt;li&gt;执行 liugezhou-test 看到构建成功。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;6-2 通过webpack target属性支持Node内置库&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;webpack的target使用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// npm i -S path-exists&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// bin/utils.js&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; pathExists &lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&amp;#x27;path-exists&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title function_&quot;&gt;exists&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;p&lt;/span&gt;)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; pathExists.&lt;span class=&quot;title function_&quot;&gt;sync&lt;/span&gt;(p)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// bin/core.js&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; path &lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&amp;#x27;path&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; &amp;#123;exists&amp;#125; &lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&amp;#x27;./utils&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable language_&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(path.&lt;span class=&quot;title function_&quot;&gt;resolve&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;.&amp;#x27;&lt;/span&gt;))&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable language_&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;title function_&quot;&gt;exists&lt;/span&gt;(path.&lt;span class=&quot;title function_&quot;&gt;resolve&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;.&amp;#x27;&lt;/span&gt;)))&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// webpack.config.js&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	&lt;span class=&quot;attr&quot;&gt;target&lt;/span&gt;:&lt;span class=&quot;string&quot;&gt;&amp;quot;node&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;core.js代码添加&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;async&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;title class_&quot;&gt;Promise&lt;/span&gt;(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;params&quot;&gt;resolve&lt;/span&gt; =&amp;gt;&lt;/span&gt; &lt;span class=&quot;built_in&quot;&gt;setTimeout&lt;/span&gt;( resolve,&lt;span class=&quot;number&quot;&gt;1000&lt;/span&gt;));&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;variable language_&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;ok&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;)()&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;strong&gt;6-3 webpack loader配置babel-loader支持低版本node&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;配置一个最简单babel-loader,需要安装的库&lt;br&gt;
+npm i -D&lt;br&gt;
+babel-loader @babel/core  @babel/preset-env  @babel/plugin-transform-runtime  @babel/runtime-corejs3&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;30&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;31&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;32&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;33&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;34&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;35&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;36&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; path = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;path&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable language_&quot;&gt;module&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;exports&lt;/span&gt; = &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;entry&lt;/span&gt;:&lt;span class=&quot;string&quot;&gt;&amp;#x27;./bin/core.js&amp;#x27;&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;output&lt;/span&gt;:&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;attr&quot;&gt;path&lt;/span&gt;: path.&lt;span class=&quot;title function_&quot;&gt;join&lt;/span&gt;(__dirname,&lt;span class=&quot;string&quot;&gt;&amp;#x27;/dist&amp;#x27;&lt;/span&gt;),&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;attr&quot;&gt;filename&lt;/span&gt;:&lt;span class=&quot;string&quot;&gt;&amp;#x27;core.js&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#125;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;mode&lt;/span&gt;:&lt;span class=&quot;string&quot;&gt;&amp;#x27;development&amp;#x27;&lt;/span&gt;, &lt;span class=&quot;comment&quot;&gt;//开发模式&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;comment&quot;&gt;// target: &amp;#x27;web&amp;#x27;//默认&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;target&lt;/span&gt;:&lt;span class=&quot;string&quot;&gt;&amp;#x27;node&amp;#x27;&lt;/span&gt;, &lt;span class=&quot;comment&quot;&gt;// 识别内置库&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;module&lt;/span&gt;:&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;attr&quot;&gt;rules&lt;/span&gt;: [&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;test&lt;/span&gt;: &lt;span class=&quot;regexp&quot;&gt;/\.js$/&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;exclude&lt;/span&gt;: &lt;span class=&quot;regexp&quot;&gt;/node_modules/&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;use&lt;/span&gt;: &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;          &lt;span class=&quot;attr&quot;&gt;loader&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&amp;#x27;babel-loader&amp;#x27;&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;          &lt;span class=&quot;attr&quot;&gt;options&lt;/span&gt;: &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;attr&quot;&gt;presets&lt;/span&gt;:[&lt;span class=&quot;string&quot;&gt;&amp;#x27;@babel/preset-env&amp;#x27;&lt;/span&gt;],&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;attr&quot;&gt;plugins&lt;/span&gt;: [&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;              [&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                &lt;span class=&quot;string&quot;&gt;&amp;#x27;@babel/plugin-transform-runtime&amp;#x27;&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                  &lt;span class=&quot;attr&quot;&gt;corejs&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                  &lt;span class=&quot;attr&quot;&gt;regenerator&lt;/span&gt;:&lt;span class=&quot;literal&quot;&gt;true&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                  &lt;span class=&quot;attr&quot;&gt;useESModules&lt;/span&gt;:&lt;span class=&quot;literal&quot;&gt;true&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                  &lt;span class=&quot;attr&quot;&gt;helpers&lt;/span&gt;: &lt;span class=&quot;literal&quot;&gt;true&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;              ]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            ]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;          &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    ]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;strong&gt;6-4 通过Node原生支持ES Module&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;将node版本升级到14.x，代码中将引用的文件，改写后缀名为 .mjs即可。&lt;/p&gt;
+"><meta name="twitter:image"><title>Week3-脚手架核心流程开发 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Week3-脚手架核心流程开发</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Week3-脚手架核心流程开发</h1><div class="post-meta">2021-01-25<span> | </span><span class="category"><a href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 3.2k</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 13</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/Week3-%E8%84%9A%E6%89%8B%E6%9E%B6%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%E5%BC%80%E5%8F%91/#vcomment"><span class="valine-comment-count" data-xid="/Week3-%E8%84%9A%E6%89%8B%E6%9E%B6%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%E5%BC%80%E5%8F%91/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E6%9C%AC%E5%91%A8%E5%AF%BC%E5%AD%A6"><span class="toc-text">第一章：本周导学</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E8%84%9A%E6%89%8B%E6%9E%B6%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="toc-text">第二章：脚手架整体架构设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0-%E8%84%9A%E6%89%8B%E6%9E%B6%E6%A8%A1%E5%9D%97%E6%8B%86%E5%88%86%E7%AD%96%E7%95%A5%E5%92%8Ccore%E6%A8%A1%E5%9D%97%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88"><span class="toc-text">第三章 脚手架模块拆分策略和core模块技术方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%9A%E8%84%9A%E6%89%8B%E6%9E%B6%E6%89%A7%E8%A1%8C%E5%87%86%E5%A4%87%E8%BF%87%E7%A8%8B%E5%AE%9E%E7%8E%B0"><span class="toc-text">第四章：脚手架执行准备过程实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%9A%E8%84%9A%E6%89%8B%E6%9E%B6%E5%91%BD%E4%BB%A4%E6%B3%A8%E5%86%8C%E5%AE%9E%E7%8E%B0-%E5%9F%BA%E4%BA%8Ecommander%EF%BC%89"><span class="toc-text">第五章：脚手架命令注册实现(基于commander）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%85%AD%E7%AB%A0-Node%E9%A1%B9%E7%9B%AE%E5%A6%82%E4%BD%95%E6%94%AF%E6%8C%81ES-Module%E3%80%90%E5%8A%A0%E9%A4%90%E3%80%91"><span class="toc-text">第六章 Node项目如何支持ES Module【加餐】</span></a></li></ol></div></div><div class="post-content"><p><font color=blue>更新说明：对文章目录排版做了调整。</font><br>
+<font color=blue> 更新时间：2022-05-04</font></p>
+<h2 id="第一章：本周导学">第一章：本周导学</h2>
+<p><strong>本周整体内容介绍和学习方法</strong><br>
+<strong>标题</strong></p>
+<blockquote>
+<p>脚手架需求分析和架构设计，核心流程开发</p>
+</blockquote>
+<p><strong>收获</strong></p>
+<blockquote>
+<ul>
+<li>架构设计和技术方案设计全过程</li>
+<li>脚手架核心流程和commander框架</li>
+<li>如何让Node项目支持ES Module</li>
+</ul>
+</blockquote>
+<p><strong>主要内容</strong></p>
+<blockquote>
+<ul>
+<li>脚手架需求分析和架构设计</li>
+<li>脚手架模块拆分策略和core模块技术方案</li>
+<li>脚手架执行准备过程实现</li>
+<li>脚手架命令注册实现(基于commander)</li>
+</ul>
+</blockquote>
+<p><strong>加餐</strong></p>
+<blockquote>
+<p>Node项目如何支持ES Module</p>
+</blockquote>
+<h2 id="第二章：脚手架整体架构设计">第二章：脚手架整体架构设计</h2>
+<p><strong>2-1 大厂是如何做项目的</strong><br>
+<img src="https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/3-1.6id7710dpwk0.webp" alt="3-1"></p>
+<p><strong>2-2 前端研发过程中的痛点和需求分析</strong><br>
+<img src="https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/3-2.6ic0nprs1e00.webp" alt="3-2"></p>
+<p><strong>2-3 加餐：大厂的git操作规范是怎样的？</strong></p>
+<blockquote>
+<ul>
+<li>clone下来的项目 master分支是不做开发的，我们会新建一个dev分支，上线以后会新建一个release分支。</li>
+</ul>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/3-3.4sujpjgc1p40.webp" alt="3-3"></p>
+<p><strong>2-4 高端操作：脚手架架构设计+绘制架构图 /  2-5 架构设计图绘图技巧分享</strong></p>
+<p><img src="https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/3-4.3xuy7m03daw0.webp" alt="3-4"></p>
+<h2 id="第三章-脚手架模块拆分策略和core模块技术方案">第三章 脚手架模块拆分策略和core模块技术方案</h2>
+<p><strong>3-1 脚手架模块拆分策略</strong></p>
+<ul>
+<li>核心流程：core</li>
+<li>命令：      commands  【初始化、发布、清除缓存】</li>
+<li>模型层：   models       【Command命令 、 Project项目 、 Component组件 、 Npm模块 、 Git仓库】</li>
+<li>支撑模块：utils           【Git操作 、 云构建 、 工具方法 、 API请求、 Git API】</li>
+</ul>
+<p><strong>3-2 core模块技术方案</strong></p>
+<p>准备阶段：<br>
+<img src="https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/3-5.1i5lq7mn8h5s.webp" alt="3-5"></p>
+<h2 id="第四章：脚手架执行准备过程实现">第四章：脚手架执行准备过程实现</h2>
+<p><strong>4-1 脚手架框架代码拆包+import-local应用</strong></p>
+<blockquote>
+<ul>
+<li>mkdir cloudscope-cli</li>
+<li>cd cloudscope-cli</li>
+<li>npm init -y</li>
+<li>添加 .gitignore文件</li>
+<li>lerna init</li>
+<li>lerna create cli &amp; lerna create utils</li>
+<li>mkdir  commands &amp; mkdir models &amp; mkdir core  &amp; mkdir utils</li>
+<li>将packages下core移到外层core、utils移到外层utils,删除packages目录</li>
+<li>修改lerna.json文件：</li>
+</ul>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;packages&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;core/*&quot;</span>,</span><br><span class="line">    <span class="string">&quot;commands/*&quot;</span>,</span><br><span class="line">    <span class="string">&quot;models/*&quot;</span>,</span><br><span class="line">    <span class="string">&quot;utils/*&quot;</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="string">&quot;version&quot;</span>: <span class="string">&quot;1.0.4&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>在cloudscope-cli/core/cli下新建bin/index.js文件</li>
+<li>修改  cloudscope-cli/core/cli下的package.json配置文件，添加如下代码</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">……</span><br><span class="line"> <span class="string">&quot;bin&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;cloudscope-cli&quot;</span>: <span class="string">&quot;bin/index.js&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">    </span><br><span class="line"> ……</span><br><span class="line"> <span class="string">&quot;dependencies&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;@cloudscope-cli/utils&quot;</span>: <span class="string">&quot;file:../../utils/utils&quot;</span>,</span><br><span class="line">    <span class="string">&quot;import-local&quot;</span>: <span class="string">&quot;^3.0.2&quot;</span>,</span><br><span class="line">    <span class="string">&quot;npmlog&quot;</span>: <span class="string">&quot;^4.1.2&quot;</span></span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>cd core/cli</li>
+<li>npm install</li>
+<li>在cloudscope-cli/core/cli/bin/index.js下添加如下代码：</li>
+</ul>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#! /usr/bin/env node</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> importLocal = <span class="built_in">require</span>(<span class="string">&#x27;import-local&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(importLocal(__filename))&#123;</span><br><span class="line">  <span class="built_in">require</span>(<span class="string">&#x27;npmlog&#x27;</span>).<span class="title function_">info</span>(<span class="string">&#x27;cli&#x27;</span>,<span class="string">&#x27;正在使用 cloudscope-cli 本地版本&#x27;</span>)</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">  <span class="built_in">require</span>(<span class="string">&#x27;../lib&#x27;</span>)(process.<span class="property">argv</span>.<span class="title function_">slice</span>(<span class="number">2</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>在cloudscope-cli/core/cli/lib/index.js 文件中添加一行日志文件</li>
+<li>npm link</li>
+<li>cloudscope-cli:即可看到输出日志</li>
+</ul>
+</blockquote>
+<p>git代码提交扩展</p>
+<blockquote>
+<p>我将此代码通过分支的形式，对每一次的代码提交，都在一个特殊的分支进行代码提交。<br>
+本节提交到该分支：<a target="_blank" rel="noopener" href="https://github.com/liugezhou/cloudscope-cli/tree/lesson01"> lesson01</a></p>
+<p>下面是分支提交小记录。</p>
+<ul>
+<li>
+<p>git checkout -b lesson01</p>
+</li>
+<li>
+<p>git add . &amp;&amp; git commit -m 'lesson01 for init ’ &amp;&amp; git push origin lesson01</p>
+</li>
+<li>
+<p>git checkout main</p>
+</li>
+<li>
+<p>git merge lesson01</p>
+</li>
+<li>
+<p>git push</p>
+</li>
+<li>
+<p>删除本地分支  git branch -D lesson01</p>
+</li>
+<li>
+<p>如果后面我们想要修改该分支代码并提交到该分支，我们就可以：</p>
+</li>
+<li>
+<p>git checkout -b temp origin/lesson01</p>
+</li>
+</ul>
+</blockquote>
+<p><strong>4-2 检查版本号功能开发（require加载资源类型讲解+npmlog封装)</strong></p>
+<p>从本节开始本地新建分支 lesson02，最后将此分支代码推送至远程仓库<a target="_blank" rel="noopener" href="https://github.com/liugezhou/cloudscope-cli">cloudscope-cli</a>。</p>
+<ol>
+<li>本节代码开发过程中在命令行用到的命令：</li>
+</ol>
+<blockquote>
+<ul>
+<li>utils下新建log包： lerna create @cloudscope-cli/log utils</li>
+<li>log下安装npmlog包： lerna add npmjs utils/log</li>
+</ul>
+</blockquote>
+<ol start="2">
+<li>其它记录的小知识点</li>
+</ol>
+<ul>
+<li>require加载资源的类型：</li>
+</ul>
+<blockquote>
+<ul>
+<li>.js      ： 必须输出一个module.exports || exports.</li>
+<li>.json   :  会通过JSON.parse()对该文件进行解析，并输出一个对象</li>
+<li>.node  ： c++的一个插件，它的实现原理是通过 process.dlopen去打开一个c++插件，通常不使用。</li>
+<li>any     ：会通过.js引擎进行解析</li>
+</ul>
+</blockquote>
+<ol start="3">
+<li>npmlog源码：</li>
+</ol>
+<blockquote>
+<ul>
+<li>default level:  info，可以通过传入的参数进行level定制。</li>
+<li>源码中存在的 log.addLevel()才可以打印，我们也可以通过这个方法定制自己的打印设置。（可以设置名字、value值大小，字体色、背景色等）</li>
+<li>可以通过 log.heading定制输日志输出的前置。同时可以通过headingStyle做样式修改。</li>
+</ul>
+</blockquote>
+<p><strong>4-3 最低Node版本检查功能开发</strong></p>
+<p>检查Node版本号的原因以及解决办法：</p>
+<blockquote>
+<ul>
+<li>这是因为一些低版本的Node API在低版本是不支持的，因此要设置一个最低的Node版本号。</li>
+<li>拿到本地版本号的方法为：process.version</li>
+<li>版本号比对：第三方库 semver。</li>
+<li>抛出异常颜色输出：第三方库 colors:引用’colors/safe’,使用：colors.red(‘’)</li>
+</ul>
+</blockquote>
+<p><strong>4-4 root账号启动检查和自动降级功能开发</strong></p>
+<p>检查账号权限原因以及解决方法：</p>
+<blockquote>
+<ul>
+<li>如果是使用root权限，一些文件就没有可读或者修改权限，因此需要对用户进行查询与降级处理</li>
+<li>通过process.geteuid() 获取登录用户的ID ,501为普通用户，0 为超级管理员(root)</li>
+<li>检查第三方库：root-check。使用方法引入一下调用即可降级。</li>
+<li>root-check实现原理：调用downgrade-root 库 -&gt; 判断是否为root权限 -&gt; 若是通过process.env.SUDO_UID或者默认 defaultUid() 获取各个操作系统的uid</li>
+</ul>
+</blockquote>
+<p><strong>4-5 用户主目录检查功能开发</strong></p>
+<blockquote>
+<ul>
+<li>user-home:可以实现跨操作系统获取用户主目录的功能。</li>
+<li>path-exists:判断文件目录是否存在</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>user-home实现：调用os-homedir库，再调用os库，若os库有homedir直接返回，若没有直接拿process.env.home(),还是没有就拼接 ‘/Users/'+process.env.USER</li>
+<li>path-exists实现：直接调用fs的accessSync(path)方法。</li>
+</ul>
+</blockquote>
+<p><strong>4-6 入参检查和debug模式开发</strong></p>
+<blockquote>
+<p>这里就进行如参检查，是要判断是否进入调试模式，如果带有 --debug参数，我们要进行log的level设置。</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>实现方式：使用minimist第三方库。</li>
+<li>查看是否包含debug参数，直接：require(‘minimist’)(process.argv.slice(2)).debug即可。</li>
+<li>若上值为true，直接修改log.level即可。</li>
+</ul>
+</blockquote>
+<p><strong>4-7 环境变量检查功能开发</strong></p>
+<blockquote>
+<ul>
+<li>检查环境变量，我们使用第三方库：dotenv。</li>
+<li>用法：require(‘dotenv’).config({ path: ‘’ }) ：若不传参数，我们在当前目录下拿到.env文件中的变量，之后就可以直接在process.env中使用了。支持传入path变量。</li>
+<li>环境变量其实就是一个全局变量,如果我们有很多的环境变量需要使用，可以直接在.env文件宏进行配置</li>
+</ul>
+</blockquote>
+<p><strong>4-8 通用npm API模块封装 | <strong>4-9 npm全局更新功能开发</strong></strong></p>
+<blockquote>
+<p>准备阶段的最后一个功能：检查我们的这个脚手架是否为最新版本</p>
+</blockquote>
+<p>步骤：</p>
+<blockquote>
+<ol>
+<li>获取当前版本号与模块名: pkg.version | <a target="_blank" rel="noopener" href="http://pkg.name">pkg.name</a></li>
+<li>调用npm API获取所有模版号：</li>
+</ol>
+</blockquote>
+<p>npm提供了这样一个API: <a target="_blank" rel="noopener" href="https://registry.npmjs.org/cloudscope-cli/core">https://registry.npmjs.org/cloudscope-cli/core</a> ,可以获得该包的所有版本号,要从这里拿到所有版本号，我们需要使用第三方库 axios,同时我们也需要添加一个用来url拼接的库：url-join，可以帮助我们进行多参数的拼接，以及我们进行版本对比的第三方库 semver。</p>
+<blockquote>
+<ol start="3">
+<li>获取所有版本号，比对哪些版本号是大于当前版本号</li>
+<li>获取最新的版本号，提示用户更新到此版本。</li>
+</ol>
+</blockquote>
+<p>将以上代码提交支仓库远程cloudscope-cli的分支 <a target="_blank" rel="noopener" href="https://github.com/liugezhou/cloudscope-cli/tree/lesson02">lesson02</a>，并合并至main分支。<br>
+**</p>
+<h2 id="第五章：脚手架命令注册实现-基于commander）">第五章：脚手架命令注册实现(基于commander）</h2>
+<p><strong>5-1 快速实现一个commander脚手架 ｜ 5-2 commander脚手架全局配置</strong></p>
+<blockquote>
+<p>之前在学习命令注册的时候，使用的是yrags，本节使用另一个库 commander去实现命令注册<br>
+本节代码提交至：<a target="_blank" rel="noopener" href="https://github.com/liugezhou/liugezhou-yargs-demo">liugezhou-yargs-demo</a><br>
+其中 bin/yargs.js是之前学习yargs的demo代码。<br>
+bin/commander.js是本节关于commander的代码。</p>
+<p>我们在这个库的基础上，学习commander的简单用法.</p>
+<ul>
+<li>首先，安装npm i -S commander</li>
+<li>然后，在bin/index.js中：</li>
+</ul>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env node</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> commander = <span class="built_in">require</span>(<span class="string">&#x27;commander&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> pkg = <span class="built_in">require</span>(<span class="string">&quot;../package.json&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取commander的单例</span></span><br><span class="line"><span class="comment">// const &#123;program&#125; = commander</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 手动实例化一个Command示例</span></span><br><span class="line"><span class="keyword">const</span> program = <span class="keyword">new</span> commander.<span class="title class_">Command</span>()</span><br><span class="line"></span><br><span class="line">program</span><br><span class="line">  .<span class="title function_">name</span>(<span class="title class_">Object</span>.<span class="title function_">keys</span>(pkg.<span class="property">bin</span>)[<span class="number">0</span>])</span><br><span class="line">  .<span class="title function_">usage</span>(<span class="string">&#x27;&lt;command&gt; [options]&#x27;</span>)</span><br><span class="line">  .<span class="title function_">version</span>(pkg.<span class="property">version</span>)</span><br><span class="line">  .<span class="title function_">option</span>(<span class="string">&#x27;-d, --debug&#x27;</span>, <span class="string">&#x27;是否开启调试模式&#x27;</span>, <span class="literal">false</span>)</span><br><span class="line">  .<span class="title function_">option</span>(<span class="string">&#x27;-e, --envName  &lt;envName&gt;&#x27;</span> , <span class="string">&#x27;环境变量&#x27;</span>)</span><br><span class="line">  .<span class="title function_">parse</span>(process.<span class="property">argv</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> options = program.<span class="title function_">opts</span>()</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(options.<span class="property">debug</span>)</span><br><span class="line">  program.<span class="title function_">outputHelp</span>()   <span class="comment">//打印出帮助信息</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>liugezhou-test -V,即可看到输入版本号。</li>
+<li>liugezhou-test -d  // true<br>
+<strong>5-3 commander脚手架命令注册的两种方法</strong></li>
+</ul>
+</blockquote>
+<p>课程所讲内容：commander命令注册有两种方式：</p>
+<blockquote>
+<ol>
+<li>comman API注册命令</li>
+<li>addCommand API 注册命令</li>
+</ol>
+</blockquote>
+<p>现在默认安装commander时，已更新到7.0.0，sam老师写法还是6.X，可参考 <a target="_blank" rel="noopener" href="https://github.com/tj/commander.js/blob/HEAD/Readme_zh-CN.md">commader for git</a> 配置。本节内容就是对官方文档更新用法之后的学习笔记：</p>
+<ol>
+<li>Commander.js :</li>
+</ol>
+<blockquote>
+<p>完整的node.js命令行解决方法</p>
+</blockquote>
+<ol start="2">
+<li>声明commander变量</li>
+</ol>
+<blockquote>
+<p>为简化声明，Commander提供了一个全局对象</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; program &#125; = <span class="built_in">require</span>(<span class="string">&#x27;commander&#x27;</span>)</span><br><span class="line">program.<span class="title function_">version</span>(<span class="string">&#x27;0.0.1&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>若程序较为复杂，用户需要以多种方式来使用Commander，如单元测试等，可采用创建本地Commander对象的方法</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123;<span class="title class_">Command</span> &#125; = <span class="built_in">require</span>(<span class="string">&#x27;commander&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> program = <span class="keyword">new</span> <span class="title class_">Command</span>();</span><br><span class="line">program.<span class="title function_">version</span>(<span class="string">&#x27;0.0.1&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>选项</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">program</span><br><span class="line"><span class="comment">//Commander 使用.option() 方法来定义选项，同时可以附加选项的简介</span></span><br><span class="line">	.<span class="title function_">option</span>(<span class="string">&#x27;-d,--debug&#x27;</span>,<span class="string">&#x27;booelan&#x27;</span>) </span><br><span class="line"><span class="comment">//选项可以设置一个默认值。</span></span><br><span class="line">	.<span class="title function_">option</span>(<span class="string">&#x27;-c, --cheese &lt;type&gt;&#x27;</span>, <span class="string">&#x27;add the specified type of cheese&#x27;</span>, <span class="string">&#x27;blue&#x27;</span>);</span><br><span class="line"><span class="comment">//必填选项</span></span><br><span class="line">	.requiredOption(<span class="string">&#x27;-n, --name &lt;type&gt;&#x27;</span>, <span class="string">&#x27;name must have cheese&#x27;</span>);</span><br><span class="line"><span class="comment">//通过program.parse(arguments)方法处理参数</span></span><br><span class="line">program.<span class="title function_">parse</span>(process.<span class="property">argv</span>)</span><br><span class="line"><span class="keyword">const</span> ret = program.<span class="title function_">opts</span>()</span><br><span class="line"><span class="keyword">const</span> debug = ret.<span class="property">debug</span></span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>命令</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">program.</span><br><span class="line"><span class="comment">//参数支持必须&lt;&gt;,可选[]</span></span><br><span class="line">	<span class="title function_">command</span>(<span class="string">&#x27;clone &lt;source&gt; [destination]&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//在参数名后加上...来声明可变参数，且只有最后一个参数支持这种用法</span></span><br><span class="line">program</span><br><span class="line">    .<span class="title function_">command</span>(<span class="string">&#x27;rmdir &lt;dirs...&gt;&#x27;</span>)</span><br><span class="line">    .<span class="title function_">action</span>(<span class="keyword">function</span> (<span class="params">dirs</span>) &#123;</span><br><span class="line">      dirs.<span class="title function_">forEach</span>(<span class="function">(<span class="params">dir</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;rmdir %s&#x27;</span>, dir);</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>5-4 commander注册命令的两种高级用法 ｜5-5 再讲3条commander的高级用法</strong></p>
+<blockquote>
+<ol>
+<li>监听所有命令输入 : arguments</li>
+<li>脚手架串行使用</li>
+</ol>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">program</span><br><span class="line">   .<span class="title function_">command</span>(<span class="string">&#x27;install [name]&#x27;</span>,<span class="string">&#x27;install package&#x27;</span>,&#123;</span><br><span class="line">     <span class="attr">executableFile</span>:<span class="string">&#x27;vue&#x27;</span>，</span><br><span class="line">  		<span class="attr">isDefault</span>:<span class="literal">true</span>,</span><br><span class="line">     <span class="attr">hidden</span>:<span class="literal">true</span> <span class="comment">//command的隐藏</span></span><br><span class="line">   &#125;)</span><br><span class="line">   .<span class="title function_">alias</span>(<span class="string">&#x27;i&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ol start="3">
+<li>高级定制help信息</li>
+</ol>
+<ul>
+<li>program.<em>outputHelp()</em></li>
+<li>_ program.helpInformation() = function(){}_</li>
+<li><em>program.on(‘–help’),function(){ console.log(‘your help information’}</em></li>
+</ul>
+<ol start="4">
+<li>高级定制debug模式</li>
+</ol>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">program.<span class="title function_">on</span>(<span class="string">&#x27;optins:debug&#x27;</span>,<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">if</span>(program.<span class="property">debug</span>)&#123;</span><br><span class="line">  process.<span class="property">env</span>.<span class="property">LOG_LEVEL</span> = <span class="string">&#x27;verbose&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ol start="5">
+<li>对未知命令监听二：</li>
+</ol>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">program.<span class="title function_">on</span>(<span class="string">&#x27;command:*&#x27;</span>,<span class="keyword">function</span>(<span class="params">obj</span>)&#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(obj)</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;未知的命令：&#x27;</span> + obj[<span class="number">0</span>])</span><br><span class="line">      <span class="keyword">const</span> avaliableCommands = program.<span class="property">commands</span>.<span class="title function_">map</span>( <span class="function"><span class="params">cmd</span> =&gt;</span> cmd.<span class="title function_">name</span>())</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;可用命令：&#x27;</span>+ avaliableCommands.<span class="title function_">join</span>(<span class="string">&#x27;,&#x27;</span>))</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="第六章-Node项目如何支持ES-Module【加餐】">第六章 Node项目如何支持ES Module【加餐】</h2>
+<p><strong>6-1 通过webpack完成ES Module资源构建</strong><br>
+<strong>模块化</strong></p>
+<blockquote>
+<ul>
+<li>CMD/AMD/require.js</li>
+<li>CommonJS: 加载：require(), 输出：module.exports() || exports.x</li>
+<li>ES Module: 加载： import, 输出 export.default || export function || export const</li>
+</ul>
+</blockquote>
+<p><strong>实现</strong></p>
+<blockquote>
+<ul>
+<li>npm i -D webpack webpack-cli</li>
+<li>touch webpack-config.js</li>
+</ul>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//webpack-config.js</span></span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>)</span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">entry</span>: <span class="string">&#x27;./bin/core.js&#x27;</span>,</span><br><span class="line">  <span class="attr">output</span>:&#123;</span><br><span class="line">    <span class="attr">path</span>:path.<span class="title function_">join</span>(__dirname,<span class="string">&#x27;/dist&#x27;</span>),</span><br><span class="line">    <span class="attr">filename</span>:<span class="string">&#x27;core.js&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">mode</span>:<span class="string">&#x27;development&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// index.js</span></span><br><span class="line">#! <span class="regexp">/usr/</span>bin/env node</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">&#x27;./core&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// core.js</span></span><br><span class="line"><span class="keyword">import</span> utils <span class="keyword">from</span> <span class="string">&#x27;./utils&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="title function_">utils</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment">// utils</span></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = <span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;kskaksk&#x27;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>在package.json中添加两个script，分别为 “build”:“webpack&quot;和&quot;dev”:“webpack -w”</li>
+<li>上面代码通过 npm run build 打包后，将上面index.js中的require修改为 require(“…/dist/core.js”)</li>
+<li>执行 liugezhou-test 看到构建成功。</li>
+</ul>
+</blockquote>
+<p><strong>6-2 通过webpack target属性支持Node内置库</strong></p>
+<ul>
+<li>webpack的target使用</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// npm i -S path-exists</span></span><br><span class="line"><span class="comment">// bin/utils.js</span></span><br><span class="line"><span class="keyword">import</span> pathExists <span class="keyword">from</span> <span class="string">&#x27;path-exists&#x27;</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">exists</span>(<span class="params">p</span>)&#123;</span><br><span class="line">  <span class="keyword">return</span> pathExists.<span class="title function_">sync</span>(p)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// bin/core.js</span></span><br><span class="line"><span class="keyword">import</span> path <span class="keyword">from</span> <span class="string">&#x27;path&#x27;</span></span><br><span class="line"><span class="keyword">import</span> &#123;exists&#125; <span class="keyword">from</span> <span class="string">&#x27;./utils&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(path.<span class="title function_">resolve</span>(<span class="string">&#x27;.&#x27;</span>))</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">exists</span>(path.<span class="title function_">resolve</span>(<span class="string">&#x27;.&#x27;</span>)))</span><br><span class="line"></span><br><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line">	<span class="attr">target</span>:<span class="string">&quot;node&quot;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>core.js代码添加</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="keyword">await</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> <span class="built_in">setTimeout</span>( resolve,<span class="number">1000</span>));</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;ok&#x27;</span>)</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+<p><strong>6-3 webpack loader配置babel-loader支持低版本node</strong></p>
+<blockquote>
+<p>配置一个最简单babel-loader,需要安装的库<br>
+npm i -D<br>
+babel-loader @babel/core  @babel/preset-env  @babel/plugin-transform-runtime  @babel/runtime-corejs3</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>)</span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">entry</span>:<span class="string">&#x27;./bin/core.js&#x27;</span>,</span><br><span class="line">  <span class="attr">output</span>:&#123;</span><br><span class="line">    <span class="attr">path</span>: path.<span class="title function_">join</span>(__dirname,<span class="string">&#x27;/dist&#x27;</span>),</span><br><span class="line">    <span class="attr">filename</span>:<span class="string">&#x27;core.js&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">mode</span>:<span class="string">&#x27;development&#x27;</span>, <span class="comment">//开发模式</span></span><br><span class="line">  <span class="comment">// target: &#x27;web&#x27;//默认</span></span><br><span class="line">  <span class="attr">target</span>:<span class="string">&#x27;node&#x27;</span>, <span class="comment">// 识别内置库</span></span><br><span class="line">  <span class="attr">module</span>:&#123;</span><br><span class="line">    <span class="attr">rules</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">test</span>: <span class="regexp">/\.js$/</span>,</span><br><span class="line">        <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>,</span><br><span class="line">        <span class="attr">use</span>: &#123;</span><br><span class="line">          <span class="attr">loader</span>: <span class="string">&#x27;babel-loader&#x27;</span>,</span><br><span class="line">          <span class="attr">options</span>: &#123;</span><br><span class="line">            <span class="attr">presets</span>:[<span class="string">&#x27;@babel/preset-env&#x27;</span>],</span><br><span class="line">            <span class="attr">plugins</span>: [</span><br><span class="line">              [</span><br><span class="line">                <span class="string">&#x27;@babel/plugin-transform-runtime&#x27;</span>,</span><br><span class="line">                &#123;</span><br><span class="line">                  <span class="attr">corejs</span>:<span class="number">3</span>,</span><br><span class="line">                  <span class="attr">regenerator</span>:<span class="literal">true</span>,</span><br><span class="line">                  <span class="attr">useESModules</span>:<span class="literal">true</span>,</span><br><span class="line">                  <span class="attr">helpers</span>: <span class="literal">true</span></span><br><span class="line">                &#125;</span><br><span class="line">              ]</span><br><span class="line">            ]</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>6-4 通过Node原生支持ES Module</strong></p>
+<p>将node版本升级到14.x，代码中将引用的文件，改写后缀名为 .mjs即可。</p>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>Week3-脚手架核心流程开发</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2021-01-25</p><p><span>最后更新：</span>2022-05-04</p><p><span>原始链接：</span><a href="/Week3-脚手架核心流程开发/">https://blog.liugezhou.online/Week3-%E8%84%9A%E6%89%8B%E6%9E%B6%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%E5%BC%80%E5%8F%91/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/Week3-%E8%84%9A%E6%89%8B%E6%9E%B6%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%E5%BC%80%E5%8F%91/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/Web架构之脚手架"><i class="fa fa-tag">Web架构之脚手架</i></a></div><div class="post-nav"><a class="pre" href="/011-CommonJS%E3%80%81AMD_CMD%E3%80%81ES6%20Modules/">CommonJS、CMD、AMD、ES6 Module</a><a class="next" href="/Week2-%E8%84%9A%E6%89%8B%E6%9E%B6%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E5%92%8C%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA/">Week2-脚手架架构设计和框架搭建</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

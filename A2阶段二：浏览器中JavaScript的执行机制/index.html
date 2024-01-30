@@ -1,0 +1,419 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="阶段二：浏览器中JavaScript的执行机制"><meta name="twitter:description" content="&lt;h1&gt;阶段二:浏览器中JavaScript的执行机制&lt;/h1&gt;
+&lt;h2 id=&quot;07｜变量提升-JavaScript中的代码是按顺序执行的吗？&quot;&gt;07｜变量提升:JavaScript中的代码是按顺序执行的吗？&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;只有理解了JavaScript执行上下文，才能更好的理解JavaScript语言本身：变量提升、作用域、闭包等。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;变量提升&quot;&gt;变量提升&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;变量提升指的是:JS代码在执行过程中，JS引擎会把变量的声明部分和函数的声明部分提升到代码开头的行为，变量提升后，会给变量设置默认值，这个值就是我们熟悉的undefined。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;JavaScript的代码执行流程&quot;&gt;JavaScript的代码执行流程&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;JavaScript是&lt;strong&gt;先编译后执行&lt;/strong&gt;，在编译阶段变量的声明和函数的声明提升到代码开头,被JS引擎放入到内存中去了。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;编译阶段&quot;&gt;编译阶段&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;输入一段代码，经过JS引擎编译后，会生成两部分内容：&lt;strong&gt;执行上下文&lt;/strong&gt;和&lt;strong&gt;可执行代码&lt;/strong&gt;。&lt;br&gt;
+执行上下文是JavaScript执行一段代码的运行环境：比如调用一个函数，就会进入这个函数的执行上下文，确定函数在执行期间的诸如this、变量、对象以及函数等。&lt;br&gt;
+要谨记在执行上下文中存在一个变量环境(Variable Enviroment)和词法环境的对象，变量环境对象中保存了变量提升的内容。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;执行阶段&quot;&gt;执行阶段&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;JS引擎执行可执行代码，按照顺序一行一行执行。执行过程中遇到一些变量或者函数就去变量变量环境中查找。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;总结&quot;&gt;总结&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;JavaScript代码执行过程中，需要先做变量提升，这是因为代码执行前需要先编译，编译阶段JS引擎会将变量和函数的存放到变量环境中去，变量默认值为undefined，执行阶段，JS引擎会从变量环境中查找变量和函数，若在编译阶段，存在两个相同函数，会被第二个覆盖掉。&lt;br&gt;
+核心是要清楚JavaScript的执行机制：先编译后执行。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;08｜调用栈：为什么JavaScript代码会出现栈溢出？&quot;&gt;08｜调用栈：为什么JavaScript代码会出现栈溢出？&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;学习完执行上下文，本章学习调用栈。&lt;br&gt;
+学习调用栈我们可以了解JavaScript引擎背后的工作原理、有调试JavaScript代码的能力。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;调用栈是用来管理函数调用关系的一种数据结构–这个函数调用另外一个函数。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;函数调用&quot;&gt;函数调用&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;通过几行代码来看函数调用&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight csharp&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; a =&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;function &lt;span class=&quot;title&quot;&gt;add&lt;/span&gt;()&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; b=&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; a + b&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;add&lt;/span&gt;()&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;JS引擎为上面这段代码创建全局执行上下文，将全局变量和函数都保存在全局执行上下文的变量环境中。&lt;/li&gt;
+&lt;li&gt;执行到add，从全局执行上下文中取出add函数&lt;/li&gt;
+&lt;li&gt;对add这个函数创建，函数执行上下文和可执行代码&lt;/li&gt;
+&lt;li&gt;此刻，拥有两个执行上下文。&lt;/li&gt;
+&lt;li&gt;执行上下文的管理通过叫做栈的数据结构管理(后进先出原则)–想像一个盒子，将全局执行上下文当如盒底部、再放入函数执行上下文。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;JS的调用栈&quot;&gt;JS的调用栈&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;通常把管理执行上下文的栈成为执行上下文栈，又称调用栈，调用栈是引擎追踪函数执行的一个机制。&lt;br&gt;
+可以通过查看浏览器的call stack或者在函数中输出console.trace()来查看调用栈。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;栈递归溢出问题&quot;&gt;栈递归溢出问题&lt;/h3&gt;
+&lt;figure class=&quot;highlight scss&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;function &lt;span class=&quot;built_in&quot;&gt;runStack&lt;/span&gt;(n)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;if&lt;/span&gt;(n===&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;) return &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  return &lt;span class=&quot;built_in&quot;&gt;runStack&lt;/span&gt;(n-&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 修改后&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;function &lt;span class=&quot;built_in&quot;&gt;runStack&lt;/span&gt;(n)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;if&lt;/span&gt;(n===&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;) return &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  return &lt;span class=&quot;built_in&quot;&gt;setTimeout&lt;/span&gt;(function()&amp;#123;&lt;span class=&quot;built_in&quot;&gt;runStack&lt;/span&gt;(n-&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;)&amp;#125;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;09-块级作用域-var缺陷以及为什么要引入let和const&quot;&gt;09|块级作用域:var缺陷以及为什么要引入let和const&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;ES6之前没有块级作用域&lt;/li&gt;
+&lt;li&gt;变量提升使得变量容易在不被察觉的情况下被覆盖掉。&lt;/li&gt;
+&lt;li&gt;变量提升使本应销毁的变量没有被销毁&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;ES6是如何解决变量提升带来的缺陷&quot;&gt;ES6是如何解决变量提升带来的缺陷&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;ES6引入了let和const关键字，从而拥有了块级作用域。&lt;br&gt;
+引入let后，一段代码的执行流程变为：&lt;/li&gt;
+&lt;li&gt;编译并创建执行上下文：&lt;/li&gt;
+&lt;li&gt;函数内部通过var声明的变量，在编译阶段都被存放到变量环境中去了。&lt;/li&gt;
+&lt;li&gt;通过let声明的变量，在编译阶段被存放到词法环境中去了。&lt;/li&gt;
+&lt;li&gt;在函数的作用域内部，let声明的变量并没有被放到词法环境中去。&lt;/li&gt;
+&lt;li&gt;在词法环境内部，维护了一个小型栈结构，栈底是函数最外层的变量，进入一个作用域后，就会把该作用域内部的变量压到栈顶。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;块级作用域就是通过词法环境的栈结构来实现的，而变量提升是通过变量环境来实现，通过两者结合，JavaScript引擎也就同时支持了变量提升和块级作用域。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;10-作用域和闭包：代码出现相同的变量，JavaScript引擎是如何选择的&quot;&gt;10 | 作用域和闭包：代码出现相同的变量，JavaScript引擎是如何选择的&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;理解作用域链是理解闭包的基础，简单总结下作用域链，然后通过作用域链来理解什么是闭包。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;作用域链&quot;&gt;作用域链&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;其实在每个执行上下文变量环境中，都包含了一个外部引用，用来指向外部的执行上下文，我们把这个外部引用称为outer。&lt;br&gt;
+上句话明白之后，我们接着分析。&lt;br&gt;
+当一段代码中使用了一个变量，首先在&amp;quot;当前的执行上下文&amp;quot;的词法环境中查找该变量，若没有找到，继续在变量环境中去查找该变量。&lt;br&gt;
+如何它依旧没有找到，那么JavaScript引擎就会继续在outer所指向的执行上下文中查找。&lt;br&gt;
+&lt;strong&gt;我们就把这个查找变量过程的链条称为作用域链&lt;/strong&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;到这里，还需要解决的一个问题是，foo函数中调用bar函数，为什么bar函数内部的外部引用执行的是全局执行上下文，而不是foo函数的执行上下文呢？&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;词法作用域&quot;&gt;词法作用域&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;词法作用域是指作用域是由代码中&lt;strong&gt;函数声明的位置&lt;/strong&gt;来决定的，所有词法作用域是静态的作用域，通过它能够预测代码在执行过程中如何查找标识符。&lt;br&gt;
+词法作用域是代码编译阶段就决定好的，和函数是怎么调用的没有关系，即之和函数声明的位置有关系。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;闭包&quot;&gt;闭包&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;了解了作用域链，接着我们就要来聊聊闭包了。&lt;br&gt;
+确切的说，了解了变量环境、词法环境和作用域链等概念，来理解闭包就容易多了。&lt;br&gt;
+先看段代码：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight arcade&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title function_&quot;&gt;foo&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; myName = &lt;span class=&quot;string&quot;&gt;&amp;quot;内部变量&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    let test1 = &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    const test2 = &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; innerBar = &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;getName&lt;/span&gt;:&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(test1)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; myName&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &amp;#125;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;setName&lt;/span&gt;:&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;newName&lt;/span&gt;)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            myName = newName&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; innerBar&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; bar = foo()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;bar.setName(&lt;span class=&quot;string&quot;&gt;&amp;quot;外部传入&amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;bar.getName()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(bar.getName())&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;分析上面代码，调用栈是这么进行的：&lt;br&gt;
+首先，全局执行上下文压入栈底，其中的变量环境为bar == undefined,词法环境为空，其作用域链包含的外部引用outer为空。&lt;br&gt;
+接着，执行foo函数的时候，形成了foo函数的执行上下文，它的变量环境为 myName=‘内部变量’，innerBar为函数，词法环境为test1为1，test2为2，其作用域链包含的外部outer(通过函数的定义位置)为全局作用域。&lt;br&gt;
+然后foo函数执行完毕之后，一般情况下我们分析内部的变量环境和词法环境就会清空，但是由于foo函数返回的innerBar还在使用者test1和myName这两个变量，所以虽然foo函数的执行上下文从栈顶弹出，但是用到的两个变量还是依旧保存在了内存中，而这两个变量除了setName和getName这两个方法可以访问，其他无论什么情况都访问不了，这个时候我们称：foo函数为闭包。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;闭包定义&quot;&gt;闭包定义&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;在JavaScript中，&lt;br&gt;
+根据词法作用域的规则，内部函数总是可以访问其外部函数中声明的变量，&lt;br&gt;
+当通过调用一个外部函数返回一个内部函数后，&lt;br&gt;
+即使外部函数已经执行结束了，但内部函数中引用外部函数的变量依然保存在内存中，&lt;br&gt;
+我们就把这些变量的集合称为闭包。&lt;br&gt;
+比如外部函数是foo，那么这些变量的集合就称为foo函数的闭包。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;闭包是怎么回收的&quot;&gt;闭包是怎么回收的&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;之所以需要关注闭包的回收，是因为如果闭包使用不正确，会很容易造成内存泄漏。&lt;br&gt;
+通常，如果引用闭包的函数是一个全局变量，那么变量会一直存在页面直到页面关闭，但如果这个闭包以后不再使用的话，就会造成内存泄漏。&lt;br&gt;
+如果引用闭包的是一个局部变量，那么当函数销毁时，在下次JavaScript引擎执行垃圾回收时，会判断闭包这块内容是否已经不再使用，若不再使用，那额就回收这块内存。&lt;br&gt;
+最后，记住一个原则：如果该闭包一直使用，那么它可以作为全局变量而存在，如果使用频率不高且占用内存较大，那么尽量让它称为一个局部变量。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;11-this-从JavaScript执行上下文的视角学习this&quot;&gt;11 | this:从JavaScript执行上下文的视角学习this&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;作用域链和this是两套不同的系统，它们之间没有太多的联系。&lt;br&gt;
+在前文中，我们提到了执行上下文包含了：&lt;strong&gt;变量环境&lt;/strong&gt;、&lt;strong&gt;词法环境&lt;/strong&gt;、&lt;strong&gt;外部环境outer&lt;/strong&gt;，这一节加上我们要分析的&lt;strong&gt;this&lt;/strong&gt;，也就是四个部分。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;this是和执行上下文进行绑定的，而我们已经知道了执行上下文包括全局执行上下文、函数执行上下文以及eval执行上下文，那么对应的this也只要这三种，撇去这个eval中的this，我们重点关注全局执行上下文中的this和函数执行上下文中的this。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;全局执行上下文中的this，通过控制台打印的方式验证，我们知道这个this就是window。&lt;br&gt;
+然后，重点分析的就是函数中的this了,从下面最简单代码开始分析。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title function_&quot;&gt;foo&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;variable language_&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;variable language_&quot;&gt;this&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;title function_&quot;&gt;foo&lt;/span&gt;()&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;打印结果为this，也就是：“默认情况下调用一个函数，函数内部的执行上下文中的this也是指向Window对象”&lt;br&gt;
+那么，能不能设置函数内执行上下文中this的指向呢？That must be!&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;通过call、apply、bind方法设置&quot;&gt;通过call、apply、bind方法设置&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;call apply bind因为继承自Funtion.prototype,所以函数、数组、对象的实例都可以使用这三个方法。&lt;/li&gt;
+&lt;li&gt;call方法如果没有参数、或者参数为null或者参数为undefined，那么this都是指向Window对象，如果有参数，支持传入两个参数，第一个参数为this的指向，后面的参数为this指向的那个对象所传入的参数，需要特别注意的是这个参数需要一个个的传入，即不能以数组形式传入。&lt;/li&gt;
+&lt;li&gt;apply方法与apply类似，唯一的区别是第二个传入的参数将以数组的形式传入。&lt;/li&gt;
+&lt;li&gt;bind方法是非立即执行的一个函数，即用于执行函数内部this的指向—执行时所在的区域，传递参数与call方法相同。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;应用：找出一个数组const arr = [1,10,7]中最大的数:Math.max.call(null,…arr) or Math.max.apply(null,arr)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;通过调用对象方法设置&quot;&gt;通过调用对象方法设置&lt;/h3&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; myObj = &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;name&lt;/span&gt;:&lt;span class=&quot;string&quot;&gt;&amp;#x27;liugezhou&amp;#x27;&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;attr&quot;&gt;showThis&lt;/span&gt;:&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;variable language_&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;variable language_&quot;&gt;this&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;myObj.&lt;span class=&quot;title function_&quot;&gt;showThis&lt;/span&gt;()&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;以上代码输出的为myObj对象，通过这个小例子，我们可以得出结论：&lt;br&gt;
+使用对象调用&lt;strong&gt;内部的一个方法&lt;/strong&gt;，该方法的this是指向对象本身的。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;通过构造函数中设置&quot;&gt;通过构造函数中设置&lt;/h3&gt;
+&lt;figure class=&quot;highlight csharp&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;function &lt;span class=&quot;title&quot;&gt;CreateObj&lt;/span&gt;()&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.name=&lt;span class=&quot;string&quot;&gt;&amp;#x27;liugezhou&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; myObj = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; CreateObj()&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;这几行代码的理解，可以让我们对new一个对象内部过程到底发生了什么，产生深刻的理解。&lt;br&gt;
+首先，new的时候呢，创建了一个临时 空对象，&lt;br&gt;
+然后，调用CreateObj的call方法，将临时对象作为参数传入&lt;br&gt;
+接着，执行CreateObj方法的时候，内部的this就是这个临时对象&lt;br&gt;
+最后返回这个临时对象，也就得到了我们的myObj。&lt;br&gt;
+¸&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;this的设计缺陷和应对方案&quot;&gt;this的设计缺陷和应对方案&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;嵌套函数中的this不会从外层函数中继承。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;也就是说在一个对象中定义个方法，输出的this为这个对象，然后这个对象中的方法继续定义个方法，输出的this执行的就是window，因此在解决this执行的时候，可以在该对象内部的方法中定义一个变量that指向this，然后这个对象中方法的方法输出的that就是该对象。&lt;br&gt;
+当然，我们现在的做法一般是在该对象内部的方法中的方法使用ES6的箭头函数，这样就不用再去定义一个中间变量了。&lt;br&gt;
+也就告诉我们箭头函数不会创建自己的执行上下文，箭头函数中的this取决于他的外部函数。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;普通函数中的this默认指向全局对象Window&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;这个原理我们已经清楚，这也是一个设计缺陷，在我们编写代码的时候，并不希望函数中的this是指向全局的，因此会容易造成误操作，，像我们前面学的，通过call方法来改变this指向。&lt;/p&gt;
+&lt;/blockquote&gt;
+"><meta name="twitter:image"><title>阶段二：浏览器中JavaScript的执行机制 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">阶段二：浏览器中JavaScript的执行机制</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">阶段二：浏览器中JavaScript的执行机制</h1><div class="post-meta">2022-03-27<span> | </span><span class="category"><a href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 3.4k</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 12</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/A2%E9%98%B6%E6%AE%B5%E4%BA%8C%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%ADJavaScript%E7%9A%84%E6%89%A7%E8%A1%8C%E6%9C%BA%E5%88%B6/#vcomment"><span class="valine-comment-count" data-xid="/A2%E9%98%B6%E6%AE%B5%E4%BA%8C%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%ADJavaScript%E7%9A%84%E6%89%A7%E8%A1%8C%E6%9C%BA%E5%88%B6/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">阶段二:浏览器中JavaScript的执行机制</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#07%EF%BD%9C%E5%8F%98%E9%87%8F%E6%8F%90%E5%8D%87-JavaScript%E4%B8%AD%E7%9A%84%E4%BB%A3%E7%A0%81%E6%98%AF%E6%8C%89%E9%A1%BA%E5%BA%8F%E6%89%A7%E8%A1%8C%E7%9A%84%E5%90%97%EF%BC%9F"><span class="toc-text">07｜变量提升:JavaScript中的代码是按顺序执行的吗？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E6%8F%90%E5%8D%87"><span class="toc-text">变量提升</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JavaScript%E7%9A%84%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-text">JavaScript的代码执行流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E9%98%B6%E6%AE%B5"><span class="toc-text">编译阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E9%98%B6%E6%AE%B5"><span class="toc-text">执行阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#08%EF%BD%9C%E8%B0%83%E7%94%A8%E6%A0%88%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88JavaScript%E4%BB%A3%E7%A0%81%E4%BC%9A%E5%87%BA%E7%8E%B0%E6%A0%88%E6%BA%A2%E5%87%BA%EF%BC%9F"><span class="toc-text">08｜调用栈：为什么JavaScript代码会出现栈溢出？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8"><span class="toc-text">函数调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JS%E7%9A%84%E8%B0%83%E7%94%A8%E6%A0%88"><span class="toc-text">JS的调用栈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%88%E9%80%92%E5%BD%92%E6%BA%A2%E5%87%BA%E9%97%AE%E9%A2%98"><span class="toc-text">栈递归溢出问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#09-%E5%9D%97%E7%BA%A7%E4%BD%9C%E7%94%A8%E5%9F%9F-var%E7%BC%BA%E9%99%B7%E4%BB%A5%E5%8F%8A%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%BC%95%E5%85%A5let%E5%92%8Cconst"><span class="toc-text">09|块级作用域:var缺陷以及为什么要引入let和const</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ES6%E6%98%AF%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%8F%98%E9%87%8F%E6%8F%90%E5%8D%87%E5%B8%A6%E6%9D%A5%E7%9A%84%E7%BC%BA%E9%99%B7"><span class="toc-text">ES6是如何解决变量提升带来的缺陷</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E4%BD%9C%E7%94%A8%E5%9F%9F%E5%92%8C%E9%97%AD%E5%8C%85%EF%BC%9A%E4%BB%A3%E7%A0%81%E5%87%BA%E7%8E%B0%E7%9B%B8%E5%90%8C%E7%9A%84%E5%8F%98%E9%87%8F%EF%BC%8CJavaScript%E5%BC%95%E6%93%8E%E6%98%AF%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9%E7%9A%84"><span class="toc-text">10 | 作用域和闭包：代码出现相同的变量，JavaScript引擎是如何选择的</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8%E5%9F%9F%E9%93%BE"><span class="toc-text">作用域链</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%8D%E6%B3%95%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-text">词法作用域</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AD%E5%8C%85"><span class="toc-text">闭包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AD%E5%8C%85%E5%AE%9A%E4%B9%89"><span class="toc-text">闭包定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AD%E5%8C%85%E6%98%AF%E6%80%8E%E4%B9%88%E5%9B%9E%E6%94%B6%E7%9A%84"><span class="toc-text">闭包是怎么回收的</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-this-%E4%BB%8EJavaScript%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87%E7%9A%84%E8%A7%86%E8%A7%92%E5%AD%A6%E4%B9%A0this"><span class="toc-text">11 | this:从JavaScript执行上下文的视角学习this</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E8%BF%87call%E3%80%81apply%E3%80%81bind%E6%96%B9%E6%B3%95%E8%AE%BE%E7%BD%AE"><span class="toc-text">通过call、apply、bind方法设置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E8%BF%87%E8%B0%83%E7%94%A8%E5%AF%B9%E8%B1%A1%E6%96%B9%E6%B3%95%E8%AE%BE%E7%BD%AE"><span class="toc-text">通过调用对象方法设置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E8%BF%87%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E4%B8%AD%E8%AE%BE%E7%BD%AE"><span class="toc-text">通过构造函数中设置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#this%E7%9A%84%E8%AE%BE%E8%AE%A1%E7%BC%BA%E9%99%B7%E5%92%8C%E5%BA%94%E5%AF%B9%E6%96%B9%E6%A1%88"><span class="toc-text">this的设计缺陷和应对方案</span></a></li></ol></li></ol></li></ol></div></div><div class="post-content"><h1>阶段二:浏览器中JavaScript的执行机制</h1>
+<h2 id="07｜变量提升-JavaScript中的代码是按顺序执行的吗？">07｜变量提升:JavaScript中的代码是按顺序执行的吗？</h2>
+<blockquote>
+<p>只有理解了JavaScript执行上下文，才能更好的理解JavaScript语言本身：变量提升、作用域、闭包等。</p>
+</blockquote>
+<h3 id="变量提升">变量提升</h3>
+<blockquote>
+<p>变量提升指的是:JS代码在执行过程中，JS引擎会把变量的声明部分和函数的声明部分提升到代码开头的行为，变量提升后，会给变量设置默认值，这个值就是我们熟悉的undefined。</p>
+</blockquote>
+<h3 id="JavaScript的代码执行流程">JavaScript的代码执行流程</h3>
+<blockquote>
+<p>JavaScript是<strong>先编译后执行</strong>，在编译阶段变量的声明和函数的声明提升到代码开头,被JS引擎放入到内存中去了。</p>
+</blockquote>
+<h3 id="编译阶段">编译阶段</h3>
+<blockquote>
+<p>输入一段代码，经过JS引擎编译后，会生成两部分内容：<strong>执行上下文</strong>和<strong>可执行代码</strong>。<br>
+执行上下文是JavaScript执行一段代码的运行环境：比如调用一个函数，就会进入这个函数的执行上下文，确定函数在执行期间的诸如this、变量、对象以及函数等。<br>
+要谨记在执行上下文中存在一个变量环境(Variable Enviroment)和词法环境的对象，变量环境对象中保存了变量提升的内容。</p>
+</blockquote>
+<h3 id="执行阶段">执行阶段</h3>
+<blockquote>
+<p>JS引擎执行可执行代码，按照顺序一行一行执行。执行过程中遇到一些变量或者函数就去变量变量环境中查找。</p>
+</blockquote>
+<h3 id="总结">总结</h3>
+<blockquote>
+<p>JavaScript代码执行过程中，需要先做变量提升，这是因为代码执行前需要先编译，编译阶段JS引擎会将变量和函数的存放到变量环境中去，变量默认值为undefined，执行阶段，JS引擎会从变量环境中查找变量和函数，若在编译阶段，存在两个相同函数，会被第二个覆盖掉。<br>
+核心是要清楚JavaScript的执行机制：先编译后执行。</p>
+</blockquote>
+<h2 id="08｜调用栈：为什么JavaScript代码会出现栈溢出？">08｜调用栈：为什么JavaScript代码会出现栈溢出？</h2>
+<blockquote>
+<p>学习完执行上下文，本章学习调用栈。<br>
+学习调用栈我们可以了解JavaScript引擎背后的工作原理、有调试JavaScript代码的能力。</p>
+</blockquote>
+<blockquote>
+<p>调用栈是用来管理函数调用关系的一种数据结构–这个函数调用另外一个函数。</p>
+</blockquote>
+<h3 id="函数调用">函数调用</h3>
+<blockquote>
+<p>通过几行代码来看函数调用</p>
+</blockquote>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a =<span class="number">1</span>;</span><br><span class="line"><span class="function">function <span class="title">add</span>()</span>&#123;</span><br><span class="line">  <span class="keyword">let</span> b=<span class="number">2</span>;</span><br><span class="line">  <span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">add</span>()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ol>
+<li>JS引擎为上面这段代码创建全局执行上下文，将全局变量和函数都保存在全局执行上下文的变量环境中。</li>
+<li>执行到add，从全局执行上下文中取出add函数</li>
+<li>对add这个函数创建，函数执行上下文和可执行代码</li>
+<li>此刻，拥有两个执行上下文。</li>
+<li>执行上下文的管理通过叫做栈的数据结构管理(后进先出原则)–想像一个盒子，将全局执行上下文当如盒底部、再放入函数执行上下文。</li>
+</ol>
+</blockquote>
+<h3 id="JS的调用栈">JS的调用栈</h3>
+<blockquote>
+<p>通常把管理执行上下文的栈成为执行上下文栈，又称调用栈，调用栈是引擎追踪函数执行的一个机制。<br>
+可以通过查看浏览器的call stack或者在函数中输出console.trace()来查看调用栈。</p>
+</blockquote>
+<h3 id="栈递归溢出问题">栈递归溢出问题</h3>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function <span class="built_in">runStack</span>(n)&#123;</span><br><span class="line">  <span class="built_in">if</span>(n===<span class="number">0</span>) return <span class="number">100</span>;</span><br><span class="line">  return <span class="built_in">runStack</span>(n-<span class="number">2</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 修改后</span></span><br><span class="line">function <span class="built_in">runStack</span>(n)&#123;</span><br><span class="line">  <span class="built_in">if</span>(n===<span class="number">0</span>) return <span class="number">100</span>;</span><br><span class="line">  return <span class="built_in">setTimeout</span>(function()&#123;<span class="built_in">runStack</span>(n-<span class="number">2</span>)&#125;,<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="09-块级作用域-var缺陷以及为什么要引入let和const">09|块级作用域:var缺陷以及为什么要引入let和const</h2>
+<blockquote>
+<ul>
+<li>ES6之前没有块级作用域</li>
+<li>变量提升使得变量容易在不被察觉的情况下被覆盖掉。</li>
+<li>变量提升使本应销毁的变量没有被销毁</li>
+</ul>
+</blockquote>
+<h3 id="ES6是如何解决变量提升带来的缺陷">ES6是如何解决变量提升带来的缺陷</h3>
+<blockquote>
+<ul>
+<li>ES6引入了let和const关键字，从而拥有了块级作用域。<br>
+引入let后，一段代码的执行流程变为：</li>
+<li>编译并创建执行上下文：</li>
+<li>函数内部通过var声明的变量，在编译阶段都被存放到变量环境中去了。</li>
+<li>通过let声明的变量，在编译阶段被存放到词法环境中去了。</li>
+<li>在函数的作用域内部，let声明的变量并没有被放到词法环境中去。</li>
+<li>在词法环境内部，维护了一个小型栈结构，栈底是函数最外层的变量，进入一个作用域后，就会把该作用域内部的变量压到栈顶。</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>块级作用域就是通过词法环境的栈结构来实现的，而变量提升是通过变量环境来实现，通过两者结合，JavaScript引擎也就同时支持了变量提升和块级作用域。</p>
+</blockquote>
+<h2 id="10-作用域和闭包：代码出现相同的变量，JavaScript引擎是如何选择的">10 | 作用域和闭包：代码出现相同的变量，JavaScript引擎是如何选择的</h2>
+<blockquote>
+<p>理解作用域链是理解闭包的基础，简单总结下作用域链，然后通过作用域链来理解什么是闭包。</p>
+</blockquote>
+<h3 id="作用域链">作用域链</h3>
+<blockquote>
+<p>其实在每个执行上下文变量环境中，都包含了一个外部引用，用来指向外部的执行上下文，我们把这个外部引用称为outer。<br>
+上句话明白之后，我们接着分析。<br>
+当一段代码中使用了一个变量，首先在&quot;当前的执行上下文&quot;的词法环境中查找该变量，若没有找到，继续在变量环境中去查找该变量。<br>
+如何它依旧没有找到，那么JavaScript引擎就会继续在outer所指向的执行上下文中查找。<br>
+<strong>我们就把这个查找变量过程的链条称为作用域链</strong>。</p>
+</blockquote>
+<blockquote>
+<p>到这里，还需要解决的一个问题是，foo函数中调用bar函数，为什么bar函数内部的外部引用执行的是全局执行上下文，而不是foo函数的执行上下文呢？</p>
+</blockquote>
+<h3 id="词法作用域">词法作用域</h3>
+<blockquote>
+<p>词法作用域是指作用域是由代码中<strong>函数声明的位置</strong>来决定的，所有词法作用域是静态的作用域，通过它能够预测代码在执行过程中如何查找标识符。<br>
+词法作用域是代码编译阶段就决定好的，和函数是怎么调用的没有关系，即之和函数声明的位置有关系。</p>
+</blockquote>
+<h3 id="闭包">闭包</h3>
+<blockquote>
+<p>了解了作用域链，接着我们就要来聊聊闭包了。<br>
+确切的说，了解了变量环境、词法环境和作用域链等概念，来理解闭包就容易多了。<br>
+先看段代码：</p>
+</blockquote>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">foo</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> myName = <span class="string">&quot;内部变量&quot;</span></span><br><span class="line">    let test1 = <span class="number">1</span></span><br><span class="line">    const test2 = <span class="number">2</span></span><br><span class="line">    <span class="keyword">var</span> innerBar = &#123;</span><br><span class="line">        <span class="attr">getName</span>:<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">            <span class="built_in">console</span>.<span class="built_in">log</span>(test1)</span><br><span class="line">            <span class="keyword">return</span> myName</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">setName</span>:<span class="keyword">function</span>(<span class="params">newName</span>)&#123;</span><br><span class="line">            myName = newName</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> innerBar</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> bar = foo()</span><br><span class="line">bar.setName(<span class="string">&quot;外部传入&quot;</span>)</span><br><span class="line">bar.getName()</span><br><span class="line"><span class="built_in">console</span>.<span class="built_in">log</span>(bar.getName())</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>分析上面代码，调用栈是这么进行的：<br>
+首先，全局执行上下文压入栈底，其中的变量环境为bar == undefined,词法环境为空，其作用域链包含的外部引用outer为空。<br>
+接着，执行foo函数的时候，形成了foo函数的执行上下文，它的变量环境为 myName=‘内部变量’，innerBar为函数，词法环境为test1为1，test2为2，其作用域链包含的外部outer(通过函数的定义位置)为全局作用域。<br>
+然后foo函数执行完毕之后，一般情况下我们分析内部的变量环境和词法环境就会清空，但是由于foo函数返回的innerBar还在使用者test1和myName这两个变量，所以虽然foo函数的执行上下文从栈顶弹出，但是用到的两个变量还是依旧保存在了内存中，而这两个变量除了setName和getName这两个方法可以访问，其他无论什么情况都访问不了，这个时候我们称：foo函数为闭包。</p>
+</blockquote>
+<h3 id="闭包定义">闭包定义</h3>
+<blockquote>
+<p>在JavaScript中，<br>
+根据词法作用域的规则，内部函数总是可以访问其外部函数中声明的变量，<br>
+当通过调用一个外部函数返回一个内部函数后，<br>
+即使外部函数已经执行结束了，但内部函数中引用外部函数的变量依然保存在内存中，<br>
+我们就把这些变量的集合称为闭包。<br>
+比如外部函数是foo，那么这些变量的集合就称为foo函数的闭包。</p>
+</blockquote>
+<h3 id="闭包是怎么回收的">闭包是怎么回收的</h3>
+<blockquote>
+<p>之所以需要关注闭包的回收，是因为如果闭包使用不正确，会很容易造成内存泄漏。<br>
+通常，如果引用闭包的函数是一个全局变量，那么变量会一直存在页面直到页面关闭，但如果这个闭包以后不再使用的话，就会造成内存泄漏。<br>
+如果引用闭包的是一个局部变量，那么当函数销毁时，在下次JavaScript引擎执行垃圾回收时，会判断闭包这块内容是否已经不再使用，若不再使用，那额就回收这块内存。<br>
+最后，记住一个原则：如果该闭包一直使用，那么它可以作为全局变量而存在，如果使用频率不高且占用内存较大，那么尽量让它称为一个局部变量。</p>
+</blockquote>
+<h2 id="11-this-从JavaScript执行上下文的视角学习this">11 | this:从JavaScript执行上下文的视角学习this</h2>
+<blockquote>
+<p>作用域链和this是两套不同的系统，它们之间没有太多的联系。<br>
+在前文中，我们提到了执行上下文包含了：<strong>变量环境</strong>、<strong>词法环境</strong>、<strong>外部环境outer</strong>，这一节加上我们要分析的<strong>this</strong>，也就是四个部分。</p>
+</blockquote>
+<blockquote>
+<p>this是和执行上下文进行绑定的，而我们已经知道了执行上下文包括全局执行上下文、函数执行上下文以及eval执行上下文，那么对应的this也只要这三种，撇去这个eval中的this，我们重点关注全局执行上下文中的this和函数执行上下文中的this。</p>
+</blockquote>
+<blockquote>
+<p>全局执行上下文中的this，通过控制台打印的方式验证，我们知道这个this就是window。<br>
+然后，重点分析的就是函数中的this了,从下面最简单代码开始分析。</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">foo</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">foo</span>()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>打印结果为this，也就是：“默认情况下调用一个函数，函数内部的执行上下文中的this也是指向Window对象”<br>
+那么，能不能设置函数内执行上下文中this的指向呢？That must be!</p>
+</blockquote>
+<h3 id="通过call、apply、bind方法设置">通过call、apply、bind方法设置</h3>
+<blockquote>
+<ul>
+<li>call apply bind因为继承自Funtion.prototype,所以函数、数组、对象的实例都可以使用这三个方法。</li>
+<li>call方法如果没有参数、或者参数为null或者参数为undefined，那么this都是指向Window对象，如果有参数，支持传入两个参数，第一个参数为this的指向，后面的参数为this指向的那个对象所传入的参数，需要特别注意的是这个参数需要一个个的传入，即不能以数组形式传入。</li>
+<li>apply方法与apply类似，唯一的区别是第二个传入的参数将以数组的形式传入。</li>
+<li>bind方法是非立即执行的一个函数，即用于执行函数内部this的指向—执行时所在的区域，传递参数与call方法相同。</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>应用：找出一个数组const arr = [1,10,7]中最大的数:Math.max.call(null,…arr) or Math.max.apply(null,arr)</p>
+</blockquote>
+<h3 id="通过调用对象方法设置">通过调用对象方法设置</h3>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> myObj = &#123;</span><br><span class="line">  <span class="attr">name</span>:<span class="string">&#x27;liugezhou&#x27;</span>,</span><br><span class="line">  <span class="attr">showThis</span>:<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">myObj.<span class="title function_">showThis</span>()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>以上代码输出的为myObj对象，通过这个小例子，我们可以得出结论：<br>
+使用对象调用<strong>内部的一个方法</strong>，该方法的this是指向对象本身的。</p>
+</blockquote>
+<h3 id="通过构造函数中设置">通过构造函数中设置</h3>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">function <span class="title">CreateObj</span>()</span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.name=<span class="string">&#x27;liugezhou&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> myObj = <span class="keyword">new</span> CreateObj()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这几行代码的理解，可以让我们对new一个对象内部过程到底发生了什么，产生深刻的理解。<br>
+首先，new的时候呢，创建了一个临时 空对象，<br>
+然后，调用CreateObj的call方法，将临时对象作为参数传入<br>
+接着，执行CreateObj方法的时候，内部的this就是这个临时对象<br>
+最后返回这个临时对象，也就得到了我们的myObj。<br>
+¸</p>
+</blockquote>
+<h3 id="this的设计缺陷和应对方案">this的设计缺陷和应对方案</h3>
+<ol>
+<li>嵌套函数中的this不会从外层函数中继承。</li>
+</ol>
+<blockquote>
+<p>也就是说在一个对象中定义个方法，输出的this为这个对象，然后这个对象中的方法继续定义个方法，输出的this执行的就是window，因此在解决this执行的时候，可以在该对象内部的方法中定义一个变量that指向this，然后这个对象中方法的方法输出的that就是该对象。<br>
+当然，我们现在的做法一般是在该对象内部的方法中的方法使用ES6的箭头函数，这样就不用再去定义一个中间变量了。<br>
+也就告诉我们箭头函数不会创建自己的执行上下文，箭头函数中的this取决于他的外部函数。</p>
+</blockquote>
+<ol start="2">
+<li>普通函数中的this默认指向全局对象Window</li>
+</ol>
+<blockquote>
+<p>这个原理我们已经清楚，这也是一个设计缺陷，在我们编写代码的时候，并不希望函数中的this是指向全局的，因此会容易造成误操作，，像我们前面学的，通过call方法来改变this指向。</p>
+</blockquote>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>阶段二：浏览器中JavaScript的执行机制</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2022-03-27</p><p><span>最后更新：</span>2022-03-27</p><p><span>原始链接：</span><a href="/A2阶段二：浏览器中JavaScript的执行机制/">https://blog.liugezhou.online/A2%E9%98%B6%E6%AE%B5%E4%BA%8C%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%ADJavaScript%E7%9A%84%E6%89%A7%E8%A1%8C%E6%9C%BA%E5%88%B6/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/A2%E9%98%B6%E6%AE%B5%E4%BA%8C%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%ADJavaScript%E7%9A%84%E6%89%A7%E8%A1%8C%E6%9C%BA%E5%88%B6/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/浏览器工作原理"><i class="fa fa-tag">浏览器工作原理</i></a></div><div class="post-nav"><a class="pre" href="/A3%E9%98%B6%E6%AE%B5%E4%B8%89%EF%BC%9AV8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">阶段三：V8工作原理</a><a class="next" href="/202212(3.21-3.27)/">每周小结(*49):Go back to basics</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

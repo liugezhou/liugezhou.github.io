@@ -1,0 +1,457 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="前端性能优化小结"><meta name="twitter:description" content="&lt;p&gt;从输入URL到页面加载完成，发生了什么，要进行肌肉记忆。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.yuque.com/liugezhou/drrg7f/gav2aq&quot;&gt;https://www.yuque.com/liugezhou/drrg7f/gav2aq&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;前端性能优化主要是从&lt;strong&gt;网络层面&lt;/strong&gt;和&lt;strong&gt;渲染层面&lt;/strong&gt;两个大的维度来分析&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;涉及到网络的：&lt;strong&gt;DNS解析&lt;/strong&gt;、&lt;strong&gt;TCP链接&lt;/strong&gt;、&lt;strong&gt;HTTP请求/响应&lt;/strong&gt;其中DNS解析和TCP链接我们可以优化的地方很有限。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;网络层面&lt;/h1&gt;
+&lt;h2 id=&quot;1-HTTP请求-相应的链接&quot;&gt;1. HTTP请求/相应的链接&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;减少请求次数&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;减少单次请求所花费的时间&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这两个请求的优化点我们从 &lt;strong&gt;资源的压缩和合并入手&lt;/strong&gt; 以及打包构建工具的作用解决浏览器频发请求文件问题.&lt;/p&gt;
+&lt;h2 id=&quot;2-webpack的性能瓶颈&quot;&gt;2. webpack的性能瓶颈&lt;/h2&gt;
+&lt;p&gt;首先对webpack的基础有个了解：&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://blog.liugezhou.online/013-webpack/&quot;&gt;https://blog.liugezhou.online/013-webpack/&lt;/a&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;webpack的构建过程太花时间&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;webpack打包的结果体积太大&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;构建过程提速：(主要是针对CI/CD流程吧，手动打包不太在意构建过程速度)&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;不要让loader做太多事情：- modules.rules中的exclude使用–排除更多无关代码&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;开启缓存转译：loader: ‘babel-loader?cacheDirectory=true’&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;第三方库- DIIPlugin:把第三方库单独打包到一个文件&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;将loader由单线程转为多线程- 使用happypack这个库，使得webpack单独处理任务改为把任务分解成多个子任务并发执行。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;构建结果体积压缩- webpack-bundle-analyzer:通过这个库可以查看构建打包后的体积，有针对性优化。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;按需加载。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;删除冗余代码：Tree-shaking，webpack4自带了，包括UglifyJsPlugin中compress的设置去除日志打印、注释等等。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;开启gzip- 需要开启gzip，在request-headers中设置accept-encoding:gzip,Deflate&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;babel优化&lt;/strong&gt;&lt;br&gt;
+为了应对低版本的ES6转ES5的js语言特性，使用了babel-polyfill后，打包体积会很大，这个时候可以根据业务代码，在loader的的options配置中加入useBuiltIns为usage。&lt;/p&gt;
+&lt;h2 id=&quot;3-图片优化&quot;&gt;3 图片优化&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;应用广泛的Web图片格式有：JPEG/JPG、PNG、WebP、Base64、SVG- JPEG/JPG：有损压缩、体积小、加载快、不支持透明==》背景图、banner图适用&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;PNG：无损压缩、质量高、体积大、支持透明 ==》Logo等小图片&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;WebP：唯一的缺点是兼容性不太好，可以通过判断是否支持该格式，切换后缀。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;SVG：体积更小、压缩性更强、图片放大不失真，但渲染成本较高。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Base64:小图标解决方案，Webpack的url-loader对此做了优化。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;4-缓存应用&quot;&gt;4. 缓存应用&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;缓存&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本地存储&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Local Storage ：持久化存储永不过期。5-10M数据，可以对图片、不经常更新的css、js静态存储。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Session Storage：会话存储&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;IndexedDB：运行在浏览器上的非关系型数据库，&amp;gt;250M.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;5-CDN缓存&quot;&gt;5. CDN缓存&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;CDN的核心点分为缓存和回源&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;CDN往往被用来存放静态资源&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;静态资源走CDN不应该是一个选择，而是一个规定&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;业务服务器与静态资源CDN服务器的区分，对性能提高帮助很大(不用携带无用信息)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;6-使用HTTP2&quot;&gt;6.使用HTTP2&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;多路复用、首部压缩&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h1&gt;渲染层面&lt;/h1&gt;
+&lt;h2 id=&quot;1-CSS样式表规则的优化&quot;&gt;1. CSS样式表规则的优化&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;CSS选择符是从右到左进行匹配的。&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;避免使用通配符，只对需要用到的元素进行选择&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;少用标签选择器，多用类选择器。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;CSS是阻塞渲染的资源，应尽快下载到客户端&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;尽早==》header&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;尽快==》CDN&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;2-JS的加载方式&quot;&gt;2. JS的加载方式&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;正常模式： &lt;script src=&quot;index.js&quot;&gt;&lt;/script&gt;   阻塞浏览器&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;async模式：&lt;script async  src=&quot;index.js&quot;&gt;&lt;/script&gt;  不会阻塞，加载是异步的&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;defer模式:  &lt;script defer  src=&quot;index.js&quot;&gt;&lt;/script&gt;  加载异步，推迟执行，在文档解析完成、DOMContentLoaded事件被触发时才开始依次执行。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;3-避免或减少回流操作&quot;&gt;3. 避免或减少回流操作&lt;/h2&gt;
+&lt;h2 id=&quot;4-图片懒加载&quot;&gt;4. 图片懒加载&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;关键一:当前可视区域的高度:&lt;br&gt;
+window.innerHeight|| document.documentElement.clientHeight&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;关键二:元素距离可视区域顶部的高度:&lt;br&gt;
+getBoundingClientRect()&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight html&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;30&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;31&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;32&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;33&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;34&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;35&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;36&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;37&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;38&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;39&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;40&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;41&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;42&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;43&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;44&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;45&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;46&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;47&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;lt;!DOCTYPE &lt;span class=&quot;keyword&quot;&gt;html&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;html&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;lang&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;en&amp;quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;head&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;meta&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;charset&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;UTF-8&amp;quot;&lt;/span&gt; /&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;meta&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;http-equiv&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;X-UA-Compatible&amp;quot;&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;content&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;IE=edge&amp;quot;&lt;/span&gt; /&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;meta&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;name&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;viewport&amp;quot;&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;content&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;width=device-width, initial-scale=1.0&amp;quot;&lt;/span&gt; /&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;title&lt;/span&gt;&amp;gt;&lt;/span&gt;Lazy-load&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;title&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;style&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;language-css&quot;&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-css&quot;&gt;      &lt;span class=&quot;selector-class&quot;&gt;.img&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-css&quot;&gt;        &lt;span class=&quot;attribute&quot;&gt;width&lt;/span&gt;: &lt;span class=&quot;number&quot;&gt;200px&lt;/span&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-css&quot;&gt;        &lt;span class=&quot;attribute&quot;&gt;height&lt;/span&gt;: &lt;span class=&quot;number&quot;&gt;200px&lt;/span&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-css&quot;&gt;        &lt;span class=&quot;attribute&quot;&gt;background-color&lt;/span&gt;: gray;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-css&quot;&gt;      &amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-css&quot;&gt;      &lt;span class=&quot;selector-class&quot;&gt;.pic&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-css&quot;&gt;        &lt;span class=&quot;attribute&quot;&gt;border&lt;/span&gt;: &lt;span class=&quot;number&quot;&gt;1px&lt;/span&gt; solid red;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-css&quot;&gt;        &lt;span class=&quot;attribute&quot;&gt;width&lt;/span&gt;: &lt;span class=&quot;number&quot;&gt;200px&lt;/span&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-css&quot;&gt;        &lt;span class=&quot;attribute&quot;&gt;height&lt;/span&gt;: &lt;span class=&quot;number&quot;&gt;200px&lt;/span&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-css&quot;&gt;      &amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-css&quot;&gt;    &lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;style&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;head&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;body&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;container&amp;quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &lt;span class=&quot;comment&quot;&gt;&amp;lt;!-- 10个div --&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;img&amp;quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;img&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;pic&amp;quot;&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;alt&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;加载中&amp;quot;&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;data-src&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;./images/9.png&amp;quot;&lt;/span&gt; /&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;body&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;language-javascript&quot;&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-javascript&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; imgs = &lt;span class=&quot;variable language_&quot;&gt;document&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;getElementsByTagName&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;img&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-javascript&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; viewHeight =&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-javascript&quot;&gt;      &lt;span class=&quot;variable language_&quot;&gt;window&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;innerHeight&lt;/span&gt; || &lt;span class=&quot;variable language_&quot;&gt;document&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;documentElement&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;clientHeight&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-javascript&quot;&gt;    &lt;span class=&quot;variable language_&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(viewHeight)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-javascript&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; num = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-javascript&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title function_&quot;&gt;lazyLoad&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-javascript&quot;&gt;      &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; i = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;; i &amp;lt; imgs.&lt;span class=&quot;property&quot;&gt;length&lt;/span&gt;; i++) &amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-javascript&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; distance = viewHeight - imgs[i].&lt;span class=&quot;title function_&quot;&gt;getBoundingClientRect&lt;/span&gt;().&lt;span class=&quot;property&quot;&gt;top&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-javascript&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (distance &amp;gt;= &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;) &amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-javascript&quot;&gt;          imgs[i].&lt;span class=&quot;property&quot;&gt;src&lt;/span&gt; = imgs[i].&lt;span class=&quot;title function_&quot;&gt;getAttribute&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;data-src&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-javascript&quot;&gt;          num = i + &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-javascript&quot;&gt;        &amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-javascript&quot;&gt;      &amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-javascript&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-javascript&quot;&gt;    &lt;span class=&quot;variable language_&quot;&gt;window&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;addEventListener&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;scroll&amp;#x27;&lt;/span&gt;, lazyLoad, &lt;span class=&quot;literal&quot;&gt;true&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;language-javascript&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;html&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;5-防抖和节流&quot;&gt;5.防抖和节流&lt;/h2&gt;
+&lt;p&gt;以 4 中的监听scroll为例。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;throttle(事件节流)和debounce(事件防抖)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;这两个东西都以闭包的形式存在&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;事件节流-throttle、第一个说了算&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在一段时间内无视后来产生的回调请求。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;事件防抖-debounce、最后一个说了算&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;某段事件内，不管你触发了多少次回调，都只认最后一次。&lt;/p&gt;
+&lt;h2 id=&quot;6-性能检测&quot;&gt;6.性能检测&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;可视化工具Performance工具&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;使用Perfomance工具最好在无痕模式下打开&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;主要由概述面板、详情面板、Summary三部分构成&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;概述面板：FPS、CPU(与Summary结合来看)、NET&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Lighthouse–页面性能报告&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Performance&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Accessibility&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Best Practices&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;SEO&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;figcaption&gt;&lt;span&gt;Text&lt;/span&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;npm i -g lighthouse&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;lighthouse https://blog.liugezhou.online&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;我在使用此页面性能报告中，明显发现的性能指标有：图片推荐使用WebP、OSS资源推荐HTTP2、图片改为懒加载。&lt;/p&gt;
+&lt;/blockquote&gt;
+"><meta name="twitter:image"><title>前端性能优化小结 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">前端性能优化小结</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">前端性能优化小结</h1><div class="post-meta">2022-07-11<span> | </span><span class="category"><a href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 1.4k</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 5</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/028-%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%B0%8F%E7%BB%93/#vcomment"><span class="valine-comment-count" data-xid="/028-%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%B0%8F%E7%BB%93/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">网络层面</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-HTTP%E8%AF%B7%E6%B1%82-%E7%9B%B8%E5%BA%94%E7%9A%84%E9%93%BE%E6%8E%A5"><span class="toc-text">1. HTTP请求&#x2F;相应的链接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-webpack%E7%9A%84%E6%80%A7%E8%83%BD%E7%93%B6%E9%A2%88"><span class="toc-text">2. webpack的性能瓶颈</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%9B%BE%E7%89%87%E4%BC%98%E5%8C%96"><span class="toc-text">3 图片优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E7%BC%93%E5%AD%98%E5%BA%94%E7%94%A8"><span class="toc-text">4. 缓存应用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-CDN%E7%BC%93%E5%AD%98"><span class="toc-text">5. CDN缓存</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E4%BD%BF%E7%94%A8HTTP2"><span class="toc-text">6.使用HTTP2</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">渲染层面</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-CSS%E6%A0%B7%E5%BC%8F%E8%A1%A8%E8%A7%84%E5%88%99%E7%9A%84%E4%BC%98%E5%8C%96"><span class="toc-text">1. CSS样式表规则的优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-JS%E7%9A%84%E5%8A%A0%E8%BD%BD%E6%96%B9%E5%BC%8F"><span class="toc-text">2. JS的加载方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%81%BF%E5%85%8D%E6%88%96%E5%87%8F%E5%B0%91%E5%9B%9E%E6%B5%81%E6%93%8D%E4%BD%9C"><span class="toc-text">3. 避免或减少回流操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%9B%BE%E7%89%87%E6%87%92%E5%8A%A0%E8%BD%BD"><span class="toc-text">4. 图片懒加载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E9%98%B2%E6%8A%96%E5%92%8C%E8%8A%82%E6%B5%81"><span class="toc-text">5.防抖和节流</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E6%80%A7%E8%83%BD%E6%A3%80%E6%B5%8B"><span class="toc-text">6.性能检测</span></a></li></ol></li></ol></div></div><div class="post-content"><p>从输入URL到页面加载完成，发生了什么，要进行肌肉记忆。</p>
+<p><a target="_blank" rel="noopener" href="https://www.yuque.com/liugezhou/drrg7f/gav2aq">https://www.yuque.com/liugezhou/drrg7f/gav2aq</a></p>
+<ul>
+<li>
+<p>前端性能优化主要是从<strong>网络层面</strong>和<strong>渲染层面</strong>两个大的维度来分析</p>
+</li>
+<li>
+<p>涉及到网络的：<strong>DNS解析</strong>、<strong>TCP链接</strong>、<strong>HTTP请求/响应</strong>其中DNS解析和TCP链接我们可以优化的地方很有限。</p>
+</li>
+</ul>
+<h1>网络层面</h1>
+<h2 id="1-HTTP请求-相应的链接">1. HTTP请求/相应的链接</h2>
+<ol>
+<li>
+<p>减少请求次数</p>
+</li>
+<li>
+<p>减少单次请求所花费的时间</p>
+</li>
+</ol>
+<p>这两个请求的优化点我们从 <strong>资源的压缩和合并入手</strong> 以及打包构建工具的作用解决浏览器频发请求文件问题.</p>
+<h2 id="2-webpack的性能瓶颈">2. webpack的性能瓶颈</h2>
+<p>首先对webpack的基础有个了解：</p>
+<p><a href="https://blog.liugezhou.online/013-webpack/">https://blog.liugezhou.online/013-webpack/</a></p>
+<ol>
+<li>
+<p>webpack的构建过程太花时间</p>
+</li>
+<li>
+<p>webpack打包的结果体积太大</p>
+</li>
+</ol>
+<p><strong>构建过程提速：(主要是针对CI/CD流程吧，手动打包不太在意构建过程速度)</strong></p>
+<ul>
+<li>
+<p>不要让loader做太多事情：- modules.rules中的exclude使用–排除更多无关代码</p>
+</li>
+<li>
+<p>开启缓存转译：loader: ‘babel-loader?cacheDirectory=true’</p>
+</li>
+<li>
+<p>第三方库- DIIPlugin:把第三方库单独打包到一个文件</p>
+</li>
+<li>
+<p>将loader由单线程转为多线程- 使用happypack这个库，使得webpack单独处理任务改为把任务分解成多个子任务并发执行。</p>
+</li>
+<li>
+<p>构建结果体积压缩- webpack-bundle-analyzer:通过这个库可以查看构建打包后的体积，有针对性优化。</p>
+</li>
+<li>
+<p>按需加载。</p>
+</li>
+<li>
+<p>删除冗余代码：Tree-shaking，webpack4自带了，包括UglifyJsPlugin中compress的设置去除日志打印、注释等等。</p>
+</li>
+<li>
+<p>开启gzip- 需要开启gzip，在request-headers中设置accept-encoding:gzip,Deflate</p>
+</li>
+</ul>
+<p><strong>babel优化</strong><br>
+为了应对低版本的ES6转ES5的js语言特性，使用了babel-polyfill后，打包体积会很大，这个时候可以根据业务代码，在loader的的options配置中加入useBuiltIns为usage。</p>
+<h2 id="3-图片优化">3 图片优化</h2>
+<ul>
+<li>
+<p>应用广泛的Web图片格式有：JPEG/JPG、PNG、WebP、Base64、SVG- JPEG/JPG：有损压缩、体积小、加载快、不支持透明==》背景图、banner图适用</p>
+</li>
+<li>
+<p>PNG：无损压缩、质量高、体积大、支持透明 ==》Logo等小图片</p>
+</li>
+<li>
+<p>WebP：唯一的缺点是兼容性不太好，可以通过判断是否支持该格式，切换后缀。</p>
+</li>
+<li>
+<p>SVG：体积更小、压缩性更强、图片放大不失真，但渲染成本较高。</p>
+</li>
+<li>
+<p>Base64:小图标解决方案，Webpack的url-loader对此做了优化。</p>
+</li>
+</ul>
+<h2 id="4-缓存应用">4. 缓存应用</h2>
+<blockquote>
+<p>缓存</p>
+</blockquote>
+<blockquote>
+<p>本地存储</p>
+</blockquote>
+<ul>
+<li>
+<p>Local Storage ：持久化存储永不过期。5-10M数据，可以对图片、不经常更新的css、js静态存储。</p>
+</li>
+<li>
+<p>Session Storage：会话存储</p>
+</li>
+<li>
+<p>IndexedDB：运行在浏览器上的非关系型数据库，&gt;250M.</p>
+</li>
+</ul>
+<h2 id="5-CDN缓存">5. CDN缓存</h2>
+<ul>
+<li>
+<p>CDN的核心点分为缓存和回源</p>
+</li>
+<li>
+<p>CDN往往被用来存放静态资源</p>
+</li>
+<li>
+<p>静态资源走CDN不应该是一个选择，而是一个规定</p>
+</li>
+<li>
+<p>业务服务器与静态资源CDN服务器的区分，对性能提高帮助很大(不用携带无用信息)</p>
+</li>
+</ul>
+<h2 id="6-使用HTTP2">6.使用HTTP2</h2>
+<ul>
+<li>多路复用、首部压缩</li>
+</ul>
+<hr>
+<h1>渲染层面</h1>
+<h2 id="1-CSS样式表规则的优化">1. CSS样式表规则的优化</h2>
+<p><strong>CSS选择符是从右到左进行匹配的。</strong></p>
+<ul>
+<li>
+<p>避免使用通配符，只对需要用到的元素进行选择</p>
+</li>
+<li>
+<p>少用标签选择器，多用类选择器。</p>
+</li>
+<li>
+<p>CSS是阻塞渲染的资源，应尽快下载到客户端</p>
+</li>
+<li>
+<p>尽早==》header</p>
+</li>
+<li>
+<p>尽快==》CDN</p>
+</li>
+</ul>
+<h2 id="2-JS的加载方式">2. JS的加载方式</h2>
+<ul>
+<li>
+<p>正常模式： <script src="index.js"></script>   阻塞浏览器</p>
+</li>
+<li>
+<p>async模式：<script async  src="index.js"></script>  不会阻塞，加载是异步的</p>
+</li>
+<li>
+<p>defer模式:  <script defer  src="index.js"></script>  加载异步，推迟执行，在文档解析完成、DOMContentLoaded事件被触发时才开始依次执行。</p>
+</li>
+</ul>
+<h2 id="3-避免或减少回流操作">3. 避免或减少回流操作</h2>
+<h2 id="4-图片懒加载">4. 图片懒加载</h2>
+<ul>
+<li>
+<p>关键一:当前可视区域的高度:<br>
+window.innerHeight|| document.documentElement.clientHeight</p>
+</li>
+<li>
+<p>关键二:元素距离可视区域顶部的高度:<br>
+getBoundingClientRect()</p>
+</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Lazy-load<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css">      <span class="selector-class">.img</span> &#123;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">width</span>: <span class="number">200px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">height</span>: <span class="number">200px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">background-color</span>: gray;</span></span><br><span class="line"><span class="language-css">      &#125;</span></span><br><span class="line"><span class="language-css">      <span class="selector-class">.pic</span> &#123;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">border</span>: <span class="number">1px</span> solid red;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">width</span>: <span class="number">200px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">height</span>: <span class="number">200px</span>;</span></span><br><span class="line"><span class="language-css">      &#125;</span></span><br><span class="line"><span class="language-css">    </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;container&quot;</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 10个div --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;img&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">img</span> <span class="attr">class</span>=<span class="string">&quot;pic&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;加载中&quot;</span> <span class="attr">data-src</span>=<span class="string">&quot;./images/9.png&quot;</span> /&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">const</span> imgs = <span class="variable language_">document</span>.<span class="title function_">getElementsByTagName</span>(<span class="string">&#x27;img&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">const</span> viewHeight =</span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">window</span>.<span class="property">innerHeight</span> || <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">clientHeight</span></span></span><br><span class="line"><span class="language-javascript">    <span class="variable language_">console</span>.<span class="title function_">log</span>(viewHeight)</span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">let</span> num = <span class="number">0</span></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">function</span> <span class="title function_">lazyLoad</span>(<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; imgs.<span class="property">length</span>; i++) &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> distance = viewHeight - imgs[i].<span class="title function_">getBoundingClientRect</span>().<span class="property">top</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">if</span> (distance &gt;= <span class="number">0</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">          imgs[i].<span class="property">src</span> = imgs[i].<span class="title function_">getAttribute</span>(<span class="string">&#x27;data-src&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">          num = i + <span class="number">1</span></span></span><br><span class="line"><span class="language-javascript">        &#125;</span></span><br><span class="line"><span class="language-javascript">      &#125;</span></span><br><span class="line"><span class="language-javascript">    &#125;</span></span><br><span class="line"><span class="language-javascript">    <span class="variable language_">window</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;scroll&#x27;</span>, lazyLoad, <span class="literal">true</span>)</span></span><br><span class="line"><span class="language-javascript">  </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="5-防抖和节流">5.防抖和节流</h2>
+<p>以 4 中的监听scroll为例。</p>
+<ul>
+<li>
+<p>throttle(事件节流)和debounce(事件防抖)</p>
+</li>
+<li>
+<p>这两个东西都以闭包的形式存在</p>
+</li>
+</ul>
+<p><strong>事件节流-throttle、第一个说了算</strong></p>
+<p>在一段时间内无视后来产生的回调请求。</p>
+<p><strong>事件防抖-debounce、最后一个说了算</strong></p>
+<p>某段事件内，不管你触发了多少次回调，都只认最后一次。</p>
+<h2 id="6-性能检测">6.性能检测</h2>
+<p><strong>可视化工具Performance工具</strong></p>
+<ul>
+<li>
+<p>使用Perfomance工具最好在无痕模式下打开</p>
+</li>
+<li>
+<p>主要由概述面板、详情面板、Summary三部分构成</p>
+</li>
+<li>
+<p>概述面板：FPS、CPU(与Summary结合来看)、NET</p>
+</li>
+</ul>
+<p><strong>Lighthouse–页面性能报告</strong></p>
+<ul>
+<li>
+<p>Performance</p>
+</li>
+<li>
+<p>Accessibility</p>
+</li>
+<li>
+<p>Best Practices</p>
+</li>
+<li>
+<p>SEO</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><figcaption><span>Text</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm i -g lighthouse</span><br><span class="line">lighthouse https://blog.liugezhou.online</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>我在使用此页面性能报告中，明显发现的性能指标有：图片推荐使用WebP、OSS资源推荐HTTP2、图片改为懒加载。</p>
+</blockquote>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>前端性能优化小结</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2022-07-11</p><p><span>最后更新：</span>2024-01-29</p><p><span>原始链接：</span><a href="/028-前端性能优化小结/">https://blog.liugezhou.online/028-%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%B0%8F%E7%BB%93/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/028-%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%B0%8F%E7%BB%93/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/优化"><i class="fa fa-tag">优化</i></a></div><div class="post-nav"><a class="pre" href="/029-%E5%B0%8F%E7%A8%8B%E5%BA%8Frequest%E5%B0%81%E8%A3%85token/">微信小程序登录token问题==封装在request请求中</a><a class="next" href="/202227-No64/">每周小结(*64):周总结陷入疲劳</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

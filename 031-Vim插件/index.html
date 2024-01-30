@@ -1,0 +1,191 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="vim切换输入法"><meta name="twitter:description" content="&lt;h3 id=&quot;背景&quot;&gt;背景&lt;/h3&gt;
+&lt;p&gt;最近刚入门vim。&lt;br&gt;
+这篇文章，记录对 vim 切换输入法进行了解的一个过程，以及在了解 vim 插件过程中的一些心路历程。&lt;/p&gt;
+&lt;h3 id=&quot;历程&quot;&gt;历程&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;最开始了解 vim 插件是有这么一个需求：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;每次 Vim 编辑从 insert mode 切换到 normal mode 的时候，若在输入模式中是中文，切回到普通模式的时候，仍旧是中文，这个时候总是需要切换一下输入法到英文，才可以在普通模式下快速输入命令，每次都这么搞的话，非常不方面，那么有没有一个插件可以解决这个问题呢？&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;然后我在 Github 上搜 &lt;code&gt;vim输入法切换&lt;/code&gt;，搜到一个仓库&lt;a href=&quot;https://github.com/lipingcoding/autoim.vim&quot;&gt;lipingcoding/autoim.vim&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;看到仓库的 star 少，源码也不多，于是我就想那我为什么不自己在本地先去实现一下呢?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;vim插件开发第一次接触&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;于是先去搜插件开发入门版，看到了这篇文章：&lt;a href=&quot;https://wxnacy.com/2017/12/30/vim-plugin-write-helloworld/&quot;&gt;Vim 如何编写插件：Hello World&lt;/a&gt;&lt;br&gt;
+这篇文章学到的内容是：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;source引入vim文件&lt;/li&gt;
+&lt;li&gt;在~/.vim/plugin下的.vim文件会自动查找，不用source声明&lt;/li&gt;
+&lt;li&gt;函数名和执行命令首字母必须大写&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;最后照着这篇文章几分钟后在本地就实现了一个 &lt;code&gt;Hello World&lt;/code&gt;的入门级插件体验。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol start=&quot;4&quot;&gt;
+&lt;li&gt;然后我又回来看&lt;code&gt;vim输入法切换&lt;/code&gt;的这个仓库，核心代码就四个文件：&lt;br&gt;
+&lt;img src=&quot;https://tikolu.net/i/quehu&quot; alt=&quot;autoim&quot;&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;仓库 fork、clone到本地，查看源代码。&lt;br&gt;
+发现&lt;code&gt;cmd_space.scpt&lt;/code&gt;和&lt;code&gt;ctrl_space.scpt&lt;/code&gt;这两个文件打不开，也没接触过。且这个仓库只提供了&lt;code&gt;command+space&lt;/code&gt;和&lt;code&gt;ctrl + space&lt;/code&gt;两种输入法方式切换，而我本地用的是&lt;code&gt;caps lock&lt;/code&gt;键。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol start=&quot;5&quot;&gt;
+&lt;li&gt;然后看仓库说明文档，文档最后给出思路来源为&lt;a href=&quot;https://taoshu.in/vim/vim-auto-im.html&quot;&gt;涛叔的博客&lt;/a&gt;&lt;br&gt;
+接着看涛叔的博客内容，明白了仓库中 autoim.vim 的代码实现思路，以及为什么不能用&lt;code&gt;caps lock&lt;/code&gt;切换。&lt;br&gt;
+这篇文章主要学到的点有：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://sspai.com/post/43758#!&quot;&gt;AppleScript&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://eastmanreference.com/complete-list-of-applescript-key-codes&quot;&gt;键盘编码参考&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;scpt&lt;/code&gt;文件打开、编辑方式(Mac 自带的脚本编辑器编辑)&lt;/li&gt;
+&lt;li&gt;vim 提供的 InsertEnter 和 InsertLeave 两个事件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;ol start=&quot;6&quot;&gt;
+&lt;li&gt;回到仓库以&lt;code&gt;cmd_space.scpt&lt;/code&gt;为例，Mac自带脚本编辑器打开后长这个样子：&lt;br&gt;
+&lt;img src=&quot;https://tikolu.net/i/feahh&quot; alt=&quot;&quot;&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;接着看&lt;code&gt;ctrl_space.scpt&lt;/code&gt;,发现和&lt;code&gt;cmd_space.scpt&lt;/code&gt;一样，于是将&lt;code&gt;command&lt;/code&gt;修改为&lt;code&gt;control&lt;/code&gt;后提交 pull request。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol start=&quot;7&quot;&gt;
+&lt;li&gt;然后使用我自己 fork 的仓库，在&lt;code&gt;.vimrc&lt;/code&gt;中添加配置：&lt;br&gt;
+&lt;img src=&quot;https://tikolu.net/i/fskwl&quot; alt=&quot;&quot;&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;插件的状态、安装、更新、删除命令(&lt;code&gt;PlugStatus&lt;/code&gt; &lt;code&gt;PlugInstall [name]&lt;/code&gt; &lt;code&gt;PlugUpdate [name]&lt;/code&gt; &lt;code&gt;PlugClean(.vimrc中去掉插件说明执行)&lt;/code&gt;)&lt;br&gt;
+插件源码路径&lt;code&gt;~/.vim/plugged/autoim.vim&lt;/code&gt;&lt;br&gt;
+这么搞了一波后进行测试，发现第一次从 inset 模式切换到 normal 模式有一定概率可以实现输入法切换，但是第二次就开始快速闪烁，切换不过来了。。。&lt;br&gt;
+接着把代码在本地进行修改只监听进入普通模式，试了一下也是不太可以。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol start=&quot;8&quot;&gt;
+&lt;li&gt;这条路走不通，回到5，完全以&lt;a href=&quot;https://taoshu.in/vim/vim-auto-im.html&quot;&gt;涛叔的博客&lt;/a&gt; 在本地实现。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;如6中所示，当点击小三角形进行测试的时候，依然出现的是第二次就不可以正常切换了。&lt;/li&gt;
+&lt;li&gt;在终端中使用&lt;code&gt;osascript ~/.vim/liugezhou/ctrlspace.scpt&lt;/code&gt;测试，依然是第二次不能切换问题，&lt;/li&gt;
+&lt;li&gt;目前到这来看，自动切换输入法是失败了。&lt;/li&gt;
+&lt;/ul&gt;
+"><meta name="twitter:image"><title>vim切换输入法 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">vim切换输入法</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">vim切换输入法</h1><div class="post-meta">2022-09-22<span> | </span><span class="category"><a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 842</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 3</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/031-Vim%E6%8F%92%E4%BB%B6/#vcomment"><span class="valine-comment-count" data-xid="/031-Vim%E6%8F%92%E4%BB%B6/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-text">背景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%86%E7%A8%8B"><span class="toc-text">历程</span></a></li></ol></div></div><div class="post-content"><h3 id="背景">背景</h3>
+<p>最近刚入门vim。<br>
+这篇文章，记录对 vim 切换输入法进行了解的一个过程，以及在了解 vim 插件过程中的一些心路历程。</p>
+<h3 id="历程">历程</h3>
+<ol>
+<li>最开始了解 vim 插件是有这么一个需求：</li>
+</ol>
+<blockquote>
+<p>每次 Vim 编辑从 insert mode 切换到 normal mode 的时候，若在输入模式中是中文，切回到普通模式的时候，仍旧是中文，这个时候总是需要切换一下输入法到英文，才可以在普通模式下快速输入命令，每次都这么搞的话，非常不方面，那么有没有一个插件可以解决这个问题呢？</p>
+</blockquote>
+<ol start="2">
+<li>然后我在 Github 上搜 <code>vim输入法切换</code>，搜到一个仓库<a target="_blank" rel="noopener" href="https://github.com/lipingcoding/autoim.vim">lipingcoding/autoim.vim</a></li>
+</ol>
+<blockquote>
+<p>看到仓库的 star 少，源码也不多，于是我就想那我为什么不自己在本地先去实现一下呢?</p>
+</blockquote>
+<ol start="3">
+<li>vim插件开发第一次接触</li>
+</ol>
+<blockquote>
+<p>于是先去搜插件开发入门版，看到了这篇文章：<a target="_blank" rel="noopener" href="https://wxnacy.com/2017/12/30/vim-plugin-write-helloworld/">Vim 如何编写插件：Hello World</a><br>
+这篇文章学到的内容是：</p>
+<ul>
+<li>source引入vim文件</li>
+<li>在~/.vim/plugin下的.vim文件会自动查找，不用source声明</li>
+<li>函数名和执行命令首字母必须大写</li>
+</ul>
+<p>最后照着这篇文章几分钟后在本地就实现了一个 <code>Hello World</code>的入门级插件体验。</p>
+</blockquote>
+<ol start="4">
+<li>然后我又回来看<code>vim输入法切换</code>的这个仓库，核心代码就四个文件：<br>
+<img src="https://tikolu.net/i/quehu" alt="autoim"></li>
+</ol>
+<blockquote>
+<p>仓库 fork、clone到本地，查看源代码。<br>
+发现<code>cmd_space.scpt</code>和<code>ctrl_space.scpt</code>这两个文件打不开，也没接触过。且这个仓库只提供了<code>command+space</code>和<code>ctrl + space</code>两种输入法方式切换，而我本地用的是<code>caps lock</code>键。</p>
+</blockquote>
+<ol start="5">
+<li>然后看仓库说明文档，文档最后给出思路来源为<a target="_blank" rel="noopener" href="https://taoshu.in/vim/vim-auto-im.html">涛叔的博客</a><br>
+接着看涛叔的博客内容，明白了仓库中 autoim.vim 的代码实现思路，以及为什么不能用<code>caps lock</code>切换。<br>
+这篇文章主要学到的点有：</li>
+</ol>
+<blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://sspai.com/post/43758#!">AppleScript</a></li>
+<li><a target="_blank" rel="noopener" href="https://eastmanreference.com/complete-list-of-applescript-key-codes">键盘编码参考</a></li>
+<li><code>scpt</code>文件打开、编辑方式(Mac 自带的脚本编辑器编辑)</li>
+<li>vim 提供的 InsertEnter 和 InsertLeave 两个事件</li>
+</ul>
+</blockquote>
+<ol start="6">
+<li>回到仓库以<code>cmd_space.scpt</code>为例，Mac自带脚本编辑器打开后长这个样子：<br>
+<img src="https://tikolu.net/i/feahh" alt=""></li>
+</ol>
+<blockquote>
+<p>接着看<code>ctrl_space.scpt</code>,发现和<code>cmd_space.scpt</code>一样，于是将<code>command</code>修改为<code>control</code>后提交 pull request。</p>
+</blockquote>
+<ol start="7">
+<li>然后使用我自己 fork 的仓库，在<code>.vimrc</code>中添加配置：<br>
+<img src="https://tikolu.net/i/fskwl" alt=""></li>
+</ol>
+<blockquote>
+<p>插件的状态、安装、更新、删除命令(<code>PlugStatus</code> <code>PlugInstall [name]</code> <code>PlugUpdate [name]</code> <code>PlugClean(.vimrc中去掉插件说明执行)</code>)<br>
+插件源码路径<code>~/.vim/plugged/autoim.vim</code><br>
+这么搞了一波后进行测试，发现第一次从 inset 模式切换到 normal 模式有一定概率可以实现输入法切换，但是第二次就开始快速闪烁，切换不过来了。。。<br>
+接着把代码在本地进行修改只监听进入普通模式，试了一下也是不太可以。</p>
+</blockquote>
+<ol start="8">
+<li>这条路走不通，回到5，完全以<a target="_blank" rel="noopener" href="https://taoshu.in/vim/vim-auto-im.html">涛叔的博客</a> 在本地实现。</li>
+</ol>
+<ul>
+<li>如6中所示，当点击小三角形进行测试的时候，依然出现的是第二次就不可以正常切换了。</li>
+<li>在终端中使用<code>osascript ~/.vim/liugezhou/ctrlspace.scpt</code>测试，依然是第二次不能切换问题，</li>
+<li>目前到这来看，自动切换输入法是失败了。</li>
+</ul>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>vim切换输入法</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2022-09-22</p><p><span>最后更新：</span>2024-01-29</p><p><span>原始链接：</span><a href="/031-Vim插件/">https://blog.liugezhou.online/031-Vim%E6%8F%92%E4%BB%B6/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/031-Vim%E6%8F%92%E4%BB%B6/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/vim"><i class="fa fa-tag">vim</i></a></div><div class="post-nav"><a class="pre" href="/202238-No75/">每周小结(*75):一篇就会速成法</a><a class="next" href="/202237-No74/">每周小结(*74):科技向善</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

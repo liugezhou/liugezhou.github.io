@@ -1,0 +1,749 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="Week15-服务端 CI_CD：Github 自动化"><meta name="twitter:description" content="&lt;p&gt;&lt;font color=blue&gt;更新说明：对文章目录排版做了调整。&lt;/font&gt;&lt;br&gt;
+&lt;font color=blue&gt; 更新时间：2022-05-04&lt;/font&gt;&lt;/p&gt;
+&lt;h2 id=&quot;第一章：周介绍&quot;&gt;第一章：周介绍&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;1-1 介绍&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;服务端 CI/CD流程–让 github 自动化为我们服务&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;CI:    Continuous Integration  持续集成&lt;br&gt;
+CD:   Continuous Delivery     持续交付&lt;br&gt;
+合理全面的 CI/CD，自动化研发流程，提高研发效率，增加系统稳定性&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;收获&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;使用 Github actions 进行 CI/CD&lt;/li&gt;
+&lt;li&gt;学会 Docker 在 nodejs 中的应用&lt;/li&gt;
+&lt;li&gt;搭建测试环境&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;关键词&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;CI/CD&lt;/li&gt;
+&lt;li&gt;Github actions：实现 CI/CD 的一个工具&lt;/li&gt;
+&lt;li&gt;Docker Docker-compose&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;链接：&lt;a href=&quot;https://www.redhat.com/zh/topics/devops/what-is-ci-cd&quot;&gt;CI/CD 介绍&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&quot;第二章-Github-actions&quot;&gt;第二章 Github actions&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;这一章双越讲的真的不知道讲了个啥，自己课下补吧，真是一塌糊涂。&lt;br&gt;
+github actions 的学习确实很有必要啊，回头等学习完毕再来吐槽。&lt;br&gt;
+学习阮一峰大哥的这节文档：&lt;a href=&quot;http://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html&quot;&gt;http://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;第二遍视频笔记记录如下&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;2-1 章介绍&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;Github actions 是github 官方发布的一个产品 。&lt;/li&gt;
+&lt;li&gt;使用 Github actions 自动化构建和测试&lt;/li&gt;
+&lt;li&gt;认识 Github actions&lt;/li&gt;
+&lt;li&gt;注意：接口测试会依赖于测试机搭建。&lt;/li&gt;
+&lt;li&gt;二八法则。&lt;/li&gt;
+&lt;li&gt;疑问：为了主流程跑通，不让边角东西打扰我们主流程，难道不注释掉那些代码就不能演示吗？后面再接上，这里的我要搞明白为什么在讲课代码演示的时候，是否为了讲师自己方便注释划水讲课。&lt;/li&gt;
+&lt;li&gt;疑问二：既然不是讲 Github actions 和 Docker 的一门课，又为什么抽出一周的时间来划水(老师的答案可能是后面确实是用到这个知识了，有必要了解一下，那我的疑问又来了，既然用到了，又讲到了，那肯定默认这部分内容是很重要的，作为一门架构课，是不是应该认真对待每一周每一节课的录制，即使不那么深入，起码基础的内容得讲明白，这是必须的吧)&lt;/li&gt;
+&lt;li&gt;疑问三：课程是以业务为导向，不可能把全部细节都讲出来，这个无可厚非，没有毛病，那你好歹把基础的大路边的内容，起码普及个差不多吧。&lt;/li&gt;
+&lt;li&gt;疑问四：这节章介绍内容，你讲解那么多二八法则是干嘛？讲解什么边际效应，是为了后续课程划水先找借口吗？&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;2-2 认识 Github actions&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;00:00-01:00：由于中美时差造成的 Github 不稳定问题。&lt;/li&gt;
+&lt;li&gt;01:00-01:50：讲解了githu被微软收购，变得更好些，有了私有化个人项目，对中小企业越来越友好&lt;/li&gt;
+&lt;li&gt;01:50-02:10:讲解了课程为什么代码不公开的原因是一些数据的线上原因，此事说过好几遍，
+&lt;ul&gt;
+&lt;li&gt;(疑问:有敏感数据，代码公开直接将重要数据脱敏这个方案是否可行？又是否因为写代码的课程录制繁琐而不公开仓库)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;02:10-04:15: 链接一介绍：进入一个项目，讲解如何查找 actions，以及 actions 下面的页面展示，得出的结论：帮助你在项目根目录下新建.github/workflow/xxx.yml 文件。&lt;/li&gt;
+&lt;li&gt;04:16-06:20:链接二介绍，官方翻译版本，挑选了 node.js 发布中的命令 npm install,npm publish，以及 secrets 的点名。&lt;/li&gt;
+&lt;li&gt;06:20-07：00 :拿出代码，介绍有这个文件，然后我们介绍这个文件前，先去看应用场景。&lt;/li&gt;
+&lt;li&gt;07:00-08:50:应用场景、范围介绍，打开开源的项目，介绍有三个文件名 yml，test.yml 对应master 分支，自动化测试，dev 分支即deploy-dev.yml–自动部署到测试机，v.x.x.x格式的 tag，自动上线–deploy-pro.yml&lt;/li&gt;
+&lt;li&gt;08:50- 17:13 :代码演示
+&lt;ul&gt;
+&lt;li&gt;08:50-09:10: 讲解注释，去掉注释，添加注释&lt;/li&gt;
+&lt;li&gt;09:10-10:15: 中心思想为讲解 name 的命名要语义化
+&lt;ul&gt;
+&lt;li&gt;(补充：name 可以省略，省略的话，默认以文件名命名，还有一点演示过程中，yml 文件名称改为 demo，yml 文件内容也更改为demo，会让人误以为这个 name 的命名必须以文件名字命名，其实不是，文件的命令与文件内容中 name 的命名没有关联)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;10:15-12:24: on/push/branches/paths的讲解，其中 paths 讲解可以简练点，讲的啰嗦了
+&lt;ul&gt;
+&lt;li&gt;(补充：on字段可以是事件数组比如 on:[push,pull_request]]),branches可以限定分支或&lt;strong&gt;标签&lt;/strong&gt;）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;12:24-17:13:jobs 讲解。
+&lt;ul&gt;
+&lt;li&gt;（补充：runs-on 没什么特殊情况下直接使用 ubuntu-latest,还有可以设置的比如windows-latest，macOS-latest，steps 中 uses 中的 actions/checkout@v2,&lt;a href=&quot;http://xn--github-9o7i01d8z2d6cw903bj46bexyb.com/actions/checkout&quot;&gt;实际上代表的是github.com/actions/checkout&lt;/a&gt; 这个仓库，actions/xxx 中的东西，都是仓库中的内容，GitHub 官方的 actions 都放在 &lt;a href=&quot;https://github.com/actions&quot;&gt;github.com/actions&lt;/a&gt; 里面）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;2-3 Github actions 功能演示&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;00:00-00:50：run为自定义命令。如果为多个命令，则格式为 run: | 。&lt;/li&gt;
+&lt;li&gt;00:50-02:00：演示 run 命令 touch、echo、cat。&lt;/li&gt;
+&lt;li&gt;03:00-03:50：代码提交–将branch 改为本地代码分支，演示本地分支提交触发流程，其中关于 .docker-volumes/加到 ignore，具体干啥的留个问号。还有 commit 规范这块前面&lt;strong&gt;貌似&lt;/strong&gt;没讲是如何控制规范的「ci 工具」？&lt;/li&gt;
+&lt;li&gt;03:50-10:00:来到代码仓库-Actions，讲解 workflows。讲解内容为成功失败执行过程的状态以及 job 在 Github 上Actions 中的执行结果，结论：遇到错误看日志 。&lt;/li&gt;
+&lt;li&gt;10:00-10:56 :总结回顾步骤 steps 的四种形式 (我的理解是并不是四种形式，是属于一种：steps 下面的 name属性可省略；uses 是是否有使用第三方 actions的需求，可选；run：执行脚本，可选)&lt;/li&gt;
+&lt;li&gt;11:00-12:57:本章小结
+&lt;ul&gt;
+&lt;li&gt;认识 Github Actions&lt;/li&gt;
+&lt;li&gt;应用场景&lt;/li&gt;
+&lt;li&gt;yml语法格式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;2-4 Github actions 做自动化测试&lt;/strong&gt;&lt;br&gt;
+新建 yml 文件&lt;/p&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;name&lt;/span&gt;: test&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;on&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;attr&quot;&gt;push&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;branches&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - master&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;paths&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;string&quot;&gt;&amp;#x27;.github/workflows/**&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;string&quot;&gt;&amp;#x27;__test__/**&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;string&quot;&gt;&amp;#x27;src/**&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;jobs&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;attr&quot;&gt;test&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        runs-&lt;span class=&quot;attr&quot;&gt;on&lt;/span&gt;: ubuntu-latest&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;steps&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;attr&quot;&gt;uses&lt;/span&gt;: actions/checkout@v2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;attr&quot;&gt;name&lt;/span&gt;: &lt;span class=&quot;title class_&quot;&gt;Use&lt;/span&gt; &lt;span class=&quot;title class_&quot;&gt;Node&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;js&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;              &lt;span class=&quot;attr&quot;&gt;uses&lt;/span&gt;: actions/setup-node@v1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;              &lt;span class=&quot;attr&quot;&gt;with&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                  node-&lt;span class=&quot;attr&quot;&gt;version&lt;/span&gt;: &lt;span class=&quot;number&quot;&gt;14&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;attr&quot;&gt;name&lt;/span&gt;: lint and test&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;              &lt;span class=&quot;attr&quot;&gt;run&lt;/span&gt;: |&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                  npm i&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                  npm run lint&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                  npm run &lt;span class=&quot;attr&quot;&gt;test&lt;/span&gt;:remote&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本节讲 Github actions 做自动测试&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;00:00-- 03:00   test.yml 代码讲解&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;主要自动测试命令为 npm run lint 和 npm run test:remote(补充：checkout 与setup-node 是 actions 仓库比较常用的两个 actions，分别表示下载代码和安装 node)&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;03:00-- 04:30   本地与远程接口测试&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;pre-commit 执行本地接口测试(我的遗留问题：&lt;strong&gt;关于 pre-commit 部分&lt;/strong&gt;)&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;master push 远程接口测试&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;04:30 – 04:50&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;测试 「测试部署机」部署完毕&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;04:45 –  05:30  branches 讲解&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;关于 branches 分支的一些注意说明&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;05:30 --09:50  分支提交actions 讲解
+&lt;ul&gt;
+&lt;li&gt;这里由于直接下载的代码为开源版本，与课程内容代码出入非常大，因此需要对开源的代码进行操作&lt;/li&gt;
+&lt;li&gt;如果将 test.yml 分支改为 main，push到我们自己仓库的时候, actions日志中会发现 lin and test 出现大量错误&lt;/li&gt;
+&lt;li&gt;课程给出的开源代码一团，我们为了修正这个错误，我们要去修改、甚至删除那些相应的代码，这里非常不得劲&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;还是那个疑问，为什么不整个与课程同步的代码仓库？这个对学员来说究竟是不是必要的？&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;经过笨拙的尝试，终于成功。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;2-5 Github actions 章总结&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;没说什么新的内容&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;第三章-Docker&quot;&gt;第三章 Docker&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;3-1 Docker 章介绍&lt;/strong&gt;&lt;br&gt;
+Docker&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;基于 Docker，我们可以把开发、测试环境，一键部署到任何一台机器上。只要该机器安装了 Docker。&lt;br&gt;
+有了 Docker，就有了一切。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;主要产出&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;使用 Docker 构建 nodejs 项目&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;主要内容&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;认识 Dcoker&lt;br&gt;
+Dockerfile&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;注意事项&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;专业的运维工程师对 Docker还有更全面的应用：弹性扩展、微服务等。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;3-2 认识 Docker&lt;/strong&gt;&lt;br&gt;
+介绍&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Docker 就是一种虚拟机技术，比传统虚拟机(VMware、virtualBox)更加简单、轻量&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;启动快&lt;/li&gt;
+&lt;li&gt;资源占用少&lt;/li&gt;
+&lt;li&gt;体积小&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;查找 docker 安装镜像&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;https://hub.docker.com/&quot;&gt;https://hub.docker.com/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/15-1.5y49r0icxak0.webp&quot; alt=&quot;15-1&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;3-3 启动一个Docker容器&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;image镜像&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;下载镜像 docker pull &lt;image-name&gt;:&lt;tag&gt;&lt;/li&gt;
+&lt;li&gt;查看所有镜像： docker images&lt;/li&gt;
+&lt;li&gt;删除镜像：    docker rmi &lt;images-id&gt;&lt;/li&gt;
+&lt;li&gt;上传镜像：    docker push &lt;username&gt;/&lt;password&gt;:&lt;tags&gt;&lt;/li&gt;
+&lt;li&gt;如果出现REPOSITORY为 null 的情况时，使用docker image prune删除&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;container&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;启动容器：&lt;strong&gt;docker run -p xxxx:xxx -v=hostpath:containerPath -d --name &lt;container-name&gt; &lt;image-name&gt;&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;-p 端口映射&lt;/li&gt;
+&lt;li&gt;-v 数据卷，文件映射&lt;/li&gt;
+&lt;li&gt;-d 后台运行&lt;/li&gt;
+&lt;li&gt;–name 定义容器名称&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;查看所有容器 docker ps, 加 -a 显示隐藏的容器&lt;/li&gt;
+&lt;li&gt;停止容器 docker stop &lt;container-id&gt;&lt;/li&gt;
+&lt;li&gt;删除容器 docker rm &lt;contaier-id&gt;,加-f 是强制删除&lt;/li&gt;
+&lt;li&gt;查看容器信息，如 IP 地址 docker inspect &lt;container-id&gt;&lt;/li&gt;
+&lt;li&gt;查看容器日志 docker logs &lt;container-id&gt;&lt;/li&gt;
+&lt;li&gt;进入容器控制台 docker exec -it &lt;container-id&gt; /bin/sh&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;3-4 Docker容器的进一步演示&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;功能演示&lt;/strong&gt;&lt;/p&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;docker run -p &lt;span class=&quot;number&quot;&gt;81&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;80&lt;/span&gt; -d --name nginx1 nginx&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;docker ps&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;# 访问 &lt;span class=&quot;attr&quot;&gt;localhost&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;81&lt;/span&gt; ，并查看 log&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;docker exec -it &amp;lt;container-id&amp;gt; &lt;span class=&quot;regexp&quot;&gt;/bin/&lt;/span&gt;sh&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;cd /usr/share/nginx/html&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;echo hello docker world index.&lt;span class=&quot;property&quot;&gt;html&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;exit&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;# 重新访问 &lt;span class=&quot;attr&quot;&gt;localhost&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;81&lt;/span&gt; ，强制刷新&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;docker stop &amp;lt;container-id&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;docker rm &amp;lt;container-id&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;# &lt;span class=&quot;number&quot;&gt;1.&lt;/span&gt; 新建 /&lt;span class=&quot;title class_&quot;&gt;Users&lt;/span&gt;/wfp/html/index.&lt;span class=&quot;property&quot;&gt;html&lt;/span&gt; ，内容自定义即可&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;# &lt;span class=&quot;number&quot;&gt;2.&lt;/span&gt; 运行&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;docker run -p &lt;span class=&quot;number&quot;&gt;81&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;80&lt;/span&gt; -v=&lt;span class=&quot;regexp&quot;&gt;/Users/&lt;/span&gt;wfp/&lt;span class=&quot;attr&quot;&gt;html&lt;/span&gt;:&lt;span class=&quot;regexp&quot;&gt;/usr/&lt;/span&gt;share/nginx/html  -d --name nginx1 nginx&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;# &lt;span class=&quot;number&quot;&gt;3.&lt;/span&gt; 访问 重新访问 &lt;span class=&quot;attr&quot;&gt;localhost&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;81&lt;/span&gt; ，看是否你创建的页面？&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;strong&gt;3-5 介绍 Dockerfile 语法&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;一个简单的配置文件，描述如何构建一个新的 image 镜像&lt;br&gt;
+注意：必须是 Dockerfile 这个文件名，必须在项目的根目录&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;# &lt;span class=&quot;title class_&quot;&gt;Dockerfile&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable constant_&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;node&lt;/span&gt;:latest&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable constant_&quot;&gt;WORKDIR&lt;/span&gt; /app&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable constant_&quot;&gt;COPY&lt;/span&gt; . /app&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;# 设置时区&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable constant_&quot;&gt;RUN&lt;/span&gt; ln -sf /usr/share/zoneinfo/&lt;span class=&quot;title class_&quot;&gt;Asia&lt;/span&gt;/&lt;span class=&quot;title class_&quot;&gt;Shanghai&lt;/span&gt; /etc/localtime &amp;amp;&amp;amp; echo &lt;span class=&quot;string&quot;&gt;&amp;#x27;Asia/Shanghai&amp;#x27;&lt;/span&gt; &amp;gt;&lt;span class=&quot;regexp&quot;&gt;/etc/&lt;/span&gt;timezone&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;#安装&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable constant_&quot;&gt;RUN&lt;/span&gt; npm set registry &lt;span class=&quot;attr&quot;&gt;https&lt;/span&gt;:&lt;span class=&quot;comment&quot;&gt;//registry.npm.taobao.org&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable constant_&quot;&gt;RUN&lt;/span&gt; npm install&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;#启动&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable constant_&quot;&gt;CMD&lt;/span&gt; echo #&lt;span class=&quot;variable constant_&quot;&gt;SERVER_NAME&lt;/span&gt; &amp;amp;&amp;amp;echo &amp;amp;&lt;span class=&quot;variable constant_&quot;&gt;AUTHOR_NAME&lt;/span&gt; &amp;amp;&amp;amp; npm run dev &amp;amp;&amp;amp; npx pm2 log&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;#环境变量&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable constant_&quot;&gt;ENV&lt;/span&gt; &lt;span class=&quot;variable constant_&quot;&gt;SERVER_NAME&lt;/span&gt; =&lt;span class=&quot;string&quot;&gt;&amp;quot;test&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable constant_&quot;&gt;ENV&lt;/span&gt; &lt;span class=&quot;variable constant_&quot;&gt;AUTHOR_NAME&lt;/span&gt; =&lt;span class=&quot;string&quot;&gt;&amp;quot;liugezhou&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;strong&gt;3-6 用 Dockerfile 构建镜像&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;构建&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;docker build -t &lt;name&gt; .  #最后的’.'指 Dockerfile 在当前目录下。    &lt;br&gt;
+docker images&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;课程修改代码为(去掉routes/index.js的数据库连接以及bin/www中的数据库同步)：&lt;/strong&gt;&lt;/p&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;# &lt;span class=&quot;title class_&quot;&gt;Dockerfile&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable constant_&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;node&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;14&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable constant_&quot;&gt;WORKDIR&lt;/span&gt; /app&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable constant_&quot;&gt;COPY&lt;/span&gt; . /app&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;# 设置时区&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable constant_&quot;&gt;RUN&lt;/span&gt; ln -sf /usr/share/zoneinfo/&lt;span class=&quot;title class_&quot;&gt;Asia&lt;/span&gt;/&lt;span class=&quot;title class_&quot;&gt;Beijing&lt;/span&gt; /etc/localtime &amp;amp;&amp;amp; echo &lt;span class=&quot;string&quot;&gt;&amp;#x27;Asia/Beijing&amp;#x27;&lt;/span&gt; &amp;gt;&lt;span class=&quot;regexp&quot;&gt;/etc/&lt;/span&gt;timezone&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;#安装&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable constant_&quot;&gt;RUN&lt;/span&gt;  npm set registry &lt;span class=&quot;attr&quot;&gt;https&lt;/span&gt;:&lt;span class=&quot;comment&quot;&gt;//registry.npm.taobao.org&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable constant_&quot;&gt;RUN&lt;/span&gt; npm install&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;#启动&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable constant_&quot;&gt;CMD&lt;/span&gt; echo $SERVER_NAME &amp;amp;&amp;amp; echo $AUTHOR_NAME &amp;amp;&amp;amp; npm run dev &amp;amp;&amp;amp; npx pm2 log&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;#环境变量&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable constant_&quot;&gt;ENV&lt;/span&gt; &lt;span class=&quot;variable constant_&quot;&gt;SERVER_NAME&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;lego-node-server&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable constant_&quot;&gt;ENV&lt;/span&gt; &lt;span class=&quot;variable constant_&quot;&gt;AUTHOR_NAME&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;liugezhou&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight typescript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 步骤一：构建&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;docker build -t liugezhou-server .  # name为将要构建镜像的名字，. 为当前目录&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 步骤二：查看&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;docker images&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//步骤三：启动&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;docker run -p &lt;span class=&quot;number&quot;&gt;8081&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;3000&lt;/span&gt; -d --name server1 liugezhou-server  # 创建容器，注意端口映射&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//步骤四：查看启动状态&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;docker ps&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 步骤五 查看容器日志&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;docker logs &amp;lt;container-id&amp;gt;  # 需等待构建完成&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;# 访问 &lt;span class=&quot;attr&quot;&gt;localhost&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;8081&lt;/span&gt;/api/db-check ，查看 docker logs&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;docker stop &amp;lt;container-id&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;docker rm &amp;lt;container-id&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;docker rmi &amp;lt;image-id&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;第四章-Docker-compose&quot;&gt;第四章 Docker-compose&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;4-1 docker-compose 章开始&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;用的来说就是 Docker-compse就是一种组合，这章学到的内容就是这个英文单词的翻译。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;4-2 docker-compose 配置文件&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;文件名称必须为 &lt;strong&gt;docker-compose.yml&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;代码演示：多个service，代表多个docker镜像&lt;/li&gt;
+&lt;li&gt;**image:redis **   表示引用官网的redis 镜像&lt;/li&gt;
+&lt;li&gt;container-name    镜像名称&lt;/li&gt;
+&lt;li&gt;ports    端口映射&lt;/li&gt;
+&lt;li&gt;enviroment    环境变量 - TZ&lt;/li&gt;
+&lt;li&gt;build：    docker build -t  &lt;image-name&gt;  .
+&lt;ul&gt;
+&lt;li&gt;context .  ：「当前目录」&lt;/li&gt;
+&lt;li&gt;dockerfile：Dockerfile   ： 「基于Dockerfile构建」&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight typescript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;version&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&amp;#x27;3&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;services&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    editor-&lt;span class=&quot;attr&quot;&gt;server&lt;/span&gt;:  # service name&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;build&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;attr&quot;&gt;context&lt;/span&gt;: .  # 当前目录&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;attr&quot;&gt;dockerfile&lt;/span&gt;: &lt;span class=&quot;title class_&quot;&gt;Dockerfile&lt;/span&gt;  # 基于 &lt;span class=&quot;title class_&quot;&gt;Dockerfile&lt;/span&gt; 构建&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;image&lt;/span&gt;: editor-server # 依赖于当前 &lt;span class=&quot;title class_&quot;&gt;Dockerfile&lt;/span&gt; 创建出来的镜像&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;container_name&lt;/span&gt;: editor-server&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;ports&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;number&quot;&gt;8081&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;3000&lt;/span&gt; # 宿主机通过 &lt;span class=&quot;number&quot;&gt;8081&lt;/span&gt; 访问&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    editor-&lt;span class=&quot;attr&quot;&gt;redis&lt;/span&gt;:  # service name，重要！&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;image&lt;/span&gt;: redis  # 引用官网 redis 镜像&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;container_name&lt;/span&gt;: editor-redis&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;ports&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; # 宿主机，可以用 &lt;span class=&quot;number&quot;&gt;127.0&lt;/span&gt;&lt;span class=&quot;number&quot;&gt;.0&lt;/span&gt;&lt;span class=&quot;number&quot;&gt;.1&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;6378&lt;/span&gt; 即可连接容器中的数据库 &lt;span class=&quot;string&quot;&gt;`redis-cli -h 127.0.0.1 -p 6378`&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; # 但是，其他 docker 容器不能，因为此时 &lt;span class=&quot;number&quot;&gt;127.0&lt;/span&gt;&lt;span class=&quot;number&quot;&gt;.0&lt;/span&gt;&lt;span class=&quot;number&quot;&gt;.1&lt;/span&gt; 是 docker 容器本身，而不是宿主机&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;number&quot;&gt;6378&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;6379&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;environment&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;variable constant_&quot;&gt;TZ&lt;/span&gt;=&lt;span class=&quot;title class_&quot;&gt;Asia&lt;/span&gt;/&lt;span class=&quot;title class_&quot;&gt;Shanghai&lt;/span&gt; # 设置时区&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;strong&gt;4-3 docker-compose 命令演示&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;00：00    –    02：55    &lt;strong&gt;命令&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;docker-compose build &lt;service-name&gt;&lt;/li&gt;
+&lt;li&gt;启动所有服务器：docker-compose up -d (后台启动)&lt;/li&gt;
+&lt;li&gt;停止所有服务：    docker-compose down&lt;/li&gt;
+&lt;li&gt;查看服务：    docker-compose ps&lt;/li&gt;
+&lt;li&gt;docker 与docker-compose的命令执行范围&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;02：55    –    05：10    &lt;strong&gt;安装pm2&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;本地安装pm2  npm i pm2 --S,或者Dockerfile中全局安装pm2&lt;/li&gt;
+&lt;li&gt;再次强调 「阻塞控制台的命令」&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;05：10    –    06 :30    &lt;strong&gt;代码修改&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;新建 docker-compose.yml&lt;/li&gt;
+&lt;li&gt;新建 config/envs/prd-dev.js&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;06：30    –    08：16    &lt;strong&gt;prd-dev.js文件&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;内容为修改redis连接配置，讲解&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;08：19    –    10：00    画图？
+&lt;ul&gt;
+&lt;li&gt;罗里吧嗦&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;10：01    –    10：48    代码修改
+&lt;ul&gt;
+&lt;li&gt;wtf，也不知道是出于什么原因，如此设计课程，观看视频体验 ：一颗星&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;10：49    –    13：17    &lt;strong&gt;build&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;docker-compose build  editor-server&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;13：18    –    15：12    &lt;strong&gt;演示&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;docker images     查看build是否成功&lt;/li&gt;
+&lt;li&gt;docker-compose -d&lt;/li&gt;
+&lt;li&gt;docker-compose ps&lt;/li&gt;
+&lt;li&gt;docker ps&lt;/li&gt;
+&lt;li&gt;访问：localhost:8081/api/db-check&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;15：12    –    17：17    &lt;strong&gt;redis-cli&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;终端输入：&lt;strong&gt;redis-cli&lt;/strong&gt;，进入到本地redis服务,查看本地 keys *。
+&lt;ul&gt;
+&lt;li&gt;「执行redis-cli，我本地显示：Could not connect to Redis at 127.0.0.1:6379: Connection refused；这是因为我本地没启redis服务，于是：redis-server启动，redis-cli进入redis控制台」&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;redis-cli -h 127.0.0.1 -p 6378&lt;/strong&gt;    进入到docker容器中的redis&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;17：18    –    18：25    &lt;strong&gt;查看日志、down&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;docker logs &lt;container-id&gt;&lt;/li&gt;
+&lt;li&gt;docker-compose down&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;4-4 数据持久化&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;连接mysql和mongodb&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;区别:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;redis无数据库，mysql与mongodb需要连接数据库&lt;/li&gt;
+&lt;li&gt;redis是缓存，无需数据持久化，mysql与mongodb需要**。**&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;volumes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;‘.docker-volumes/mongo/data:/data/db’ # 数据持久化&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;4-5 配置 mysql&lt;/strong&gt;&lt;/p&gt;
+&lt;figure class=&quot;highlight typescript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;30&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;31&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;32&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;33&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;34&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;35&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;36&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;37&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;38&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;39&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;40&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;41&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;42&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;43&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;44&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;45&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;46&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;47&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;48&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;49&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;version&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&amp;#x27;3&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;services&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    editor-&lt;span class=&quot;attr&quot;&gt;server&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;build&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;attr&quot;&gt;context&lt;/span&gt;: .&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;attr&quot;&gt;dockerfile&lt;/span&gt;: &lt;span class=&quot;title class_&quot;&gt;Dockerfile&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;image&lt;/span&gt;: editor-server # 依赖于当前 &lt;span class=&quot;title class_&quot;&gt;Dockerfile&lt;/span&gt; 创建镜像&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;container_name&lt;/span&gt;: editor-server&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;ports&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;number&quot;&gt;8081&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;3000&lt;/span&gt; # 宿主机通过 &lt;span class=&quot;number&quot;&gt;8081&lt;/span&gt; 访问&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    editor-&lt;span class=&quot;attr&quot;&gt;redis&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;image&lt;/span&gt;: redis # 引用官网 redis 镜像&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;container_name&lt;/span&gt;: editor-redis&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;ports&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;number&quot;&gt;6378&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;6379&lt;/span&gt; # 宿主机可以用 &lt;span class=&quot;number&quot;&gt;127.0&lt;/span&gt;&lt;span class=&quot;number&quot;&gt;.0&lt;/span&gt;&lt;span class=&quot;number&quot;&gt;.1&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;6378&lt;/span&gt; 即可连接容器中的数据库&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;environment&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;variable constant_&quot;&gt;TZ&lt;/span&gt;=&lt;span class=&quot;title class_&quot;&gt;Asia&lt;/span&gt;/&lt;span class=&quot;title class_&quot;&gt;Beijing&lt;/span&gt; # 设置时区&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    editor-&lt;span class=&quot;attr&quot;&gt;mysql&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;image&lt;/span&gt;: mysql # 引用官网 mysql 镜像&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;container_name&lt;/span&gt;: editor-mysql&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;restart&lt;/span&gt;: always&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;privileged&lt;/span&gt;: &lt;span class=&quot;literal&quot;&gt;true&lt;/span&gt; # 高权限，执行下面的 mysql/init&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;command&lt;/span&gt;: --&lt;span class=&quot;keyword&quot;&gt;default&lt;/span&gt;-authentication-plugin=mysql_native_password # 解决无法远程访问的问题&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;ports&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;number&quot;&gt;3305&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;3306&lt;/span&gt; # 宿主机可以用 &lt;span class=&quot;number&quot;&gt;127.0&lt;/span&gt;&lt;span class=&quot;number&quot;&gt;.0&lt;/span&gt;&lt;span class=&quot;number&quot;&gt;.1&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;3305&lt;/span&gt; 即可连接容器中的数据库&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;volumes&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - .&lt;span class=&quot;property&quot;&gt;docker&lt;/span&gt;-volumes/mysql/&lt;span class=&quot;attr&quot;&gt;log&lt;/span&gt;:&lt;span class=&quot;regexp&quot;&gt;/var/&lt;/span&gt;log/mysql # 数据持久化&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - .&lt;span class=&quot;property&quot;&gt;docker&lt;/span&gt;-volumes/mysql/&lt;span class=&quot;attr&quot;&gt;data&lt;/span&gt;:&lt;span class=&quot;regexp&quot;&gt;/var/&lt;/span&gt;lib/mysql&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - ./mysql/&lt;span class=&quot;attr&quot;&gt;init&lt;/span&gt;:&lt;span class=&quot;regexp&quot;&gt;/docker-entrypoint-initdb.d/&lt;/span&gt; # 初始化 sql&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;environment&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;variable constant_&quot;&gt;MYSQL_DATABASE&lt;/span&gt;=imooc_lego_course # 初始化容器时创建数据库&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;variable constant_&quot;&gt;MYSQL_ROOT_PASSWORD&lt;/span&gt;=liugezhou1205&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            # - &lt;span class=&quot;variable constant_&quot;&gt;MYSQL_USER&lt;/span&gt;=shuangyue #创建 test 用户&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            # - &lt;span class=&quot;variable constant_&quot;&gt;MYSQL_PASSWORD&lt;/span&gt;=shuangyue #设置 test 用户的密码&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;variable constant_&quot;&gt;TZ&lt;/span&gt;=&lt;span class=&quot;title class_&quot;&gt;Asia&lt;/span&gt;/&lt;span class=&quot;title class_&quot;&gt;Beijing&lt;/span&gt; # 设置时区&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    editor-&lt;span class=&quot;attr&quot;&gt;mongo&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;image&lt;/span&gt;: mongo # 引用官网 mongo 镜像&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;container_name&lt;/span&gt;: editor-mongo&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;restart&lt;/span&gt;: always #出错则重启&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;volumes&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;string&quot;&gt;&amp;#x27;.docker-volumes/mongo/data:/data/db&amp;#x27;&lt;/span&gt; # 数据持久化&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;environment&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;variable constant_&quot;&gt;MONGO_INITDB_DATABASE&lt;/span&gt;=imooc_lego_course&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            # - &lt;span class=&quot;variable constant_&quot;&gt;MONGO_INITDB_ROOT_USERNAME&lt;/span&gt;=root&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            # - &lt;span class=&quot;variable constant_&quot;&gt;MONGO_INITDB_ROOT_PASSWORD&lt;/span&gt;=&lt;span class=&quot;number&quot;&gt;123456&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;variable constant_&quot;&gt;TZ&lt;/span&gt;=&lt;span class=&quot;title class_&quot;&gt;Asia&lt;/span&gt;/&lt;span class=&quot;title class_&quot;&gt;Beijing&lt;/span&gt; # 设置时区&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;attr&quot;&gt;ports&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            - &lt;span class=&quot;string&quot;&gt;&amp;#x27;27016:27017&amp;#x27;&lt;/span&gt; # 宿主机可以用 &lt;span class=&quot;number&quot;&gt;127.0&lt;/span&gt;&lt;span class=&quot;number&quot;&gt;.0&lt;/span&gt;&lt;span class=&quot;number&quot;&gt;.1&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;27016&lt;/span&gt; 即可连接容器中的数据库&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;第五章-发布到测试机&quot;&gt;第五章 发布到测试机&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;5-2  配置测试机&lt;/strong&gt;&lt;br&gt;
+&lt;img src=&quot;https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/15-2.5so88ss1y340.webp&quot; alt=&quot;15-2&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;5-3 自动发布到测试机-讲解配置&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;5-4 自动发布到测试机-功能演示&lt;/strong&gt;&lt;/p&gt;
+&lt;figure class=&quot;highlight typescript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;30&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;31&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;32&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;33&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;34&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;35&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;36&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;37&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;38&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;39&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;40&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;41&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;42&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;43&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;44&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;45&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;46&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;47&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;48&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;49&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;# &lt;span class=&quot;title class_&quot;&gt;This&lt;/span&gt; workflow will &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; a clean install &lt;span class=&quot;keyword&quot;&gt;of&lt;/span&gt; node dependencies, build the source code and run tests across different versions &lt;span class=&quot;keyword&quot;&gt;of&lt;/span&gt; node&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;# &lt;span class=&quot;title class_&quot;&gt;For&lt;/span&gt; more information &lt;span class=&quot;attr&quot;&gt;see&lt;/span&gt;: &lt;span class=&quot;attr&quot;&gt;https&lt;/span&gt;:&lt;span class=&quot;comment&quot;&gt;//help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;# github actions 中文文档 &lt;span class=&quot;attr&quot;&gt;https&lt;/span&gt;:&lt;span class=&quot;comment&quot;&gt;//docs.github.com/cn/actions/getting-started-with-github-actions&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;name&lt;/span&gt;: deploy &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; dev&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;on&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;push&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;branches&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;- &lt;span class=&quot;string&quot;&gt;&amp;#x27;dev&amp;#x27;&lt;/span&gt; # 只针对 dev 分支&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;paths&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;- &lt;span class=&quot;string&quot;&gt;&amp;#x27;.github/workflows/*&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;# - &lt;span class=&quot;string&quot;&gt;&amp;#x27;__test__/**&amp;#x27;&lt;/span&gt; # dev 不需要立即测试&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  - &lt;span class=&quot;string&quot;&gt;&amp;#x27;src/**&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    - &lt;span class=&quot;string&quot;&gt;&amp;#x27;Dockerfile&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    - &lt;span class=&quot;string&quot;&gt;&amp;#x27;docker-compose.yml&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    - &lt;span class=&quot;string&quot;&gt;&amp;#x27;bin/*&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;jobs&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  deploy-&lt;span class=&quot;attr&quot;&gt;dev&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 	 runs-&lt;span class=&quot;attr&quot;&gt;on&lt;/span&gt;: ubuntu-latest&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;attr&quot;&gt;steps&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    - &lt;span class=&quot;attr&quot;&gt;uses&lt;/span&gt;: actions/checkout&lt;span class=&quot;meta&quot;&gt;@v2&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      - &lt;span class=&quot;attr&quot;&gt;name&lt;/span&gt;: set ssh key # 临时设置 ssh key&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &lt;span class=&quot;attr&quot;&gt;run&lt;/span&gt;: |&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        mkdir -p ~&lt;span class=&quot;regexp&quot;&gt;/.ssh/&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    echo &lt;span class=&quot;string&quot;&gt;&amp;quot;$&amp;#123;&amp;#123;secrets.WFP_ID_RSA&amp;#125;&amp;#125;&amp;quot;&lt;/span&gt; &amp;gt; ~&lt;span class=&quot;regexp&quot;&gt;/.ssh/i&lt;/span&gt;d_rsa&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    # secret 在这里配置 &lt;span class=&quot;attr&quot;&gt;https&lt;/span&gt;:&lt;span class=&quot;comment&quot;&gt;//github.com/imooc-lego/biz-editor-server/settings/secrets&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    chmod &lt;span class=&quot;number&quot;&gt;600&lt;/span&gt; ~&lt;span class=&quot;regexp&quot;&gt;/.ssh/i&lt;/span&gt;d_rsa&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    ssh-keyscan &lt;span class=&quot;string&quot;&gt;&amp;quot;182.92.xxx.xxx&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; ~&lt;span class=&quot;regexp&quot;&gt;/.ssh/&lt;/span&gt;known_hosts&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      - &lt;span class=&quot;attr&quot;&gt;name&lt;/span&gt;: deploy # 部署&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &lt;span class=&quot;attr&quot;&gt;run&lt;/span&gt;: |&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        ssh work@&lt;span class=&quot;number&quot;&gt;182.92&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;xxx&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;xxx&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;# 【注意】用 work 账号登录，手动创建 /home/work/imooc-lego 目录&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;# 然后 git clone https://username:password@github.com/imooc-lego/biz-editor-server.git -b dev （私有仓库，使用 github 用户名和密码）&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;    # 记得删除 origin ，否则会暴露 github 密码&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;    cd /home/work/imooc-lego/biz-editor-server;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;    git remote add origin https://wangfupeng1988:$&amp;#123;&amp;#123;secrets.WFP_PASSWORD&amp;#125;&amp;#125;@github.com/imooc-lego/biz-editor-server.git;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;    git checkout dev;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;    git pull origin dev; # 重新下载最新代码&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;    git remote remove origin; # 删除 origin ，否则会暴露 github 密码&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;    # 启动 docker&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;    docker-compose build editor-server; # 和 docker-compose.yml service 名字一致&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;    docker-compose up -d;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;    &amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      - &lt;span class=&quot;attr&quot;&gt;name&lt;/span&gt;: &lt;span class=&quot;keyword&quot;&gt;delete&lt;/span&gt; ssh key # 删除 ssh key&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &lt;span class=&quot;attr&quot;&gt;run&lt;/span&gt;: rm -rf ~&lt;span class=&quot;regexp&quot;&gt;/.ssh/i&lt;/span&gt;d_rsa&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;strong&gt;5-5 自动发布到测试机–章总结&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;😔&lt;/p&gt;
+&lt;/blockquote&gt;
+"><meta name="twitter:image"><title>Week15-服务端 CI_CD：Github 自动化 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Week15-服务端 CI_CD：Github 自动化</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Week15-服务端 CI_CD：Github 自动化</h1><div class="post-meta">2021-03-15<span> | </span><span class="category"><a href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 4.1k</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 17</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/Week15-%E6%9C%8D%E5%8A%A1%E7%AB%AF%20CI_CD%EF%BC%9AGithub%20%E8%87%AA%E5%8A%A8%E5%8C%96/#vcomment"><span class="valine-comment-count" data-xid="/Week15-%E6%9C%8D%E5%8A%A1%E7%AB%AF%20CI_CD%EF%BC%9AGithub%20%E8%87%AA%E5%8A%A8%E5%8C%96/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E5%91%A8%E4%BB%8B%E7%BB%8D"><span class="toc-text">第一章：周介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0-Github-actions"><span class="toc-text">第二章 Github actions</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0-Docker"><span class="toc-text">第三章 Docker</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E7%AB%A0-Docker-compose"><span class="toc-text">第四章 Docker-compose</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E7%AB%A0-%E5%8F%91%E5%B8%83%E5%88%B0%E6%B5%8B%E8%AF%95%E6%9C%BA"><span class="toc-text">第五章 发布到测试机</span></a></li></ol></div></div><div class="post-content"><p><font color=blue>更新说明：对文章目录排版做了调整。</font><br>
+<font color=blue> 更新时间：2022-05-04</font></p>
+<h2 id="第一章：周介绍">第一章：周介绍</h2>
+<p><strong>1-1 介绍</strong></p>
+<p>服务端 CI/CD流程–让 github 自动化为我们服务</p>
+<blockquote>
+<p>CI:    Continuous Integration  持续集成<br>
+CD:   Continuous Delivery     持续交付<br>
+合理全面的 CI/CD，自动化研发流程，提高研发效率，增加系统稳定性</p>
+</blockquote>
+<p><strong>收获</strong></p>
+<blockquote>
+<ul>
+<li>使用 Github actions 进行 CI/CD</li>
+<li>学会 Docker 在 nodejs 中的应用</li>
+<li>搭建测试环境</li>
+</ul>
+</blockquote>
+<p>关键词</p>
+<blockquote>
+<ul>
+<li>CI/CD</li>
+<li>Github actions：实现 CI/CD 的一个工具</li>
+<li>Docker Docker-compose</li>
+</ul>
+</blockquote>
+<p>链接：<a target="_blank" rel="noopener" href="https://www.redhat.com/zh/topics/devops/what-is-ci-cd">CI/CD 介绍</a></p>
+<h2 id="第二章-Github-actions">第二章 Github actions</h2>
+<blockquote>
+<p>这一章双越讲的真的不知道讲了个啥，自己课下补吧，真是一塌糊涂。<br>
+github actions 的学习确实很有必要啊，回头等学习完毕再来吐槽。<br>
+学习阮一峰大哥的这节文档：<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html">http://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html</a></p>
+</blockquote>
+<p><strong>第二遍视频笔记记录如下</strong><br>
+<strong>2-1 章介绍</strong></p>
+<blockquote>
+<ul>
+<li>Github actions 是github 官方发布的一个产品 。</li>
+<li>使用 Github actions 自动化构建和测试</li>
+<li>认识 Github actions</li>
+<li>注意：接口测试会依赖于测试机搭建。</li>
+<li>二八法则。</li>
+<li>疑问：为了主流程跑通，不让边角东西打扰我们主流程，难道不注释掉那些代码就不能演示吗？后面再接上，这里的我要搞明白为什么在讲课代码演示的时候，是否为了讲师自己方便注释划水讲课。</li>
+<li>疑问二：既然不是讲 Github actions 和 Docker 的一门课，又为什么抽出一周的时间来划水(老师的答案可能是后面确实是用到这个知识了，有必要了解一下，那我的疑问又来了，既然用到了，又讲到了，那肯定默认这部分内容是很重要的，作为一门架构课，是不是应该认真对待每一周每一节课的录制，即使不那么深入，起码基础的内容得讲明白，这是必须的吧)</li>
+<li>疑问三：课程是以业务为导向，不可能把全部细节都讲出来，这个无可厚非，没有毛病，那你好歹把基础的大路边的内容，起码普及个差不多吧。</li>
+<li>疑问四：这节章介绍内容，你讲解那么多二八法则是干嘛？讲解什么边际效应，是为了后续课程划水先找借口吗？</li>
+</ul>
+</blockquote>
+<p><strong>2-2 认识 Github actions</strong></p>
+<blockquote>
+<ul>
+<li>00:00-01:00：由于中美时差造成的 Github 不稳定问题。</li>
+<li>01:00-01:50：讲解了githu被微软收购，变得更好些，有了私有化个人项目，对中小企业越来越友好</li>
+<li>01:50-02:10:讲解了课程为什么代码不公开的原因是一些数据的线上原因，此事说过好几遍，
+<ul>
+<li>(疑问:有敏感数据，代码公开直接将重要数据脱敏这个方案是否可行？又是否因为写代码的课程录制繁琐而不公开仓库)</li>
+</ul>
+</li>
+<li>02:10-04:15: 链接一介绍：进入一个项目，讲解如何查找 actions，以及 actions 下面的页面展示，得出的结论：帮助你在项目根目录下新建.github/workflow/xxx.yml 文件。</li>
+<li>04:16-06:20:链接二介绍，官方翻译版本，挑选了 node.js 发布中的命令 npm install,npm publish，以及 secrets 的点名。</li>
+<li>06:20-07：00 :拿出代码，介绍有这个文件，然后我们介绍这个文件前，先去看应用场景。</li>
+<li>07:00-08:50:应用场景、范围介绍，打开开源的项目，介绍有三个文件名 yml，test.yml 对应master 分支，自动化测试，dev 分支即deploy-dev.yml–自动部署到测试机，v.x.x.x格式的 tag，自动上线–deploy-pro.yml</li>
+<li>08:50- 17:13 :代码演示
+<ul>
+<li>08:50-09:10: 讲解注释，去掉注释，添加注释</li>
+<li>09:10-10:15: 中心思想为讲解 name 的命名要语义化
+<ul>
+<li>(补充：name 可以省略，省略的话，默认以文件名命名，还有一点演示过程中，yml 文件名称改为 demo，yml 文件内容也更改为demo，会让人误以为这个 name 的命名必须以文件名字命名，其实不是，文件的命令与文件内容中 name 的命名没有关联)</li>
+</ul>
+</li>
+<li>10:15-12:24: on/push/branches/paths的讲解，其中 paths 讲解可以简练点，讲的啰嗦了
+<ul>
+<li>(补充：on字段可以是事件数组比如 on:[push,pull_request]]),branches可以限定分支或<strong>标签</strong>）</li>
+</ul>
+</li>
+<li>12:24-17:13:jobs 讲解。
+<ul>
+<li>（补充：runs-on 没什么特殊情况下直接使用 ubuntu-latest,还有可以设置的比如windows-latest，macOS-latest，steps 中 uses 中的 actions/checkout@v2,<a target="_blank" rel="noopener" href="http://xn--github-9o7i01d8z2d6cw903bj46bexyb.com/actions/checkout">实际上代表的是github.com/actions/checkout</a> 这个仓库，actions/xxx 中的东西，都是仓库中的内容，GitHub 官方的 actions 都放在 <a target="_blank" rel="noopener" href="https://github.com/actions">github.com/actions</a> 里面）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><strong>2-3 Github actions 功能演示</strong></p>
+<blockquote>
+<ul>
+<li>00:00-00:50：run为自定义命令。如果为多个命令，则格式为 run: | 。</li>
+<li>00:50-02:00：演示 run 命令 touch、echo、cat。</li>
+<li>03:00-03:50：代码提交–将branch 改为本地代码分支，演示本地分支提交触发流程，其中关于 .docker-volumes/加到 ignore，具体干啥的留个问号。还有 commit 规范这块前面<strong>貌似</strong>没讲是如何控制规范的「ci 工具」？</li>
+<li>03:50-10:00:来到代码仓库-Actions，讲解 workflows。讲解内容为成功失败执行过程的状态以及 job 在 Github 上Actions 中的执行结果，结论：遇到错误看日志 。</li>
+<li>10:00-10:56 :总结回顾步骤 steps 的四种形式 (我的理解是并不是四种形式，是属于一种：steps 下面的 name属性可省略；uses 是是否有使用第三方 actions的需求，可选；run：执行脚本，可选)</li>
+<li>11:00-12:57:本章小结
+<ul>
+<li>认识 Github Actions</li>
+<li>应用场景</li>
+<li>yml语法格式</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><strong>2-4 Github actions 做自动化测试</strong><br>
+新建 yml 文件</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name</span>: test</span><br><span class="line"></span><br><span class="line"><span class="attr">on</span>:</span><br><span class="line">    <span class="attr">push</span>:</span><br><span class="line">        <span class="attr">branches</span>:</span><br><span class="line">            - master</span><br><span class="line">        <span class="attr">paths</span>:</span><br><span class="line">            - <span class="string">&#x27;.github/workflows/**&#x27;</span></span><br><span class="line">            - <span class="string">&#x27;__test__/**&#x27;</span></span><br><span class="line">            - <span class="string">&#x27;src/**&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">jobs</span>:</span><br><span class="line">    <span class="attr">test</span>:</span><br><span class="line">        runs-<span class="attr">on</span>: ubuntu-latest</span><br><span class="line"></span><br><span class="line">        <span class="attr">steps</span>:</span><br><span class="line">            - <span class="attr">uses</span>: actions/checkout@v2</span><br><span class="line">            - <span class="attr">name</span>: <span class="title class_">Use</span> <span class="title class_">Node</span>.<span class="property">js</span></span><br><span class="line">              <span class="attr">uses</span>: actions/setup-node@v1</span><br><span class="line">              <span class="attr">with</span>:</span><br><span class="line">                  node-<span class="attr">version</span>: <span class="number">14</span></span><br><span class="line">            - <span class="attr">name</span>: lint and test</span><br><span class="line">              <span class="attr">run</span>: |</span><br><span class="line">                  npm i</span><br><span class="line">                  npm run lint</span><br><span class="line">                  npm run <span class="attr">test</span>:remote</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>本节讲 Github actions 做自动测试</p>
+<ul>
+<li>00:00-- 03:00   test.yml 代码讲解</li>
+</ul>
+</blockquote>
+<p>主要自动测试命令为 npm run lint 和 npm run test:remote(补充：checkout 与setup-node 是 actions 仓库比较常用的两个 actions，分别表示下载代码和安装 node)</p>
+<blockquote>
+<ul>
+<li>03:00-- 04:30   本地与远程接口测试</li>
+</ul>
+</blockquote>
+<p>pre-commit 执行本地接口测试(我的遗留问题：<strong>关于 pre-commit 部分</strong>)</p>
+<blockquote>
+<p>master push 远程接口测试</p>
+<ul>
+<li>04:30 – 04:50</li>
+</ul>
+</blockquote>
+<p>测试 「测试部署机」部署完毕</p>
+<blockquote>
+<ul>
+<li>04:45 –  05:30  branches 讲解</li>
+</ul>
+</blockquote>
+<p>关于 branches 分支的一些注意说明</p>
+<blockquote>
+<ul>
+<li>05:30 --09:50  分支提交actions 讲解
+<ul>
+<li>这里由于直接下载的代码为开源版本，与课程内容代码出入非常大，因此需要对开源的代码进行操作</li>
+<li>如果将 test.yml 分支改为 main，push到我们自己仓库的时候, actions日志中会发现 lin and test 出现大量错误</li>
+<li>课程给出的开源代码一团，我们为了修正这个错误，我们要去修改、甚至删除那些相应的代码，这里非常不得劲</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><strong>还是那个疑问，为什么不整个与课程同步的代码仓库？这个对学员来说究竟是不是必要的？</strong></p>
+<blockquote>
+<p>经过笨拙的尝试，终于成功。</p>
+</blockquote>
+<p><strong>2-5 Github actions 章总结</strong></p>
+<blockquote>
+<p>没说什么新的内容</p>
+</blockquote>
+<h2 id="第三章-Docker">第三章 Docker</h2>
+<p><strong>3-1 Docker 章介绍</strong><br>
+Docker</p>
+<blockquote>
+<p>基于 Docker，我们可以把开发、测试环境，一键部署到任何一台机器上。只要该机器安装了 Docker。<br>
+有了 Docker，就有了一切。</p>
+</blockquote>
+<p>主要产出</p>
+<blockquote>
+<p>使用 Docker 构建 nodejs 项目</p>
+</blockquote>
+<p>主要内容</p>
+<blockquote>
+<p>认识 Dcoker<br>
+Dockerfile</p>
+</blockquote>
+<p>注意事项</p>
+<blockquote>
+<p>专业的运维工程师对 Docker还有更全面的应用：弹性扩展、微服务等。</p>
+</blockquote>
+<p><strong>3-2 认识 Docker</strong><br>
+介绍</p>
+<blockquote>
+<p>Docker 就是一种虚拟机技术，比传统虚拟机(VMware、virtualBox)更加简单、轻量</p>
+<ul>
+<li>启动快</li>
+<li>资源占用少</li>
+<li>体积小</li>
+</ul>
+</blockquote>
+<p>查找 docker 安装镜像</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://hub.docker.com/">https://hub.docker.com/</a></p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/15-1.5y49r0icxak0.webp" alt="15-1"></p>
+<p><strong>3-3 启动一个Docker容器</strong></p>
+<p><strong>image镜像</strong></p>
+<blockquote>
+<ul>
+<li>下载镜像 docker pull <image-name>:<tag></li>
+<li>查看所有镜像： docker images</li>
+<li>删除镜像：    docker rmi <images-id></li>
+<li>上传镜像：    docker push <username>/<password>:<tags></li>
+<li>如果出现REPOSITORY为 null 的情况时，使用docker image prune删除</li>
+</ul>
+</blockquote>
+<p><strong>container</strong></p>
+<blockquote>
+<ul>
+<li>启动容器：<strong>docker run -p xxxx:xxx -v=hostpath:containerPath -d --name <container-name> <image-name></strong>
+<ul>
+<li>-p 端口映射</li>
+<li>-v 数据卷，文件映射</li>
+<li>-d 后台运行</li>
+<li>–name 定义容器名称</li>
+</ul>
+</li>
+<li>查看所有容器 docker ps, 加 -a 显示隐藏的容器</li>
+<li>停止容器 docker stop <container-id></li>
+<li>删除容器 docker rm <contaier-id>,加-f 是强制删除</li>
+<li>查看容器信息，如 IP 地址 docker inspect <container-id></li>
+<li>查看容器日志 docker logs <container-id></li>
+<li>进入容器控制台 docker exec -it <container-id> /bin/sh</li>
+</ul>
+</blockquote>
+<p><strong>3-4 Docker容器的进一步演示</strong><br>
+<strong>功能演示</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">docker run -p <span class="number">81</span>:<span class="number">80</span> -d --name nginx1 nginx</span><br><span class="line">docker ps</span><br><span class="line"></span><br><span class="line"># 访问 <span class="attr">localhost</span>:<span class="number">81</span> ，并查看 log</span><br><span class="line"></span><br><span class="line">docker exec -it &lt;container-id&gt; <span class="regexp">/bin/</span>sh</span><br><span class="line">cd /usr/share/nginx/html</span><br><span class="line">echo hello docker world index.<span class="property">html</span></span><br><span class="line">exit</span><br><span class="line"></span><br><span class="line"># 重新访问 <span class="attr">localhost</span>:<span class="number">81</span> ，强制刷新</span><br><span class="line"></span><br><span class="line">docker stop &lt;container-id&gt;</span><br><span class="line">docker rm &lt;container-id&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># <span class="number">1.</span> 新建 /<span class="title class_">Users</span>/wfp/html/index.<span class="property">html</span> ，内容自定义即可</span><br><span class="line"></span><br><span class="line"># <span class="number">2.</span> 运行</span><br><span class="line">docker run -p <span class="number">81</span>:<span class="number">80</span> -v=<span class="regexp">/Users/</span>wfp/<span class="attr">html</span>:<span class="regexp">/usr/</span>share/nginx/html  -d --name nginx1 nginx</span><br><span class="line"></span><br><span class="line"># <span class="number">3.</span> 访问 重新访问 <span class="attr">localhost</span>:<span class="number">81</span> ，看是否你创建的页面？</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>3-5 介绍 Dockerfile 语法</strong></p>
+<blockquote>
+<p>一个简单的配置文件，描述如何构建一个新的 image 镜像<br>
+注意：必须是 Dockerfile 这个文件名，必须在项目的根目录</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># <span class="title class_">Dockerfile</span></span><br><span class="line"></span><br><span class="line"><span class="variable constant_">FROM</span> <span class="attr">node</span>:latest</span><br><span class="line"><span class="variable constant_">WORKDIR</span> /app</span><br><span class="line"><span class="variable constant_">COPY</span> . /app</span><br><span class="line"></span><br><span class="line"># 设置时区</span><br><span class="line"><span class="variable constant_">RUN</span> ln -sf /usr/share/zoneinfo/<span class="title class_">Asia</span>/<span class="title class_">Shanghai</span> /etc/localtime &amp;&amp; echo <span class="string">&#x27;Asia/Shanghai&#x27;</span> &gt;<span class="regexp">/etc/</span>timezone</span><br><span class="line">#安装</span><br><span class="line"><span class="variable constant_">RUN</span> npm set registry <span class="attr">https</span>:<span class="comment">//registry.npm.taobao.org</span></span><br><span class="line"><span class="variable constant_">RUN</span> npm install</span><br><span class="line">#启动</span><br><span class="line"><span class="variable constant_">CMD</span> echo #<span class="variable constant_">SERVER_NAME</span> &amp;&amp;echo &amp;<span class="variable constant_">AUTHOR_NAME</span> &amp;&amp; npm run dev &amp;&amp; npx pm2 log</span><br><span class="line"></span><br><span class="line">#环境变量</span><br><span class="line"></span><br><span class="line"><span class="variable constant_">ENV</span> <span class="variable constant_">SERVER_NAME</span> =<span class="string">&quot;test&quot;</span></span><br><span class="line"><span class="variable constant_">ENV</span> <span class="variable constant_">AUTHOR_NAME</span> =<span class="string">&quot;liugezhou&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>3-6 用 Dockerfile 构建镜像</strong><br>
+<strong>构建</strong></p>
+<blockquote>
+<p>docker build -t <name> .  #最后的’.'指 Dockerfile 在当前目录下。    <br>
+docker images</p>
+</blockquote>
+<p><strong>课程修改代码为(去掉routes/index.js的数据库连接以及bin/www中的数据库同步)：</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"># <span class="title class_">Dockerfile</span></span><br><span class="line"><span class="variable constant_">FROM</span> <span class="attr">node</span>:<span class="number">14</span></span><br><span class="line"><span class="variable constant_">WORKDIR</span> /app</span><br><span class="line"><span class="variable constant_">COPY</span> . /app</span><br><span class="line"></span><br><span class="line"># 设置时区</span><br><span class="line"><span class="variable constant_">RUN</span> ln -sf /usr/share/zoneinfo/<span class="title class_">Asia</span>/<span class="title class_">Beijing</span> /etc/localtime &amp;&amp; echo <span class="string">&#x27;Asia/Beijing&#x27;</span> &gt;<span class="regexp">/etc/</span>timezone</span><br><span class="line"></span><br><span class="line">#安装</span><br><span class="line"><span class="variable constant_">RUN</span>  npm set registry <span class="attr">https</span>:<span class="comment">//registry.npm.taobao.org</span></span><br><span class="line"><span class="variable constant_">RUN</span> npm install</span><br><span class="line"></span><br><span class="line">#启动</span><br><span class="line"><span class="variable constant_">CMD</span> echo $SERVER_NAME &amp;&amp; echo $AUTHOR_NAME &amp;&amp; npm run dev &amp;&amp; npx pm2 log</span><br><span class="line"></span><br><span class="line">#环境变量</span><br><span class="line"><span class="variable constant_">ENV</span> <span class="variable constant_">SERVER_NAME</span>=<span class="string">&quot;lego-node-server&quot;</span></span><br><span class="line"><span class="variable constant_">ENV</span> <span class="variable constant_">AUTHOR_NAME</span>=<span class="string">&quot;liugezhou&quot;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 步骤一：构建</span></span><br><span class="line">docker build -t liugezhou-server .  # name为将要构建镜像的名字，. 为当前目录</span><br><span class="line"><span class="comment">// 步骤二：查看</span></span><br><span class="line">docker images</span><br><span class="line"><span class="comment">//步骤三：启动</span></span><br><span class="line">docker run -p <span class="number">8081</span>:<span class="number">3000</span> -d --name server1 liugezhou-server  # 创建容器，注意端口映射</span><br><span class="line"><span class="comment">//步骤四：查看启动状态</span></span><br><span class="line">docker ps</span><br><span class="line"><span class="comment">// 步骤五 查看容器日志</span></span><br><span class="line">docker logs &lt;container-id&gt;  # 需等待构建完成</span><br><span class="line"></span><br><span class="line"># 访问 <span class="attr">localhost</span>:<span class="number">8081</span>/api/db-check ，查看 docker logs</span><br><span class="line"></span><br><span class="line">docker stop &lt;container-id&gt;</span><br><span class="line">docker rm &lt;container-id&gt;</span><br><span class="line">docker rmi &lt;image-id&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="第四章-Docker-compose">第四章 Docker-compose</h2>
+<p><strong>4-1 docker-compose 章开始</strong></p>
+<blockquote>
+<p>用的来说就是 Docker-compse就是一种组合，这章学到的内容就是这个英文单词的翻译。</p>
+</blockquote>
+<p><strong>4-2 docker-compose 配置文件</strong></p>
+<blockquote>
+<ul>
+<li>文件名称必须为 <strong>docker-compose.yml</strong></li>
+<li>代码演示：多个service，代表多个docker镜像</li>
+<li>**image:redis **   表示引用官网的redis 镜像</li>
+<li>container-name    镜像名称</li>
+<li>ports    端口映射</li>
+<li>enviroment    环境变量 - TZ</li>
+<li>build：    docker build -t  <image-name>  .
+<ul>
+<li>context .  ：「当前目录」</li>
+<li>dockerfile：Dockerfile   ： 「基于Dockerfile构建」</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version</span>: <span class="string">&#x27;3&#x27;</span></span><br><span class="line"><span class="attr">services</span>:</span><br><span class="line">    editor-<span class="attr">server</span>:  # service name</span><br><span class="line">        <span class="attr">build</span>:</span><br><span class="line">            <span class="attr">context</span>: .  # 当前目录</span><br><span class="line">            <span class="attr">dockerfile</span>: <span class="title class_">Dockerfile</span>  # 基于 <span class="title class_">Dockerfile</span> 构建</span><br><span class="line">        <span class="attr">image</span>: editor-server # 依赖于当前 <span class="title class_">Dockerfile</span> 创建出来的镜像</span><br><span class="line">        <span class="attr">container_name</span>: editor-server</span><br><span class="line">        <span class="attr">ports</span>:</span><br><span class="line">            - <span class="number">8081</span>:<span class="number">3000</span> # 宿主机通过 <span class="number">8081</span> 访问</span><br><span class="line">    editor-<span class="attr">redis</span>:  # service name，重要！</span><br><span class="line">        <span class="attr">image</span>: redis  # 引用官网 redis 镜像</span><br><span class="line">        <span class="attr">container_name</span>: editor-redis</span><br><span class="line">        <span class="attr">ports</span>:</span><br><span class="line"> # 宿主机，可以用 <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6378</span> 即可连接容器中的数据库 <span class="string">`redis-cli -h 127.0.0.1 -p 6378`</span></span><br><span class="line"> # 但是，其他 docker 容器不能，因为此时 <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> 是 docker 容器本身，而不是宿主机</span><br><span class="line">            - <span class="number">6378</span>:<span class="number">6379</span></span><br><span class="line">        <span class="attr">environment</span>:</span><br><span class="line">            - <span class="variable constant_">TZ</span>=<span class="title class_">Asia</span>/<span class="title class_">Shanghai</span> # 设置时区</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>4-3 docker-compose 命令演示</strong></p>
+<blockquote>
+<ul>
+<li>00：00    –    02：55    <strong>命令</strong>
+<ul>
+<li>docker-compose build <service-name></li>
+<li>启动所有服务器：docker-compose up -d (后台启动)</li>
+<li>停止所有服务：    docker-compose down</li>
+<li>查看服务：    docker-compose ps</li>
+<li>docker 与docker-compose的命令执行范围</li>
+</ul>
+</li>
+<li>02：55    –    05：10    <strong>安装pm2</strong>
+<ul>
+<li>本地安装pm2  npm i pm2 --S,或者Dockerfile中全局安装pm2</li>
+<li>再次强调 「阻塞控制台的命令」</li>
+</ul>
+</li>
+<li>05：10    –    06 :30    <strong>代码修改</strong>
+<ul>
+<li>新建 docker-compose.yml</li>
+<li>新建 config/envs/prd-dev.js</li>
+</ul>
+</li>
+<li>06：30    –    08：16    <strong>prd-dev.js文件</strong>
+<ul>
+<li>内容为修改redis连接配置，讲解</li>
+</ul>
+</li>
+<li>08：19    –    10：00    画图？
+<ul>
+<li>罗里吧嗦</li>
+</ul>
+</li>
+<li>10：01    –    10：48    代码修改
+<ul>
+<li>wtf，也不知道是出于什么原因，如此设计课程，观看视频体验 ：一颗星</li>
+</ul>
+</li>
+<li>10：49    –    13：17    <strong>build</strong>
+<ul>
+<li>docker-compose build  editor-server</li>
+</ul>
+</li>
+<li>13：18    –    15：12    <strong>演示</strong>
+<ul>
+<li>docker images     查看build是否成功</li>
+<li>docker-compose -d</li>
+<li>docker-compose ps</li>
+<li>docker ps</li>
+<li>访问：localhost:8081/api/db-check</li>
+</ul>
+</li>
+<li>15：12    –    17：17    <strong>redis-cli</strong>
+<ul>
+<li>终端输入：<strong>redis-cli</strong>，进入到本地redis服务,查看本地 keys *。
+<ul>
+<li>「执行redis-cli，我本地显示：Could not connect to Redis at 127.0.0.1:6379: Connection refused；这是因为我本地没启redis服务，于是：redis-server启动，redis-cli进入redis控制台」</li>
+</ul>
+</li>
+<li><strong>redis-cli -h 127.0.0.1 -p 6378</strong>    进入到docker容器中的redis</li>
+</ul>
+</li>
+<li>17：18    –    18：25    <strong>查看日志、down</strong>
+<ul>
+<li>docker logs <container-id></li>
+<li>docker-compose down</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><strong>4-4 数据持久化</strong><br>
+<strong>连接mysql和mongodb</strong></p>
+<blockquote>
+<p><strong>区别:</strong></p>
+<ul>
+<li>redis无数据库，mysql与mongodb需要连接数据库</li>
+<li>redis是缓存，无需数据持久化，mysql与mongodb需要**。**</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>volumes:</p>
+<ul>
+<li>‘.docker-volumes/mongo/data:/data/db’ # 数据持久化</li>
+</ul>
+</blockquote>
+<p><strong>4-5 配置 mysql</strong></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version</span>: <span class="string">&#x27;3&#x27;</span></span><br><span class="line"><span class="attr">services</span>:</span><br><span class="line">    editor-<span class="attr">server</span>:</span><br><span class="line">        <span class="attr">build</span>:</span><br><span class="line">            <span class="attr">context</span>: .</span><br><span class="line">            <span class="attr">dockerfile</span>: <span class="title class_">Dockerfile</span></span><br><span class="line">        <span class="attr">image</span>: editor-server # 依赖于当前 <span class="title class_">Dockerfile</span> 创建镜像</span><br><span class="line">        <span class="attr">container_name</span>: editor-server</span><br><span class="line">        <span class="attr">ports</span>:</span><br><span class="line">            - <span class="number">8081</span>:<span class="number">3000</span> # 宿主机通过 <span class="number">8081</span> 访问</span><br><span class="line">    editor-<span class="attr">redis</span>:</span><br><span class="line">        <span class="attr">image</span>: redis # 引用官网 redis 镜像</span><br><span class="line">        <span class="attr">container_name</span>: editor-redis</span><br><span class="line">        <span class="attr">ports</span>:</span><br><span class="line">            - <span class="number">6378</span>:<span class="number">6379</span> # 宿主机可以用 <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6378</span> 即可连接容器中的数据库</span><br><span class="line">        <span class="attr">environment</span>:</span><br><span class="line">            - <span class="variable constant_">TZ</span>=<span class="title class_">Asia</span>/<span class="title class_">Beijing</span> # 设置时区</span><br><span class="line">    editor-<span class="attr">mysql</span>:</span><br><span class="line">        <span class="attr">image</span>: mysql # 引用官网 mysql 镜像</span><br><span class="line">        <span class="attr">container_name</span>: editor-mysql</span><br><span class="line">        <span class="attr">restart</span>: always</span><br><span class="line">        <span class="attr">privileged</span>: <span class="literal">true</span> # 高权限，执行下面的 mysql/init</span><br><span class="line">        <span class="attr">command</span>: --<span class="keyword">default</span>-authentication-plugin=mysql_native_password # 解决无法远程访问的问题</span><br><span class="line">        <span class="attr">ports</span>:</span><br><span class="line">            - <span class="number">3305</span>:<span class="number">3306</span> # 宿主机可以用 <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">3305</span> 即可连接容器中的数据库</span><br><span class="line">        <span class="attr">volumes</span>:</span><br><span class="line">            - .<span class="property">docker</span>-volumes/mysql/<span class="attr">log</span>:<span class="regexp">/var/</span>log/mysql # 数据持久化</span><br><span class="line">            - .<span class="property">docker</span>-volumes/mysql/<span class="attr">data</span>:<span class="regexp">/var/</span>lib/mysql</span><br><span class="line">            - ./mysql/<span class="attr">init</span>:<span class="regexp">/docker-entrypoint-initdb.d/</span> # 初始化 sql</span><br><span class="line">        <span class="attr">environment</span>:</span><br><span class="line">            - <span class="variable constant_">MYSQL_DATABASE</span>=imooc_lego_course # 初始化容器时创建数据库</span><br><span class="line">            - <span class="variable constant_">MYSQL_ROOT_PASSWORD</span>=liugezhou1205</span><br><span class="line">            # - <span class="variable constant_">MYSQL_USER</span>=shuangyue #创建 test 用户</span><br><span class="line">            # - <span class="variable constant_">MYSQL_PASSWORD</span>=shuangyue #设置 test 用户的密码</span><br><span class="line">            - <span class="variable constant_">TZ</span>=<span class="title class_">Asia</span>/<span class="title class_">Beijing</span> # 设置时区</span><br><span class="line">    editor-<span class="attr">mongo</span>:</span><br><span class="line">        <span class="attr">image</span>: mongo # 引用官网 mongo 镜像</span><br><span class="line">        <span class="attr">container_name</span>: editor-mongo</span><br><span class="line">        <span class="attr">restart</span>: always #出错则重启</span><br><span class="line">        <span class="attr">volumes</span>:</span><br><span class="line">            - <span class="string">&#x27;.docker-volumes/mongo/data:/data/db&#x27;</span> # 数据持久化</span><br><span class="line">        <span class="attr">environment</span>:</span><br><span class="line">            - <span class="variable constant_">MONGO_INITDB_DATABASE</span>=imooc_lego_course</span><br><span class="line">            # - <span class="variable constant_">MONGO_INITDB_ROOT_USERNAME</span>=root</span><br><span class="line">            # - <span class="variable constant_">MONGO_INITDB_ROOT_PASSWORD</span>=<span class="number">123456</span></span><br><span class="line">            - <span class="variable constant_">TZ</span>=<span class="title class_">Asia</span>/<span class="title class_">Beijing</span> # 设置时区</span><br><span class="line">        <span class="attr">ports</span>:</span><br><span class="line">            - <span class="string">&#x27;27016:27017&#x27;</span> # 宿主机可以用 <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">27016</span> 即可连接容器中的数据库</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="第五章-发布到测试机">第五章 发布到测试机</h2>
+<p><strong>5-2  配置测试机</strong><br>
+<img src="https://cdn.jsdelivr.net/gh/liugezhou/image@master/imooc-course/15-2.5so88ss1y340.webp" alt="15-2"></p>
+<p><strong>5-3 自动发布到测试机-讲解配置</strong><br>
+<strong>5-4 自动发布到测试机-功能演示</strong></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"># <span class="title class_">This</span> workflow will <span class="keyword">do</span> a clean install <span class="keyword">of</span> node dependencies, build the source code and run tests across different versions <span class="keyword">of</span> node</span><br><span class="line"># <span class="title class_">For</span> more information <span class="attr">see</span>: <span class="attr">https</span>:<span class="comment">//help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions</span></span><br><span class="line"># github actions 中文文档 <span class="attr">https</span>:<span class="comment">//docs.github.com/cn/actions/getting-started-with-github-actions</span></span><br><span class="line"></span><br><span class="line"><span class="attr">name</span>: deploy <span class="keyword">for</span> dev</span><br><span class="line"></span><br><span class="line"><span class="attr">on</span>:</span><br><span class="line"><span class="attr">push</span>:</span><br><span class="line"><span class="attr">branches</span>:</span><br><span class="line">- <span class="string">&#x27;dev&#x27;</span> # 只针对 dev 分支</span><br><span class="line"><span class="attr">paths</span>:</span><br><span class="line">- <span class="string">&#x27;.github/workflows/*&#x27;</span></span><br><span class="line"># - <span class="string">&#x27;__test__/**&#x27;</span> # dev 不需要立即测试</span><br><span class="line">  - <span class="string">&#x27;src/**&#x27;</span></span><br><span class="line">    - <span class="string">&#x27;Dockerfile&#x27;</span></span><br><span class="line">    - <span class="string">&#x27;docker-compose.yml&#x27;</span></span><br><span class="line">    - <span class="string">&#x27;bin/*&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">jobs</span>:</span><br><span class="line">  deploy-<span class="attr">dev</span>:</span><br><span class="line"> 	 runs-<span class="attr">on</span>: ubuntu-latest</span><br><span class="line"></span><br><span class="line">    <span class="attr">steps</span>:</span><br><span class="line">    - <span class="attr">uses</span>: actions/checkout<span class="meta">@v2</span></span><br><span class="line">      - <span class="attr">name</span>: set ssh key # 临时设置 ssh key</span><br><span class="line">      <span class="attr">run</span>: |</span><br><span class="line">        mkdir -p ~<span class="regexp">/.ssh/</span></span><br><span class="line">    echo <span class="string">&quot;$&#123;&#123;secrets.WFP_ID_RSA&#125;&#125;&quot;</span> &gt; ~<span class="regexp">/.ssh/i</span>d_rsa</span><br><span class="line">    # secret 在这里配置 <span class="attr">https</span>:<span class="comment">//github.com/imooc-lego/biz-editor-server/settings/secrets</span></span><br><span class="line">    chmod <span class="number">600</span> ~<span class="regexp">/.ssh/i</span>d_rsa</span><br><span class="line">    ssh-keyscan <span class="string">&quot;182.92.xxx.xxx&quot;</span> &gt;&gt; ~<span class="regexp">/.ssh/</span>known_hosts</span><br><span class="line">      - <span class="attr">name</span>: deploy # 部署</span><br><span class="line">      <span class="attr">run</span>: |</span><br><span class="line">        ssh work@<span class="number">182.92</span>.<span class="property">xxx</span>.<span class="property">xxx</span> <span class="string">&quot;</span></span><br><span class="line"><span class="string"># 【注意】用 work 账号登录，手动创建 /home/work/imooc-lego 目录</span></span><br><span class="line"><span class="string"># 然后 git clone https://username:password@github.com/imooc-lego/biz-editor-server.git -b dev （私有仓库，使用 github 用户名和密码）</span></span><br><span class="line"><span class="string">    # 记得删除 origin ，否则会暴露 github 密码</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    cd /home/work/imooc-lego/biz-editor-server;</span></span><br><span class="line"><span class="string">    git remote add origin https://wangfupeng1988:$&#123;&#123;secrets.WFP_PASSWORD&#125;&#125;@github.com/imooc-lego/biz-editor-server.git;</span></span><br><span class="line"><span class="string">    git checkout dev;</span></span><br><span class="line"><span class="string">    git pull origin dev; # 重新下载最新代码</span></span><br><span class="line"><span class="string">    git remote remove origin; # 删除 origin ，否则会暴露 github 密码</span></span><br><span class="line"><span class="string">    # 启动 docker</span></span><br><span class="line"><span class="string">    docker-compose build editor-server; # 和 docker-compose.yml service 名字一致</span></span><br><span class="line"><span class="string">    docker-compose up -d;</span></span><br><span class="line"><span class="string">    &quot;</span></span><br><span class="line">      - <span class="attr">name</span>: <span class="keyword">delete</span> ssh key # 删除 ssh key</span><br><span class="line">      <span class="attr">run</span>: rm -rf ~<span class="regexp">/.ssh/i</span>d_rsa</span><br></pre></td></tr></table></figure>
+<p><strong>5-5 自动发布到测试机–章总结</strong></p>
+<blockquote>
+<p>😔</p>
+</blockquote>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>Week15-服务端 CI_CD：Github 自动化</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2021-03-15</p><p><span>最后更新：</span>2022-05-04</p><p><span>原始链接：</span><a href="/Week15-服务端 CI_CD：Github 自动化/">https://blog.liugezhou.online/Week15-%E6%9C%8D%E5%8A%A1%E7%AB%AF%20CI_CD%EF%BC%9AGithub%20%E8%87%AA%E5%8A%A8%E5%8C%96/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/Week15-%E6%9C%8D%E5%8A%A1%E7%AB%AF%20CI_CD%EF%BC%9AGithub%20%E8%87%AA%E5%8A%A8%E5%8C%96/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/Web架构之脚手架"><i class="fa fa-tag">Web架构之脚手架</i></a></div><div class="post-nav"><a class="pre" href="/Week16-%E7%BC%96%E8%BE%91%E5%99%A8%E6%9C%8D%E5%8A%A1%E7%AB%AFAPI%E5%BC%80%E5%8F%91/">Week16-编辑器服务端API开发</a><a class="next" href="/mongoose%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E6%80%BB%E7%BB%93/">mongoose官方文档总结</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

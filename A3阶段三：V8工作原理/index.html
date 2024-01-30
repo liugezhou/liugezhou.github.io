@@ -1,0 +1,285 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="阶段三：V8工作原理"><meta name="twitter:description" content="&lt;h2 id=&quot;12-栈空间和堆空间：数据是如何存储的？&quot;&gt;12 | 栈空间和堆空间：数据是如何存储的？&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;这节讲解的是&lt;strong&gt;JavaScript的内存机制&lt;/strong&gt;。&lt;br&gt;
+首先，我们知道JavaScript是弱类型动态语言。&lt;br&gt;
+接着，JavaScript的数据类型一共是八种:Boolean｜ String ｜ Number | Undefined | Null | BigInt | Symbol | Object&lt;br&gt;
+前七种为基本数据类型，他们存在栈中，后一种为引用数据类型，它存在堆中。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;13-｜-垃圾回收：垃圾数据是如何自动回收的？&quot;&gt;13 ｜ 垃圾回收：垃圾数据是如何自动回收的？&lt;/h2&gt;
+&lt;h3 id=&quot;不同语言的垃圾回收策略&quot;&gt;不同语言的垃圾回收策略&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;通常情况下，垃圾回收分为手动回收和自动回收两种策略。&lt;/li&gt;
+&lt;li&gt;手动垃圾回收：例如C++,何时分配内存、何时销毁是由代码控制的。&lt;/li&gt;
+&lt;li&gt;自动垃圾回收：JavaScript、Java、Python等，产生的垃圾数据是由垃圾回收器释放的。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;调用栈中的数据是如何回收的&quot;&gt;调用栈中的数据是如何回收的&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;当一个函数执行完毕，JavaScript引擎会通过向下移动ESP(记录当前执行状态的指针)来销毁该函数保存在&lt;strong&gt;栈&lt;/strong&gt;中的执行上下文。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;堆中的数据是如何回收的&quot;&gt;堆中的数据是如何回收的&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;要回收堆中的垃圾数据，就需要用到JavaScript中的垃圾回收器了。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;代际假说&quot;&gt;代际假说&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;代际假说(The Generaltional Hypothesis),是垃圾回收领域一个重要的术语，后续垃圾回收策略都是建立在该假说的基础上的。&lt;br&gt;
+特点一：大部分对象在内存中的时间很短，简单来说，很多对象一经分配内存，很快就变得不可访问。&lt;br&gt;
+特点二：不死的对象，会活的更久。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;堆中区域&quot;&gt;堆中区域&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;V8中会把堆分为&lt;strong&gt;新生代&lt;/strong&gt;和&lt;strong&gt;老生代&lt;/strong&gt;两个区域。新生代存放的是生存时间短的对象，老生代存放的是生存时间久的对象。&lt;br&gt;
+堆中的这两块区域，V8分别使用两个不同的垃圾回收器，以便高效的实施垃圾回收。&lt;br&gt;
+副垃圾回收器，主要负责新生代区域的垃圾回收。&lt;br&gt;
+主垃圾回收器，主要负责老生代区域的垃圾回收。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;垃圾回收器工作流程&quot;&gt;垃圾回收器工作流程&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;标记空间中的活动对象和不活动对象。&lt;/li&gt;
+&lt;li&gt;回收非活动对象所占据的内存。&lt;/li&gt;
+&lt;li&gt;内存整理(主垃圾回收器产生的内存碎片会导致出现不连续内存空间，所以需要整理)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;副垃圾回收器&quot;&gt;副垃圾回收器&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;负责新生代区域的垃圾回收&lt;/li&gt;
+&lt;li&gt;大多数小的对象会分配至此。&lt;/li&gt;
+&lt;li&gt;新生代用Scavenge算法处理–》一半对象区域，一半空闲区域。&lt;/li&gt;
+&lt;li&gt;存活的对象放入对象区域，然后垃圾清理阶段，将对象区域中活跃对象复制至空闲区域，完成复制后，两个区域进行角色转换。&lt;/li&gt;
+&lt;li&gt;经过两次垃圾回收依然还存活的对象，会被移到老生区中。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;主垃圾回收器&quot;&gt;主垃圾回收器&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;负责老生代区域的垃圾回收。&lt;/li&gt;
+&lt;li&gt;除了新生区中移过来的对象，一些大对象会被直接分配到老生区&lt;/li&gt;
+&lt;li&gt;老生区对象的特点:存活时间长，占用内存空间大。&lt;/li&gt;
+&lt;li&gt;主垃圾回收器采用的是标记-清除的算法进行垃圾回收。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;全停顿&quot;&gt;全停顿&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;当执行垃圾回收算法的时候，JS脚本会暂停下来，这种行文叫做全停顿。&lt;br&gt;
+为了降低全停顿的卡顿影响，V8通过&lt;strong&gt;增量标记&lt;/strong&gt;算法将完整的垃圾回收任务分为一个个小任务，并与JS脚本交替执行。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;14-编译器和解释器：V8是如何执行一段JavaScript代码的？&quot;&gt;14 | 编译器和解释器：V8是如何执行一段JavaScript代码的？&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;了解V8是如何执行一段JavaScript代码，可以让我们对babel、EsLint、Vue、React等其底层实现机制有一个更充分的认识。&lt;br&gt;
+首先，我们需要搞懂一些概念和原理：&lt;strong&gt;编译器(Compiler)&lt;/strong&gt;、&lt;strong&gt;解释器(Interpreter)&lt;/strong&gt;、&lt;strong&gt;抽象语法树(AST)&lt;/strong&gt;、&lt;strong&gt;字节码(Bytecode)&lt;/strong&gt;、**即时编译器(JIT)**等。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;编译器和解释器&quot;&gt;编译器和解释器&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;首先我们必须得知道编译型语言和解释型语言的区别。&lt;br&gt;
+编译型语言就是程序执行前，编辑器经过编译，成二进制文件，程序可直接运行二进制文件。如C/C++、Go&lt;br&gt;
+解释器语言是在运行时动态解释和执行。如JS、Python等。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;编译器、解释器执行流程&quot;&gt;编译器、解释器执行流程&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;编译型语言的编译过程：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;编译器对源代码进行词法分析、语法分析，生成抽象语法树(AST)&lt;/li&gt;
+&lt;li&gt;优化代码，生成机器码、二进制文件。&lt;/li&gt;
+&lt;li&gt;编译成功，生成可执行文件。编译失败抛出异常。&lt;br&gt;
+解释型语言解释过程：&lt;/li&gt;
+&lt;li&gt;解释器对源代码进行词法分析、语法分析，生成抽象语法树(AST)&lt;/li&gt;
+&lt;li&gt;基于抽象语法树生成字节码。&lt;/li&gt;
+&lt;li&gt;根据字节码执行程序、输出结果。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;V8是如何执行一段JavaScript代码的&quot;&gt;V8是如何执行一段JavaScript代码的&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;V8执行过程中，既有解释器又有编译器。其执行流程为：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;1-生成抽象语法树-AST-和执行上下文&quot;&gt;1. 生成抽象语法树(AST)和执行上下文&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;将源代码转换成抽象语法树，并生成执行上下文。&lt;br&gt;
+过程就是这么个过程，但是抽象语法树的理解我们要展开。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;无论编译型语言还是解释型语言，都会将源代码生成AST。&lt;/li&gt;
+&lt;li&gt;AST的结构与代码结构类似。&lt;br&gt;
+(Babel工作原理就是：ES6源码-&amp;gt;ES6AST-&amp;gt;ES5AST-&amp;gt;ES5源码)&lt;/li&gt;
+&lt;li&gt;生成ATS经过两个阶段：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;第一阶段是分词(词法分析),将一行行源码拆解成不可再分的最小当个字符或字符串token。&lt;/li&gt;
+&lt;li&gt;第二阶段是解析(语法分析),将token根据语法规则生成AST&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;2-生成字节码&quot;&gt;2.生成字节码&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;解释器登场，根据AST生成字节码、解释字节码。&lt;br&gt;
+一开始V8没有字节码，之前是直接生成机器码，这样的效率很高，但是很占内存，随着移动互联网的发展，为了解决内存占用过高问题，而引入了字节码,即字节码的内存占用要比机器码小很多。&lt;br&gt;
+字节码是介于AST和机器码之间的一种代码，它需要通过解释器将其转换为机器码后才能执行。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;3-执行代码&quot;&gt;3.执行代码&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;解释器除了生成字节码，还要解释字节码，后台编译器会把热点字节码编译成高效的机器码，这种字节码配合解释器和编译器的技术，就叫做即时编译(JIT).使用这种技术的除了V8还有Java和Python虚拟机等都使用了。&lt;/p&gt;
+&lt;/blockquote&gt;
+"><meta name="twitter:image"><title>阶段三：V8工作原理 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">阶段三：V8工作原理</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">阶段三：V8工作原理</h1><div class="post-meta">2022-03-29<span> | </span><span class="category"><a href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 1.7k</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 5</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/A3%E9%98%B6%E6%AE%B5%E4%B8%89%EF%BC%9AV8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/#vcomment"><span class="valine-comment-count" data-xid="/A3%E9%98%B6%E6%AE%B5%E4%B8%89%EF%BC%9AV8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#12-%E6%A0%88%E7%A9%BA%E9%97%B4%E5%92%8C%E5%A0%86%E7%A9%BA%E9%97%B4%EF%BC%9A%E6%95%B0%E6%8D%AE%E6%98%AF%E5%A6%82%E4%BD%95%E5%AD%98%E5%82%A8%E7%9A%84%EF%BC%9F"><span class="toc-text">12 | 栈空间和堆空间：数据是如何存储的？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-%EF%BD%9C-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%EF%BC%9A%E5%9E%83%E5%9C%BE%E6%95%B0%E6%8D%AE%E6%98%AF%E5%A6%82%E4%BD%95%E8%87%AA%E5%8A%A8%E5%9B%9E%E6%94%B6%E7%9A%84%EF%BC%9F"><span class="toc-text">13 ｜ 垃圾回收：垃圾数据是如何自动回收的？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E5%90%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AD%96%E7%95%A5"><span class="toc-text">不同语言的垃圾回收策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E7%94%A8%E6%A0%88%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E6%98%AF%E5%A6%82%E4%BD%95%E5%9B%9E%E6%94%B6%E7%9A%84"><span class="toc-text">调用栈中的数据是如何回收的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A0%86%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E6%98%AF%E5%A6%82%E4%BD%95%E5%9B%9E%E6%94%B6%E7%9A%84"><span class="toc-text">堆中的数据是如何回收的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E9%99%85%E5%81%87%E8%AF%B4"><span class="toc-text">代际假说</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A0%86%E4%B8%AD%E5%8C%BA%E5%9F%9F"><span class="toc-text">堆中区域</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-text">垃圾回收器工作流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%AF%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8"><span class="toc-text">副垃圾回收器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8"><span class="toc-text">主垃圾回收器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%A8%E5%81%9C%E9%A1%BF"><span class="toc-text">全停顿</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#14-%E7%BC%96%E8%AF%91%E5%99%A8%E5%92%8C%E8%A7%A3%E9%87%8A%E5%99%A8%EF%BC%9AV8%E6%98%AF%E5%A6%82%E4%BD%95%E6%89%A7%E8%A1%8C%E4%B8%80%E6%AE%B5JavaScript%E4%BB%A3%E7%A0%81%E7%9A%84%EF%BC%9F"><span class="toc-text">14 | 编译器和解释器：V8是如何执行一段JavaScript代码的？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E5%99%A8%E5%92%8C%E8%A7%A3%E9%87%8A%E5%99%A8"><span class="toc-text">编译器和解释器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E5%99%A8%E3%80%81%E8%A7%A3%E9%87%8A%E5%99%A8%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-text">编译器、解释器执行流程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#V8%E6%98%AF%E5%A6%82%E4%BD%95%E6%89%A7%E8%A1%8C%E4%B8%80%E6%AE%B5JavaScript%E4%BB%A3%E7%A0%81%E7%9A%84"><span class="toc-text">V8是如何执行一段JavaScript代码的</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%94%9F%E6%88%90%E6%8A%BD%E8%B1%A1%E8%AF%AD%E6%B3%95%E6%A0%91-AST-%E5%92%8C%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="toc-text">1. 生成抽象语法树(AST)和执行上下文</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E7%94%9F%E6%88%90%E5%AD%97%E8%8A%82%E7%A0%81"><span class="toc-text">2.生成字节码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%89%A7%E8%A1%8C%E4%BB%A3%E7%A0%81"><span class="toc-text">3.执行代码</span></a></li></ol></li></ol></li></ol></div></div><div class="post-content"><h2 id="12-栈空间和堆空间：数据是如何存储的？">12 | 栈空间和堆空间：数据是如何存储的？</h2>
+<blockquote>
+<p>这节讲解的是<strong>JavaScript的内存机制</strong>。<br>
+首先，我们知道JavaScript是弱类型动态语言。<br>
+接着，JavaScript的数据类型一共是八种:Boolean｜ String ｜ Number | Undefined | Null | BigInt | Symbol | Object<br>
+前七种为基本数据类型，他们存在栈中，后一种为引用数据类型，它存在堆中。</p>
+</blockquote>
+<h2 id="13-｜-垃圾回收：垃圾数据是如何自动回收的？">13 ｜ 垃圾回收：垃圾数据是如何自动回收的？</h2>
+<h3 id="不同语言的垃圾回收策略">不同语言的垃圾回收策略</h3>
+<blockquote>
+<ul>
+<li>通常情况下，垃圾回收分为手动回收和自动回收两种策略。</li>
+<li>手动垃圾回收：例如C++,何时分配内存、何时销毁是由代码控制的。</li>
+<li>自动垃圾回收：JavaScript、Java、Python等，产生的垃圾数据是由垃圾回收器释放的。</li>
+</ul>
+</blockquote>
+<h3 id="调用栈中的数据是如何回收的">调用栈中的数据是如何回收的</h3>
+<blockquote>
+<p>当一个函数执行完毕，JavaScript引擎会通过向下移动ESP(记录当前执行状态的指针)来销毁该函数保存在<strong>栈</strong>中的执行上下文。</p>
+</blockquote>
+<h3 id="堆中的数据是如何回收的">堆中的数据是如何回收的</h3>
+<blockquote>
+<p>要回收堆中的垃圾数据，就需要用到JavaScript中的垃圾回收器了。</p>
+</blockquote>
+<h3 id="代际假说">代际假说</h3>
+<blockquote>
+<p>代际假说(The Generaltional Hypothesis),是垃圾回收领域一个重要的术语，后续垃圾回收策略都是建立在该假说的基础上的。<br>
+特点一：大部分对象在内存中的时间很短，简单来说，很多对象一经分配内存，很快就变得不可访问。<br>
+特点二：不死的对象，会活的更久。</p>
+</blockquote>
+<h3 id="堆中区域">堆中区域</h3>
+<blockquote>
+<p>V8中会把堆分为<strong>新生代</strong>和<strong>老生代</strong>两个区域。新生代存放的是生存时间短的对象，老生代存放的是生存时间久的对象。<br>
+堆中的这两块区域，V8分别使用两个不同的垃圾回收器，以便高效的实施垃圾回收。<br>
+副垃圾回收器，主要负责新生代区域的垃圾回收。<br>
+主垃圾回收器，主要负责老生代区域的垃圾回收。</p>
+</blockquote>
+<h3 id="垃圾回收器工作流程">垃圾回收器工作流程</h3>
+<blockquote>
+<ol>
+<li>标记空间中的活动对象和不活动对象。</li>
+<li>回收非活动对象所占据的内存。</li>
+<li>内存整理(主垃圾回收器产生的内存碎片会导致出现不连续内存空间，所以需要整理)</li>
+</ol>
+</blockquote>
+<h3 id="副垃圾回收器">副垃圾回收器</h3>
+<blockquote>
+<ol>
+<li>负责新生代区域的垃圾回收</li>
+<li>大多数小的对象会分配至此。</li>
+<li>新生代用Scavenge算法处理–》一半对象区域，一半空闲区域。</li>
+<li>存活的对象放入对象区域，然后垃圾清理阶段，将对象区域中活跃对象复制至空闲区域，完成复制后，两个区域进行角色转换。</li>
+<li>经过两次垃圾回收依然还存活的对象，会被移到老生区中。</li>
+</ol>
+</blockquote>
+<h3 id="主垃圾回收器">主垃圾回收器</h3>
+<blockquote>
+<ol>
+<li>负责老生代区域的垃圾回收。</li>
+<li>除了新生区中移过来的对象，一些大对象会被直接分配到老生区</li>
+<li>老生区对象的特点:存活时间长，占用内存空间大。</li>
+<li>主垃圾回收器采用的是标记-清除的算法进行垃圾回收。</li>
+</ol>
+</blockquote>
+<h3 id="全停顿">全停顿</h3>
+<blockquote>
+<p>当执行垃圾回收算法的时候，JS脚本会暂停下来，这种行文叫做全停顿。<br>
+为了降低全停顿的卡顿影响，V8通过<strong>增量标记</strong>算法将完整的垃圾回收任务分为一个个小任务，并与JS脚本交替执行。</p>
+</blockquote>
+<h2 id="14-编译器和解释器：V8是如何执行一段JavaScript代码的？">14 | 编译器和解释器：V8是如何执行一段JavaScript代码的？</h2>
+<blockquote>
+<p>了解V8是如何执行一段JavaScript代码，可以让我们对babel、EsLint、Vue、React等其底层实现机制有一个更充分的认识。<br>
+首先，我们需要搞懂一些概念和原理：<strong>编译器(Compiler)</strong>、<strong>解释器(Interpreter)</strong>、<strong>抽象语法树(AST)</strong>、<strong>字节码(Bytecode)</strong>、**即时编译器(JIT)**等。</p>
+</blockquote>
+<h3 id="编译器和解释器">编译器和解释器</h3>
+<blockquote>
+<p>首先我们必须得知道编译型语言和解释型语言的区别。<br>
+编译型语言就是程序执行前，编辑器经过编译，成二进制文件，程序可直接运行二进制文件。如C/C++、Go<br>
+解释器语言是在运行时动态解释和执行。如JS、Python等。</p>
+</blockquote>
+<h4 id="编译器、解释器执行流程">编译器、解释器执行流程</h4>
+<blockquote>
+<p>编译型语言的编译过程：</p>
+<ol>
+<li>编译器对源代码进行词法分析、语法分析，生成抽象语法树(AST)</li>
+<li>优化代码，生成机器码、二进制文件。</li>
+<li>编译成功，生成可执行文件。编译失败抛出异常。<br>
+解释型语言解释过程：</li>
+<li>解释器对源代码进行词法分析、语法分析，生成抽象语法树(AST)</li>
+<li>基于抽象语法树生成字节码。</li>
+<li>根据字节码执行程序、输出结果。</li>
+</ol>
+</blockquote>
+<h3 id="V8是如何执行一段JavaScript代码的">V8是如何执行一段JavaScript代码的</h3>
+<blockquote>
+<p>V8执行过程中，既有解释器又有编译器。其执行流程为：</p>
+</blockquote>
+<h4 id="1-生成抽象语法树-AST-和执行上下文">1. 生成抽象语法树(AST)和执行上下文</h4>
+<blockquote>
+<p>将源代码转换成抽象语法树，并生成执行上下文。<br>
+过程就是这么个过程，但是抽象语法树的理解我们要展开。</p>
+<ol>
+<li>无论编译型语言还是解释型语言，都会将源代码生成AST。</li>
+<li>AST的结构与代码结构类似。<br>
+(Babel工作原理就是：ES6源码-&gt;ES6AST-&gt;ES5AST-&gt;ES5源码)</li>
+<li>生成ATS经过两个阶段：</li>
+</ol>
+<ul>
+<li>第一阶段是分词(词法分析),将一行行源码拆解成不可再分的最小当个字符或字符串token。</li>
+<li>第二阶段是解析(语法分析),将token根据语法规则生成AST</li>
+</ul>
+</blockquote>
+<h4 id="2-生成字节码">2.生成字节码</h4>
+<blockquote>
+<p>解释器登场，根据AST生成字节码、解释字节码。<br>
+一开始V8没有字节码，之前是直接生成机器码，这样的效率很高，但是很占内存，随着移动互联网的发展，为了解决内存占用过高问题，而引入了字节码,即字节码的内存占用要比机器码小很多。<br>
+字节码是介于AST和机器码之间的一种代码，它需要通过解释器将其转换为机器码后才能执行。</p>
+</blockquote>
+<h4 id="3-执行代码">3.执行代码</h4>
+<blockquote>
+<p>解释器除了生成字节码，还要解释字节码，后台编译器会把热点字节码编译成高效的机器码，这种字节码配合解释器和编译器的技术，就叫做即时编译(JIT).使用这种技术的除了V8还有Java和Python虚拟机等都使用了。</p>
+</blockquote>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>阶段三：V8工作原理</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2022-03-29</p><p><span>最后更新：</span>2022-03-29</p><p><span>原始链接：</span><a href="/A3阶段三：V8工作原理/">https://blog.liugezhou.online/A3%E9%98%B6%E6%AE%B5%E4%B8%89%EF%BC%9AV8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/A3%E9%98%B6%E6%AE%B5%E4%B8%89%EF%BC%9AV8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/浏览器工作原理"><i class="fa fa-tag">浏览器工作原理</i></a></div><div class="post-nav"><a class="pre" href="/026-%E5%BE%88%E7%88%BD%E7%9A%84Promise%E5%87%A0%E9%81%93console%E9%A2%98/">很爽的Promise几道console题</a><a class="next" href="/A2%E9%98%B6%E6%AE%B5%E4%BA%8C%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%ADJavaScript%E7%9A%84%E6%89%A7%E8%A1%8C%E6%9C%BA%E5%88%B6/">阶段二：浏览器中JavaScript的执行机制</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

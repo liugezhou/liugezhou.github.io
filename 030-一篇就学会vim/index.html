@@ -1,0 +1,1871 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="一篇就学会vim"><meta name="twitter:description" content="&lt;p&gt;&lt;img src=&quot;https://cdn.statically.io/gh/liugezhou/image@master/blog/blog-vim.webp&quot; alt=&quot;vim&quot;&gt;&lt;/p&gt;
+&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+&lt;p&gt;学会一个软技能，总结一篇文章就够了。&lt;br&gt;
+剩下要做的就是不停的练习，不停的尝试，本文是在学习&lt;a href=&quot;https://github.com/wsdjeg/Learn-Vim_zh_cn&quot;&gt;这个仓库&lt;/a&gt;之后的极简总结中。&lt;br&gt;
+主要作为一个备忘录使用。&lt;/p&gt;
+&lt;p&gt;长期更新。。。&lt;/p&gt;
+&lt;h2 id=&quot;一、Vim基础介绍&quot;&gt;一、Vim基础介绍&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;vim&lt;/code&gt;           看到一个介绍页面&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;i&lt;/code&gt;              进入编辑模式&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:&lt;/code&gt;              光标将移动到屏幕底部，在这里您可以输入命令&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Esc&lt;/code&gt;            切回普通模式&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:quit&lt;/code&gt;          退出编辑模式,简写为:q&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:write &lt;/code&gt;        保存模式，简写为:w&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:w f.md&lt;/code&gt;        如果是新建的一个没有名字的文件，以f为名字保存文件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:wq&lt;/code&gt;            保存退出&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:q!&lt;/code&gt;           不保存修改而强制退出&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:h&lt;/code&gt;            在冒号模式下，输入 :h quit 然后按Tab键就会自动打出命令。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:vim f1 f2&lt;/code&gt;    通过vim命令在不同的buffers中打开多个文件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;vim --version&lt;/code&gt;  '+‘表示支持的特性，’-'表示不支持的特性&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;vim +%s hello/liugezhou/g file &lt;/code&gt;  这条命令的意思是 打开file文件将文档中所有的hello改为liugezhou&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;vim -o2&lt;/code&gt;       水平打开n个窗口&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;vim -O2&lt;/code&gt;       垂直打开n个窗口&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Ctrl + z(:stop :suspend)&lt;/code&gt;      使用vim打开的文件进行挂起 输入fg恢复。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&quot;二、Buffers、Windows、Tabs&quot;&gt;二、Buffers、Windows、Tabs&lt;/h2&gt;
+&lt;p&gt;创建一个.vimrc,添加配置&lt;code&gt;set hidden&lt;/code&gt;（切换buffer且当前buffer没有保存，不会进行提示）&lt;/p&gt;
+&lt;h3 id=&quot;2-1-buffers&quot;&gt;2.1 buffers&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;vim file1.js file2.js,实际创建了两个buffers，执行完该命令后展示的是file1.js的buffers&lt;br&gt;
+运行:buffers命令可以查看所有的buffers,或者使用 &lt;code&gt;:ls&lt;/code&gt; OR &lt;code&gt;:files&lt;/code&gt;命令查看。&lt;/li&gt;
+&lt;li&gt;切换到下一个buffer &lt;code&gt;:bnext&lt;/code&gt; 、&lt;code&gt;:buffer fileName&lt;/code&gt;、&lt;code&gt;buffer n&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;切换到下一个buffer的快捷键:&lt;code&gt;Ctrl + I&lt;/code&gt;,切换到原来buffer的快捷键:&lt;code&gt;Ctrl + O&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;一旦buffer创建成功，即进入了buffers列表，这个时候想在buffers列表中删除某一个buffer，直接&lt;code&gt;:bdelete n&lt;/code&gt;即可&lt;/li&gt;
+&lt;li&gt;退出vim&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;关闭所有buffer &lt;code&gt;:qall&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;关闭所有buffer但是不保存 &lt;code&gt;qall!&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;关闭所有buffer且保存 &lt;code&gt;wqall&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;2-2-Windows&quot;&gt;2.2 Windows&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;vim file1.txt打开file1文件，有一个buffer，有一个窗口&lt;br&gt;
+此时在vim中使用&lt;code&gt;:split file2.txt&lt;/code&gt; 会看到此刻有两个窗口，两个buffer，file2.txt的窗口在上&lt;br&gt;
+如果想垂直打开file2窗口  &lt;code&gt;:vsplit file2.txt&lt;/code&gt;&lt;br&gt;
+如果想垂直打开一个新命名文件的窗口  :&lt;code&gt;vsplit filename&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;如果要在窗口直接导航&lt;br&gt;
+&lt;code&gt;Ctrl+ W  h&lt;/code&gt; 左移窗口&lt;br&gt;
+&lt;code&gt;Ctrl+ W  l&lt;/code&gt; 右移窗口&lt;br&gt;
+&lt;code&gt;Ctrl+ W  j&lt;/code&gt; 下移窗口&lt;br&gt;
+&lt;code&gt;Ctrl+ W  k&lt;/code&gt; 上移窗口&lt;/li&gt;
+&lt;li&gt;继续输入 &lt;code&gt;:split file3.txt&lt;/code&gt;,此时有三个窗口、三个buffer&lt;/li&gt;
+&lt;li&gt;如果想在显示file2.txt的窗口中显示file3.txt，只需要在当前buffer为2下输入&lt;code&gt;:buffer file3.txt&lt;/code&gt;即可&lt;/li&gt;
+&lt;li&gt;要关闭当前窗口  &lt;code&gt;Ctrl+W c&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;普通模式下关于窗口的命令：&lt;br&gt;
+&lt;code&gt;Ctrl + W c&lt;/code&gt; 打开一个垂直分割的窗口&lt;br&gt;
+&lt;code&gt;Ctrl + W s&lt;/code&gt; 打开一个水平分割的窗口&lt;br&gt;
+&lt;code&gt;Ctrl + W c&lt;/code&gt; 关闭当前所在窗口&lt;br&gt;
+&lt;code&gt;Ctrl + W o&lt;/code&gt; 除了当前窗口，关闭其它所有窗口&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;2-3-Tabs&quot;&gt;2.3 Tabs&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;vim &lt;a href=&quot;http://tabs.md&quot;&gt;tabs.md&lt;/a&gt;  这个时候打开一个新tab，使用命令 &lt;code&gt;:tabnew readme.md&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;切换下一个tab，使用命令 &lt;code&gt;:tabnext&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;关闭当前tab，使用命令&lt;code&gt;:tabclose&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;切换上一个tab，使用命令&lt;code&gt;:tabprevious&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;切换至最后一个tab，使用命令&lt;code&gt;:tablast&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;切换至第一个tab，使用命令&lt;code&gt;:tabfirst&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;如果想让vim启动时就包含多个tabs，可以使用命令 &lt;code&gt;vim -p file1.txt file2.txt&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&quot;三、打开和搜索文件&quot;&gt;三、打开和搜索文件&lt;/h2&gt;
+&lt;h3 id=&quot;3-1-打开和编辑文件&quot;&gt;3.1 打开和编辑文件&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;要在vim中打开一个文件，直接使用命令 &lt;code&gt;:edit newFile&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;edit接收通配符*，比如使用 &lt;code&gt;:edit *.md&lt;/code&gt;然后按tab键，就会依次显示md文件，还可以是&lt;code&gt;*/*.js&lt;/code&gt;这种格式&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:edit 路径URL&lt;/code&gt;也可以直接打开一个文件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;3-2-使用find命令搜索文件&quot;&gt;3.2 使用find命令搜索文件&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;比如：我试了一下&lt;code&gt;:find readme.md&lt;/code&gt;就直接跳转到那个文件了，但是这里只是找之前buffers中存在的&lt;/li&gt;
+&lt;li&gt;通过 find的命令会直接跳转到找到的那个文件，且在当前窗口打开&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;3-3-find和Path的区别&quot;&gt;3.3 find和Path的区别&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;:find&lt;/code&gt;命令根据path选项配置的路径去找文件&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;:edit&lt;/code&gt;命令则不会。&lt;br&gt;
+在我们开始牛逼的使用&lt;code&gt;find&lt;/code&gt;命令前，我们需要对&lt;code&gt;path&lt;/code&gt;到底是什么进行一个学习&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;:set path?&lt;/code&gt;这个命令，可以让我们看一下我们的path是什么，在当前这个文件(使用vim写)，输入此命令，显示内容为：&lt;code&gt;path=.,/usr/include,,&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;3-4-使用grep命令在文件中搜索&quot;&gt;3.4 使用grep命令在文件中搜索&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;内置grep&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;grep是指在文件内容进行内容的查找,  &lt;code&gt;:vim /pattern/ file&lt;/code&gt; pattern为正则表达式&lt;/li&gt;
+&lt;li&gt;搜索出来后默认显示出第一条匹配内容&lt;/li&gt;
+&lt;li&gt;查看所有搜索内容:&lt;code&gt;:copen&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;关闭窗口:&lt;code&gt;:cclose&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;跳到下一个列表: &lt;code&gt;cnext&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;跳到上一个列表： &lt;code&gt;cprevious&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;外置grep&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在命令行终端搜索&lt;/li&gt;
+&lt;li&gt;grep -R “搜索的内容”  fileUrl&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;用Netrw浏览文件&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Netrw是vim内置的文件浏览器、查看项目的目录结构时很有用。&lt;/li&gt;
+&lt;li&gt;要运行Netrw，需要在&lt;code&gt;.vimrc&lt;/code&gt;中配置&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight stata&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;set&lt;/span&gt; nocp&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;filetype &lt;span class=&quot;keyword&quot;&gt;plugin&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;on&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;这个时候 vim直接给一个地址就可以了&lt;/li&gt;
+&lt;li&gt;要从内部运行Netrw，则需要给&lt;code&gt;:edit&lt;/code&gt;一个目录地址&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;3-5-vim中文件内容搜索&quot;&gt;3.5 vim中文件内容搜索&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;normal模式(即Esc模式)&lt;/li&gt;
+&lt;li&gt;直接输入&lt;code&gt;/&lt;/code&gt;或者&lt;code&gt;?&lt;/code&gt;，然后输入要搜索的字符进行搜索&lt;/li&gt;
+&lt;li&gt;注意区别是:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;/&lt;/code&gt;是从光标处向下查找，这个时候输入&lt;code&gt;n&lt;/code&gt; 是继续查找下一个，输入&lt;code&gt;N&lt;/code&gt;是查找上一个&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;?&lt;/code&gt;是从光标处向上查找,这个时候输入&lt;code&gt;n&lt;/code&gt;是继续向上查找，输入&lt;code&gt;N&lt;/code&gt;是向下开始查找&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;彩蛋:item2的光标样式设置为&lt;code&gt;Profiles -&amp;gt; Colors -&amp;gt; Cursor colors -&amp;gt; Cursor&lt;/code&gt;进行设置&lt;br&gt;
+然后在vim搜索中还是不明显，这个时候将&lt;code&gt;Profiles -&amp;gt; Colors -&amp;gt; Cursor colors -&amp;gt;Cursor guide&lt;/code&gt;勾选上就好很多了。&lt;/p&gt;
+&lt;h2 id=&quot;四、Vim语法&quot;&gt;四、Vim语法&lt;/h2&gt;
+&lt;h3 id=&quot;4-1-⭐️-vim语言的语法规则-动词-名词&quot;&gt;4.1 ⭐️ vim语言的语法规则  动词 + 名词&lt;/h3&gt;
+&lt;p&gt;动词是动作&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;y&lt;/code&gt;  复制&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;p&lt;/code&gt;  粘贴到光标后&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;P&lt;/code&gt;  粘贴到光标前&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;d&lt;/code&gt;  删除文本&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;D&lt;/code&gt;  从光标处，删除改行的末尾&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;c&lt;/code&gt;  删除文本，与d不同的是–将删除的文本保存在寄存器中，从普通模式进入到插入模式&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;C&lt;/code&gt;  直接删除一行，并进入插入模式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;名词是位置&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;h&lt;/code&gt;  左&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;l&lt;/code&gt;  右&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;j&lt;/code&gt;  下&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;k&lt;/code&gt;  上&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;0&lt;/code&gt;  当前行的开始&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$&lt;/code&gt;  当前行的末尾&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;w&lt;/code&gt;  下一个单词的开头&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;#125;&lt;/code&gt;  跳转到下一个段落&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;4-2-结合&quot;&gt;4.2 结合&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;y$:复制当前位置到行尾的所有内容&lt;/li&gt;
+&lt;li&gt;dw:删除当前位置到下一个单词开头的内容&lt;/li&gt;
+&lt;li&gt;c}:修改当前位置到段落结尾的内容。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;4-3-更多名词&quot;&gt;4.3 更多名词&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;如何更快的把括号中内容删除：&lt;code&gt;I want say (hello vim)&lt;/code&gt;?&lt;/li&gt;
+&lt;li&gt;文本对象：小括号中、中括号、大括号、引号&lt;/li&gt;
+&lt;li&gt;文本对象可以被操作符operations使用，两类文本对象分别为：&lt;code&gt;i + object&lt;/code&gt;  &lt;code&gt;a + object&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;di(&lt;/code&gt; 删除&lt;code&gt;()&lt;/code&gt;内的内容&lt;/li&gt;
+&lt;li&gt;删除整个被&lt;code&gt;&amp;#123;&amp;#125;&lt;/code&gt;包裹的内容：&lt;code&gt;di&amp;#123;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;删除&lt;code&gt;hello&lt;/code&gt;这个单词：在&lt;code&gt;h&lt;/code&gt;这个字母上，使用命令：&lt;code&gt;diw&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight xml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;h1&lt;/span&gt;&amp;gt;&lt;/span&gt;Header1&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;h1&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;Paragraph1&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;Paragraph2&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;p&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol&gt;
+&lt;li&gt;若此时光标在Header1上&lt;/li&gt;
+&lt;li&gt;删除Header1这个单词：&lt;code&gt;dit&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;删除&lt;code&gt;&amp;lt;h1&amp;gt;Header1&amp;lt;/h1&amp;gt;&lt;/code&gt;:&lt;code&gt;dat&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;4-4-常用到的文本对象&quot;&gt;4.4 常用到的文本对象&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;w&lt;/code&gt;: 一个单词&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;p&lt;/code&gt;: 一个段落&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;s&lt;/code&gt;: 一个句子&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;(&lt;/code&gt;或者&lt;code&gt;)&lt;/code&gt;:指的是&lt;code&gt;()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;#123;&lt;/code&gt;或者&lt;code&gt;&amp;#125;&lt;/code&gt;:指的是&lt;code&gt;&amp;#123;&amp;#125;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;lt;&lt;/code&gt;或者&lt;code&gt;&amp;gt;&lt;/code&gt;:指的是一对&lt;code&gt;&amp;lt;&amp;gt;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;t&lt;/code&gt;: XML标签&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;4-5-针对性复习&quot;&gt;4.5 针对性复习&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;w&lt;/code&gt; or &lt;code&gt;W&lt;/code&gt;: 跳转到下一个单词&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;0&lt;/code&gt;: 跳转到本行的开始&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;$&lt;/code&gt;: 跳转到本行的行尾&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;&amp;#123;&lt;/code&gt;: 跳转到打开文件光标所在位置的段落最开始&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;&amp;#125;&lt;/code&gt;: 跳转到打开文件光标所在位置的段落最末尾&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;gg&lt;/code&gt;:跳转到打开文件的第一行文字开始位置&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;G&lt;/code&gt;: 跳转到打开文件的最后一行的开始位置&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;]]&lt;/code&gt;:同&lt;code&gt;G&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;[[&lt;/code&gt;:跳转到打开文件的第一行&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;nG&lt;/code&gt;: 跳转到第n行&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;nj&lt;/code&gt;: 光标处开始，向下n行&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;nk&lt;/code&gt;: 光标处开始，向上n行&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;d&lt;/code&gt;: 删除操作符&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;y&lt;/code&gt;: 复制操作符&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;c&lt;/code&gt;: 删除插入操作符&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;p&lt;/code&gt;: 粘贴到光标后操作符&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;gU&lt;/code&gt;: 小写变大写操作符&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;五、在文件中移动&quot;&gt;五、在文件中移动&lt;/h2&gt;
+&lt;h3 id=&quot;5-1-⭐️-字符导航&quot;&gt;5.1 ⭐️ 字符导航&lt;/h3&gt;
+&lt;p&gt;普通模式下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;hjkl&lt;/code&gt;: 字符导航&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;n + hjkl&lt;/code&gt;: 向左下上右移动n个行或者字符&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;0&lt;/code&gt;: 跳转到本行开始&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$&lt;/code&gt;: 跳转到本行结尾&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;^&lt;/code&gt;: 跳转到本行第一个非空字符 &lt;code&gt;g_&lt;/code&gt;跳转到本行最后一个非空字符串(&lt;code&gt;$&lt;/code&gt;的使用于&lt;code&gt;g_&lt;/code&gt;的区别，还是&lt;code&gt;$&lt;/code&gt;在使用中普遍)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;n|&lt;/code&gt;: 跳转到本行第n列&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fs&lt;/code&gt;: focusOn string 在本行内光标之后开始搜索，光标停留在字符&lt;code&gt;s&lt;/code&gt;上&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Fs&lt;/code&gt;: focusOn string 在本行内光标之前开始搜索，光标停留在字符&lt;code&gt;s&lt;/code&gt;上&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ts&lt;/code&gt; : focusOn string 在本行内光标之后开始搜索，光标停留在字符&lt;code&gt;s&lt;/code&gt;之前&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Ts&lt;/code&gt; : focusOn string 在本行内光标之前开始搜索，光标停留在字符&lt;code&gt;s&lt;/code&gt;之前
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;;&lt;/code&gt;: 表示继续 在本行向下搜索下一个&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;,&lt;/code&gt;: 表示继续 在本行向上搜索上一个&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;5-2-句子和段落导航&quot;&gt;5.2 句子和段落导航&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;句子定义：指以 &lt;code&gt;.?!&lt;/code&gt;这三个字符 跟着一个换行符或者空格、tab结尾的，就算一个句子。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;(&lt;/code&gt;跳到前一个句子&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;)&lt;/code&gt;跳到下一个句子&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;段落：可以从一个空行之后开始，也可以从段落选项中&lt;code&gt;字符对&lt;/code&gt;所指定的段落宏的每个集合开始。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;&amp;#123;&lt;/code&gt;跳到上一个段落&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;&amp;#125;&lt;/code&gt;跳到下一个段落&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;5-3-⭐️-行号导航&quot;&gt;5.3 ⭐️ 行号导航&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;nG&lt;/code&gt;:跳转到第n行&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;gg&lt;/code&gt;:跳转到第一行&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;G&lt;/code&gt;:跳转到最后一行&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;n%&lt;/code&gt;:跳转到文件的百分比&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ctrl + g&lt;/code&gt;:可以看到总行数以及当前所在行数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;5-4-窗格导航&quot;&gt;5.4 窗格导航&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;H&lt;/code&gt;:Head 跳转到屏幕的顶部&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;M&lt;/code&gt;:Middle 跳转到屏幕的中部&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;L&lt;/code&gt;:Line   跳转到屏幕的底部&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;nH&lt;/code&gt;:跳转到距离顶部n行的位置&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;nL&lt;/code&gt;:跳转到距离底部n行的位置&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;5-5-⭐️-屏幕滚动&quot;&gt;5.5 ⭐️ 屏幕滚动&lt;/h3&gt;
+&lt;p&gt;普通模式下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;ctrl + e&lt;/code&gt;:向下滚动一行-&amp;gt; e,中文一，就是向下一行&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;ctrl + y&lt;/code&gt;:向上滚动一行-&amp;gt; yu,骑驴的时候让驴听一下，回大喊一声yu，也就是退一步&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;ctrl + f&lt;/code&gt;:向下滚动一屏-&amp;gt; full screen&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;ctrl + b&lt;/code&gt;:向上滚动一屏-&amp;gt; back screen&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;ctrl + u&lt;/code&gt;:向上滚动半屏-&amp;gt;up,up半屏。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;ctrl + d&lt;/code&gt;:向下滚动半屏-&amp;gt; down，down半屏&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;5-6-当前行位置指定&quot;&gt;5.6 当前行位置指定&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;zt&lt;/code&gt;:将当前行 指定到窗格的顶部&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;zz&lt;/code&gt;:将当前行 指定到窗格的中间&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;zb&lt;/code&gt;:将当前行 指定搭配窗格的底部&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;5-7-位置标记-暂了解即可&quot;&gt;5.7 位置标记(暂了解即可)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ma&lt;/code&gt;:标记当前位置&lt;/li&gt;
+&lt;li&gt;``a`:回到标记的位置(行与列)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;'a&lt;/code&gt;:回到标记的行&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;5-8-跳转&quot;&gt;5.8 跳转&lt;/h3&gt;
+&lt;p&gt;在普通模式下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;nG&lt;/code&gt;:跳转到第n行&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/&lt;/code&gt;:向后搜索跳转&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;?&lt;/code&gt;:向前搜索跳转&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;n&lt;/code&gt; 重复上一次搜索，相同方向&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;N&lt;/code&gt; 重复上一次搜索，相反方向&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;%&lt;/code&gt; 查找匹配&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;(&lt;/code&gt; 跳转上一个句子&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;)&lt;/code&gt; 跳转下一个句子&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;#123;&lt;/code&gt; 跳转上一个段落&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;#125;&lt;/code&gt; 跳转下一个段落&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;L&lt;/code&gt; 跳转到当前屏幕的最后一行&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;M&lt;/code&gt; 跳转到当前屏幕的中间&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;H&lt;/code&gt; 跳转到当前屏幕的第一行&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;[[&lt;/code&gt; 跳转到上一个小节&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;]]&lt;/code&gt; 跳转到下一个小节&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;'a&lt;/code&gt;:跳转到标记的行&lt;/li&gt;
+&lt;li&gt;``a`:跳转到标记的行和列&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;六、输入模式&quot;&gt;六、输入模式&lt;/h2&gt;
+&lt;p&gt;这一节通过输入模式来提升输入效率。&lt;/p&gt;
+&lt;h3 id=&quot;6-1-⭐️-进入输入模式的方法&quot;&gt;6.1 ⭐️ 进入输入模式的方法&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;i&lt;/code&gt;:  从光标位置的前面开始输入内容&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;I&lt;/code&gt;:  从光标所在行的第一个非空字符开始输入内容&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;a&lt;/code&gt;:  与i是相对应的，从光标位置的后面开始输入内容&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;A&lt;/code&gt;:  与I是相对应的，从当前行的末尾非空文本后追加文本&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;o&lt;/code&gt;:  这个小o是非常的有用，在当前光标位置的下方自己给新起一行开始输入文本&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;O&lt;/code&gt;:  这个是与小o对应，在当前行的上一行开始新加一行并开始输入文本&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;s&lt;/code&gt;:  删除当前光标处字符，并开始输入内容&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;S&lt;/code&gt;:  删除光标所在当前行内容，并开始输入内容&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;6-2-退出输入模式的方法&quot;&gt;6.2 退出输入模式的方法&lt;/h3&gt;
+&lt;p&gt;除了Esc外，还可以直接使用&lt;code&gt;Ctrl + c&lt;/code&gt;的方式退出输入模式&lt;/p&gt;
+&lt;h3 id=&quot;6-3-删除模式&quot;&gt;6.3 删除模式&lt;/h3&gt;
+&lt;p&gt;输入过程出现错误的合理做法是切换到普通模式，使用d来删除错误&lt;/p&gt;
+&lt;p&gt;在输入模式中也是可以删除的:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Ctrl + h&lt;/code&gt;是删除一个字符&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ctrl + w&lt;/code&gt;是删除一个单词&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ctrl + u&lt;/code&gt;是删除一行&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;6-4-寄存器输入&quot;&gt;6.4 寄存器输入&lt;/h3&gt;
+&lt;p&gt;寄存器是说在a-z这个标识直接对一个单词在普通模式下进行保存操作&lt;code&gt;&amp;quot;ayiw&lt;/code&gt;，然后在输入模式中使用&lt;code&gt;ctrl + r a&lt;/code&gt;的方式进行保存&lt;br&gt;
+这里在使用寄存器输入之前先用好&lt;code&gt;y$&lt;/code&gt; &lt;code&gt;yw&lt;/code&gt;，结合p、P，再考虑使用寄存器。&lt;/p&gt;
+&lt;h3 id=&quot;6-5-输入模式下的翻页&quot;&gt;6.5 输入模式下的翻页&lt;/h3&gt;
+&lt;p&gt;输入模式下也是可以翻页的&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ctrl + x  ctrl + y&lt;/code&gt;: 向上滚动页面&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ctrl + x  ctrl + e&lt;/code&gt;: 向下滚动页面&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;6-6-⭐️-执行普通模式下的命令&quot;&gt;6.6 ⭐️ 执行普通模式下的命令&lt;/h3&gt;
+&lt;p&gt;在输入模式下，可以使用普通模式下的命令。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;输入模式下，键入&lt;code&gt;ctrl + o&lt;/code&gt;就进入了普通模式（左下角的模拟指示器显示 --insert–),这个时候就可以使用普通模式下的命令&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ctrl + o zz&lt;/code&gt; 剧中窗口显示光标所在位置&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ctrl + o H/M/L&lt;/code&gt;  光标跳转到窗口的顶部、中部、底部&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ctrl +o D&lt;/code&gt; 从光标处删除到行尾&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;七、点命令&quot;&gt;七、点命令&lt;/h2&gt;
+&lt;p&gt;使用点命令来重放上一个修改动作，点命令是最简单的命令，也是减少重复操作最有用的命令。&lt;/p&gt;
+&lt;h3 id=&quot;7-1-用法&quot;&gt;7.1 用法&lt;/h3&gt;
+&lt;p&gt;想把下面的代码中&lt;code&gt;let&lt;/code&gt;替换成&lt;code&gt;const&lt;/code&gt;&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;let&lt;/span&gt; one = &lt;span class=&quot;string&quot;&gt;&amp;#x27;1&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;let&lt;/span&gt; two = &lt;span class=&quot;string&quot;&gt;&amp;#x27;2&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;let&lt;/span&gt; three =&lt;span class=&quot;string&quot;&gt;&amp;#x27;3&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol&gt;
+&lt;li&gt;使用&lt;code&gt;/let&lt;/code&gt;进行匹配&lt;/li&gt;
+&lt;li&gt;使用&lt;code&gt;cwconst&amp;lt;esc&amp;gt;&lt;/code&gt; 将匹配到的第一个替换成了 &lt;code&gt;const&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;使用&lt;code&gt;n&lt;/code&gt;找到下一个匹配的位置&lt;/li&gt;
+&lt;li&gt;使用&lt;code&gt;.&lt;/code&gt;命令，重复之前的匹配的操作&lt;/li&gt;
+&lt;li&gt;持续 &lt;code&gt;n.n.&lt;/code&gt;将每一个词进行替换&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;7-2-怎么算是修改操作&quot;&gt;7.2 怎么算是修改操作&lt;/h3&gt;
+&lt;p&gt;使用普通模式下的命令来更新(添加、修改、删除)当前缓冲区内容时，就是执行一个修改操作。&lt;/p&gt;
+&lt;figure class=&quot;highlight applescript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;first&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;second&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;third&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;删除从开始到第一个逗号出现的位置：&lt;code&gt;df,&lt;/code&gt;使用&lt;code&gt;.&lt;/code&gt;重复两次直到整个句子删除。&lt;/p&gt;
+&lt;p&gt;将下面中的逗号删除，不删除文本&lt;/p&gt;
+&lt;figure class=&quot;highlight actionscript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;liugezhou,&lt;span class=&quot;keyword&quot;&gt;is&lt;/span&gt;,a,Cool,boy&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;根据&lt;code&gt;5.1&lt;/code&gt;我们知道&lt;code&gt;fs&lt;/code&gt;命令是搜索到字符&lt;code&gt;s&lt;/code&gt;所在的位置，因此这里只删除&lt;code&gt;,&lt;/code&gt;的操作，我们使用：&lt;code&gt;f,x;.;.&lt;/code&gt;的方式&lt;br&gt;
+之所以加&lt;code&gt;;&lt;/code&gt;是因为在vim中，操作是不包括移动的，这里是使用&lt;code&gt;;&lt;/code&gt;移动到下一个目标点，执行删除操作。&lt;/p&gt;
+&lt;p&gt;再看一个例子&lt;/p&gt;
+&lt;figure class=&quot;highlight applescript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;my&lt;/span&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;name&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;is&lt;/span&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;liugezhou&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;目的是要在每一行结尾加上逗号：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;首先根据&lt;code&gt;6.1&lt;/code&gt;我们知道&lt;code&gt;A&lt;/code&gt;是在当前行结尾追加内容&lt;/li&gt;
+&lt;li&gt;然后根据vim中的点操作不包括移动，我们这样：&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;A, &amp;lt;ESC&amp;gt; j .&amp;lt;ESC&amp;gt; j .&amp;lt;ESC&amp;gt; j .&lt;/code&gt;&lt;br&gt;
+从按下命令A开始，到退出模式之间的所有输入都算是一整个修改操作。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;7-3-重复多行修改操作&quot;&gt;7.3 重复多行修改操作&lt;/h3&gt;
+&lt;figure class=&quot;highlight basic&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;symbol&quot;&gt;1 &lt;/span&gt; Hello World!&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;symbol&quot;&gt;2 &lt;/span&gt;Hello World!&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;symbol&quot;&gt;3 &lt;/span&gt;Hello World!&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;symbol&quot;&gt;4 &lt;/span&gt;Hello World!&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;symbol&quot;&gt;5 &lt;/span&gt;Hello World!&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;symbol&quot;&gt;6 &lt;/span&gt;Hello World!&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;symbol&quot;&gt;7 &lt;/span&gt;Hello World!&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;有7行数据，要删除的是除了第5行。我们这里使用简单的删除方法：先删除前四行，再删除第6、7行。&lt;br&gt;
+命令位：&lt;code&gt;d4jjd2j&lt;/code&gt;&lt;br&gt;
+解析：其中&lt;code&gt;d&lt;/code&gt;为操作删除，&lt;code&gt;4j&lt;/code&gt;类比于&lt;code&gt;5.3节&lt;/code&gt;的&lt;code&gt;nG&lt;/code&gt;,即要删除的范围为：当前光标处下移动4行。&lt;code&gt;j&lt;/code&gt;表示下。&lt;/p&gt;
+&lt;p&gt;点命令非常简单且功能强大，这里先记录这三个。&lt;/p&gt;
+&lt;h2 id=&quot;八、寄存器&quot;&gt;八、寄存器&lt;/h2&gt;
+&lt;h3 id=&quot;8-1-10种寄存器类型&quot;&gt;8.1 10种寄存器类型&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;匿名寄存器(&lt;code&gt;&amp;quot;&amp;quot;&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;编号寄存器(&lt;code&gt;&amp;quot;0-9&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;小删除寄存器(&lt;code&gt;&amp;quot;-&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;命名寄存器(&lt;code&gt;&amp;quot;a-z&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;只读寄存器(&lt;code&gt;:&lt;/code&gt;,&lt;code&gt;:.&lt;/code&gt;,&lt;code&gt;&amp;quot;%&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;Buffer交替文件寄存器(&lt;code&gt;&amp;quot;#&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;表达式寄存器(&lt;code&gt;&amp;quot;=&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;选取和拖放寄存器(&lt;code&gt;&amp;quot;*&lt;/code&gt;,&lt;code&gt;&amp;quot;+&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;黑洞寄存器(&lt;code&gt;&amp;quot;_&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;探索模式寄存器(&lt;code&gt;&amp;quot;/&lt;/code&gt;)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;8-2-寄存器命令&quot;&gt;8.2 寄存器命令&lt;/h3&gt;
+&lt;p&gt;从存值和取值两个方面了解哪些命令与寄存器有关。&lt;/p&gt;
+&lt;p&gt;存值到寄存器中的操作：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;y&lt;/code&gt;: 复制&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;c&lt;/code&gt;: 删除并进入插入模式 [需要跟名词]&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;d&lt;/code&gt;: 删除 [需要跟名词]&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;s&lt;/code&gt;: 直接删除光标处字符并进入插入模式&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;S&lt;/code&gt;: 直接删除光标所在行内容并进入插入模式&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;x&lt;/code&gt;: 直接删除处于光标处字符，与&lt;code&gt;s&lt;/code&gt;不同为仍然处于普通模式&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;x&lt;/code&gt;: 直接删除处于光标处上一个字符，且仍然处于普通模式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;从寄存器中取出文本操作&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;p&lt;/code&gt;:在光标位置之后粘贴文本&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;P&lt;/code&gt;:在光标位置之前粘贴文本&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;p&lt;/code&gt;和&lt;code&gt;P&lt;/code&gt;都可以接受计数和一个寄存器标志作为参数。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;10p&lt;/code&gt;表示：当前光标之后，将上一次存值到寄存器中的内容，复制100遍。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;10&amp;quot;ap&lt;/code&gt;表示：将寄存器&lt;code&gt;a&lt;/code&gt;中的文本粘贴10次。(关于寄存器&lt;code&gt;a&lt;/code&gt;是寄存标志，8.4内容介绍)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;8-3-在输入模式中使用寄存器&quot;&gt;8.3 在输入模式中使用寄存器&lt;/h3&gt;
+&lt;p&gt;输入模式下使用寄存器的命令为：&lt;br&gt;
+&lt;code&gt;ctrl + r a&lt;/code&gt;&lt;br&gt;
+这里的&lt;code&gt;a&lt;/code&gt;是指寄存器的标志(关于标签a如何添加，下面内容介绍)。&lt;/p&gt;
+&lt;h3 id=&quot;8-4-⭐️-不同类型寄存器标志说明&quot;&gt;8.4 ⭐️ 不同类型寄存器标志说明&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;1.匿名寄存器&amp;quot;&amp;quot;&lt;/strong&gt;&lt;br&gt;
+说明：匿名寄存器存储的是最近的一次复制、修改或者删除的文本，和电脑上的粘贴功能一个意思。&lt;br&gt;
+语法：&lt;code&gt;p&lt;/code&gt; || &lt;code&gt;P&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2.编号寄存器(&amp;quot;0-9)&lt;/strong&gt;&lt;br&gt;
+说明：编号寄存器自动以升序进行填充，按0-9分为复制寄存器(0)和其他编号寄存器(1-9)&lt;/p&gt;
+&lt;p&gt;复制寄存器(0):是指若是复制操作(&lt;code&gt;yy&lt;/code&gt;复制一行)，Vim会将文本存放在两个寄存器中-&amp;gt;匿名寄存器&lt;code&gt;p&lt;/code&gt;和复制寄存器&lt;code&gt;0&lt;/code&gt;中去，这里的操作只能是复制，删除不管用，好处是最新复制的内容一直会在复制寄存器中。&lt;br&gt;
+语法：普通模式下-&amp;gt;&lt;code&gt;&amp;quot;0p&lt;/code&gt;,插入模式下-&amp;gt;&lt;code&gt;ctrl + r 0&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;编号寄存器(1-9):当修改或者删除至少一整行的文本时，这部分文本会按时间顺序被存储在1-9号编号寄存器中(编号越小，距离时间越近)。&lt;br&gt;
+语法：普通模式下-&amp;gt;&lt;code&gt;&amp;quot;np&lt;/code&gt;,插入模式下-&amp;gt;&lt;code&gt;ctrl + r n&lt;/code&gt;&lt;br&gt;
+注意：小型的单词删除(&lt;code&gt;dw&lt;/code&gt;OR&lt;code&gt;vw&lt;/code&gt;)不会被储存在编号寄存器中，会被储存在小删除寄存器中&lt;code&gt;&amp;quot;-&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;3.小删除寄存器(&amp;quot;-)&lt;/strong&gt;&lt;br&gt;
+说明：不足一行的修改或者删除都不会被存储到0-9的编号寄存器中去，而是会被存储在小删除寄存器(&lt;code&gt;&amp;quot;-&lt;/code&gt;)中去。&lt;br&gt;
+语法：普通模式下-&amp;gt;&lt;code&gt;&amp;quot;-p&lt;/code&gt;,插入模式下-&amp;gt;&lt;code&gt;ctrl + r -&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;4.命名寄存器(&amp;quot;a-z)&lt;/strong&gt;&lt;br&gt;
+说明：命名寄存器是Vim中用法最丰富的寄存器。a-z命名寄存器可以存储复制、修改和删除的文本。&lt;br&gt;
+语法:&lt;code&gt;&amp;quot;ayiw&lt;/code&gt; 表示复制一个单词，且存储在寄存器中以&lt;code&gt;a&lt;/code&gt;命名。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;5.只读寄存器(&lt;code&gt;&amp;quot;:&lt;/code&gt;,&lt;code&gt;&amp;quot;.&lt;/code&gt;,&lt;code&gt;&amp;quot;%&lt;/code&gt;)&lt;/strong&gt;&lt;br&gt;
+说明：vim只要三个只读寄存器，&lt;code&gt;.&lt;/code&gt;存储上一个输入的文本，&lt;code&gt;:&lt;/code&gt;存储上一次执行的命令，&lt;code&gt;%&lt;/code&gt;存储当前文件的文件名&lt;br&gt;
+举例：在vim中处于插入模式下，想看本文件目录：&lt;code&gt;ctrl + r %&lt;/code&gt;，直接打出文件名字。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;6.buffer交替文件寄存器(&lt;code&gt;&amp;quot;#&lt;/code&gt;)&lt;/strong&gt;&lt;br&gt;
+说明：vim中，&lt;code&gt;#&lt;/code&gt;通常代表交替文件，交替文件是上一个打开的文件，使用命令&lt;code&gt;&amp;quot;#p&lt;/code&gt;,  只是打印出文件名，貌似没有什么大用。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;7.表达寄存器(&lt;code&gt;&amp;quot;=&lt;/code&gt;)&lt;/strong&gt;&lt;br&gt;
+说明：Vim有一个表达式寄存器，&lt;code&gt;&amp;quot;=&lt;/code&gt;用于计算表达式的结果。&lt;br&gt;
+语法：普通模式下-&amp;gt; &lt;code&gt;&amp;quot;=100+100 Enter p&lt;/code&gt;,插入模式下-&amp;gt;&lt;code&gt;ctrl + r =100+100 enter&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;扩展：可以使用表达寄存器方法结合&lt;code&gt;@&lt;/code&gt;符号从其他寄存器中直接拿出值-&amp;gt;&lt;code&gt;ctrl + r =@a&lt;/code&gt; OR &lt;code&gt;ctrl + r =@1&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;8.选取和拖放寄存器(&lt;code&gt;&amp;quot;*,&amp;quot;+&lt;/code&gt;)&lt;/strong&gt;&lt;br&gt;
+可以用&lt;code&gt;&amp;quot;*&lt;/code&gt;和&lt;code&gt;&amp;quot;+&lt;/code&gt;来访问从外部程序中复制的文本。&lt;br&gt;
+语法：当在外部复制了一段文本后,要在vim中复制文本，普通模式下-&amp;gt;&lt;code&gt;&amp;quot;*p&lt;/code&gt; | &lt;code&gt;&amp;quot;+p&lt;/code&gt;,在插入模式下-&amp;gt; &lt;code&gt;ctrl + r *&lt;/code&gt; | &lt;code&gt;ctrl + r *&lt;/code&gt;&lt;br&gt;
+反向:在vim文件内，普通模式下复制一行代码-&amp;gt;&lt;code&gt;&amp;quot;*yy&lt;/code&gt;,这个时候在外部直接粘贴即可。&lt;/p&gt;
+&lt;p&gt;扩展:为了vim仅使用&lt;code&gt;p&lt;/code&gt;就能从外部粘贴文本，可以在&lt;code&gt;vimrc&lt;/code&gt;配置文件中-&amp;gt;&lt;code&gt;set clipboard=unnamed&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;9.黑洞寄存器(&lt;code&gt;&amp;quot;_&lt;/code&gt;)&lt;/strong&gt;&lt;br&gt;
+说明:每次修改或者删除文本时，默认会存入到寄存器中，如果不想存，就可以使用黑洞寄存器。&lt;br&gt;
+语法: &lt;code&gt;&amp;quot;_dd&lt;/code&gt; 删除一行且不放入到寄存器中去。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;10.探索模式寄存器(&lt;code&gt;&amp;quot;/&lt;/code&gt;)&lt;/strong&gt;&lt;br&gt;
+说明: 之前使用了&lt;code&gt;?&lt;/code&gt;或者&lt;code&gt;/&lt;/code&gt;进行了搜索，这个搜索文本可以通过 &lt;code&gt;&amp;quot;/p&lt;/code&gt;的方式快速打印。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;查看所有的寄存器&lt;/strong&gt;&lt;br&gt;
+语法：使用&lt;code&gt;:register&lt;/code&gt;的方式查看所有寄存器,可跟参数，比如&lt;code&gt;:register a 1 -&lt;/code&gt;&lt;br&gt;
+扩展：使用寄存器插件&lt;code&gt;vim-peekaboo&lt;/code&gt;可查看所有寄存器内容(且分类的)，普通模式下直接输入&lt;code&gt;&amp;quot;&lt;/code&gt;或者&lt;code&gt;@&lt;/code&gt;即可，插入模式下&lt;code&gt;ctrl + r&lt;/code&gt;即可。&lt;/p&gt;
+&lt;p&gt;tips:到这里的时候，根据这篇文章先去安装了vim的包管理器&lt;a href=&quot;https://www.cnblogs.com/zhaodehua/articles/15108744.html&quot;&gt;Vim-plug&lt;/a&gt;&lt;br&gt;
+并安装了插件&lt;code&gt;preservim/NERDTree&lt;/code&gt;(图形界面),以及&lt;code&gt;junegunn/vim-peekaboo&lt;/code&gt;插件。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;清除寄存器&lt;/strong&gt;&lt;br&gt;
+从技术上来说没必要清理寄存器，但是通过&lt;code&gt;:register&lt;/code&gt;或者插件看到的寄存器可能就是不得劲。&lt;br&gt;
+这里记录一个清除寄存器的命令:&lt;code&gt;:let @1 =''&lt;/code&gt;-&amp;gt;将编号寄存器0清除。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;获取寄存器中的内容&lt;/strong&gt;&lt;br&gt;
+语法：使用&lt;code&gt;:put a&lt;/code&gt;打印出寄存器&lt;code&gt;a&lt;/code&gt;的内容。&lt;br&gt;
+&lt;code&gt;:put&lt;/code&gt;与&lt;code&gt;ap&lt;/code&gt;的区别在于，前者是新起一行插入寄存器内容，后者在光标位置之后插入。&lt;/p&gt;
+&lt;h2 id=&quot;九、宏命令&quot;&gt;九、宏命令&lt;/h2&gt;
+&lt;p&gt;背景：编辑文件的时候，有时候我们会反复的做一些相同动作，通过vim的宏命令，可以将一些动作记录到Vim寄存器。&lt;/p&gt;
+&lt;h3 id=&quot;9-1-基本宏命令&quot;&gt;9.1 基本宏命令&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;基本语法:&lt;code&gt;qa&lt;/code&gt;:开始记录动作到寄存器a， &lt;code&gt;q&lt;/code&gt;: 停止记录&lt;/li&gt;
+&lt;li&gt;注意：使用小写字母a-z去存储宏命令，通过&lt;code&gt;@a&lt;/code&gt;命令去调用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Practice：有以下文本，需要将每一行的字母变成大写&lt;/p&gt;
+&lt;figure class=&quot;highlight applescript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;my&lt;/span&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;name&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;is&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;liugezhou&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;普通模式下:&lt;code&gt;qa0gU$jq&lt;/code&gt;&lt;br&gt;
+命令分解：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;qa&lt;/code&gt;: 开始记录一个宏定义并存储在a寄存器中&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;0&lt;/code&gt;: 移动到改首&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;gU$&lt;/code&gt;:从光标处到行尾字母变成大写&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;j&lt;/code&gt;:向下移动一行&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;q&lt;/code&gt;: 停止记录&lt;/li&gt;
+&lt;li&gt;最后通过&lt;code&gt;@a&lt;/code&gt;去执行改宏命令，&lt;code&gt;3@a&lt;/code&gt;会执行三次宏命令。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;9-2-增添、修改、拷贝宏&quot;&gt;9.2 增添、修改、拷贝宏&lt;/h3&gt;
+&lt;p&gt;在普通模式下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;增添一个宏：&lt;code&gt;: let @a ='something'&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;修改一个宏：&lt;code&gt;: let @a ='输入新的'&lt;/code&gt; 即可。&lt;/li&gt;
+&lt;li&gt;拷贝一个宏：&lt;code&gt;: let @z = @a&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;十、撤销&quot;&gt;十、撤销&lt;/h2&gt;
+&lt;p&gt;撤销是一个基本功能，本节记录撤销、取消撤销、浏览撤销分支、反复撤销、浏览改动时间线。&lt;/p&gt;
+&lt;h3 id=&quot;10-1-撤销-undo-重做和行撤销-UNDO&quot;&gt;10.1 撤销(undo),重做和行撤销(UNDO)&lt;/h3&gt;
+&lt;p&gt;在每次进入插入模式和退出模式之间的任何修改都被定义为一次修改。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;基本撤销:&lt;code&gt;u&lt;/code&gt; (undo),可以连续执行。&lt;/li&gt;
+&lt;li&gt;撤销基本撤销: &lt;code&gt;ctrl + r&lt;/code&gt;，可以连续执行。&lt;/li&gt;
+&lt;li&gt;跳过中间修改:&lt;code&gt;U&lt;/code&gt;(使用较少)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;tips:在.vimrc中设置 &lt;code&gt;set undolevels =500 &lt;/code&gt;可以执行500次的undo操作&lt;/p&gt;
+&lt;h3 id=&quot;10-2-断点插入操作&quot;&gt;10.2 断点插入操作&lt;/h3&gt;
+&lt;p&gt;上面的撤销是从插入模式到退出模式作为一次修改，而我们在输入模式中，由于输入大量文本，也有撤销的要求，也就是在输入模式下记录一下撤销点。&lt;br&gt;
+插入模式下，当执行完一个操作后，键入&lt;code&gt;ctrl + g u&lt;/code&gt;，这个时候就记录了一个断点。&lt;/p&gt;
+&lt;h3 id=&quot;10-3-撤销树&quot;&gt;10.3 撤销树&lt;/h3&gt;
+&lt;p&gt;语法:&lt;code&gt;g+&lt;/code&gt; &lt;code&gt;g-&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id=&quot;10-4-保存撤销记录&quot;&gt;10.4 保存撤销记录&lt;/h3&gt;
+&lt;p&gt;操作步骤&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;新建一个空的test.md文件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;i&lt;/code&gt; 输入&amp;quot;one&amp;quot;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ctrl + g u&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;回车，继续输入&amp;quot;two&amp;quot;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ctrl + g u&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;回车，继续输入&amp;quot;three&amp;quot;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;esc&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;: wundo test.undo&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;退出vim&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;再次打开test.md的时候，我们执行&lt;code&gt;u&lt;/code&gt;命令发现，下方提示：&lt;code&gt;Already at oldest change&lt;/code&gt;,即不能撤销。&lt;br&gt;
+这个时候执行&lt;code&gt;:rundo test.undo&lt;/code&gt;,在执行&lt;code&gt;u&lt;/code&gt;命令就可以撤销了。&lt;/p&gt;
+&lt;p&gt;语法：&lt;code&gt;:wundo file.undo&lt;/code&gt; 、&lt;code&gt;:rundo file.undo&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;tips:真正开发的时候，应该没人去自己创建一个undo的文件，我们为了默认每次进入文件后都是可以执行&lt;code&gt;u&lt;/code&gt;的，可以在&lt;code&gt;~/.vim&lt;/code&gt;目录下新建一个默认目录&lt;code&gt;undo_dir&lt;/code&gt;，然后在&lt;code&gt;.vimrc&lt;/code&gt;文件中设置&lt;/p&gt;
+&lt;figure class=&quot;highlight routeros&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;undodir&lt;/span&gt;=~/.vim/undo_dir&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;set&lt;/span&gt; undofile&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;这个时候，无论何时保存，Vim都会自动创建和保存撤销的历史记录。&lt;/p&gt;
+&lt;h3 id=&quot;10-5-时间旅行&quot;&gt;10.5 时间旅行&lt;/h3&gt;
+&lt;p&gt;时间旅行真的是太Cool了。&lt;br&gt;
+打开一个文件，如果你想看之前某个时刻的显示：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;:earlier 10s&lt;/code&gt; 恢复到10秒之前的状态&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:earlier 10m&lt;/code&gt; 恢复到10分钟之前的状态&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:earlier 10h&lt;/code&gt; 恢复到10小时之前的状态&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:earlier 10d&lt;/code&gt; 恢复到10天前的状态&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:earlier 2&lt;/code&gt; 恢复到2次修改前的状态&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:earlier 2f&lt;/code&gt; 恢复到2次保存前的状态&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;:earlier&lt;/code&gt;对应的版本&lt;code&gt;:later&lt;/code&gt;,语法同上。&lt;/p&gt;
+&lt;h2 id=&quot;十一、可视化模式&quot;&gt;十一、可视化模式&lt;/h2&gt;
+&lt;h3 id=&quot;11-1-三种可视化模式&quot;&gt;11.1 三种可视化模式&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;v&lt;/code&gt;: 逐字可视化模式&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;V&lt;/code&gt;: 逐行可视化模式&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ctrl + v&lt;/code&gt;:逐块可视化模式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;可在三种模式下切换，切合&lt;code&gt;hjkl&lt;/code&gt;体验效果。&lt;/p&gt;
+&lt;h3 id=&quot;11-2-可视模式导航&quot;&gt;11.2 可视模式导航&lt;/h3&gt;
+&lt;p&gt;可视化导航指的是，在向某一个方向进行可视化的时候，这个时候有向相反方向进行可视化的需求，这个时候使用&lt;code&gt;o&lt;/code&gt;来切换光标位置。&lt;/p&gt;
+&lt;h3 id=&quot;11-3-可视模式语法&quot;&gt;11.3 可视模式语法&lt;/h3&gt;
+&lt;p&gt;使用三种模式的一种，将某一段文本、代码为可视化后，按&lt;code&gt;d&lt;/code&gt;直接将其删除。&lt;br&gt;
+与普通模式语法规则不同的是，(动词 + 名词)的不适用于可视模式，可适模式下没有名词。&lt;/p&gt;
+&lt;h2 id=&quot;十二、搜索和替换&quot;&gt;十二、搜索和替换&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;智能区分大小写&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;设置搜索不区分大小写-&amp;gt;.vimrc-&amp;gt;set ignorecase&lt;/li&gt;
+&lt;li&gt;设置全小写不区分大小写，有一个大写字母就区分-&amp;gt;.vimrc-&amp;gt; set ignorecase smartcase&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;一行中的第一个字符和最后一个字符&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;使用&lt;code&gt;^&lt;/code&gt;匹配行中的第一个字符，&lt;code&gt;$&lt;/code&gt;匹配最后一个字符&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;重复搜索｜候选词搜索&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;//&lt;/code&gt;重复上一个搜索/&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/up|down&lt;/code&gt;:遍历搜索历史&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:history /&lt;/code&gt;:查看所有历史记录&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/s1\|s2&lt;/code&gt;:同时搜索字符s1和s2，重点是转义符&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;\vs1|s2&lt;/code&gt;: 同上使用&lt;code&gt;\v&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;4&quot;&gt;
+&lt;li&gt;
+&lt;p&gt;搜索字符组&lt;br&gt;
+与正则表达式相通：\v[^0-9a-zA-Z]{m,n}&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;基本替换:&lt;br&gt;
+将good单词替换为awesome：&lt;code&gt;:s/good/awesome&lt;/code&gt;&lt;br&gt;
+全局将good单词替换为awesome：&lt;code&gt;:s/good/awesome/g&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&quot;十三、全局命令&quot;&gt;十三、全局命令&lt;/h2&gt;
+&lt;h3 id=&quot;13-1-全局命令概述&quot;&gt;13.1 全局命令概述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;:h ex-cmd-index&lt;/code&gt;查看完整列表&lt;/li&gt;
+&lt;li&gt;全局命令语法:&lt;code&gt;:g/pattern/command&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;举例：&lt;/p&gt;
+&lt;figure class=&quot;highlight stata&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;one&lt;/span&gt; = 1;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;console.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;one: &amp;quot;&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;one&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;two&lt;/span&gt; = 2;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;console.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;two: &amp;quot;&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;two&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;要删除所有包含&lt;code&gt;console&lt;/code&gt;的行，可以运行 &lt;code&gt;:g/console/d&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id=&quot;13-2-逆向匹配&quot;&gt;13.2 逆向匹配&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;:v/console/d&lt;/code&gt;:它将删除所有不包含&lt;code&gt;console&lt;/code&gt;的行。&lt;/p&gt;
+&lt;h2 id=&quot;十四、外部命令&quot;&gt;十四、外部命令&lt;/h2&gt;
+&lt;h3 id=&quot;14-1-读取外部文件&quot;&gt;14.1 读取外部文件&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;:r&lt;/code&gt;是Vim的读命令，如果不带&lt;code&gt;!&lt;/code&gt;使用它，则可以使用它来获取文件内容，若当前目录有文件 &lt;code&gt;test.md&lt;/code&gt; , 运行 &lt;code&gt;:r test.md&lt;/code&gt;. Vim就会将test.md的内容放入到当前缓冲区。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:r !ls&lt;/code&gt;,语法结构为 &lt;code&gt;:r&lt;/code&gt; + &lt;code&gt;!&lt;/code&gt; + &lt;code&gt;外部命令&lt;/code&gt;，该命令的输出将插入到当前缓冲区。eg &lt;code&gt;:r !ls&lt;/code&gt; ,这个命令会将当前目录下执行ls列出的文件列表，插入到当前编辑的文件中。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:r !ctrl -s 'url'&lt;/code&gt;:这个命令会将接口url返回的内容插入到当前编辑的文件中。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;14-2-将缓冲区内容写入外部命令&quot;&gt;14.2 将缓冲区内容写入外部命令&lt;/h3&gt;
+&lt;figure class=&quot;highlight arcade&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;liugezhou&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;vim&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;当上面内容在缓冲区内时，在普通模式下，执行&lt;code&gt;:w !node&lt;/code&gt;，Vim将使用node执行JavaScript表达式来打印出&lt;code&gt;liugezhou&lt;/code&gt;和&lt;code&gt;vim&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id=&quot;14-3-执行外部命令&quot;&gt;14.3 执行外部命令&lt;/h3&gt;
+&lt;p&gt;可以在不离开Vim的情况下运行任何外部命令。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;语法：&lt;code&gt;:!cmd&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:!ls -ls&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:kill -9 3466&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;十五、命令行模式&quot;&gt;十五、命令行模式&lt;/h2&gt;
+&lt;p&gt;切记本章内容是在命令行模式下。&lt;/p&gt;
+&lt;h3 id=&quot;15-1-进入和退出命令行模式&quot;&gt;15.1 进入和退出命令行模式&lt;/h3&gt;
+&lt;p&gt;进入命令行模式：&lt;code&gt;/&lt;/code&gt;、&lt;code&gt;?&lt;/code&gt;、&lt;code&gt;:&lt;/code&gt;、&lt;code&gt;!&lt;/code&gt;&lt;br&gt;
+离开命令行模式:&lt;code&gt;ESC&lt;/code&gt;、&lt;code&gt;ctrl + c&lt;/code&gt;、 &lt;code&gt;ctrl + [&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id=&quot;15-2-命令行模式快捷键&quot;&gt;15.2 命令行模式快捷键&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;如果要移动一个单词：&lt;code&gt;shift + left&lt;/code&gt;、&lt;code&gt;shift + right&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;如果要移动到该行开始:&lt;code&gt;ctrl + b&lt;/code&gt;,移动到该行结尾:&lt;code&gt;ctrl + e&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;删除字符:&lt;code&gt;ctrl + h&lt;/code&gt;(删除一个字符),&lt;code&gt;ctrl + w&lt;/code&gt; 删除一个单词, &lt;code&gt;ctrl + u&lt;/code&gt;删除一行  、&lt;/li&gt;
+&lt;li&gt;编辑文件一样编辑命令 &lt;code&gt;ctrl + f&lt;/code&gt;,比如使用&lt;code&gt;/&lt;/code&gt;或者&lt;code&gt;?&lt;/code&gt;进入命令行模式后，键入&lt;code&gt;ctrl + f&lt;/code&gt; 可以查看历史记录以及编辑新的内容，&lt;code&gt;:&lt;/code&gt;和&lt;code&gt;!&lt;/code&gt;同理,按下&lt;code&gt;enter&lt;/code&gt;执行。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;15-3-寄存器和自动补全&quot;&gt;15.3 寄存器和自动补全&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;在命令行模式下，可以像插入模式那样使用 &lt;code&gt;ctrl + r&lt;/code&gt;从Vim寄存器中插入文本。&lt;/li&gt;
+&lt;li&gt;命令行模式下，&lt;code&gt;ctrl + r ctrl + w&lt;/code&gt; 获取当前光标下的字母&lt;/li&gt;
+&lt;li&gt;命令行模式下，&lt;code&gt;ctrl + r ctrl + A&lt;/code&gt; 获取当前光标下的词组&lt;/li&gt;
+&lt;li&gt;命令行模式下，&lt;code&gt;ctrl + r ctrl + l&lt;/code&gt; 获取当前光标所在行内容&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;十六、标签&quot;&gt;十六、标签&lt;/h2&gt;
+&lt;p&gt;暂时略过&lt;/p&gt;
+&lt;h2 id=&quot;十七、折叠&quot;&gt;十七、折叠&lt;/h2&gt;
+&lt;h3 id=&quot;17-1-手动折叠&quot;&gt;17.1 手动折叠&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;折叠操作符是&lt;code&gt;z&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;zfj&lt;/code&gt;: 从光标所在行到下一行内容折叠&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;zo&lt;/code&gt;: 在光标处、打开已折叠文本&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;zc&lt;/code&gt;: 关闭/收缩文本&lt;/li&gt;
+&lt;li&gt;折叠操作符，符合语法规则(动词 + 名词)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;zR&lt;/code&gt;:展开所有折叠&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;zM&lt;/code&gt;:收缩所有折叠&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;za&lt;/code&gt;: 切换折叠状态&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;命令行模式下，使用&lt;code&gt;:fold&lt;/code&gt;命令执行一次折叠&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;,+1fold&lt;/code&gt; 折叠当前行及紧随其后的第二行&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;16,20fold&lt;/code&gt; kjj第16到20行&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;17-2-不同的折叠方法&quot;&gt;17.2 不同的折叠方法&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;通过&lt;code&gt;:set foldmethod&lt;/code&gt;查看折叠方式，默认是手动折叠&lt;code&gt;manual&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;手动折叠&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;缩进折叠&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;表达式折叠&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;语法折叠&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;差异折叠&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;标志折叠&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;十八、Git&quot;&gt;十八、Git&lt;/h2&gt;
+&lt;h3 id=&quot;18-1-差异比较&quot;&gt;18.1 差异比较&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;查看两个文件的差异： &lt;code&gt;vimdiff f1.md f2.md&lt;/code&gt; OR &lt;code&gt;vim -d f1.md f2.md&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;使用&lt;code&gt;]c&lt;/code&gt;跳转到下一处差异,&lt;code&gt;[c&lt;/code&gt;跳转到上一处差异&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:diffput&lt;/code&gt; 将左侧内容同步到右侧&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:diffget&lt;/code&gt;  将右侧内容同步到左侧&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;18-2-使用Vim作为合并工具&quot;&gt;18.2 使用Vim作为合并工具&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;首先运行以下命令来将默认合并工具更改为 &lt;code&gt;vimdiff&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;git config merge.tool vimdiff &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;git config merge.conflictstyle diff3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;git config mergetool.prompt &lt;span class=&quot;literal&quot;&gt;false&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;或者通过修改&lt;code&gt;~/.gitconfig&lt;/code&gt;&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;[core]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  editor = vim &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[merge]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  tool = vimdiff &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  conflictstyle = diff3 &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[difftool]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  prompt = &lt;span class=&quot;literal&quot;&gt;false&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h3 id=&quot;18-2-在Vim中使用Git&quot;&gt;18.2 在Vim中使用Git&lt;/h3&gt;
+&lt;p&gt;使用&lt;code&gt;!&lt;/code&gt;可以运行任何Git命令&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;:!git status&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;:!git commit &lt;span class=&quot;string&quot;&gt;&amp;#x27;add something&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;:!git diff&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;:!git push origin master&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;:!git add `%` (%-当前缓冲区) &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;:!git checkout `&lt;span class=&quot;comment&quot;&gt;#` (`#`其他缓冲区)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;十九、编译&quot;&gt;十九、编译&lt;/h2&gt;
+&lt;p&gt;Vim有运行makefile的&lt;code&gt;:make&lt;/code&gt;命令，当运行它时，Vim会在当前目录寻找makefile并执行它。&lt;/p&gt;
+&lt;h3 id=&quot;19-1-Make命令&quot;&gt;19.1 Make命令&lt;/h3&gt;
+&lt;p&gt;新建一个makefile文件，内容保存如下：&lt;/p&gt;
+&lt;figure class=&quot;highlight vim&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;all&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	&lt;span class=&quot;keyword&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&amp;quot;Hello all&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;foo:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	&lt;span class=&quot;keyword&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&amp;quot;Hello foo&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;list_pls:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	&lt;span class=&quot;keyword&quot;&gt;ls&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;vim命令后模式运行:&lt;code&gt;:make&lt;/code&gt;  &lt;code&gt;:make all&lt;/code&gt; &lt;code&gt;:make foo&lt;/code&gt; &lt;code&gt;:make list_pls&lt;/code&gt; 查看打印内容&lt;/p&gt;
+&lt;h3 id=&quot;19-2-使用Make编译&quot;&gt;19.2 使用Make编译&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;创建一个make.js文件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight stylus&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;function &lt;span class=&quot;built_in&quot;&gt;make&lt;/span&gt;()&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  console&lt;span class=&quot;selector-class&quot;&gt;.log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;使用makefile中的node命令进行编译&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;title&quot;&gt;make&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;在该目录下创建一个makefile文件，内容如下&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight crmsh&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;node&lt;/span&gt;&lt;span class=&quot;title&quot;&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;title&quot;&gt;    node&lt;/span&gt; ./make.js&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;运行 &lt;code&gt;:make node&lt;/code&gt; 即可查看结果。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;19-3-不同的make程序&quot;&gt;19.3 不同的make程序&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;当运行&lt;code&gt;:make&lt;/code&gt;的时候，实际上会执行makeprg选项设置的命令&lt;/li&gt;
+&lt;li&gt;通过运行 &lt;code&gt;:set makeprg?&lt;/code&gt;来查看，默认的设置为:&lt;code&gt;makeprg=make&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;修改命令为:&lt;code&gt;:set makeprg=node\ %&lt;/code&gt;,&lt;code&gt;\ &lt;/code&gt;为对空格的转义,&lt;code&gt;%&lt;/code&gt;符号表示当前文件。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;二十、视图、会话和Viminfo&quot;&gt;二十、视图、会话和Viminfo&lt;/h3&gt;
+&lt;p&gt;当项目的一些设置、布局、缓冲区在开始设置后，关闭Vim再次进入后原先设置会丢失，这节来学习如何使用视图、会话和 Viminfo 来保存项目’快照’&lt;/p&gt;
+&lt;p&gt;本节内容暂时跳过&lt;/p&gt;
+&lt;h2 id=&quot;二十一、多文件操作&quot;&gt;二十一、多文件操作&lt;/h2&gt;
+&lt;h3 id=&quot;21-1-多文件中执行命令的方法&quot;&gt;21.1 多文件中执行命令的方法&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;参数列表(argdo)&lt;/li&gt;
+&lt;li&gt;缓冲区列表(bufdo)&lt;/li&gt;
+&lt;li&gt;窗口列表（windo）&lt;/li&gt;
+&lt;li&gt;tab列表(tabdo)&lt;/li&gt;
+&lt;li&gt;快速修复列表(cdo)&lt;/li&gt;
+&lt;li&gt;文件方式的快速修复列表(cfdo)&lt;/li&gt;
+&lt;li&gt;位置列表(ldo)&lt;/li&gt;
+&lt;li&gt;文件方式的位置列表(lfdo)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;21-2-参数列表&quot;&gt;21.2 参数列表&lt;/h3&gt;
+&lt;p&gt;通过参数将一些文件创建一个列表：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;:args file1 file2 file3&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:args *.js&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:args a*.js&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:args **/*.js&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;运行以上命令后，当前buffer会切换到列表中的第一个文件，运行&lt;code&gt;:args&lt;/code&gt;可以查看当前创建的文件列表。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;:first&lt;/code&gt;:跳转至列表中的第一个文件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:last&lt;/code&gt;:跳转到最后一个文件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:next&lt;/code&gt;:跳转到下一个文件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:prev&lt;/code&gt;:跳转到上一个文件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:wnext&lt;/code&gt;:保存当前文件跳转到下一个文件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:wprev&lt;/code&gt;:保存当前文件跳转到上一个文件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;二十二、Vimrc&quot;&gt;二十二、Vimrc&lt;/h2&gt;
+&lt;h3 id=&quot;22-1-Vim如何找到Vimrc&quot;&gt;22.1 Vim如何找到Vimrc&lt;/h3&gt;
+&lt;p&gt;根据操作系统，文件路径名可能不同，一般的使用路径是 ~/.vimrc&lt;/p&gt;
+&lt;h3 id=&quot;22-2-Vimrc基础内容&quot;&gt;22.2 Vimrc基础内容&lt;/h3&gt;
+&lt;p&gt;绝大部分的使用场景包含一下五个内容集合：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;插件&lt;/li&gt;
+&lt;li&gt;设置&lt;/li&gt;
+&lt;li&gt;自定义函数&lt;/li&gt;
+&lt;li&gt;自定义命令&lt;/li&gt;
+&lt;li&gt;键盘映射&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;插件&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;我的插件管理器使用的是&lt;code&gt;vim-plug&lt;/code&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;添加插件方法,在&lt;code&gt;.vimrc&lt;/code&gt;中：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight leaf&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;call plug&lt;span class=&quot;punctuation&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;keyword&quot;&gt;begin&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  Plug &amp;#x27;mattn/emmet-vim&amp;#x27;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  Plug &amp;#x27;preservim/nerdtree&amp;#x27;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;call plug&lt;span class=&quot;punctuation&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;保存退出&lt;/li&gt;
+&lt;li&gt;在vim命令后模式中运行&lt;code&gt;:PlugInstall&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;如果想删除不使用的插件，只要将插件名从call代码块之前删除，保存后执行&lt;code&gt;:PlugClean&lt;/code&gt;即可。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;设置&lt;/strong&gt;&lt;br&gt;
+在任意一个vimrc文件中会发现有大量的set设置。&lt;br&gt;
+而在命令行模式下执行set命令，只是暂时的,关闭vim后设置就会丢失。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;set number&lt;/code&gt;:显示行号&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;set hidden&lt;/code&gt;:允许在有未保存的修改时切换缓冲区，此时的修改由 vim 负责保存&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;set hlsearch&lt;/code&gt;: 搜索时高亮显示被找到的文本&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;set clipboard=unnamed&lt;/code&gt;:仅使用&lt;code&gt;p&lt;/code&gt;就能从外部粘贴文本&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;set undolevels =500 &lt;/code&gt;可以执行500次的undo操作&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;set undodir=~/.vim/undo_dir&lt;/code&gt;、&lt;code&gt;set undofile&lt;/code&gt;:为了默认每次进入文件后都是可以执行&lt;code&gt;u&lt;/code&gt;的，在&lt;code&gt;~/.vim&lt;/code&gt;目录下新建一个默认目录&lt;code&gt;undo_dir&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;set ignorecase smartcase&lt;/code&gt;:设置全小写不区分大小写，有一个大写字母就区分-&amp;gt;.vimrc-&amp;gt; set ignorecase smartcase&lt;br&gt;
+…… &lt;a href=&quot;https://www.cnblogs.com/gaoguofeng/p/5799604.html&quot;&gt;更多设置参考&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;自定义函数&lt;/strong&gt;&lt;br&gt;
+vimrc是一个很好的用来放置自定义函数的地方，后面的章节继续学习写vimscript函数&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;自定义命令&lt;/strong&gt;&lt;br&gt;
+可以使用&lt;code&gt;command&lt;/code&gt;创建一个自定义命令&lt;br&gt;
+eg:创建一个显示今天日期的基本命令 Today(首字母大写)&lt;br&gt;
+&lt;code&gt;:command! Today echo call(&amp;quot;strftime&amp;quot;,[&amp;quot;%F&amp;quot;])&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;键盘映射&lt;/strong&gt;&lt;br&gt;
+略过&lt;/p&gt;
+&lt;h3 id=&quot;22-3-组织管理Vimrc&quot;&gt;22.3 组织管理Vimrc&lt;/h3&gt;
+&lt;p&gt;当&lt;code&gt;.vimrc&lt;/code&gt;文件变得大且复杂时，有两种方法可以使文件保持整洁：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;将vimrc文件划分为几个文件&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;在&lt;code&gt;~/.vim&lt;/code&gt;下创建一个子文件&lt;code&gt;settings&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;在该子文件下创建多个文件(&lt;code&gt;plugins.vim&lt;/code&gt;、&lt;code&gt;configs.vim&lt;/code&gt;、&lt;code&gt;functions.vim&lt;/code&gt;、&lt;code&gt;mappings.vim&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;在&lt;code&gt;.vimrc&lt;/code&gt;中添加 &lt;code&gt;source $HOME/.vim/settings/.....&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;然后分别在四个文件中设置&lt;code&gt;set&lt;/code&gt;、&lt;code&gt;call plug&lt;/code&gt;等等，即可&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;折叠vimrc文件&lt;br&gt;
+在&lt;code&gt;.vimrc&lt;/code&gt;文件顶部添加如下内容&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;&amp;quot; setup folds &amp;#123;&amp;#123;&amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;augroup filetype_vim&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;  autocmd!&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;  autocmd FileType vim setlocal foldmethod=marker&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;augroup END&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;&amp;quot;&lt;/span&gt; &amp;#125;&amp;#125;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;&amp;quot; plugins &amp;#123;&amp;#123;&amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;call plug#begin(&amp;#x27;~/.vim/plugged&amp;#x27;)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;  Plug &amp;#x27;mattn/emmet-vim&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;  Plug &amp;#x27;preservim/nerdtree&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;call plug#end()&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;&amp;quot;&lt;/span&gt; &amp;#125;&amp;#125;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;&amp;quot; configs &amp;#123;&amp;#123;&amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;set nocompatible&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;set relativenumber&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;set number&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;&amp;quot;&lt;/span&gt; &amp;#125;&amp;#125;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h3 id=&quot;22-4-启动Vim时加载-不加载vimrc和插件&quot;&gt;22.4 启动Vim时加载/不加载vimrc和插件&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;启动Vim时，既不加载vimrc，也不加载插件：&lt;code&gt;vim -u NONE&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;启动Vim时，不加载vimrc，但加载插件:&lt;code&gt;vim -u NORC&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;启动Vim时，加载vimrc，但不加载插件:&lt;code&gt;vim --noplugin&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;启动Vim时加载其他的vimrc配置文件:&lt;code&gt;vim -u ~/.vimrc-backup&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;二十三-Vim软件包&quot;&gt;二十三 Vim软件包&lt;/h2&gt;
+&lt;p&gt;软件包用来安装插件，从Vim8开始支持&lt;/p&gt;
+&lt;h3 id=&quot;23-1-查看是否支持软件包&quot;&gt;23.1 查看是否支持软件包&lt;/h3&gt;
+&lt;figure class=&quot;highlight vim&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;vim&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;:&lt;span class=&quot;keyword&quot;&gt;version&lt;/span&gt; [查看是否有packages]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h3 id=&quot;23-2-包目录&quot;&gt;23.2 包目录&lt;/h3&gt;
+&lt;p&gt;确保根目录 &lt;code&gt;~/.vim&lt;/code&gt;下有pack这个文件夹，如果没有就创建，Vim会自动在这个子文件夹内搜索插件&lt;/p&gt;
+&lt;h3 id=&quot;23-3-两种加载方式&quot;&gt;23.3 两种加载方式&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;自动加载&lt;/strong&gt;&lt;br&gt;
+需要放在start/子目录中，看起来像这样&lt;code&gt;~/.vim/pack/*/start/&lt;/code&gt;,其中星号表示是任意名字且不可忽略。&lt;br&gt;
+在&lt;code&gt;~/.vim/pack/*/start/&lt;/code&gt;目录中，想克隆多少插件就克隆多少插件，Vim会自动加载每一个插件，如果删除了仓库，那么插件就失效了。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;手动加载&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;需要放在opt/子目录中，路径看起来像这样&lt;code&gt;~/.vim/pack/*/opt/&lt;/code&gt;,&lt;/li&gt;
+&lt;li&gt;进入到这个目录后，克隆一个仓库：&lt;code&gt;git clone https://github.com/vim/killersheep.git&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;启动Vim，执行命令 &lt;code&gt;KillKillKill&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Vim会提示不是一个有效命令&lt;/li&gt;
+&lt;li&gt;运行：&lt;code&gt;packadd killersheep&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;继续执行命令 &lt;code&gt;KillKillKill&lt;/code&gt;,命令可使用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;二十四-Vim-RunTime&quot;&gt;二十四 Vim RunTime&lt;/h2&gt;
+&lt;h3 id=&quot;24-1-Plugin脚本&quot;&gt;24.1  Plugin脚本&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Vim 中有一个 runtime 路径 plugin ，每次启动时都会执行这个路径中的脚本。&lt;/li&gt;
+&lt;li&gt;路径是 &lt;code&gt;~/.vim/plugin/donut.vim&lt;/code&gt; 和 &lt;code&gt;~/.vim/plugin/chocolate.vim&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;此plugin runtime路径可以用来执行一些初始化的脚本&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;24-2-文件类型监测&quot;&gt;24.2 文件类型监测&lt;/h3&gt;
+&lt;p&gt;使用vim打开文件后，想知道打开文件的类型&lt;code&gt;:set filetype?&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id=&quot;24-3-文件类型插件&quot;&gt;24.3 文件类型插件&lt;/h3&gt;
+&lt;p&gt;当我们在打开一个文件时，比如是js文件，我们就执行一个脚本，如果是vue文件，我们就不执行脚本，那么这么做：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用文件类型插件&lt;code&gt;~/.vim/ftplugin&lt;/code&gt; 完成这个功能。&lt;/li&gt;
+&lt;li&gt;该目录下创建一个文件&lt;code&gt;javascript.vim&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;内容为:&lt;code&gt;echo &amp;quot;I am JS runtime &amp;quot;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;此时使用打开后缀为&lt;code&gt;js&lt;/code&gt;的文件会输出内容。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;24-4-颜色&quot;&gt;24.4 颜色&lt;/h3&gt;
+&lt;p&gt;Vim有一个颜色 runtime 路径，用来存储颜色主题: &lt;code&gt;~/.vim/colors/&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id=&quot;24-5-语法高亮&quot;&gt;24.5 语法高亮&lt;/h3&gt;
+&lt;p&gt;Vim有一个语法高亮 runtime 路径，用来定义语法高亮: &lt;code&gt;~/.vim/syntax&lt;/code&gt;&lt;/p&gt;
+"><meta name="twitter:image"><title>一篇就学会vim | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">一篇就学会vim</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">一篇就学会vim</h1><div class="post-meta">2022-09-14<span> | </span><span class="category"><a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 9.6k</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 36</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/030-%E4%B8%80%E7%AF%87%E5%B0%B1%E5%AD%A6%E4%BC%9Avim/#vcomment"><span class="valine-comment-count" data-xid="/030-%E4%B8%80%E7%AF%87%E5%B0%B1%E5%AD%A6%E4%BC%9Avim/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81Vim%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D"><span class="toc-text">一、Vim基础介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81Buffers%E3%80%81Windows%E3%80%81Tabs"><span class="toc-text">二、Buffers、Windows、Tabs</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-buffers"><span class="toc-text">2.1 buffers</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Windows"><span class="toc-text">2.2 Windows</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Tabs"><span class="toc-text">2.3 Tabs</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%89%93%E5%BC%80%E5%92%8C%E6%90%9C%E7%B4%A2%E6%96%87%E4%BB%B6"><span class="toc-text">三、打开和搜索文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E6%89%93%E5%BC%80%E5%92%8C%E7%BC%96%E8%BE%91%E6%96%87%E4%BB%B6"><span class="toc-text">3.1 打开和编辑文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E4%BD%BF%E7%94%A8find%E5%91%BD%E4%BB%A4%E6%90%9C%E7%B4%A2%E6%96%87%E4%BB%B6"><span class="toc-text">3.2 使用find命令搜索文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-find%E5%92%8CPath%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">3.3 find和Path的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E4%BD%BF%E7%94%A8grep%E5%91%BD%E4%BB%A4%E5%9C%A8%E6%96%87%E4%BB%B6%E4%B8%AD%E6%90%9C%E7%B4%A2"><span class="toc-text">3.4 使用grep命令在文件中搜索</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-vim%E4%B8%AD%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9%E6%90%9C%E7%B4%A2"><span class="toc-text">3.5 vim中文件内容搜索</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81Vim%E8%AF%AD%E6%B3%95"><span class="toc-text">四、Vim语法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E2%AD%90%EF%B8%8F-vim%E8%AF%AD%E8%A8%80%E7%9A%84%E8%AF%AD%E6%B3%95%E8%A7%84%E5%88%99-%E5%8A%A8%E8%AF%8D-%E5%90%8D%E8%AF%8D"><span class="toc-text">4.1 ⭐️ vim语言的语法规则  动词 + 名词</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E7%BB%93%E5%90%88"><span class="toc-text">4.2 结合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E6%9B%B4%E5%A4%9A%E5%90%8D%E8%AF%8D"><span class="toc-text">4.3 更多名词</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E5%B8%B8%E7%94%A8%E5%88%B0%E7%9A%84%E6%96%87%E6%9C%AC%E5%AF%B9%E8%B1%A1"><span class="toc-text">4.4 常用到的文本对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E9%92%88%E5%AF%B9%E6%80%A7%E5%A4%8D%E4%B9%A0"><span class="toc-text">4.5 针对性复习</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%9C%A8%E6%96%87%E4%BB%B6%E4%B8%AD%E7%A7%BB%E5%8A%A8"><span class="toc-text">五、在文件中移动</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E2%AD%90%EF%B8%8F-%E5%AD%97%E7%AC%A6%E5%AF%BC%E8%88%AA"><span class="toc-text">5.1 ⭐️ 字符导航</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E5%8F%A5%E5%AD%90%E5%92%8C%E6%AE%B5%E8%90%BD%E5%AF%BC%E8%88%AA"><span class="toc-text">5.2 句子和段落导航</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E2%AD%90%EF%B8%8F-%E8%A1%8C%E5%8F%B7%E5%AF%BC%E8%88%AA"><span class="toc-text">5.3 ⭐️ 行号导航</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-%E7%AA%97%E6%A0%BC%E5%AF%BC%E8%88%AA"><span class="toc-text">5.4 窗格导航</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-5-%E2%AD%90%EF%B8%8F-%E5%B1%8F%E5%B9%95%E6%BB%9A%E5%8A%A8"><span class="toc-text">5.5 ⭐️ 屏幕滚动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-6-%E5%BD%93%E5%89%8D%E8%A1%8C%E4%BD%8D%E7%BD%AE%E6%8C%87%E5%AE%9A"><span class="toc-text">5.6 当前行位置指定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-7-%E4%BD%8D%E7%BD%AE%E6%A0%87%E8%AE%B0-%E6%9A%82%E4%BA%86%E8%A7%A3%E5%8D%B3%E5%8F%AF"><span class="toc-text">5.7 位置标记(暂了解即可)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-8-%E8%B7%B3%E8%BD%AC"><span class="toc-text">5.8 跳转</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E8%BE%93%E5%85%A5%E6%A8%A1%E5%BC%8F"><span class="toc-text">六、输入模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E2%AD%90%EF%B8%8F-%E8%BF%9B%E5%85%A5%E8%BE%93%E5%85%A5%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-text">6.1 ⭐️ 进入输入模式的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E9%80%80%E5%87%BA%E8%BE%93%E5%85%A5%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-text">6.2 退出输入模式的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-%E5%88%A0%E9%99%A4%E6%A8%A1%E5%BC%8F"><span class="toc-text">6.3 删除模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-4-%E5%AF%84%E5%AD%98%E5%99%A8%E8%BE%93%E5%85%A5"><span class="toc-text">6.4 寄存器输入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-5-%E8%BE%93%E5%85%A5%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84%E7%BF%BB%E9%A1%B5"><span class="toc-text">6.5 输入模式下的翻页</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-6-%E2%AD%90%EF%B8%8F-%E6%89%A7%E8%A1%8C%E6%99%AE%E9%80%9A%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84%E5%91%BD%E4%BB%A4"><span class="toc-text">6.6 ⭐️ 执行普通模式下的命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E7%82%B9%E5%91%BD%E4%BB%A4"><span class="toc-text">七、点命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-%E7%94%A8%E6%B3%95"><span class="toc-text">7.1 用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-%E6%80%8E%E4%B9%88%E7%AE%97%E6%98%AF%E4%BF%AE%E6%94%B9%E6%93%8D%E4%BD%9C"><span class="toc-text">7.2 怎么算是修改操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-3-%E9%87%8D%E5%A4%8D%E5%A4%9A%E8%A1%8C%E4%BF%AE%E6%94%B9%E6%93%8D%E4%BD%9C"><span class="toc-text">7.3 重复多行修改操作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E5%AF%84%E5%AD%98%E5%99%A8"><span class="toc-text">八、寄存器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-10%E7%A7%8D%E5%AF%84%E5%AD%98%E5%99%A8%E7%B1%BB%E5%9E%8B"><span class="toc-text">8.1 10种寄存器类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-%E5%AF%84%E5%AD%98%E5%99%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">8.2 寄存器命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-3-%E5%9C%A8%E8%BE%93%E5%85%A5%E6%A8%A1%E5%BC%8F%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%AF%84%E5%AD%98%E5%99%A8"><span class="toc-text">8.3 在输入模式中使用寄存器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-4-%E2%AD%90%EF%B8%8F-%E4%B8%8D%E5%90%8C%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8%E6%A0%87%E5%BF%97%E8%AF%B4%E6%98%8E"><span class="toc-text">8.4 ⭐️ 不同类型寄存器标志说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E5%AE%8F%E5%91%BD%E4%BB%A4"><span class="toc-text">九、宏命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#9-1-%E5%9F%BA%E6%9C%AC%E5%AE%8F%E5%91%BD%E4%BB%A4"><span class="toc-text">9.1 基本宏命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-2-%E5%A2%9E%E6%B7%BB%E3%80%81%E4%BF%AE%E6%94%B9%E3%80%81%E6%8B%B7%E8%B4%9D%E5%AE%8F"><span class="toc-text">9.2 增添、修改、拷贝宏</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81%E6%92%A4%E9%94%80"><span class="toc-text">十、撤销</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#10-1-%E6%92%A4%E9%94%80-undo-%E9%87%8D%E5%81%9A%E5%92%8C%E8%A1%8C%E6%92%A4%E9%94%80-UNDO"><span class="toc-text">10.1 撤销(undo),重做和行撤销(UNDO)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-2-%E6%96%AD%E7%82%B9%E6%8F%92%E5%85%A5%E6%93%8D%E4%BD%9C"><span class="toc-text">10.2 断点插入操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-3-%E6%92%A4%E9%94%80%E6%A0%91"><span class="toc-text">10.3 撤销树</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-4-%E4%BF%9D%E5%AD%98%E6%92%A4%E9%94%80%E8%AE%B0%E5%BD%95"><span class="toc-text">10.4 保存撤销记录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-5-%E6%97%B6%E9%97%B4%E6%97%85%E8%A1%8C"><span class="toc-text">10.5 时间旅行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%80%E3%80%81%E5%8F%AF%E8%A7%86%E5%8C%96%E6%A8%A1%E5%BC%8F"><span class="toc-text">十一、可视化模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#11-1-%E4%B8%89%E7%A7%8D%E5%8F%AF%E8%A7%86%E5%8C%96%E6%A8%A1%E5%BC%8F"><span class="toc-text">11.1 三种可视化模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-2-%E5%8F%AF%E8%A7%86%E6%A8%A1%E5%BC%8F%E5%AF%BC%E8%88%AA"><span class="toc-text">11.2 可视模式导航</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-3-%E5%8F%AF%E8%A7%86%E6%A8%A1%E5%BC%8F%E8%AF%AD%E6%B3%95"><span class="toc-text">11.3 可视模式语法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%BA%8C%E3%80%81%E6%90%9C%E7%B4%A2%E5%92%8C%E6%9B%BF%E6%8D%A2"><span class="toc-text">十二、搜索和替换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%89%E3%80%81%E5%85%A8%E5%B1%80%E5%91%BD%E4%BB%A4"><span class="toc-text">十三、全局命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#13-1-%E5%85%A8%E5%B1%80%E5%91%BD%E4%BB%A4%E6%A6%82%E8%BF%B0"><span class="toc-text">13.1 全局命令概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-2-%E9%80%86%E5%90%91%E5%8C%B9%E9%85%8D"><span class="toc-text">13.2 逆向匹配</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E5%9B%9B%E3%80%81%E5%A4%96%E9%83%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">十四、外部命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#14-1-%E8%AF%BB%E5%8F%96%E5%A4%96%E9%83%A8%E6%96%87%E4%BB%B6"><span class="toc-text">14.1 读取外部文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-2-%E5%B0%86%E7%BC%93%E5%86%B2%E5%8C%BA%E5%86%85%E5%AE%B9%E5%86%99%E5%85%A5%E5%A4%96%E9%83%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">14.2 将缓冲区内容写入外部命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-3-%E6%89%A7%E8%A1%8C%E5%A4%96%E9%83%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">14.3 执行外部命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%BA%94%E3%80%81%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%A8%A1%E5%BC%8F"><span class="toc-text">十五、命令行模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#15-1-%E8%BF%9B%E5%85%A5%E5%92%8C%E9%80%80%E5%87%BA%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%A8%A1%E5%BC%8F"><span class="toc-text">15.1 进入和退出命令行模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#15-2-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%A8%A1%E5%BC%8F%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="toc-text">15.2 命令行模式快捷键</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#15-3-%E5%AF%84%E5%AD%98%E5%99%A8%E5%92%8C%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8"><span class="toc-text">15.3 寄存器和自动补全</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E5%85%AD%E3%80%81%E6%A0%87%E7%AD%BE"><span class="toc-text">十六、标签</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%83%E3%80%81%E6%8A%98%E5%8F%A0"><span class="toc-text">十七、折叠</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#17-1-%E6%89%8B%E5%8A%A8%E6%8A%98%E5%8F%A0"><span class="toc-text">17.1 手动折叠</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#17-2-%E4%B8%8D%E5%90%8C%E7%9A%84%E6%8A%98%E5%8F%A0%E6%96%B9%E6%B3%95"><span class="toc-text">17.2 不同的折叠方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E5%85%AB%E3%80%81Git"><span class="toc-text">十八、Git</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#18-1-%E5%B7%AE%E5%BC%82%E6%AF%94%E8%BE%83"><span class="toc-text">18.1 差异比较</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#18-2-%E4%BD%BF%E7%94%A8Vim%E4%BD%9C%E4%B8%BA%E5%90%88%E5%B9%B6%E5%B7%A5%E5%85%B7"><span class="toc-text">18.2 使用Vim作为合并工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#18-2-%E5%9C%A8Vim%E4%B8%AD%E4%BD%BF%E7%94%A8Git"><span class="toc-text">18.2 在Vim中使用Git</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B9%9D%E3%80%81%E7%BC%96%E8%AF%91"><span class="toc-text">十九、编译</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#19-1-Make%E5%91%BD%E4%BB%A4"><span class="toc-text">19.1 Make命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#19-2-%E4%BD%BF%E7%94%A8Make%E7%BC%96%E8%AF%91"><span class="toc-text">19.2 使用Make编译</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#19-3-%E4%B8%8D%E5%90%8C%E7%9A%84make%E7%A8%8B%E5%BA%8F"><span class="toc-text">19.3 不同的make程序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E5%8D%81%E3%80%81%E8%A7%86%E5%9B%BE%E3%80%81%E4%BC%9A%E8%AF%9D%E5%92%8CViminfo"><span class="toc-text">二十、视图、会话和Viminfo</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E5%8D%81%E4%B8%80%E3%80%81%E5%A4%9A%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="toc-text">二十一、多文件操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#21-1-%E5%A4%9A%E6%96%87%E4%BB%B6%E4%B8%AD%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-text">21.1 多文件中执行命令的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#21-2-%E5%8F%82%E6%95%B0%E5%88%97%E8%A1%A8"><span class="toc-text">21.2 参数列表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E5%8D%81%E4%BA%8C%E3%80%81Vimrc"><span class="toc-text">二十二、Vimrc</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#22-1-Vim%E5%A6%82%E4%BD%95%E6%89%BE%E5%88%B0Vimrc"><span class="toc-text">22.1 Vim如何找到Vimrc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#22-2-Vimrc%E5%9F%BA%E7%A1%80%E5%86%85%E5%AE%B9"><span class="toc-text">22.2 Vimrc基础内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#22-3-%E7%BB%84%E7%BB%87%E7%AE%A1%E7%90%86Vimrc"><span class="toc-text">22.3 组织管理Vimrc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#22-4-%E5%90%AF%E5%8A%A8Vim%E6%97%B6%E5%8A%A0%E8%BD%BD-%E4%B8%8D%E5%8A%A0%E8%BD%BDvimrc%E5%92%8C%E6%8F%92%E4%BB%B6"><span class="toc-text">22.4 启动Vim时加载&#x2F;不加载vimrc和插件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E5%8D%81%E4%B8%89-Vim%E8%BD%AF%E4%BB%B6%E5%8C%85"><span class="toc-text">二十三 Vim软件包</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#23-1-%E6%9F%A5%E7%9C%8B%E6%98%AF%E5%90%A6%E6%94%AF%E6%8C%81%E8%BD%AF%E4%BB%B6%E5%8C%85"><span class="toc-text">23.1 查看是否支持软件包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#23-2-%E5%8C%85%E7%9B%AE%E5%BD%95"><span class="toc-text">23.2 包目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#23-3-%E4%B8%A4%E7%A7%8D%E5%8A%A0%E8%BD%BD%E6%96%B9%E5%BC%8F"><span class="toc-text">23.3 两种加载方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E5%8D%81%E5%9B%9B-Vim-RunTime"><span class="toc-text">二十四 Vim RunTime</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#24-1-Plugin%E8%84%9A%E6%9C%AC"><span class="toc-text">24.1  Plugin脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#24-2-%E6%96%87%E4%BB%B6%E7%B1%BB%E5%9E%8B%E7%9B%91%E6%B5%8B"><span class="toc-text">24.2 文件类型监测</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#24-3-%E6%96%87%E4%BB%B6%E7%B1%BB%E5%9E%8B%E6%8F%92%E4%BB%B6"><span class="toc-text">24.3 文件类型插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#24-4-%E9%A2%9C%E8%89%B2"><span class="toc-text">24.4 颜色</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#24-5-%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE"><span class="toc-text">24.5 语法高亮</span></a></li></ol></li></ol></div></div><div class="post-content"><p><img src="https://cdn.statically.io/gh/liugezhou/image@master/blog/blog-vim.webp" alt="vim"></p>
+<span id="more"></span>
+<p>学会一个软技能，总结一篇文章就够了。<br>
+剩下要做的就是不停的练习，不停的尝试，本文是在学习<a target="_blank" rel="noopener" href="https://github.com/wsdjeg/Learn-Vim_zh_cn">这个仓库</a>之后的极简总结中。<br>
+主要作为一个备忘录使用。</p>
+<p>长期更新。。。</p>
+<h2 id="一、Vim基础介绍">一、Vim基础介绍</h2>
+<ol>
+<li><code>vim</code>           看到一个介绍页面</li>
+<li><code>i</code>              进入编辑模式</li>
+<li><code>:</code>              光标将移动到屏幕底部，在这里您可以输入命令</li>
+<li><code>Esc</code>            切回普通模式</li>
+<li><code>:quit</code>          退出编辑模式,简写为:q</li>
+<li><code>:write </code>        保存模式，简写为:w</li>
+<li><code>:w f.md</code>        如果是新建的一个没有名字的文件，以f为名字保存文件</li>
+<li><code>:wq</code>            保存退出</li>
+<li><code>:q!</code>           不保存修改而强制退出</li>
+<li><code>:h</code>            在冒号模式下，输入 :h quit 然后按Tab键就会自动打出命令。</li>
+<li><code>:vim f1 f2</code>    通过vim命令在不同的buffers中打开多个文件</li>
+<li><code>vim --version</code>  '+‘表示支持的特性，’-'表示不支持的特性</li>
+<li><code>vim +%s hello/liugezhou/g file </code>  这条命令的意思是 打开file文件将文档中所有的hello改为liugezhou</li>
+<li><code>vim -o2</code>       水平打开n个窗口</li>
+<li><code>vim -O2</code>       垂直打开n个窗口</li>
+<li><code>Ctrl + z(:stop :suspend)</code>      使用vim打开的文件进行挂起 输入fg恢复。</li>
+</ol>
+<h2 id="二、Buffers、Windows、Tabs">二、Buffers、Windows、Tabs</h2>
+<p>创建一个.vimrc,添加配置<code>set hidden</code>（切换buffer且当前buffer没有保存，不会进行提示）</p>
+<h3 id="2-1-buffers">2.1 buffers</h3>
+<ol>
+<li>vim file1.js file2.js,实际创建了两个buffers，执行完该命令后展示的是file1.js的buffers<br>
+运行:buffers命令可以查看所有的buffers,或者使用 <code>:ls</code> OR <code>:files</code>命令查看。</li>
+<li>切换到下一个buffer <code>:bnext</code> 、<code>:buffer fileName</code>、<code>buffer n</code></li>
+<li>切换到下一个buffer的快捷键:<code>Ctrl + I</code>,切换到原来buffer的快捷键:<code>Ctrl + O</code></li>
+<li>一旦buffer创建成功，即进入了buffers列表，这个时候想在buffers列表中删除某一个buffer，直接<code>:bdelete n</code>即可</li>
+<li>退出vim</li>
+</ol>
+<ul>
+<li>关闭所有buffer <code>:qall</code></li>
+<li>关闭所有buffer但是不保存 <code>qall!</code></li>
+<li>关闭所有buffer且保存 <code>wqall</code></li>
+</ul>
+<h3 id="2-2-Windows">2.2 Windows</h3>
+<ol>
+<li>vim file1.txt打开file1文件，有一个buffer，有一个窗口<br>
+此时在vim中使用<code>:split file2.txt</code> 会看到此刻有两个窗口，两个buffer，file2.txt的窗口在上<br>
+如果想垂直打开file2窗口  <code>:vsplit file2.txt</code><br>
+如果想垂直打开一个新命名文件的窗口  :<code>vsplit filename</code></li>
+<li>如果要在窗口直接导航<br>
+<code>Ctrl+ W  h</code> 左移窗口<br>
+<code>Ctrl+ W  l</code> 右移窗口<br>
+<code>Ctrl+ W  j</code> 下移窗口<br>
+<code>Ctrl+ W  k</code> 上移窗口</li>
+<li>继续输入 <code>:split file3.txt</code>,此时有三个窗口、三个buffer</li>
+<li>如果想在显示file2.txt的窗口中显示file3.txt，只需要在当前buffer为2下输入<code>:buffer file3.txt</code>即可</li>
+<li>要关闭当前窗口  <code>Ctrl+W c</code></li>
+<li>普通模式下关于窗口的命令：<br>
+<code>Ctrl + W c</code> 打开一个垂直分割的窗口<br>
+<code>Ctrl + W s</code> 打开一个水平分割的窗口<br>
+<code>Ctrl + W c</code> 关闭当前所在窗口<br>
+<code>Ctrl + W o</code> 除了当前窗口，关闭其它所有窗口</li>
+</ol>
+<h3 id="2-3-Tabs">2.3 Tabs</h3>
+<ol>
+<li>vim <a target="_blank" rel="noopener" href="http://tabs.md">tabs.md</a>  这个时候打开一个新tab，使用命令 <code>:tabnew readme.md</code></li>
+<li>切换下一个tab，使用命令 <code>:tabnext</code></li>
+<li>关闭当前tab，使用命令<code>:tabclose</code></li>
+<li>切换上一个tab，使用命令<code>:tabprevious</code></li>
+<li>切换至最后一个tab，使用命令<code>:tablast</code></li>
+<li>切换至第一个tab，使用命令<code>:tabfirst</code></li>
+<li>如果想让vim启动时就包含多个tabs，可以使用命令 <code>vim -p file1.txt file2.txt</code></li>
+</ol>
+<h2 id="三、打开和搜索文件">三、打开和搜索文件</h2>
+<h3 id="3-1-打开和编辑文件">3.1 打开和编辑文件</h3>
+<ul>
+<li>要在vim中打开一个文件，直接使用命令 <code>:edit newFile</code></li>
+<li>edit接收通配符*，比如使用 <code>:edit *.md</code>然后按tab键，就会依次显示md文件，还可以是<code>*/*.js</code>这种格式</li>
+<li><code>:edit 路径URL</code>也可以直接打开一个文件</li>
+</ul>
+<h3 id="3-2-使用find命令搜索文件">3.2 使用find命令搜索文件</h3>
+<ul>
+<li>比如：我试了一下<code>:find readme.md</code>就直接跳转到那个文件了，但是这里只是找之前buffers中存在的</li>
+<li>通过 find的命令会直接跳转到找到的那个文件，且在当前窗口打开</li>
+</ul>
+<h3 id="3-3-find和Path的区别">3.3 find和Path的区别</h3>
+<ul>
+<li>
+<p><code>:find</code>命令根据path选项配置的路径去找文件</p>
+</li>
+<li>
+<p><code>:edit</code>命令则不会。<br>
+在我们开始牛逼的使用<code>find</code>命令前，我们需要对<code>path</code>到底是什么进行一个学习</p>
+</li>
+<li>
+<p><code>:set path?</code>这个命令，可以让我们看一下我们的path是什么，在当前这个文件(使用vim写)，输入此命令，显示内容为：<code>path=.,/usr/include,,</code></p>
+</li>
+</ul>
+<h3 id="3-4-使用grep命令在文件中搜索">3.4 使用grep命令在文件中搜索</h3>
+<p><strong>内置grep</strong></p>
+<ul>
+<li>grep是指在文件内容进行内容的查找,  <code>:vim /pattern/ file</code> pattern为正则表达式</li>
+<li>搜索出来后默认显示出第一条匹配内容</li>
+<li>查看所有搜索内容:<code>:copen</code></li>
+<li>关闭窗口:<code>:cclose</code></li>
+<li>跳到下一个列表: <code>cnext</code></li>
+<li>跳到上一个列表： <code>cprevious</code></li>
+</ul>
+<p><strong>外置grep</strong></p>
+<ul>
+<li>在命令行终端搜索</li>
+<li>grep -R “搜索的内容”  fileUrl</li>
+</ul>
+<p><strong>用Netrw浏览文件</strong></p>
+<ul>
+<li>Netrw是vim内置的文件浏览器、查看项目的目录结构时很有用。</li>
+<li>要运行Netrw，需要在<code>.vimrc</code>中配置</li>
+</ul>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> nocp</span><br><span class="line">filetype <span class="keyword">plugin</span> <span class="keyword">on</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>这个时候 vim直接给一个地址就可以了</li>
+<li>要从内部运行Netrw，则需要给<code>:edit</code>一个目录地址</li>
+</ul>
+<h3 id="3-5-vim中文件内容搜索">3.5 vim中文件内容搜索</h3>
+<ul>
+<li>normal模式(即Esc模式)</li>
+<li>直接输入<code>/</code>或者<code>?</code>，然后输入要搜索的字符进行搜索</li>
+<li>注意区别是:
+<ul>
+<li><code>/</code>是从光标处向下查找，这个时候输入<code>n</code> 是继续查找下一个，输入<code>N</code>是查找上一个</li>
+<li><code>?</code>是从光标处向上查找,这个时候输入<code>n</code>是继续向上查找，输入<code>N</code>是向下开始查找</li>
+</ul>
+</li>
+</ul>
+<p>彩蛋:item2的光标样式设置为<code>Profiles -&gt; Colors -&gt; Cursor colors -&gt; Cursor</code>进行设置<br>
+然后在vim搜索中还是不明显，这个时候将<code>Profiles -&gt; Colors -&gt; Cursor colors -&gt;Cursor guide</code>勾选上就好很多了。</p>
+<h2 id="四、Vim语法">四、Vim语法</h2>
+<h3 id="4-1-⭐️-vim语言的语法规则-动词-名词">4.1 ⭐️ vim语言的语法规则  动词 + 名词</h3>
+<p>动词是动作</p>
+<ul>
+<li><code>y</code>  复制</li>
+<li><code>p</code>  粘贴到光标后</li>
+<li><code>P</code>  粘贴到光标前</li>
+<li><code>d</code>  删除文本</li>
+<li><code>D</code>  从光标处，删除改行的末尾</li>
+<li><code>c</code>  删除文本，与d不同的是–将删除的文本保存在寄存器中，从普通模式进入到插入模式</li>
+<li><code>C</code>  直接删除一行，并进入插入模式</li>
+</ul>
+<p>名词是位置</p>
+<ul>
+<li><code>h</code>  左</li>
+<li><code>l</code>  右</li>
+<li><code>j</code>  下</li>
+<li><code>k</code>  上</li>
+<li><code>0</code>  当前行的开始</li>
+<li><code>$</code>  当前行的末尾</li>
+<li><code>w</code>  下一个单词的开头</li>
+<li><code>&#125;</code>  跳转到下一个段落</li>
+</ul>
+<h3 id="4-2-结合">4.2 结合</h3>
+<ul>
+<li>y$:复制当前位置到行尾的所有内容</li>
+<li>dw:删除当前位置到下一个单词开头的内容</li>
+<li>c}:修改当前位置到段落结尾的内容。</li>
+</ul>
+<h3 id="4-3-更多名词">4.3 更多名词</h3>
+<ul>
+<li>如何更快的把括号中内容删除：<code>I want say (hello vim)</code>?</li>
+<li>文本对象：小括号中、中括号、大括号、引号</li>
+<li>文本对象可以被操作符operations使用，两类文本对象分别为：<code>i + object</code>  <code>a + object</code></li>
+<li><code>di(</code> 删除<code>()</code>内的内容</li>
+<li>删除整个被<code>&#123;&#125;</code>包裹的内容：<code>di&#123;</code></li>
+<li>删除<code>hello</code>这个单词：在<code>h</code>这个字母上，使用命令：<code>diw</code></li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Header1<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>Paragraph1<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>Paragraph2<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ol>
+<li>若此时光标在Header1上</li>
+<li>删除Header1这个单词：<code>dit</code></li>
+<li>删除<code>&lt;h1&gt;Header1&lt;/h1&gt;</code>:<code>dat</code></li>
+</ol>
+<h3 id="4-4-常用到的文本对象">4.4 常用到的文本对象</h3>
+<ul>
+<li><code>w</code>: 一个单词</li>
+<li><code>p</code>: 一个段落</li>
+<li><code>s</code>: 一个句子</li>
+<li><code>(</code>或者<code>)</code>:指的是<code>()</code></li>
+<li><code>&#123;</code>或者<code>&#125;</code>:指的是<code>&#123;&#125;</code></li>
+<li><code>&lt;</code>或者<code>&gt;</code>:指的是一对<code>&lt;&gt;</code></li>
+<li><code>t</code>: XML标签</li>
+</ul>
+<h3 id="4-5-针对性复习">4.5 针对性复习</h3>
+<ul>
+<li>
+<p><code>w</code> or <code>W</code>: 跳转到下一个单词</p>
+</li>
+<li>
+<p><code>0</code>: 跳转到本行的开始</p>
+</li>
+<li>
+<p><code>$</code>: 跳转到本行的行尾</p>
+</li>
+<li>
+<p><code>&#123;</code>: 跳转到打开文件光标所在位置的段落最开始</p>
+</li>
+<li>
+<p><code>&#125;</code>: 跳转到打开文件光标所在位置的段落最末尾</p>
+</li>
+<li>
+<p><code>gg</code>:跳转到打开文件的第一行文字开始位置</p>
+</li>
+<li>
+<p><code>G</code>: 跳转到打开文件的最后一行的开始位置</p>
+</li>
+<li>
+<p><code>]]</code>:同<code>G</code></p>
+</li>
+<li>
+<p><code>[[</code>:跳转到打开文件的第一行</p>
+</li>
+<li>
+<p><code>nG</code>: 跳转到第n行</p>
+</li>
+<li>
+<p><code>nj</code>: 光标处开始，向下n行</p>
+</li>
+<li>
+<p><code>nk</code>: 光标处开始，向上n行</p>
+</li>
+<li>
+<p><code>d</code>: 删除操作符</p>
+</li>
+<li>
+<p><code>y</code>: 复制操作符</p>
+</li>
+<li>
+<p><code>c</code>: 删除插入操作符</p>
+</li>
+<li>
+<p><code>p</code>: 粘贴到光标后操作符</p>
+</li>
+<li>
+<p><code>gU</code>: 小写变大写操作符</p>
+</li>
+</ul>
+<h2 id="五、在文件中移动">五、在文件中移动</h2>
+<h3 id="5-1-⭐️-字符导航">5.1 ⭐️ 字符导航</h3>
+<p>普通模式下：</p>
+<ul>
+<li><code>hjkl</code>: 字符导航</li>
+<li><code>n + hjkl</code>: 向左下上右移动n个行或者字符</li>
+<li><code>0</code>: 跳转到本行开始</li>
+<li><code>$</code>: 跳转到本行结尾</li>
+<li><code>^</code>: 跳转到本行第一个非空字符 <code>g_</code>跳转到本行最后一个非空字符串(<code>$</code>的使用于<code>g_</code>的区别，还是<code>$</code>在使用中普遍)</li>
+<li><code>n|</code>: 跳转到本行第n列</li>
+<li><code>fs</code>: focusOn string 在本行内光标之后开始搜索，光标停留在字符<code>s</code>上</li>
+<li><code>Fs</code>: focusOn string 在本行内光标之前开始搜索，光标停留在字符<code>s</code>上</li>
+<li><code>ts</code> : focusOn string 在本行内光标之后开始搜索，光标停留在字符<code>s</code>之前</li>
+<li><code>Ts</code> : focusOn string 在本行内光标之前开始搜索，光标停留在字符<code>s</code>之前
+<ul>
+<li><code>;</code>: 表示继续 在本行向下搜索下一个</li>
+<li><code>,</code>: 表示继续 在本行向上搜索上一个</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-2-句子和段落导航">5.2 句子和段落导航</h3>
+<ul>
+<li>
+<p>句子定义：指以 <code>.?!</code>这三个字符 跟着一个换行符或者空格、tab结尾的，就算一个句子。</p>
+</li>
+<li>
+<p><code>(</code>跳到前一个句子</p>
+</li>
+<li>
+<p><code>)</code>跳到下一个句子</p>
+</li>
+<li>
+<p>段落：可以从一个空行之后开始，也可以从段落选项中<code>字符对</code>所指定的段落宏的每个集合开始。</p>
+</li>
+<li>
+<p><code>&#123;</code>跳到上一个段落</p>
+</li>
+<li>
+<p><code>&#125;</code>跳到下一个段落</p>
+</li>
+</ul>
+<h3 id="5-3-⭐️-行号导航">5.3 ⭐️ 行号导航</h3>
+<ul>
+<li><code>nG</code>:跳转到第n行</li>
+<li><code>gg</code>:跳转到第一行</li>
+<li><code>G</code>:跳转到最后一行</li>
+<li><code>n%</code>:跳转到文件的百分比</li>
+<li><code>ctrl + g</code>:可以看到总行数以及当前所在行数</li>
+</ul>
+<h3 id="5-4-窗格导航">5.4 窗格导航</h3>
+<ul>
+<li><code>H</code>:Head 跳转到屏幕的顶部</li>
+<li><code>M</code>:Middle 跳转到屏幕的中部</li>
+<li><code>L</code>:Line   跳转到屏幕的底部</li>
+<li><code>nH</code>:跳转到距离顶部n行的位置</li>
+<li><code>nL</code>:跳转到距离底部n行的位置</li>
+</ul>
+<h3 id="5-5-⭐️-屏幕滚动">5.5 ⭐️ 屏幕滚动</h3>
+<p>普通模式下：</p>
+<ul>
+<li>
+<p><code>ctrl + e</code>:向下滚动一行-&gt; e,中文一，就是向下一行</p>
+</li>
+<li>
+<p><code>ctrl + y</code>:向上滚动一行-&gt; yu,骑驴的时候让驴听一下，回大喊一声yu，也就是退一步</p>
+</li>
+<li>
+<p><code>ctrl + f</code>:向下滚动一屏-&gt; full screen</p>
+</li>
+<li>
+<p><code>ctrl + b</code>:向上滚动一屏-&gt; back screen</p>
+</li>
+<li>
+<p><code>ctrl + u</code>:向上滚动半屏-&gt;up,up半屏。</p>
+</li>
+<li>
+<p><code>ctrl + d</code>:向下滚动半屏-&gt; down，down半屏</p>
+</li>
+</ul>
+<h3 id="5-6-当前行位置指定">5.6 当前行位置指定</h3>
+<ul>
+<li><code>zt</code>:将当前行 指定到窗格的顶部</li>
+<li><code>zz</code>:将当前行 指定到窗格的中间</li>
+<li><code>zb</code>:将当前行 指定搭配窗格的底部</li>
+</ul>
+<h3 id="5-7-位置标记-暂了解即可">5.7 位置标记(暂了解即可)</h3>
+<ul>
+<li><code>ma</code>:标记当前位置</li>
+<li>``a`:回到标记的位置(行与列)</li>
+<li><code>'a</code>:回到标记的行</li>
+</ul>
+<h3 id="5-8-跳转">5.8 跳转</h3>
+<p>在普通模式下：</p>
+<ul>
+<li><code>nG</code>:跳转到第n行</li>
+<li><code>/</code>:向后搜索跳转</li>
+<li><code>?</code>:向前搜索跳转</li>
+<li><code>n</code> 重复上一次搜索，相同方向</li>
+<li><code>N</code> 重复上一次搜索，相反方向</li>
+<li><code>%</code> 查找匹配</li>
+<li><code>(</code> 跳转上一个句子</li>
+<li><code>)</code> 跳转下一个句子</li>
+<li><code>&#123;</code> 跳转上一个段落</li>
+<li><code>&#125;</code> 跳转下一个段落</li>
+<li><code>L</code> 跳转到当前屏幕的最后一行</li>
+<li><code>M</code> 跳转到当前屏幕的中间</li>
+<li><code>H</code> 跳转到当前屏幕的第一行</li>
+<li><code>[[</code> 跳转到上一个小节</li>
+<li><code>]]</code> 跳转到下一个小节</li>
+<li><code>'a</code>:跳转到标记的行</li>
+<li>``a`:跳转到标记的行和列</li>
+</ul>
+<h2 id="六、输入模式">六、输入模式</h2>
+<p>这一节通过输入模式来提升输入效率。</p>
+<h3 id="6-1-⭐️-进入输入模式的方法">6.1 ⭐️ 进入输入模式的方法</h3>
+<ul>
+<li><code>i</code>:  从光标位置的前面开始输入内容</li>
+<li><code>I</code>:  从光标所在行的第一个非空字符开始输入内容</li>
+<li><code>a</code>:  与i是相对应的，从光标位置的后面开始输入内容</li>
+<li><code>A</code>:  与I是相对应的，从当前行的末尾非空文本后追加文本</li>
+<li><code>o</code>:  这个小o是非常的有用，在当前光标位置的下方自己给新起一行开始输入文本</li>
+<li><code>O</code>:  这个是与小o对应，在当前行的上一行开始新加一行并开始输入文本</li>
+<li><code>s</code>:  删除当前光标处字符，并开始输入内容</li>
+<li><code>S</code>:  删除光标所在当前行内容，并开始输入内容</li>
+</ul>
+<h3 id="6-2-退出输入模式的方法">6.2 退出输入模式的方法</h3>
+<p>除了Esc外，还可以直接使用<code>Ctrl + c</code>的方式退出输入模式</p>
+<h3 id="6-3-删除模式">6.3 删除模式</h3>
+<p>输入过程出现错误的合理做法是切换到普通模式，使用d来删除错误</p>
+<p>在输入模式中也是可以删除的:</p>
+<ul>
+<li><code>Ctrl + h</code>是删除一个字符</li>
+<li><code>ctrl + w</code>是删除一个单词</li>
+<li><code>ctrl + u</code>是删除一行</li>
+</ul>
+<h3 id="6-4-寄存器输入">6.4 寄存器输入</h3>
+<p>寄存器是说在a-z这个标识直接对一个单词在普通模式下进行保存操作<code>&quot;ayiw</code>，然后在输入模式中使用<code>ctrl + r a</code>的方式进行保存<br>
+这里在使用寄存器输入之前先用好<code>y$</code> <code>yw</code>，结合p、P，再考虑使用寄存器。</p>
+<h3 id="6-5-输入模式下的翻页">6.5 输入模式下的翻页</h3>
+<p>输入模式下也是可以翻页的</p>
+<ul>
+<li><code>ctrl + x  ctrl + y</code>: 向上滚动页面</li>
+<li><code>ctrl + x  ctrl + e</code>: 向下滚动页面</li>
+</ul>
+<h3 id="6-6-⭐️-执行普通模式下的命令">6.6 ⭐️ 执行普通模式下的命令</h3>
+<p>在输入模式下，可以使用普通模式下的命令。</p>
+<ul>
+<li>输入模式下，键入<code>ctrl + o</code>就进入了普通模式（左下角的模拟指示器显示 --insert–),这个时候就可以使用普通模式下的命令</li>
+<li><code>ctrl + o zz</code> 剧中窗口显示光标所在位置</li>
+<li><code>ctrl + o H/M/L</code>  光标跳转到窗口的顶部、中部、底部</li>
+<li><code>ctrl +o D</code> 从光标处删除到行尾</li>
+</ul>
+<h2 id="七、点命令">七、点命令</h2>
+<p>使用点命令来重放上一个修改动作，点命令是最简单的命令，也是减少重复操作最有用的命令。</p>
+<h3 id="7-1-用法">7.1 用法</h3>
+<p>想把下面的代码中<code>let</code>替换成<code>const</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">let</span> one = <span class="string">&#x27;1&#x27;</span></span><br><span class="line"><span class="built_in">let</span> two = <span class="string">&#x27;2&#x27;</span></span><br><span class="line"><span class="built_in">let</span> three =<span class="string">&#x27;3&#x27;</span></span><br></pre></td></tr></table></figure>
+<ol>
+<li>使用<code>/let</code>进行匹配</li>
+<li>使用<code>cwconst&lt;esc&gt;</code> 将匹配到的第一个替换成了 <code>const</code></li>
+<li>使用<code>n</code>找到下一个匹配的位置</li>
+<li>使用<code>.</code>命令，重复之前的匹配的操作</li>
+<li>持续 <code>n.n.</code>将每一个词进行替换</li>
+</ol>
+<h3 id="7-2-怎么算是修改操作">7.2 怎么算是修改操作</h3>
+<p>使用普通模式下的命令来更新(添加、修改、删除)当前缓冲区内容时，就是执行一个修改操作。</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">first</span>, <span class="keyword">second</span>, <span class="keyword">third</span>,</span><br></pre></td></tr></table></figure>
+<p>删除从开始到第一个逗号出现的位置：<code>df,</code>使用<code>.</code>重复两次直到整个句子删除。</p>
+<p>将下面中的逗号删除，不删除文本</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">liugezhou,<span class="keyword">is</span>,a,Cool,boy</span><br></pre></td></tr></table></figure>
+<p>根据<code>5.1</code>我们知道<code>fs</code>命令是搜索到字符<code>s</code>所在的位置，因此这里只删除<code>,</code>的操作，我们使用：<code>f,x;.;.</code>的方式<br>
+之所以加<code>;</code>是因为在vim中，操作是不包括移动的，这里是使用<code>;</code>移动到下一个目标点，执行删除操作。</p>
+<p>再看一个例子</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">my</span> </span><br><span class="line"><span class="built_in">name</span></span><br><span class="line"><span class="keyword">is</span> </span><br><span class="line">liugezhou</span><br></pre></td></tr></table></figure>
+<p>目的是要在每一行结尾加上逗号：</p>
+<ul>
+<li>首先根据<code>6.1</code>我们知道<code>A</code>是在当前行结尾追加内容</li>
+<li>然后根据vim中的点操作不包括移动，我们这样：</li>
+<li><code>A, &lt;ESC&gt; j .&lt;ESC&gt; j .&lt;ESC&gt; j .</code><br>
+从按下命令A开始，到退出模式之间的所有输入都算是一整个修改操作。</li>
+</ul>
+<h3 id="7-3-重复多行修改操作">7.3 重复多行修改操作</h3>
+<figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">1 </span> Hello World!</span><br><span class="line"><span class="symbol">2 </span>Hello World!</span><br><span class="line"><span class="symbol">3 </span>Hello World!</span><br><span class="line"><span class="symbol">4 </span>Hello World!</span><br><span class="line"><span class="symbol">5 </span>Hello World!</span><br><span class="line"><span class="symbol">6 </span>Hello World!</span><br><span class="line"><span class="symbol">7 </span>Hello World!</span><br></pre></td></tr></table></figure>
+<p>有7行数据，要删除的是除了第5行。我们这里使用简单的删除方法：先删除前四行，再删除第6、7行。<br>
+命令位：<code>d4jjd2j</code><br>
+解析：其中<code>d</code>为操作删除，<code>4j</code>类比于<code>5.3节</code>的<code>nG</code>,即要删除的范围为：当前光标处下移动4行。<code>j</code>表示下。</p>
+<p>点命令非常简单且功能强大，这里先记录这三个。</p>
+<h2 id="八、寄存器">八、寄存器</h2>
+<h3 id="8-1-10种寄存器类型">8.1 10种寄存器类型</h3>
+<ol>
+<li>匿名寄存器(<code>&quot;&quot;</code>)</li>
+<li>编号寄存器(<code>&quot;0-9</code>)</li>
+<li>小删除寄存器(<code>&quot;-</code>)</li>
+<li>命名寄存器(<code>&quot;a-z</code>)</li>
+<li>只读寄存器(<code>:</code>,<code>:.</code>,<code>&quot;%</code>)</li>
+<li>Buffer交替文件寄存器(<code>&quot;#</code>)</li>
+<li>表达式寄存器(<code>&quot;=</code>)</li>
+<li>选取和拖放寄存器(<code>&quot;*</code>,<code>&quot;+</code>)</li>
+<li>黑洞寄存器(<code>&quot;_</code>)</li>
+<li>探索模式寄存器(<code>&quot;/</code>)</li>
+</ol>
+<h3 id="8-2-寄存器命令">8.2 寄存器命令</h3>
+<p>从存值和取值两个方面了解哪些命令与寄存器有关。</p>
+<p>存值到寄存器中的操作：</p>
+<ul>
+<li><code>y</code>: 复制</li>
+<li><code>c</code>: 删除并进入插入模式 [需要跟名词]</li>
+<li><code>d</code>: 删除 [需要跟名词]</li>
+<li><code>s</code>: 直接删除光标处字符并进入插入模式</li>
+<li><code>S</code>: 直接删除光标所在行内容并进入插入模式</li>
+<li><code>x</code>: 直接删除处于光标处字符，与<code>s</code>不同为仍然处于普通模式</li>
+<li><code>x</code>: 直接删除处于光标处上一个字符，且仍然处于普通模式</li>
+</ul>
+<p>从寄存器中取出文本操作</p>
+<ul>
+<li>
+<p><code>p</code>:在光标位置之后粘贴文本</p>
+</li>
+<li>
+<p><code>P</code>:在光标位置之前粘贴文本</p>
+</li>
+<li>
+<p><code>p</code>和<code>P</code>都可以接受计数和一个寄存器标志作为参数。</p>
+</li>
+<li>
+<p><code>10p</code>表示：当前光标之后，将上一次存值到寄存器中的内容，复制100遍。</p>
+</li>
+<li>
+<p><code>10&quot;ap</code>表示：将寄存器<code>a</code>中的文本粘贴10次。(关于寄存器<code>a</code>是寄存标志，8.4内容介绍)</p>
+</li>
+</ul>
+<h3 id="8-3-在输入模式中使用寄存器">8.3 在输入模式中使用寄存器</h3>
+<p>输入模式下使用寄存器的命令为：<br>
+<code>ctrl + r a</code><br>
+这里的<code>a</code>是指寄存器的标志(关于标签a如何添加，下面内容介绍)。</p>
+<h3 id="8-4-⭐️-不同类型寄存器标志说明">8.4 ⭐️ 不同类型寄存器标志说明</h3>
+<p><strong>1.匿名寄存器&quot;&quot;</strong><br>
+说明：匿名寄存器存储的是最近的一次复制、修改或者删除的文本，和电脑上的粘贴功能一个意思。<br>
+语法：<code>p</code> || <code>P</code></p>
+<p><strong>2.编号寄存器(&quot;0-9)</strong><br>
+说明：编号寄存器自动以升序进行填充，按0-9分为复制寄存器(0)和其他编号寄存器(1-9)</p>
+<p>复制寄存器(0):是指若是复制操作(<code>yy</code>复制一行)，Vim会将文本存放在两个寄存器中-&gt;匿名寄存器<code>p</code>和复制寄存器<code>0</code>中去，这里的操作只能是复制，删除不管用，好处是最新复制的内容一直会在复制寄存器中。<br>
+语法：普通模式下-&gt;<code>&quot;0p</code>,插入模式下-&gt;<code>ctrl + r 0</code></p>
+<p>编号寄存器(1-9):当修改或者删除至少一整行的文本时，这部分文本会按时间顺序被存储在1-9号编号寄存器中(编号越小，距离时间越近)。<br>
+语法：普通模式下-&gt;<code>&quot;np</code>,插入模式下-&gt;<code>ctrl + r n</code><br>
+注意：小型的单词删除(<code>dw</code>OR<code>vw</code>)不会被储存在编号寄存器中，会被储存在小删除寄存器中<code>&quot;-</code>。</p>
+<p><strong>3.小删除寄存器(&quot;-)</strong><br>
+说明：不足一行的修改或者删除都不会被存储到0-9的编号寄存器中去，而是会被存储在小删除寄存器(<code>&quot;-</code>)中去。<br>
+语法：普通模式下-&gt;<code>&quot;-p</code>,插入模式下-&gt;<code>ctrl + r -</code></p>
+<p><strong>4.命名寄存器(&quot;a-z)</strong><br>
+说明：命名寄存器是Vim中用法最丰富的寄存器。a-z命名寄存器可以存储复制、修改和删除的文本。<br>
+语法:<code>&quot;ayiw</code> 表示复制一个单词，且存储在寄存器中以<code>a</code>命名。</p>
+<p><strong>5.只读寄存器(<code>&quot;:</code>,<code>&quot;.</code>,<code>&quot;%</code>)</strong><br>
+说明：vim只要三个只读寄存器，<code>.</code>存储上一个输入的文本，<code>:</code>存储上一次执行的命令，<code>%</code>存储当前文件的文件名<br>
+举例：在vim中处于插入模式下，想看本文件目录：<code>ctrl + r %</code>，直接打出文件名字。</p>
+<p><strong>6.buffer交替文件寄存器(<code>&quot;#</code>)</strong><br>
+说明：vim中，<code>#</code>通常代表交替文件，交替文件是上一个打开的文件，使用命令<code>&quot;#p</code>,  只是打印出文件名，貌似没有什么大用。</p>
+<p><strong>7.表达寄存器(<code>&quot;=</code>)</strong><br>
+说明：Vim有一个表达式寄存器，<code>&quot;=</code>用于计算表达式的结果。<br>
+语法：普通模式下-&gt; <code>&quot;=100+100 Enter p</code>,插入模式下-&gt;<code>ctrl + r =100+100 enter</code></p>
+<p>扩展：可以使用表达寄存器方法结合<code>@</code>符号从其他寄存器中直接拿出值-&gt;<code>ctrl + r =@a</code> OR <code>ctrl + r =@1</code></p>
+<p><strong>8.选取和拖放寄存器(<code>&quot;*,&quot;+</code>)</strong><br>
+可以用<code>&quot;*</code>和<code>&quot;+</code>来访问从外部程序中复制的文本。<br>
+语法：当在外部复制了一段文本后,要在vim中复制文本，普通模式下-&gt;<code>&quot;*p</code> | <code>&quot;+p</code>,在插入模式下-&gt; <code>ctrl + r *</code> | <code>ctrl + r *</code><br>
+反向:在vim文件内，普通模式下复制一行代码-&gt;<code>&quot;*yy</code>,这个时候在外部直接粘贴即可。</p>
+<p>扩展:为了vim仅使用<code>p</code>就能从外部粘贴文本，可以在<code>vimrc</code>配置文件中-&gt;<code>set clipboard=unnamed</code></p>
+<p><strong>9.黑洞寄存器(<code>&quot;_</code>)</strong><br>
+说明:每次修改或者删除文本时，默认会存入到寄存器中，如果不想存，就可以使用黑洞寄存器。<br>
+语法: <code>&quot;_dd</code> 删除一行且不放入到寄存器中去。</p>
+<p><strong>10.探索模式寄存器(<code>&quot;/</code>)</strong><br>
+说明: 之前使用了<code>?</code>或者<code>/</code>进行了搜索，这个搜索文本可以通过 <code>&quot;/p</code>的方式快速打印。</p>
+<p><strong>查看所有的寄存器</strong><br>
+语法：使用<code>:register</code>的方式查看所有寄存器,可跟参数，比如<code>:register a 1 -</code><br>
+扩展：使用寄存器插件<code>vim-peekaboo</code>可查看所有寄存器内容(且分类的)，普通模式下直接输入<code>&quot;</code>或者<code>@</code>即可，插入模式下<code>ctrl + r</code>即可。</p>
+<p>tips:到这里的时候，根据这篇文章先去安装了vim的包管理器<a target="_blank" rel="noopener" href="https://www.cnblogs.com/zhaodehua/articles/15108744.html">Vim-plug</a><br>
+并安装了插件<code>preservim/NERDTree</code>(图形界面),以及<code>junegunn/vim-peekaboo</code>插件。</p>
+<p><strong>清除寄存器</strong><br>
+从技术上来说没必要清理寄存器，但是通过<code>:register</code>或者插件看到的寄存器可能就是不得劲。<br>
+这里记录一个清除寄存器的命令:<code>:let @1 =''</code>-&gt;将编号寄存器0清除。</p>
+<p><strong>获取寄存器中的内容</strong><br>
+语法：使用<code>:put a</code>打印出寄存器<code>a</code>的内容。<br>
+<code>:put</code>与<code>ap</code>的区别在于，前者是新起一行插入寄存器内容，后者在光标位置之后插入。</p>
+<h2 id="九、宏命令">九、宏命令</h2>
+<p>背景：编辑文件的时候，有时候我们会反复的做一些相同动作，通过vim的宏命令，可以将一些动作记录到Vim寄存器。</p>
+<h3 id="9-1-基本宏命令">9.1 基本宏命令</h3>
+<ul>
+<li>基本语法:<code>qa</code>:开始记录动作到寄存器a， <code>q</code>: 停止记录</li>
+<li>注意：使用小写字母a-z去存储宏命令，通过<code>@a</code>命令去调用。</li>
+</ul>
+<p>Practice：有以下文本，需要将每一行的字母变成大写</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">my</span> </span><br><span class="line"><span class="built_in">name</span></span><br><span class="line"><span class="keyword">is</span></span><br><span class="line">liugezhou</span><br></pre></td></tr></table></figure>
+<p>普通模式下:<code>qa0gU$jq</code><br>
+命令分解：</p>
+<ul>
+<li><code>qa</code>: 开始记录一个宏定义并存储在a寄存器中</li>
+<li><code>0</code>: 移动到改首</li>
+<li><code>gU$</code>:从光标处到行尾字母变成大写</li>
+<li><code>j</code>:向下移动一行</li>
+<li><code>q</code>: 停止记录</li>
+<li>最后通过<code>@a</code>去执行改宏命令，<code>3@a</code>会执行三次宏命令。</li>
+</ul>
+<h3 id="9-2-增添、修改、拷贝宏">9.2 增添、修改、拷贝宏</h3>
+<p>在普通模式下：</p>
+<ul>
+<li>增添一个宏：<code>: let @a ='something'</code>。</li>
+<li>修改一个宏：<code>: let @a ='输入新的'</code> 即可。</li>
+<li>拷贝一个宏：<code>: let @z = @a</code></li>
+</ul>
+<h2 id="十、撤销">十、撤销</h2>
+<p>撤销是一个基本功能，本节记录撤销、取消撤销、浏览撤销分支、反复撤销、浏览改动时间线。</p>
+<h3 id="10-1-撤销-undo-重做和行撤销-UNDO">10.1 撤销(undo),重做和行撤销(UNDO)</h3>
+<p>在每次进入插入模式和退出模式之间的任何修改都被定义为一次修改。</p>
+<ul>
+<li>基本撤销:<code>u</code> (undo),可以连续执行。</li>
+<li>撤销基本撤销: <code>ctrl + r</code>，可以连续执行。</li>
+<li>跳过中间修改:<code>U</code>(使用较少)</li>
+</ul>
+<p>tips:在.vimrc中设置 <code>set undolevels =500 </code>可以执行500次的undo操作</p>
+<h3 id="10-2-断点插入操作">10.2 断点插入操作</h3>
+<p>上面的撤销是从插入模式到退出模式作为一次修改，而我们在输入模式中，由于输入大量文本，也有撤销的要求，也就是在输入模式下记录一下撤销点。<br>
+插入模式下，当执行完一个操作后，键入<code>ctrl + g u</code>，这个时候就记录了一个断点。</p>
+<h3 id="10-3-撤销树">10.3 撤销树</h3>
+<p>语法:<code>g+</code> <code>g-</code></p>
+<h3 id="10-4-保存撤销记录">10.4 保存撤销记录</h3>
+<p>操作步骤</p>
+<ul>
+<li>新建一个空的test.md文件</li>
+<li><code>i</code> 输入&quot;one&quot;</li>
+<li><code>ctrl + g u</code></li>
+<li>回车，继续输入&quot;two&quot;</li>
+<li><code>ctrl + g u</code></li>
+<li>回车，继续输入&quot;three&quot;</li>
+<li><code>esc</code></li>
+<li><code>: wundo test.undo</code></li>
+<li>退出vim</li>
+</ul>
+<p>再次打开test.md的时候，我们执行<code>u</code>命令发现，下方提示：<code>Already at oldest change</code>,即不能撤销。<br>
+这个时候执行<code>:rundo test.undo</code>,在执行<code>u</code>命令就可以撤销了。</p>
+<p>语法：<code>:wundo file.undo</code> 、<code>:rundo file.undo</code></p>
+<p>tips:真正开发的时候，应该没人去自己创建一个undo的文件，我们为了默认每次进入文件后都是可以执行<code>u</code>的，可以在<code>~/.vim</code>目录下新建一个默认目录<code>undo_dir</code>，然后在<code>.vimrc</code>文件中设置</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> <span class="attribute">undodir</span>=~/.vim/undo_dir</span><br><span class="line"><span class="built_in">set</span> undofile</span><br></pre></td></tr></table></figure>
+<p>这个时候，无论何时保存，Vim都会自动创建和保存撤销的历史记录。</p>
+<h3 id="10-5-时间旅行">10.5 时间旅行</h3>
+<p>时间旅行真的是太Cool了。<br>
+打开一个文件，如果你想看之前某个时刻的显示：</p>
+<ul>
+<li><code>:earlier 10s</code> 恢复到10秒之前的状态</li>
+<li><code>:earlier 10m</code> 恢复到10分钟之前的状态</li>
+<li><code>:earlier 10h</code> 恢复到10小时之前的状态</li>
+<li><code>:earlier 10d</code> 恢复到10天前的状态</li>
+<li><code>:earlier 2</code> 恢复到2次修改前的状态</li>
+<li><code>:earlier 2f</code> 恢复到2次保存前的状态</li>
+</ul>
+<p><code>:earlier</code>对应的版本<code>:later</code>,语法同上。</p>
+<h2 id="十一、可视化模式">十一、可视化模式</h2>
+<h3 id="11-1-三种可视化模式">11.1 三种可视化模式</h3>
+<ul>
+<li><code>v</code>: 逐字可视化模式</li>
+<li><code>V</code>: 逐行可视化模式</li>
+<li><code>ctrl + v</code>:逐块可视化模式</li>
+</ul>
+<p>可在三种模式下切换，切合<code>hjkl</code>体验效果。</p>
+<h3 id="11-2-可视模式导航">11.2 可视模式导航</h3>
+<p>可视化导航指的是，在向某一个方向进行可视化的时候，这个时候有向相反方向进行可视化的需求，这个时候使用<code>o</code>来切换光标位置。</p>
+<h3 id="11-3-可视模式语法">11.3 可视模式语法</h3>
+<p>使用三种模式的一种，将某一段文本、代码为可视化后，按<code>d</code>直接将其删除。<br>
+与普通模式语法规则不同的是，(动词 + 名词)的不适用于可视模式，可适模式下没有名词。</p>
+<h2 id="十二、搜索和替换">十二、搜索和替换</h2>
+<ol>
+<li>智能区分大小写</li>
+</ol>
+<ul>
+<li>设置搜索不区分大小写-&gt;.vimrc-&gt;set ignorecase</li>
+<li>设置全小写不区分大小写，有一个大写字母就区分-&gt;.vimrc-&gt; set ignorecase smartcase</li>
+</ul>
+<ol start="2">
+<li>一行中的第一个字符和最后一个字符</li>
+</ol>
+<ul>
+<li>使用<code>^</code>匹配行中的第一个字符，<code>$</code>匹配最后一个字符</li>
+</ul>
+<ol start="3">
+<li>重复搜索｜候选词搜索</li>
+</ol>
+<ul>
+<li><code>//</code>重复上一个搜索/</li>
+<li><code>/up|down</code>:遍历搜索历史</li>
+<li><code>:history /</code>:查看所有历史记录</li>
+<li><code>/s1\|s2</code>:同时搜索字符s1和s2，重点是转义符</li>
+<li><code>\vs1|s2</code>: 同上使用<code>\v</code></li>
+</ul>
+<ol start="4">
+<li>
+<p>搜索字符组<br>
+与正则表达式相通：\v[^0-9a-zA-Z]{m,n}</p>
+</li>
+<li>
+<p>基本替换:<br>
+将good单词替换为awesome：<code>:s/good/awesome</code><br>
+全局将good单词替换为awesome：<code>:s/good/awesome/g</code></p>
+</li>
+</ol>
+<h2 id="十三、全局命令">十三、全局命令</h2>
+<h3 id="13-1-全局命令概述">13.1 全局命令概述</h3>
+<ul>
+<li><code>:h ex-cmd-index</code>查看完整列表</li>
+<li>全局命令语法:<code>:g/pattern/command</code></li>
+</ul>
+<p>举例：</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">one</span> = 1;</span><br><span class="line">console.<span class="built_in">log</span>(<span class="string">&quot;one: &quot;</span>, <span class="keyword">one</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">two</span> = 2;</span><br><span class="line">console.<span class="built_in">log</span>(<span class="string">&quot;two: &quot;</span>, <span class="keyword">two</span>);</span><br></pre></td></tr></table></figure>
+<p>要删除所有包含<code>console</code>的行，可以运行 <code>:g/console/d</code></p>
+<h3 id="13-2-逆向匹配">13.2 逆向匹配</h3>
+<p><code>:v/console/d</code>:它将删除所有不包含<code>console</code>的行。</p>
+<h2 id="十四、外部命令">十四、外部命令</h2>
+<h3 id="14-1-读取外部文件">14.1 读取外部文件</h3>
+<ul>
+<li><code>:r</code>是Vim的读命令，如果不带<code>!</code>使用它，则可以使用它来获取文件内容，若当前目录有文件 <code>test.md</code> , 运行 <code>:r test.md</code>. Vim就会将test.md的内容放入到当前缓冲区。</li>
+<li><code>:r !ls</code>,语法结构为 <code>:r</code> + <code>!</code> + <code>外部命令</code>，该命令的输出将插入到当前缓冲区。eg <code>:r !ls</code> ,这个命令会将当前目录下执行ls列出的文件列表，插入到当前编辑的文件中。</li>
+<li><code>:r !ctrl -s 'url'</code>:这个命令会将接口url返回的内容插入到当前编辑的文件中。</li>
+</ul>
+<h3 id="14-2-将缓冲区内容写入外部命令">14.2 将缓冲区内容写入外部命令</h3>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.<span class="built_in">log</span>(<span class="string">&#x27;liugezhou&#x27;</span>)</span><br><span class="line"><span class="built_in">console</span>.<span class="built_in">log</span>(<span class="string">&#x27;vim&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>当上面内容在缓冲区内时，在普通模式下，执行<code>:w !node</code>，Vim将使用node执行JavaScript表达式来打印出<code>liugezhou</code>和<code>vim</code></p>
+<h3 id="14-3-执行外部命令">14.3 执行外部命令</h3>
+<p>可以在不离开Vim的情况下运行任何外部命令。</p>
+<ul>
+<li>语法：<code>:!cmd</code></li>
+<li><code>:!ls -ls</code></li>
+<li><code>:kill -9 3466</code></li>
+</ul>
+<h2 id="十五、命令行模式">十五、命令行模式</h2>
+<p>切记本章内容是在命令行模式下。</p>
+<h3 id="15-1-进入和退出命令行模式">15.1 进入和退出命令行模式</h3>
+<p>进入命令行模式：<code>/</code>、<code>?</code>、<code>:</code>、<code>!</code><br>
+离开命令行模式:<code>ESC</code>、<code>ctrl + c</code>、 <code>ctrl + [</code></p>
+<h3 id="15-2-命令行模式快捷键">15.2 命令行模式快捷键</h3>
+<ul>
+<li>如果要移动一个单词：<code>shift + left</code>、<code>shift + right</code></li>
+<li>如果要移动到该行开始:<code>ctrl + b</code>,移动到该行结尾:<code>ctrl + e</code></li>
+<li>删除字符:<code>ctrl + h</code>(删除一个字符),<code>ctrl + w</code> 删除一个单词, <code>ctrl + u</code>删除一行  、</li>
+<li>编辑文件一样编辑命令 <code>ctrl + f</code>,比如使用<code>/</code>或者<code>?</code>进入命令行模式后，键入<code>ctrl + f</code> 可以查看历史记录以及编辑新的内容，<code>:</code>和<code>!</code>同理,按下<code>enter</code>执行。</li>
+</ul>
+<h3 id="15-3-寄存器和自动补全">15.3 寄存器和自动补全</h3>
+<ul>
+<li>在命令行模式下，可以像插入模式那样使用 <code>ctrl + r</code>从Vim寄存器中插入文本。</li>
+<li>命令行模式下，<code>ctrl + r ctrl + w</code> 获取当前光标下的字母</li>
+<li>命令行模式下，<code>ctrl + r ctrl + A</code> 获取当前光标下的词组</li>
+<li>命令行模式下，<code>ctrl + r ctrl + l</code> 获取当前光标所在行内容</li>
+</ul>
+<h2 id="十六、标签">十六、标签</h2>
+<p>暂时略过</p>
+<h2 id="十七、折叠">十七、折叠</h2>
+<h3 id="17-1-手动折叠">17.1 手动折叠</h3>
+<ul>
+<li>折叠操作符是<code>z</code></li>
+<li><code>zfj</code>: 从光标所在行到下一行内容折叠</li>
+<li><code>zo</code>: 在光标处、打开已折叠文本</li>
+<li><code>zc</code>: 关闭/收缩文本</li>
+<li>折叠操作符，符合语法规则(动词 + 名词)</li>
+<li><code>zR</code>:展开所有折叠</li>
+<li><code>zM</code>:收缩所有折叠</li>
+<li><code>za</code>: 切换折叠状态</li>
+</ul>
+<p>命令行模式下，使用<code>:fold</code>命令执行一次折叠</p>
+<ul>
+<li><code>,+1fold</code> 折叠当前行及紧随其后的第二行</li>
+<li><code>16,20fold</code> kjj第16到20行</li>
+</ul>
+<h3 id="17-2-不同的折叠方法">17.2 不同的折叠方法</h3>
+<ul>
+<li>
+<p>通过<code>:set foldmethod</code>查看折叠方式，默认是手动折叠<code>manual</code></p>
+</li>
+<li>
+<p>手动折叠</p>
+</li>
+<li>
+<p>缩进折叠</p>
+</li>
+<li>
+<p>表达式折叠</p>
+</li>
+<li>
+<p>语法折叠</p>
+</li>
+<li>
+<p>差异折叠</p>
+</li>
+<li>
+<p>标志折叠</p>
+</li>
+</ul>
+<h2 id="十八、Git">十八、Git</h2>
+<h3 id="18-1-差异比较">18.1 差异比较</h3>
+<ul>
+<li>查看两个文件的差异： <code>vimdiff f1.md f2.md</code> OR <code>vim -d f1.md f2.md</code></li>
+<li>使用<code>]c</code>跳转到下一处差异,<code>[c</code>跳转到上一处差异</li>
+<li><code>:diffput</code> 将左侧内容同步到右侧</li>
+<li><code>:diffget</code>  将右侧内容同步到左侧</li>
+</ul>
+<h3 id="18-2-使用Vim作为合并工具">18.2 使用Vim作为合并工具</h3>
+<ol>
+<li>首先运行以下命令来将默认合并工具更改为 <code>vimdiff</code></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git config merge.tool vimdiff </span><br><span class="line">git config merge.conflictstyle diff3</span><br><span class="line">git config mergetool.prompt <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<p>或者通过修改<code>~/.gitconfig</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[core]</span><br><span class="line">  editor = vim </span><br><span class="line">[merge]</span><br><span class="line">  tool = vimdiff </span><br><span class="line">  conflictstyle = diff3 </span><br><span class="line">[difftool]</span><br><span class="line">  prompt = <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<h3 id="18-2-在Vim中使用Git">18.2 在Vim中使用Git</h3>
+<p>使用<code>!</code>可以运行任何Git命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">:!git status</span><br><span class="line">:!git commit <span class="string">&#x27;add something&#x27;</span></span><br><span class="line">:!git diff</span><br><span class="line">:!git push origin master</span><br><span class="line">:!git add `%` (%-当前缓冲区) </span><br><span class="line">:!git checkout `<span class="comment">#` (`#`其他缓冲区)</span></span><br></pre></td></tr></table></figure>
+<h2 id="十九、编译">十九、编译</h2>
+<p>Vim有运行makefile的<code>:make</code>命令，当运行它时，Vim会在当前目录寻找makefile并执行它。</p>
+<h3 id="19-1-Make命令">19.1 Make命令</h3>
+<p>新建一个makefile文件，内容保存如下：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">all</span>:</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;Hello all&quot;</span></span><br><span class="line">foo:</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;Hello foo&quot;</span></span><br><span class="line">list_pls:</span><br><span class="line">	<span class="keyword">ls</span></span><br></pre></td></tr></table></figure>
+<p>vim命令后模式运行:<code>:make</code>  <code>:make all</code> <code>:make foo</code> <code>:make list_pls</code> 查看打印内容</p>
+<h3 id="19-2-使用Make编译">19.2 使用Make编译</h3>
+<ul>
+<li>创建一个make.js文件</li>
+</ul>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function <span class="built_in">make</span>()&#123;</span><br><span class="line">  console<span class="selector-class">.log</span>(<span class="string">&#x27;使用makefile中的node命令进行编译&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="title">make</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>在该目录下创建一个makefile文件，内容如下</li>
+</ul>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">node</span><span class="title">:</span></span><br><span class="line"><span class="title">    node</span> ./make.js</span><br></pre></td></tr></table></figure>
+<ul>
+<li>运行 <code>:make node</code> 即可查看结果。</li>
+</ul>
+<h3 id="19-3-不同的make程序">19.3 不同的make程序</h3>
+<ul>
+<li>当运行<code>:make</code>的时候，实际上会执行makeprg选项设置的命令</li>
+<li>通过运行 <code>:set makeprg?</code>来查看，默认的设置为:<code>makeprg=make</code></li>
+<li>修改命令为:<code>:set makeprg=node\ %</code>,<code>\ </code>为对空格的转义,<code>%</code>符号表示当前文件。</li>
+</ul>
+<h3 id="二十、视图、会话和Viminfo">二十、视图、会话和Viminfo</h3>
+<p>当项目的一些设置、布局、缓冲区在开始设置后，关闭Vim再次进入后原先设置会丢失，这节来学习如何使用视图、会话和 Viminfo 来保存项目’快照’</p>
+<p>本节内容暂时跳过</p>
+<h2 id="二十一、多文件操作">二十一、多文件操作</h2>
+<h3 id="21-1-多文件中执行命令的方法">21.1 多文件中执行命令的方法</h3>
+<ul>
+<li>参数列表(argdo)</li>
+<li>缓冲区列表(bufdo)</li>
+<li>窗口列表（windo）</li>
+<li>tab列表(tabdo)</li>
+<li>快速修复列表(cdo)</li>
+<li>文件方式的快速修复列表(cfdo)</li>
+<li>位置列表(ldo)</li>
+<li>文件方式的位置列表(lfdo)</li>
+</ul>
+<h3 id="21-2-参数列表">21.2 参数列表</h3>
+<p>通过参数将一些文件创建一个列表：</p>
+<ul>
+<li><code>:args file1 file2 file3</code></li>
+<li><code>:args *.js</code></li>
+<li><code>:args a*.js</code></li>
+<li><code>:args **/*.js</code></li>
+</ul>
+<p>运行以上命令后，当前buffer会切换到列表中的第一个文件，运行<code>:args</code>可以查看当前创建的文件列表。</p>
+<ul>
+<li><code>:first</code>:跳转至列表中的第一个文件</li>
+<li><code>:last</code>:跳转到最后一个文件</li>
+<li><code>:next</code>:跳转到下一个文件</li>
+<li><code>:prev</code>:跳转到上一个文件</li>
+<li><code>:wnext</code>:保存当前文件跳转到下一个文件</li>
+<li><code>:wprev</code>:保存当前文件跳转到上一个文件</li>
+</ul>
+<h2 id="二十二、Vimrc">二十二、Vimrc</h2>
+<h3 id="22-1-Vim如何找到Vimrc">22.1 Vim如何找到Vimrc</h3>
+<p>根据操作系统，文件路径名可能不同，一般的使用路径是 ~/.vimrc</p>
+<h3 id="22-2-Vimrc基础内容">22.2 Vimrc基础内容</h3>
+<p>绝大部分的使用场景包含一下五个内容集合：</p>
+<ul>
+<li>插件</li>
+<li>设置</li>
+<li>自定义函数</li>
+<li>自定义命令</li>
+<li>键盘映射</li>
+</ul>
+<p><strong>插件</strong></p>
+<p>我的插件管理器使用的是<code>vim-plug</code></p>
+<ol>
+<li>添加插件方法,在<code>.vimrc</code>中：</li>
+</ol>
+<figure class="highlight leaf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">call plug<span class="punctuation">#</span><span class="keyword">begin</span></span><br><span class="line">  Plug &#x27;mattn/emmet-vim&#x27;</span><br><span class="line">  Plug &#x27;preservim/nerdtree&#x27;</span><br><span class="line">call plug<span class="punctuation">#</span><span class="keyword">end</span><span class="params">()</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>保存退出</li>
+<li>在vim命令后模式中运行<code>:PlugInstall</code></li>
+<li>如果想删除不使用的插件，只要将插件名从call代码块之前删除，保存后执行<code>:PlugClean</code>即可。</li>
+</ol>
+<p><strong>设置</strong><br>
+在任意一个vimrc文件中会发现有大量的set设置。<br>
+而在命令行模式下执行set命令，只是暂时的,关闭vim后设置就会丢失。</p>
+<ul>
+<li><code>set number</code>:显示行号</li>
+<li><code>set hidden</code>:允许在有未保存的修改时切换缓冲区，此时的修改由 vim 负责保存</li>
+<li><code>set hlsearch</code>: 搜索时高亮显示被找到的文本</li>
+<li><code>set clipboard=unnamed</code>:仅使用<code>p</code>就能从外部粘贴文本</li>
+<li><code>set undolevels =500 </code>可以执行500次的undo操作</li>
+<li><code>set undodir=~/.vim/undo_dir</code>、<code>set undofile</code>:为了默认每次进入文件后都是可以执行<code>u</code>的，在<code>~/.vim</code>目录下新建一个默认目录<code>undo_dir</code></li>
+<li><code>set ignorecase smartcase</code>:设置全小写不区分大小写，有一个大写字母就区分-&gt;.vimrc-&gt; set ignorecase smartcase<br>
+…… <a target="_blank" rel="noopener" href="https://www.cnblogs.com/gaoguofeng/p/5799604.html">更多设置参考</a></li>
+</ul>
+<p><strong>自定义函数</strong><br>
+vimrc是一个很好的用来放置自定义函数的地方，后面的章节继续学习写vimscript函数</p>
+<p><strong>自定义命令</strong><br>
+可以使用<code>command</code>创建一个自定义命令<br>
+eg:创建一个显示今天日期的基本命令 Today(首字母大写)<br>
+<code>:command! Today echo call(&quot;strftime&quot;,[&quot;%F&quot;])</code></p>
+<p><strong>键盘映射</strong><br>
+略过</p>
+<h3 id="22-3-组织管理Vimrc">22.3 组织管理Vimrc</h3>
+<p>当<code>.vimrc</code>文件变得大且复杂时，有两种方法可以使文件保持整洁：</p>
+<ol>
+<li>将vimrc文件划分为几个文件</li>
+</ol>
+<ul>
+<li>在<code>~/.vim</code>下创建一个子文件<code>settings</code></li>
+<li>在该子文件下创建多个文件(<code>plugins.vim</code>、<code>configs.vim</code>、<code>functions.vim</code>、<code>mappings.vim</code>)</li>
+<li>在<code>.vimrc</code>中添加 <code>source $HOME/.vim/settings/.....</code></li>
+<li>然后分别在四个文件中设置<code>set</code>、<code>call plug</code>等等，即可</li>
+</ul>
+<ol start="2">
+<li>折叠vimrc文件<br>
+在<code>.vimrc</code>文件顶部添加如下内容</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot; setup folds &#123;&#123;&#123;</span></span><br><span class="line"><span class="string">augroup filetype_vim</span></span><br><span class="line"><span class="string">  autocmd!</span></span><br><span class="line"><span class="string">  autocmd FileType vim setlocal foldmethod=marker</span></span><br><span class="line"><span class="string">augroup END</span></span><br><span class="line"><span class="string">&quot;</span> &#125;&#125;&#125;</span><br><span class="line"><span class="string">&quot; plugins &#123;&#123;&#123;</span></span><br><span class="line"><span class="string">call plug#begin(&#x27;~/.vim/plugged&#x27;)</span></span><br><span class="line"><span class="string">  Plug &#x27;mattn/emmet-vim&#x27;</span></span><br><span class="line"><span class="string">  Plug &#x27;preservim/nerdtree&#x27;</span></span><br><span class="line"><span class="string">call plug#end()</span></span><br><span class="line"><span class="string">&quot;</span> &#125;&#125;&#125;</span><br><span class="line"><span class="string">&quot; configs &#123;&#123;&#123;</span></span><br><span class="line"><span class="string">set nocompatible</span></span><br><span class="line"><span class="string">set relativenumber</span></span><br><span class="line"><span class="string">set number</span></span><br><span class="line"><span class="string">&quot;</span> &#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="22-4-启动Vim时加载-不加载vimrc和插件">22.4 启动Vim时加载/不加载vimrc和插件</h3>
+<ul>
+<li>启动Vim时，既不加载vimrc，也不加载插件：<code>vim -u NONE</code></li>
+<li>启动Vim时，不加载vimrc，但加载插件:<code>vim -u NORC</code></li>
+<li>启动Vim时，加载vimrc，但不加载插件:<code>vim --noplugin</code></li>
+<li>启动Vim时加载其他的vimrc配置文件:<code>vim -u ~/.vimrc-backup</code></li>
+</ul>
+<h2 id="二十三-Vim软件包">二十三 Vim软件包</h2>
+<p>软件包用来安装插件，从Vim8开始支持</p>
+<h3 id="23-1-查看是否支持软件包">23.1 查看是否支持软件包</h3>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">vim</span></span><br><span class="line">:<span class="keyword">version</span> [查看是否有packages]</span><br></pre></td></tr></table></figure>
+<h3 id="23-2-包目录">23.2 包目录</h3>
+<p>确保根目录 <code>~/.vim</code>下有pack这个文件夹，如果没有就创建，Vim会自动在这个子文件夹内搜索插件</p>
+<h3 id="23-3-两种加载方式">23.3 两种加载方式</h3>
+<p><strong>自动加载</strong><br>
+需要放在start/子目录中，看起来像这样<code>~/.vim/pack/*/start/</code>,其中星号表示是任意名字且不可忽略。<br>
+在<code>~/.vim/pack/*/start/</code>目录中，想克隆多少插件就克隆多少插件，Vim会自动加载每一个插件，如果删除了仓库，那么插件就失效了。</p>
+<p><strong>手动加载</strong></p>
+<ul>
+<li>需要放在opt/子目录中，路径看起来像这样<code>~/.vim/pack/*/opt/</code>,</li>
+<li>进入到这个目录后，克隆一个仓库：<code>git clone https://github.com/vim/killersheep.git</code></li>
+<li>启动Vim，执行命令 <code>KillKillKill</code></li>
+<li>Vim会提示不是一个有效命令</li>
+<li>运行：<code>packadd killersheep</code></li>
+<li>继续执行命令 <code>KillKillKill</code>,命令可使用</li>
+</ul>
+<h2 id="二十四-Vim-RunTime">二十四 Vim RunTime</h2>
+<h3 id="24-1-Plugin脚本">24.1  Plugin脚本</h3>
+<ul>
+<li>Vim 中有一个 runtime 路径 plugin ，每次启动时都会执行这个路径中的脚本。</li>
+<li>路径是 <code>~/.vim/plugin/donut.vim</code> 和 <code>~/.vim/plugin/chocolate.vim</code></li>
+<li>此plugin runtime路径可以用来执行一些初始化的脚本</li>
+</ul>
+<h3 id="24-2-文件类型监测">24.2 文件类型监测</h3>
+<p>使用vim打开文件后，想知道打开文件的类型<code>:set filetype?</code></p>
+<h3 id="24-3-文件类型插件">24.3 文件类型插件</h3>
+<p>当我们在打开一个文件时，比如是js文件，我们就执行一个脚本，如果是vue文件，我们就不执行脚本，那么这么做：</p>
+<ul>
+<li>使用文件类型插件<code>~/.vim/ftplugin</code> 完成这个功能。</li>
+<li>该目录下创建一个文件<code>javascript.vim</code></li>
+<li>内容为:<code>echo &quot;I am JS runtime &quot;</code></li>
+<li>此时使用打开后缀为<code>js</code>的文件会输出内容。</li>
+</ul>
+<h3 id="24-4-颜色">24.4 颜色</h3>
+<p>Vim有一个颜色 runtime 路径，用来存储颜色主题: <code>~/.vim/colors/</code></p>
+<h3 id="24-5-语法高亮">24.5 语法高亮</h3>
+<p>Vim有一个语法高亮 runtime 路径，用来定义语法高亮: <code>~/.vim/syntax</code></p>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>一篇就学会vim</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2022-09-14</p><p><span>最后更新：</span>2024-01-29</p><p><span>原始链接：</span><a href="/030-一篇就学会vim/">https://blog.liugezhou.online/030-%E4%B8%80%E7%AF%87%E5%B0%B1%E5%AD%A6%E4%BC%9Avim/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/030-%E4%B8%80%E7%AF%87%E5%B0%B1%E5%AD%A6%E4%BC%9Avim/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/vim"><i class="fa fa-tag">vim</i></a></div><div class="post-nav"><a class="pre" href="/202237-No74/">每周小结(*74):科技向善</a><a class="next" href="/202236-No73/">每周小结(*73):临终遗憾</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="阶段四：浏览器中的页面循环系统"><meta name="twitter:description" content="&lt;h2 id=&quot;15-消息队列和事件循环：页面是怎么-活-起来的&quot;&gt;15 | 消息队列和事件循环：页面是怎么&amp;quot;活&amp;quot;起来的&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;渲染进程我们已经知道他有一个主线程，这个主线程非常非常的繁忙，要处理DOM、布局，还要处理JS任务和各种输入事件，因此为了保证不同类型任务的执行，需要一个系统来调度这些任务，这个调度系统就是本节要探究的消息队列和事件循环。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;引入事件循环和消息队列过程&quot;&gt;引入事件循环和消息队列过程&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;如果只是一些确定好的任务，然后使用一个单线程按照顺序处理这些任务就可以了，线程执行完毕退出。&lt;/li&gt;
+&lt;li&gt;但是在单线程执行任务的过程中，会处理新的任务，这个时候就需要引入&lt;strong&gt;循环语句&lt;/strong&gt;和&lt;strong&gt;事件循环&lt;/strong&gt;，循环机制保证线程会一直执行，事件循环保证可以处理临时任务。&lt;/li&gt;
+&lt;li&gt;接着，如果有来自其他线程的任务，这个时候就需要引入&lt;strong&gt;消息队列&lt;/strong&gt;(一种数据结构，先进先出)了，通过从消息队列中取出其他任务，得以实现解决其他线程发过来的任务。&lt;/li&gt;
+&lt;li&gt;最后，还有一个情况时来自其他进程发来的任务，这个时候是通过浏览器的&lt;strong&gt;IPC机制&lt;/strong&gt;把其他进程任务发给渲染进程的&lt;strong&gt;IO进程&lt;/strong&gt;，IO进程再发给页面主线程。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;消息队列中的任务类型&quot;&gt;消息队列中的任务类型&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;包括：输入事件、鼠标移动、鼠标点击、鼠标滚动、微任务、文件读写、WebSocket、定时器、JS操作DOM、解析DOM、样式计算、布局阶段、CSS动画等。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;页面使用单线程的缺点&quot;&gt;页面使用单线程的缺点&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;通过上面简单的学习我们知道，页面线程中的所有任务都是来自消息队列，那么：&lt;br&gt;
+问题一：如何处理高优先级任务。&lt;br&gt;
+问题二：如何解决单个任务执行过长的问题。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;如何处理高优先任务&quot;&gt;如何处理高优先任务&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;比如，如何优先处理DOM的变化。&lt;br&gt;
+解决办法就是引入了&lt;strong&gt;微任务&lt;/strong&gt;。&lt;br&gt;
+我们通常把消息队列中的任务称为&lt;strong&gt;宏任务&lt;/strong&gt;，每个宏任务包含了一个微任务队列，当执行宏任务过程中，DOM有变化了,就将这个变化添加到微任务列表中，当宏任务执行完后，不会去执行下一个宏任务，而是执行当前的微任务列表。因此就解决了实效和实时性问题。&lt;br&gt;
+常见的宏任务:setTimeout、setIntervval、&lt;br&gt;
+常见的微任务：Promise、process.nextTick&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;如何解决单个任务执行时间过长的问题&quot;&gt;如何解决单个任务执行时间过长的问题&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;单线程意味着每次只能执行一个任务，其他任务处于等待状态，因此为了解决一个任务执行时间过长，JS通过异步-回调功能来规避这个问题，也即让要执行的JS任务滞后执行。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;16-WebAPI：setTimeOut是如何实现的？&quot;&gt;16 | WebAPI：setTimeOut是如何实现的？&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;setTimeOut的使用这里不再赘述。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;浏览器是怎么实现setTimeout的&quot;&gt;浏览器是怎么实现setTimeout的&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;首先，我们知道渲染进程中所有运行在主线程上的任务都需要先添加到消息队列中去，然后事件循环系统按照顺序执行消息队列中的任务。&lt;br&gt;
+所以说要执行一段异步任务，需要先将其放在消息队列中去。&lt;br&gt;
+但是定时器设置回调函数有些特别，它是在一段时间间隔后执行的，但是消息队列是按顺序执行的，因此不能将定时器直接放入到消息队列中去。&lt;/p&gt;
+&lt;p&gt;在Chrome中，除了消息队列，还维护了一个&lt;strong&gt;延迟消息队列&lt;/strong&gt;，定时器以及Chrome就是放到了这个延迟消息队列中去。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;使用setTimeout的一些注意事项&quot;&gt;使用setTimeout的一些注意事项&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;如果当前任务执行过久，会影响定时器任务的执行。&lt;/li&gt;
+&lt;li&gt;如果setTimeout存在嵌套调用，那么系统会设置最短时间间隔为4ms。&lt;/li&gt;
+&lt;li&gt;未激活的页面，setTimeout执行最小间隔是1000毫秒&lt;/li&gt;
+&lt;li&gt;延时执行时间有最大值：24.8天。&lt;/li&gt;
+&lt;li&gt;使用setTimeout设置的回调函数中的this不符合直觉，使用箭头函数解决。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;17-WebApi：XMLHttpRequest是怎么实现的&quot;&gt;17 | WebApi：XMLHttpRequest是怎么实现的&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;xhr提供了异步从Web服务器获取数据局部刷新页面的能力。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;同步回调和异步回调&quot;&gt;同步回调和异步回调&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;将一个函数作为参数传递给另一个函数 ，这个作为参数的函数就叫做回调函数&lt;/strong&gt;。&lt;br&gt;
+若回调函数在主函数返回之前执行的，我们把这个回调过程称为&lt;strong&gt;同步回调&lt;/strong&gt;。&lt;br&gt;
+把这种回调函数在主函数外部执行的过程称为&lt;strong&gt;异步回调&lt;/strong&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;异步回调过程&quot;&gt;异步回调过程&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;第一种是把异步函数做成一个任务，添加到消息对了尾部。&lt;/li&gt;
+&lt;li&gt;第二种是把异步函数添加到微任务列表中，等当前任务执行完毕就执行微任务。&lt;br&gt;
+异步函数的两个类型不同也就导致了一个是宏任务，一个是微任务。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;XMLHttpRequest运作机制&quot;&gt;XMLHttpRequest运作机制&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;创建XMLHttpRequest对象: let xhr = new XMLHttpRequest()&lt;/li&gt;
+&lt;li&gt;为xhr对象注册回调函数：ontimeout监控超时、onerror监控错误信息、onreadyshatechange监控后台请求过程。&lt;/li&gt;
+&lt;li&gt;通过open接口配置基础请求信息：请求地址、请求方式、请求方法、超时时间…&lt;/li&gt;
+&lt;li&gt;通过xhr.send发起请求。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;XMLHttpRequest使用过程中的坑&quot;&gt;XMLHttpRequest使用过程中的坑&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;安全策略的跨域问题&lt;/li&gt;
+&lt;li&gt;HTTPS混合内容的问题：https页面中包含了不符合https安全要求的内容(http资源)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;18-宏任务和微任务：不是所有任务都是一个待遇&quot;&gt;18 | 宏任务和微任务：不是所有任务都是一个待遇&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;微任务可以在实时性和效率之间做一个有效的权衡。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;宏任务&quot;&gt;宏任务&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;就是一些鼠标、渲染、交互、脚本、网络读写、文件读写等等操作被称为宏任务。&lt;br&gt;
+宏任务在主线程上的执行，是由页面线程引入了消息队列和循环机制，消息队列中的任务是通过事件循环来执行的。&lt;br&gt;
+宏任务难以满足时间精度要求较高的任务，比如一个setTimeout中包裹一个setTimeout，虽然设定时间都是0之后，但是会有其它任务窜进来执行。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;微任务&quot;&gt;微任务&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;微任务就是一个需要异步执行的一个函数，执行时机是在主函数执行完毕之后、当前宏任务结束之前。&lt;br&gt;
+V8引擎在执行JS脚本的时候，除了创建一个全局的执行上下文，还会在其内部创建一个微任务队列，由于实在V8引擎内部给的，所以我们无法通过JS访问。&lt;br&gt;
+也就是说，每一个宏任务都关联了一个微任务队列。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;在现代浏览器里面，产生微任务的主要两个方式：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;使用MutationObserve监听某个DOM节点的变换。&lt;/li&gt;
+&lt;li&gt;使用Promise。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;执行时机：就是在本轮宏任务执行完毕后，去检查微任务队列中是否有微任务，需要注意一点的是执行微任务过程中产生的新的微任务不会推迟到下个宏任务中去执行，而是在当前宏任务中继续执行。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;19-使用Promise，告别回调函数&quot;&gt;19 | 使用Promise，告别回调函数&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Promise已经成为现代前端的水和电。so important！，那么Promise的出现是为了解决什么问题呢？&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;异步编程的问题&quot;&gt;异步编程的问题&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Web页面的单线程架构决定了异步回调，而异步回调决定了我们的编码方式。在之前的很多回调中，代码逻辑变得不连续且混乱。&lt;br&gt;
+然后，为了解决这个问题，我们可以封装异步代码，让处理流程变得线性。但同时出现了新的问题：回调地狱。&lt;br&gt;
+回调地狱主要是嵌套混乱，下面的任务依赖上一个任务，嵌套多次代码可读性很差，且任务的不确定性(执行每个任务都有两种可能结果)，所以也增加了代码的混乱程度。&lt;br&gt;
+于是，解决问题的两个思路就是：消灭嵌套调用、合并多个任务的错误处理。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;Promise&quot;&gt;Promise&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Promise的出现就解决了消灭嵌套调用和多次错误处理的问题。&lt;br&gt;
+Promise的核心其实就是resolve函数，resolve函数执行会触发.then的回调，但回调函数还没有执行，而是采用了延迟绑定，可以理解为.then放入到了微任务队列中去，等待宏任务执行完毕后检查执行。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;20-async-await：使用同步的方式去写异步代码&quot;&gt;20 | async/await：使用同步的方式去写异步代码&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;ES7引入了async和await，这是JavaScript异步编程的一个重大改进，提高了在不阻塞主线程的情况下使用同步代码实现异步访问资源的能力，并且使得代码逻辑更加清晰。&lt;br&gt;
+Promise编程模型因为充斥大量then方法，虽然解决了地狱回调的问题，但是语义方面的缺陷，使得async和wait出现了。&lt;br&gt;
+本节会首先介绍生成器(Generator)是如何工作的，接着讲解Generator的底层实现机制–协程(Coroutine),又因为async和await使用了Generator和Promise两种技术，接着通过Generator和Promise来分析async和await到底是如何以同步的方式来编写异步代码的。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;生成器-VS协程&quot;&gt;生成器 VS协程&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;生成器函数一个带有星号的函数，可以暂停和恢复执行&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight arcade&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;* &lt;span class=&quot;title function_&quot;&gt;genDeomo&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;开始执行第一段&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  yield &lt;span class=&quot;string&quot;&gt;&amp;#x27;generator 2&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;开始执行第二段&amp;quot;&lt;/span&gt;) &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  yield &lt;span class=&quot;string&quot;&gt;&amp;#x27;generator 2&amp;#x27;&lt;/span&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;开始执行第三段&amp;quot;&lt;/span&gt;) &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  yield &lt;span class=&quot;string&quot;&gt;&amp;#x27;generator 2&amp;#x27;&lt;/span&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;执行结束&amp;quot;&lt;/span&gt;) &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&amp;#x27;generator 2&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;main 0&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  let gen = genDemo()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(gen.next().value)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;main 1&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(gen.next().value)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;main 2&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(gen.next().value)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;main 3&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(gen.next().value)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;main 4&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;在生成器函数内部执行一段代码，如果遇到yield关键字，那么JS引起会返回该关键字后面的内容给外部，并暂停该函数的执行,如果遇到return关键字，JS引擎会结束该生成函数，并将return后面的内容进行最后的返回。&lt;br&gt;
+外部函数通过next方法恢复函数的执行。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;那么，这个暂停和恢复执行的实现其关键原理是什么呢？这就需要先了解协程的概念。&lt;br&gt;
+协程是一种比线程更加轻量级的存在。我们可以把协程看成是跑在线程上的任务，一个线程上可以存在多个协程，但是在线程上同时只能执行一个协程，比如当前执行的是 A 协程，要启动 B 协程，那么 A 协程就需要将主线程的控制权交给 B 协程，这就体现在 A 协程暂停执行，B 协程恢复执行；同样，也可以从 B 协程中启动 A 协程。通常，如果从 A 协程启动 B 协程，我们就把 A 协程称为 B 协程的父协程。正如一个进程可以拥有多个线程一样，一个线程也可以拥有多个协程。最重要的是，协程不是被操作系统内核所管理，而完全是由程序所控制（也就是在用户态执行）。&lt;br&gt;
+这样带来的好处就是性能得到了很大的提升，不会像线程切换那样消耗资源。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;然后通过Generator函数的写法，经过改造后就可以用同步的方式写出异步的代码了，略过不表。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;async-await&quot;&gt;async/await&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;async和await技术背后的实现方式就是Generator和Promise应用，往底层说就是微任务和协程应用。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;async&quot;&gt;async&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;根据MDN定义，async是一个通过&lt;strong&gt;异步执行&lt;/strong&gt;并&lt;strong&gt;隐式返回Promise&lt;/strong&gt;作为结果的函数。&lt;br&gt;
+通过async声明的函数返回的是Promise对象，如代码所示：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight arcade&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;async &lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title function_&quot;&gt;foo&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(foo())  &lt;span class=&quot;comment&quot;&gt;// Promise &amp;#123;&amp;lt;resolved&amp;gt;: 2&amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h3 id=&quot;await&quot;&gt;await&lt;/h3&gt;
+&lt;figure class=&quot;highlight arcade&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;async &lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title function_&quot;&gt;foo&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    let a = await &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(a)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;foo()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;"><meta name="twitter:image"><title>阶段四：浏览器中的页面循环系统 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">阶段四：浏览器中的页面循环系统</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">阶段四：浏览器中的页面循环系统</h1><div class="post-meta">2022-04-05<span> | </span><span class="category"><a href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 3.1k</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 10</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/A4%E9%98%B6%E6%AE%B5%E5%9B%9B%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E9%A1%B5%E9%9D%A2%E5%BE%AA%E7%8E%AF%E7%B3%BB%E7%BB%9F/#vcomment"><span class="valine-comment-count" data-xid="/A4%E9%98%B6%E6%AE%B5%E5%9B%9B%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E9%A1%B5%E9%9D%A2%E5%BE%AA%E7%8E%AF%E7%B3%BB%E7%BB%9F/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#15-%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%92%8C%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%EF%BC%9A%E9%A1%B5%E9%9D%A2%E6%98%AF%E6%80%8E%E4%B9%88-%E6%B4%BB-%E8%B5%B7%E6%9D%A5%E7%9A%84"><span class="toc-text">15 | 消息队列和事件循环：页面是怎么&quot;活&quot;起来的</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E5%85%A5%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E5%92%8C%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E8%BF%87%E7%A8%8B"><span class="toc-text">引入事件循环和消息队列过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E4%B8%AD%E7%9A%84%E4%BB%BB%E5%8A%A1%E7%B1%BB%E5%9E%8B"><span class="toc-text">消息队列中的任务类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%B5%E9%9D%A2%E4%BD%BF%E7%94%A8%E5%8D%95%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%BC%BA%E7%82%B9"><span class="toc-text">页面使用单线程的缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E9%AB%98%E4%BC%98%E5%85%88%E4%BB%BB%E5%8A%A1"><span class="toc-text">如何处理高优先任务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%8D%95%E4%B8%AA%E4%BB%BB%E5%8A%A1%E6%89%A7%E8%A1%8C%E6%97%B6%E9%97%B4%E8%BF%87%E9%95%BF%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">如何解决单个任务执行时间过长的问题</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#16-WebAPI%EF%BC%9AsetTimeOut%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F"><span class="toc-text">16 | WebAPI：setTimeOut是如何实现的？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0setTimeout%E7%9A%84"><span class="toc-text">浏览器是怎么实现setTimeout的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8setTimeout%E7%9A%84%E4%B8%80%E4%BA%9B%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">使用setTimeout的一些注意事项</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#17-WebApi%EF%BC%9AXMLHttpRequest%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84"><span class="toc-text">17 | WebApi：XMLHttpRequest是怎么实现的</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8C%E6%AD%A5%E5%9B%9E%E8%B0%83%E5%92%8C%E5%BC%82%E6%AD%A5%E5%9B%9E%E8%B0%83"><span class="toc-text">同步回调和异步回调</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E6%AD%A5%E5%9B%9E%E8%B0%83%E8%BF%87%E7%A8%8B"><span class="toc-text">异步回调过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XMLHttpRequest%E8%BF%90%E4%BD%9C%E6%9C%BA%E5%88%B6"><span class="toc-text">XMLHttpRequest运作机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XMLHttpRequest%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%9D%91"><span class="toc-text">XMLHttpRequest使用过程中的坑</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#18-%E5%AE%8F%E4%BB%BB%E5%8A%A1%E5%92%8C%E5%BE%AE%E4%BB%BB%E5%8A%A1%EF%BC%9A%E4%B8%8D%E6%98%AF%E6%89%80%E6%9C%89%E4%BB%BB%E5%8A%A1%E9%83%BD%E6%98%AF%E4%B8%80%E4%B8%AA%E5%BE%85%E9%81%87"><span class="toc-text">18 | 宏任务和微任务：不是所有任务都是一个待遇</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%8F%E4%BB%BB%E5%8A%A1"><span class="toc-text">宏任务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%AE%E4%BB%BB%E5%8A%A1"><span class="toc-text">微任务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#19-%E4%BD%BF%E7%94%A8Promise%EF%BC%8C%E5%91%8A%E5%88%AB%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0"><span class="toc-text">19 | 使用Promise，告别回调函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">异步编程的问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Promise"><span class="toc-text">Promise</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#20-async-await%EF%BC%9A%E4%BD%BF%E7%94%A8%E5%90%8C%E6%AD%A5%E7%9A%84%E6%96%B9%E5%BC%8F%E5%8E%BB%E5%86%99%E5%BC%82%E6%AD%A5%E4%BB%A3%E7%A0%81"><span class="toc-text">20 | async&#x2F;await：使用同步的方式去写异步代码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E5%99%A8-VS%E5%8D%8F%E7%A8%8B"><span class="toc-text">生成器 VS协程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#async-await"><span class="toc-text">async&#x2F;await</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#async"><span class="toc-text">async</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#await"><span class="toc-text">await</span></a></li></ol></li></ol></div></div><div class="post-content"><h2 id="15-消息队列和事件循环：页面是怎么-活-起来的">15 | 消息队列和事件循环：页面是怎么&quot;活&quot;起来的</h2>
+<blockquote>
+<p>渲染进程我们已经知道他有一个主线程，这个主线程非常非常的繁忙，要处理DOM、布局，还要处理JS任务和各种输入事件，因此为了保证不同类型任务的执行，需要一个系统来调度这些任务，这个调度系统就是本节要探究的消息队列和事件循环。</p>
+</blockquote>
+<h3 id="引入事件循环和消息队列过程">引入事件循环和消息队列过程</h3>
+<blockquote>
+<ol>
+<li>如果只是一些确定好的任务，然后使用一个单线程按照顺序处理这些任务就可以了，线程执行完毕退出。</li>
+<li>但是在单线程执行任务的过程中，会处理新的任务，这个时候就需要引入<strong>循环语句</strong>和<strong>事件循环</strong>，循环机制保证线程会一直执行，事件循环保证可以处理临时任务。</li>
+<li>接着，如果有来自其他线程的任务，这个时候就需要引入<strong>消息队列</strong>(一种数据结构，先进先出)了，通过从消息队列中取出其他任务，得以实现解决其他线程发过来的任务。</li>
+<li>最后，还有一个情况时来自其他进程发来的任务，这个时候是通过浏览器的<strong>IPC机制</strong>把其他进程任务发给渲染进程的<strong>IO进程</strong>，IO进程再发给页面主线程。</li>
+</ol>
+</blockquote>
+<h3 id="消息队列中的任务类型">消息队列中的任务类型</h3>
+<blockquote>
+<p>包括：输入事件、鼠标移动、鼠标点击、鼠标滚动、微任务、文件读写、WebSocket、定时器、JS操作DOM、解析DOM、样式计算、布局阶段、CSS动画等。</p>
+</blockquote>
+<h3 id="页面使用单线程的缺点">页面使用单线程的缺点</h3>
+<blockquote>
+<p>通过上面简单的学习我们知道，页面线程中的所有任务都是来自消息队列，那么：<br>
+问题一：如何处理高优先级任务。<br>
+问题二：如何解决单个任务执行过长的问题。</p>
+</blockquote>
+<h4 id="如何处理高优先任务">如何处理高优先任务</h4>
+<blockquote>
+<p>比如，如何优先处理DOM的变化。<br>
+解决办法就是引入了<strong>微任务</strong>。<br>
+我们通常把消息队列中的任务称为<strong>宏任务</strong>，每个宏任务包含了一个微任务队列，当执行宏任务过程中，DOM有变化了,就将这个变化添加到微任务列表中，当宏任务执行完后，不会去执行下一个宏任务，而是执行当前的微任务列表。因此就解决了实效和实时性问题。<br>
+常见的宏任务:setTimeout、setIntervval、<br>
+常见的微任务：Promise、process.nextTick</p>
+</blockquote>
+<h4 id="如何解决单个任务执行时间过长的问题">如何解决单个任务执行时间过长的问题</h4>
+<blockquote>
+<p>单线程意味着每次只能执行一个任务，其他任务处于等待状态，因此为了解决一个任务执行时间过长，JS通过异步-回调功能来规避这个问题，也即让要执行的JS任务滞后执行。</p>
+</blockquote>
+<h2 id="16-WebAPI：setTimeOut是如何实现的？">16 | WebAPI：setTimeOut是如何实现的？</h2>
+<blockquote>
+<p>setTimeOut的使用这里不再赘述。</p>
+</blockquote>
+<h3 id="浏览器是怎么实现setTimeout的">浏览器是怎么实现setTimeout的</h3>
+<blockquote>
+<p>首先，我们知道渲染进程中所有运行在主线程上的任务都需要先添加到消息队列中去，然后事件循环系统按照顺序执行消息队列中的任务。<br>
+所以说要执行一段异步任务，需要先将其放在消息队列中去。<br>
+但是定时器设置回调函数有些特别，它是在一段时间间隔后执行的，但是消息队列是按顺序执行的，因此不能将定时器直接放入到消息队列中去。</p>
+<p>在Chrome中，除了消息队列，还维护了一个<strong>延迟消息队列</strong>，定时器以及Chrome就是放到了这个延迟消息队列中去。</p>
+</blockquote>
+<h3 id="使用setTimeout的一些注意事项">使用setTimeout的一些注意事项</h3>
+<blockquote>
+<ul>
+<li>如果当前任务执行过久，会影响定时器任务的执行。</li>
+<li>如果setTimeout存在嵌套调用，那么系统会设置最短时间间隔为4ms。</li>
+<li>未激活的页面，setTimeout执行最小间隔是1000毫秒</li>
+<li>延时执行时间有最大值：24.8天。</li>
+<li>使用setTimeout设置的回调函数中的this不符合直觉，使用箭头函数解决。</li>
+</ul>
+</blockquote>
+<h2 id="17-WebApi：XMLHttpRequest是怎么实现的">17 | WebApi：XMLHttpRequest是怎么实现的</h2>
+<blockquote>
+<p>xhr提供了异步从Web服务器获取数据局部刷新页面的能力。</p>
+</blockquote>
+<h3 id="同步回调和异步回调">同步回调和异步回调</h3>
+<blockquote>
+<p><strong>将一个函数作为参数传递给另一个函数 ，这个作为参数的函数就叫做回调函数</strong>。<br>
+若回调函数在主函数返回之前执行的，我们把这个回调过程称为<strong>同步回调</strong>。<br>
+把这种回调函数在主函数外部执行的过程称为<strong>异步回调</strong>。</p>
+</blockquote>
+<h3 id="异步回调过程">异步回调过程</h3>
+<blockquote>
+<ul>
+<li>第一种是把异步函数做成一个任务，添加到消息对了尾部。</li>
+<li>第二种是把异步函数添加到微任务列表中，等当前任务执行完毕就执行微任务。<br>
+异步函数的两个类型不同也就导致了一个是宏任务，一个是微任务。</li>
+</ul>
+</blockquote>
+<h3 id="XMLHttpRequest运作机制">XMLHttpRequest运作机制</h3>
+<blockquote>
+<ul>
+<li>创建XMLHttpRequest对象: let xhr = new XMLHttpRequest()</li>
+<li>为xhr对象注册回调函数：ontimeout监控超时、onerror监控错误信息、onreadyshatechange监控后台请求过程。</li>
+<li>通过open接口配置基础请求信息：请求地址、请求方式、请求方法、超时时间…</li>
+<li>通过xhr.send发起请求。</li>
+</ul>
+</blockquote>
+<h3 id="XMLHttpRequest使用过程中的坑">XMLHttpRequest使用过程中的坑</h3>
+<blockquote>
+<ul>
+<li>安全策略的跨域问题</li>
+<li>HTTPS混合内容的问题：https页面中包含了不符合https安全要求的内容(http资源)</li>
+</ul>
+</blockquote>
+<h2 id="18-宏任务和微任务：不是所有任务都是一个待遇">18 | 宏任务和微任务：不是所有任务都是一个待遇</h2>
+<blockquote>
+<p>微任务可以在实时性和效率之间做一个有效的权衡。</p>
+</blockquote>
+<h3 id="宏任务">宏任务</h3>
+<blockquote>
+<p>就是一些鼠标、渲染、交互、脚本、网络读写、文件读写等等操作被称为宏任务。<br>
+宏任务在主线程上的执行，是由页面线程引入了消息队列和循环机制，消息队列中的任务是通过事件循环来执行的。<br>
+宏任务难以满足时间精度要求较高的任务，比如一个setTimeout中包裹一个setTimeout，虽然设定时间都是0之后，但是会有其它任务窜进来执行。</p>
+</blockquote>
+<h3 id="微任务">微任务</h3>
+<blockquote>
+<p>微任务就是一个需要异步执行的一个函数，执行时机是在主函数执行完毕之后、当前宏任务结束之前。<br>
+V8引擎在执行JS脚本的时候，除了创建一个全局的执行上下文，还会在其内部创建一个微任务队列，由于实在V8引擎内部给的，所以我们无法通过JS访问。<br>
+也就是说，每一个宏任务都关联了一个微任务队列。</p>
+</blockquote>
+<blockquote>
+<p>在现代浏览器里面，产生微任务的主要两个方式：</p>
+<ol>
+<li>使用MutationObserve监听某个DOM节点的变换。</li>
+<li>使用Promise。</li>
+</ol>
+</blockquote>
+<blockquote>
+<p>执行时机：就是在本轮宏任务执行完毕后，去检查微任务队列中是否有微任务，需要注意一点的是执行微任务过程中产生的新的微任务不会推迟到下个宏任务中去执行，而是在当前宏任务中继续执行。</p>
+</blockquote>
+<h2 id="19-使用Promise，告别回调函数">19 | 使用Promise，告别回调函数</h2>
+<blockquote>
+<p>Promise已经成为现代前端的水和电。so important！，那么Promise的出现是为了解决什么问题呢？</p>
+</blockquote>
+<h3 id="异步编程的问题">异步编程的问题</h3>
+<blockquote>
+<p>Web页面的单线程架构决定了异步回调，而异步回调决定了我们的编码方式。在之前的很多回调中，代码逻辑变得不连续且混乱。<br>
+然后，为了解决这个问题，我们可以封装异步代码，让处理流程变得线性。但同时出现了新的问题：回调地狱。<br>
+回调地狱主要是嵌套混乱，下面的任务依赖上一个任务，嵌套多次代码可读性很差，且任务的不确定性(执行每个任务都有两种可能结果)，所以也增加了代码的混乱程度。<br>
+于是，解决问题的两个思路就是：消灭嵌套调用、合并多个任务的错误处理。</p>
+</blockquote>
+<h3 id="Promise">Promise</h3>
+<blockquote>
+<p>Promise的出现就解决了消灭嵌套调用和多次错误处理的问题。<br>
+Promise的核心其实就是resolve函数，resolve函数执行会触发.then的回调，但回调函数还没有执行，而是采用了延迟绑定，可以理解为.then放入到了微任务队列中去，等待宏任务执行完毕后检查执行。</p>
+</blockquote>
+<h2 id="20-async-await：使用同步的方式去写异步代码">20 | async/await：使用同步的方式去写异步代码</h2>
+<blockquote>
+<p>ES7引入了async和await，这是JavaScript异步编程的一个重大改进，提高了在不阻塞主线程的情况下使用同步代码实现异步访问资源的能力，并且使得代码逻辑更加清晰。<br>
+Promise编程模型因为充斥大量then方法，虽然解决了地狱回调的问题，但是语义方面的缺陷，使得async和wait出现了。<br>
+本节会首先介绍生成器(Generator)是如何工作的，接着讲解Generator的底层实现机制–协程(Coroutine),又因为async和await使用了Generator和Promise两种技术，接着通过Generator和Promise来分析async和await到底是如何以同步的方式来编写异步代码的。</p>
+</blockquote>
+<h3 id="生成器-VS协程">生成器 VS协程</h3>
+<blockquote>
+<p>生成器函数一个带有星号的函数，可以暂停和恢复执行</p>
+</blockquote>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">genDeomo</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(<span class="string">&#x27;开始执行第一段&#x27;</span>)</span><br><span class="line">  yield <span class="string">&#x27;generator 2&#x27;</span></span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(<span class="string">&quot;开始执行第二段&quot;</span>) </span><br><span class="line">  yield <span class="string">&#x27;generator 2&#x27;</span> </span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(<span class="string">&quot;开始执行第三段&quot;</span>) </span><br><span class="line">  yield <span class="string">&#x27;generator 2&#x27;</span> </span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(<span class="string">&quot;执行结束&quot;</span>) </span><br><span class="line">  <span class="keyword">return</span> <span class="string">&#x27;generator 2&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(<span class="string">&#x27;main 0&#x27;</span>)</span><br><span class="line">  let gen = genDemo()</span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(gen.next().value)</span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(<span class="string">&#x27;main 1&#x27;</span>)</span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(gen.next().value)</span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(<span class="string">&#x27;main 2&#x27;</span>)</span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(gen.next().value)</span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(<span class="string">&#x27;main 3&#x27;</span>)</span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(gen.next().value)</span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(<span class="string">&#x27;main 4&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>在生成器函数内部执行一段代码，如果遇到yield关键字，那么JS引起会返回该关键字后面的内容给外部，并暂停该函数的执行,如果遇到return关键字，JS引擎会结束该生成函数，并将return后面的内容进行最后的返回。<br>
+外部函数通过next方法恢复函数的执行。</p>
+</blockquote>
+<blockquote>
+<p>那么，这个暂停和恢复执行的实现其关键原理是什么呢？这就需要先了解协程的概念。<br>
+协程是一种比线程更加轻量级的存在。我们可以把协程看成是跑在线程上的任务，一个线程上可以存在多个协程，但是在线程上同时只能执行一个协程，比如当前执行的是 A 协程，要启动 B 协程，那么 A 协程就需要将主线程的控制权交给 B 协程，这就体现在 A 协程暂停执行，B 协程恢复执行；同样，也可以从 B 协程中启动 A 协程。通常，如果从 A 协程启动 B 协程，我们就把 A 协程称为 B 协程的父协程。正如一个进程可以拥有多个线程一样，一个线程也可以拥有多个协程。最重要的是，协程不是被操作系统内核所管理，而完全是由程序所控制（也就是在用户态执行）。<br>
+这样带来的好处就是性能得到了很大的提升，不会像线程切换那样消耗资源。</p>
+</blockquote>
+<blockquote>
+<p>然后通过Generator函数的写法，经过改造后就可以用同步的方式写出异步的代码了，略过不表。</p>
+</blockquote>
+<h3 id="async-await">async/await</h3>
+<blockquote>
+<p>async和await技术背后的实现方式就是Generator和Promise应用，往底层说就是微任务和协程应用。</p>
+</blockquote>
+<h3 id="async">async</h3>
+<blockquote>
+<p>根据MDN定义，async是一个通过<strong>异步执行</strong>并<strong>隐式返回Promise</strong>作为结果的函数。<br>
+通过async声明的函数返回的是Promise对象，如代码所示：</p>
+</blockquote>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">async <span class="keyword">function</span> <span class="title function_">foo</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.<span class="built_in">log</span>(foo())  <span class="comment">// Promise &#123;&lt;resolved&gt;: 2&#125;</span></span><br></pre></td></tr></table></figure>
+<h3 id="await">await</h3>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">async <span class="keyword">function</span> <span class="title function_">foo</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="built_in">console</span>.<span class="built_in">log</span>(<span class="number">1</span>)</span><br><span class="line">    let a = await <span class="number">100</span></span><br><span class="line">    <span class="built_in">console</span>.<span class="built_in">log</span>(a)</span><br><span class="line">    <span class="built_in">console</span>.<span class="built_in">log</span>(<span class="number">2</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.<span class="built_in">log</span>(<span class="number">0</span>)</span><br><span class="line">foo()</span><br><span class="line"><span class="built_in">console</span>.<span class="built_in">log</span>(<span class="number">3</span>)</span><br></pre></td></tr></table></figure></div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>阶段四：浏览器中的页面循环系统</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2022-04-05</p><p><span>最后更新：</span>2022-04-09</p><p><span>原始链接：</span><a href="/A4阶段四：浏览器中的页面循环系统/">https://blog.liugezhou.online/A4%E9%98%B6%E6%AE%B5%E5%9B%9B%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E9%A1%B5%E9%9D%A2%E5%BE%AA%E7%8E%AF%E7%B3%BB%E7%BB%9F/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/A4%E9%98%B6%E6%AE%B5%E5%9B%9B%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E9%A1%B5%E9%9D%A2%E5%BE%AA%E7%8E%AF%E7%B3%BB%E7%BB%9F/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/浏览器工作原理"><i class="fa fa-tag">浏览器工作原理</i></a></div><div class="post-nav"><a class="pre" href="/202213(3.28-4.5)/">每周小结(*50):恐惧、不安与惊慌</a><a class="next" href="/026-%E5%BE%88%E7%88%BD%E7%9A%84Promise%E5%87%A0%E9%81%93console%E9%A2%98/">很爽的Promise几道console题</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

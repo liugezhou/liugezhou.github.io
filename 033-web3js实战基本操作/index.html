@@ -1,0 +1,375 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="web3js 实战基本操作"><meta name="twitter:description" content="&lt;p&gt;&lt;img src=&quot;https://cdn.statically.io/gh/liugezhou/image@master/blog/033_web3js.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+&lt;h2 id=&quot;文章说明&quot;&gt;文章说明&lt;/h2&gt;
+&lt;p&gt;这个篇文章的总结是在学习 &lt;a href=&quot;https://www.bilibili.com/video/BV16L4y147Ly/?spm_id_from=333.337.search-card.all.click&quot;&gt;b站web3.js的一个基础教程课&lt;/a&gt; 的课程总结，方便后续在文章中查找API。&lt;/p&gt;
+&lt;p&gt;学习中涉及的一些l零碎代码上传到了 &lt;a href=&quot;https://github.com/liugezhou/web3.js&quot;&gt;这个仓库&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;关于 web3js 这个 JS 库的相关操作，后续会持续更新。&lt;/p&gt;
+&lt;h2 id=&quot;获取-web3-对象&quot;&gt;获取 web3 对象&lt;/h2&gt;
+&lt;p&gt;下面的示例代码就是指 web3 这个JS库的一些基础操作，不做介绍。&lt;/p&gt;
+&lt;figure class=&quot;highlight js&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;title class_&quot;&gt;Web3&lt;/span&gt; = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;web3&amp;#x27;&lt;/span&gt;); &lt;span class=&quot;comment&quot;&gt;//引入web3这个库&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &amp;#123; log &amp;#125; = &lt;span class=&quot;variable language_&quot;&gt;console&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 创建Provider&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; provider = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;title class_&quot;&gt;Web3&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;providers&lt;/span&gt;.&lt;span class=&quot;title class_&quot;&gt;HttpProvider&lt;/span&gt;(&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;string&quot;&gt;&amp;quot;http://127.0.0.1:9545&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; provider2 = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;title class_&quot;&gt;Web3&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;providers&lt;/span&gt;.&lt;span class=&quot;title class_&quot;&gt;HttpProvider&lt;/span&gt;(&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;string&quot;&gt;&amp;quot;http://127.0.0.1:9999&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; web3 = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;title class_&quot;&gt;Web3&lt;/span&gt;(provider);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(web3.&lt;span class=&quot;property&quot;&gt;modules&lt;/span&gt;); &lt;span class=&quot;comment&quot;&gt;// 打印 web3 的 modules 属性&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(web3.&lt;span class=&quot;property&quot;&gt;version&lt;/span&gt;); &lt;span class=&quot;comment&quot;&gt;// 打印 web3 的版本&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;web3.&lt;span class=&quot;property&quot;&gt;eth&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;getNodeInfo&lt;/span&gt;().&lt;span class=&quot;title function_&quot;&gt;then&lt;/span&gt;(log) &lt;span class=&quot;comment&quot;&gt;// 打印 web3 连接的节点信息&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;web3.&lt;span class=&quot;property&quot;&gt;eth&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;net&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;isListening&lt;/span&gt;().&lt;span class=&quot;title function_&quot;&gt;then&lt;/span&gt;(log)  &lt;span class=&quot;comment&quot;&gt;//返回所连接节点的网络和检讨状态格式&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;web3.&lt;span class=&quot;property&quot;&gt;eth&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;net&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;getId&lt;/span&gt;().&lt;span class=&quot;title function_&quot;&gt;then&lt;/span&gt;(log) &lt;span class=&quot;comment&quot;&gt;//获取 netWork id 网络号&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;web3.&lt;span class=&quot;property&quot;&gt;eth&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;getProtocolVersion&lt;/span&gt;().&lt;span class=&quot;title function_&quot;&gt;then&lt;/span&gt;(log) &lt;span class=&quot;comment&quot;&gt;//获取以太坊协议版本&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(web3.&lt;span class=&quot;property&quot;&gt;providers&lt;/span&gt;) &lt;span class=&quot;comment&quot;&gt;//web3可用的Providers&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(web3.&lt;span class=&quot;property&quot;&gt;currentProvider&lt;/span&gt;) &lt;span class=&quot;comment&quot;&gt;//web3当前正在使用的Providers&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(web3.&lt;span class=&quot;property&quot;&gt;givenProvider&lt;/span&gt;) &lt;span class=&quot;comment&quot;&gt;//查看浏览器环境设置的 web3 provider&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;web3.&lt;span class=&quot;title function_&quot;&gt;setProvider&lt;/span&gt;(provider2) &lt;span class=&quot;comment&quot;&gt;//设置新的 Provider&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;批处理请求&quot;&gt;批处理请求&lt;/h2&gt;
+&lt;p&gt;批处理请求是指几个请求打包在一起提交提交、串联执行 (一个个按顺序执行，速度不快，可保证代码执行顺序)&lt;/p&gt;
+&lt;p&gt;通过&lt;code&gt;BatchRequest&lt;/code&gt;实现批处理,核心代码为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;new web3.BatchRequest()&lt;/li&gt;
+&lt;li&gt;add(request) // 将请求对象添加到批调用中&lt;/li&gt;
+&lt;li&gt;execute() //执行批处理请求&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;代码示例：&lt;/p&gt;
+&lt;figure class=&quot;highlight js&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; batch = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; web3.&lt;span class=&quot;title class_&quot;&gt;BatchRequest&lt;/span&gt;();&lt;span class=&quot;comment&quot;&gt;//创建批量请求对象&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;batch.&lt;span class=&quot;title function_&quot;&gt;add&lt;/span&gt;(web3.&lt;span class=&quot;property&quot;&gt;eth&lt;/span&gt;.&lt;span class=&quot;property&quot;&gt;getBalance&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;request&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;0xxxx&amp;#x27;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&amp;#x27;latest&amp;#x27;&lt;/span&gt;, callback)) &lt;span class=&quot;comment&quot;&gt;//指定定的钱包地址信息&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;batch.&lt;span class=&quot;title function_&quot;&gt;add&lt;/span&gt;(contract.&lt;span class=&quot;property&quot;&gt;methods&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;getNumber&lt;/span&gt;().&lt;span class=&quot;property&quot;&gt;call&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;request&lt;/span&gt;(&amp;#123; &lt;span class=&quot;attr&quot;&gt;from&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&amp;#x27;0xxxx&amp;#x27;&lt;/span&gt; &amp;#125;, callback2)) &lt;span class=&quot;comment&quot;&gt;//合约的number值&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;batch.&lt;span class=&quot;title function_&quot;&gt;execute&lt;/span&gt;()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;Ganache-客户端&quot;&gt;Ganache 客户端&lt;/h2&gt;
+&lt;p&gt;项目在启动的时候，由于没有 ETH币，于是:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;下载了 Ganache 软件&lt;/li&gt;
+&lt;li&gt;并且在浏览器插件中自定义网络接口为 7545&lt;/li&gt;
+&lt;li&gt;账户 ETH 币通过 Ganache客户端复制 私钥导入的方式获得&lt;/li&gt;
+&lt;li&gt;remix 部署的时候采取 Injected-MetaMask、切换账户&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;BigNumber大数据等处理工具&quot;&gt;BigNumber大数据等处理工具&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;大数据处理简介&lt;/strong&gt;&lt;br&gt;
+JS中，默认的数字精度较小，对于以太坊，推荐内部以 wei 来表示余额(大整数)，只要显示余额的时候才转为 ether 或其它单位。&lt;br&gt;
+在web3js中，自动添加一个依赖库 BigNumber，精度非常高，不会丢失。&lt;/p&gt;
+&lt;figure class=&quot;highlight js&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; bigNumber = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;bignumber.js&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; n = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;title function_&quot;&gt;bigNumber&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;1234356789765432123456786543213456&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable language_&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(n)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable language_&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(n.&lt;span class=&quot;title function_&quot;&gt;toString&lt;/span&gt;()) &lt;span class=&quot;comment&quot;&gt;//打印科学计数法&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;variable language_&quot;&gt;console&lt;/span&gt;.&lt;span class=&quot;title function_&quot;&gt;log&lt;/span&gt;(n.&lt;span class=&quot;title function_&quot;&gt;toString&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;10&lt;/span&gt;))&lt;span class=&quot;comment&quot;&gt;//以10进制数完整显示，只会保存20位浮点计数(小数点后20位)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;strong&gt;判断是否为大数&lt;/strong&gt;&lt;br&gt;
+&lt;code&gt;web3.utils.isBigNumber(n)&lt;/code&gt; :来判断一个数是否为大数。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;以太单位转换&lt;/strong&gt;&lt;br&gt;
+&lt;code&gt;web3.utils.fromWei(number,[unit])&lt;/code&gt; :将一个数值转换为以太单位&lt;br&gt;
+&lt;code&gt;web3.utils.toWei(number,[unit])&lt;/code&gt;:将一个单位转换为Wei,1 ether为 10的18次方 wei&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;数值转换&lt;/strong&gt;&lt;br&gt;
+&lt;code&gt;web3.utils.toHex()&lt;/code&gt;:数字转换为16进制，文本转换为utf-8字符串&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;地址相关&lt;/strong&gt;&lt;br&gt;
+&lt;code&gt;web3.utils.isAddress(address)&lt;/code&gt;:检查指定的字符串是否是有效的以太坊地址，使用了大小写会校验和。&lt;/p&gt;
+&lt;h2 id=&quot;查询区块信息&quot;&gt;查询区块信息&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;查询最新的区块号（区块高度）&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;web3.eth.getBlockNumber().then(console.log)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;查询区块信息&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;返回指定区块编号或块哈希对应的块:&lt;br&gt;
+&lt;code&gt;web3.eth.getBlock(blockHashOrBlockNumber [,returnTransactionsObjects,callback])&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;blockHashOrBlockNumber 为可选值：可输入区块号、区块hash 、或者字符串【‘earliest’,‘latest’,‘pending’】&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;查询块中的交易信息&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;web3.eth.getTransactionFromBlock(hasStringOrNumber,indexNumber)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;hasStringOrNumber同上面的blockHashOrBlockNumber&lt;/p&gt;
+&lt;p&gt;indexNumber：区块中交易的索引，从0开始&lt;br&gt;
+显示的内容和 getBlock 设置为true后返回的 transactions 交易信息一致&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;查询块中的交易数量&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;web3.eth.getBlockTransactionCount(blockHashOrBlockNumber [,callback])&lt;/code&gt;&lt;/p&gt;
+&lt;h2 id=&quot;Web3-js交易操作&quot;&gt;Web3.js交易操作&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;账户相关操作&lt;/strong&gt;&lt;br&gt;
+返回当前节点控制的账户列表：&lt;br&gt;
+&lt;code&gt;web3.eth.getAccounts()&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;创建一个新账户：&lt;br&gt;
+&lt;code&gt;web3.eth.personal.newAccount(password,[callback])&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;获得当前接收挖矿奖励的账户地址：&lt;br&gt;
+&lt;code&gt;web3.eth.getCoinbase()&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;交易相关操作&lt;/strong&gt;&lt;br&gt;
+&lt;code&gt;web3.eth.getBalance(address,[defaultBlock])&lt;/code&gt;:获得指定区块中特定账户地址的余额&lt;br&gt;
+&lt;code&gt;web3.eth.getGasPrice()&lt;/code&gt;:根据最近几个区块，计算平均gas价格&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;交易执行相关操作&lt;/strong&gt;&lt;br&gt;
+向以太网络提交一个交易：&lt;br&gt;
+&lt;code&gt;web3.eth.sendTransaction(transactionObject [,callback])&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;transactionObject参数说明：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;from: 发送者地址&lt;/li&gt;
+&lt;li&gt;to: 可选参数，接收者地址，若发送的为合约，则为空&lt;/li&gt;
+&lt;li&gt;value: 发送的币&lt;/li&gt;
+&lt;li&gt;gas: gas的限制&lt;/li&gt;
+&lt;li&gt;gsaPrice: 每个gas的价格&lt;/li&gt;
+&lt;li&gt;data: 若发送的为合约，则为当前合约的 ABI 文件，否则为说明信息&lt;/li&gt;
+&lt;li&gt;noce: 账户的前一个交易计数，这个数必须是十六进制， web3.utils.toHex()进行转换&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href=&quot;./%E9%92%B1%E5%8C%85%E8%BD%AC%E9%92%B1%E5%8C%85.js&quot;&gt;示例代码&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;返回具有指定哈希值的交易对象、查看交易细节：&lt;br&gt;
+&lt;code&gt;web3.eth.getTransaction()&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;返回指定交易的收据对象，如果交易是pending，返回null：&lt;br&gt;
+&lt;code&gt;web3.eth.getTransactionReceipt()&lt;/code&gt;&lt;/p&gt;
+&lt;h2 id=&quot;Web3-js-合约交互&quot;&gt;Web3.js 合约交互&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;应用程序二进制接口(ABI)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;ABI文件以JSON形式表示，在JSON文件中，不能写注释.&lt;/p&gt;
+&lt;p&gt;ABI表现形式：functions、events&lt;/p&gt;
+&lt;p&gt;作用：将这些ABI文件传递给web3.js(或其它sdk)，根据这些接口类型构建出js对象，js对象操作合约。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;创建合约&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;合约中可用编写的内容：函数、结构体、构造函数、状态变量、事件、枚举类型等。&lt;/p&gt;
+&lt;p&gt;合约要部署到区块链，需要编译为 字节码文件(remix中可直接复制)。&lt;/p&gt;
+&lt;p&gt;合约要想被外部应用程序访问，需要编译 ABI文件(remix中可直接复制)。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;js在区块链上部署合约&lt;/strong&gt;&lt;/p&gt;
+&lt;figure class=&quot;highlight stylus&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;contract&lt;span class=&quot;selector-class&quot;&gt;.deploy&lt;/span&gt;(&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  data:data&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;)&lt;span class=&quot;selector-class&quot;&gt;.send&lt;/span&gt;(&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  from:&lt;span class=&quot;string&quot;&gt;&amp;#x27;&amp;#x27;&lt;/span&gt;, &lt;span class=&quot;comment&quot;&gt;//从哪个账户发送&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  gas:&lt;span class=&quot;number&quot;&gt;150000&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  gasPrice:&lt;span class=&quot;string&quot;&gt;&amp;#x27;1000000&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;,&lt;span class=&quot;built_in&quot;&gt;function&lt;/span&gt;(err,transactionHash)&amp;#123;&lt;span class=&quot;built_in&quot;&gt;log&lt;/span&gt;(transactionHash)&amp;#125;)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/liugezhou/web3.js/blob/main/deploy.js&quot;&gt;示例代码&lt;/a&gt;：这的代码是指，不是通过 remix 的 发布按钮，而是通过自己写的js脚本去发布的一个合约。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;调用合约函数&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;调用智能合约读(view,pure)函数时，一般使用call，无收费，但有gas费。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;code&gt;myContract.methods.myMethod([param1 [,p2]]).call(options [,defaultBlock] [,callback])&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;myMethod为合约中的方法名&lt;/li&gt;
+&lt;li&gt;params1 为函数的参数&lt;/li&gt;
+&lt;li&gt;options参数说明：
+&lt;ul&gt;
+&lt;li&gt;from:String 可选 调用交易的地址&lt;/li&gt;
+&lt;li&gt;gasPrice:String 可选，交易的每个Gas的价格&lt;/li&gt;
+&lt;li&gt;gas：Number可选，交易的Gas限制&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;调用智能合约写函数：相当于发送了交易&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;code&gt;MyContract.methods.myMethod([params [,param2]]).send(options [,callback])&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;options参数说明：
+&lt;ul&gt;
+&lt;li&gt;from:String 可选 调用交易的地址&lt;/li&gt;
+&lt;li&gt;gasPrice:String 可选，交易的每个Gas的价格&lt;/li&gt;
+&lt;li&gt;gas：Number可选，交易的Gas限制&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;返回的结果触发事件：
+&lt;ul&gt;
+&lt;li&gt;transactionHash: string，发送交易且得到交易哈希值后立即触发&lt;/li&gt;
+&lt;li&gt;receipt：object。以事件名称为键，以事件本身为属性值的 events&lt;/li&gt;
+&lt;li&gt;confirmation：number。触发时第一个参数为接收到的确认数，第二个参数为收到交易数据&lt;/li&gt;
+&lt;li&gt;error：交易发生过程中出错时触发&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;调用合约事件&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;MyContract.methods.emitEvent(&amp;quot;eventName&amp;quot;).send(options [,callback])&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;执行事件查询&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;区块链是由一个个区块组成的列表，这些块的内容基本上是交易记录。&lt;br&gt;
+每个交易都有一个交易日志，事件结果存放在交易日志里。&lt;br&gt;
+合约发出的事件可以使用合约地址访问&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;MyContract.getPassEvents(event [,options] [,callback])&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;event: ‘AllEvents’ //获取全部事件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;Web-js应用案例&quot;&gt;Web.js应用案例&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/liugezhou/web3.js/tree/main/demo&quot;&gt;代码示例&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;需求：简单创建投票DApp&lt;/strong&gt;&lt;br&gt;
+与区块进行通信的方式是通过 RPC（Remote Procedure Call)&lt;br&gt;
+web3.js是一个js库，抽象出了所有的 RPC 调用，便于通过 js与区块链进行交互。&lt;br&gt;
+实现一个最简单的投票DApp&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;创建合约&lt;/strong&gt;&lt;br&gt;
+写一个叫做 Voting 的合约，合约的内容&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;初始化候选者&lt;/li&gt;
+&lt;li&gt;用来投票的方法&lt;/li&gt;
+&lt;li&gt;返回候选者所获得的总票数&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/liugezhou/web3.js/blob/main/demo/Voting.sol&quot;&gt;合约代码&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;部署合约&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;将以上sol文件在 remix 中编写。&lt;br&gt;
+发布到 External Http Provider（选择倒数第二个账户发布）&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;发布时，需要传入十六进制参数，通过 &lt;a href=&quot;https://github.com/liugezhou/web3.js/blob/main/demo/DemoUtils.js&quot;&gt;web3.utils.toHex&lt;/a&gt; 转成一个三个候选人的数据后，在deploy中加入数组参数，发现 remix 不支持部署&lt;/li&gt;
+&lt;li&gt;于是使用 web3.js发布的方式实现  &lt;a href=&quot;https://github.com/liugezhou/web3.js/blob/main/demo/DeployUtils.js&quot;&gt;DeployUtils.js 代码示例&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;通过步骤一发布，步骤二测试检查&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;网页交互&lt;/strong&gt;&lt;br&gt;
+&lt;a href=&quot;https://github.com/liugezhou/drag/blob/main/src/view/HelloWorld.vue&quot;&gt;前端内容代码&lt;/a&gt;&lt;/p&gt;
+"><meta name="twitter:image" content="https://cdn.statically.io/gh/liugezhou/image@master/blog/033_web3js.png"><title>web3js 实战基本操作 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">web3js 实战基本操作</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">web3js 实战基本操作</h1><div class="post-meta">2023-02-15<span> | </span><span class="category"><a href="/categories/Web3/">Web3</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 2.1k</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 8</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/033-web3js%E5%AE%9E%E6%88%98%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/#vcomment"><span class="valine-comment-count" data-xid="/033-web3js%E5%AE%9E%E6%88%98%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E7%AB%A0%E8%AF%B4%E6%98%8E"><span class="toc-text">文章说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96-web3-%E5%AF%B9%E8%B1%A1"><span class="toc-text">获取 web3 对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%B9%E5%A4%84%E7%90%86%E8%AF%B7%E6%B1%82"><span class="toc-text">批处理请求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ganache-%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-text">Ganache 客户端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BigNumber%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AD%89%E5%A4%84%E7%90%86%E5%B7%A5%E5%85%B7"><span class="toc-text">BigNumber大数据等处理工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E5%8C%BA%E5%9D%97%E4%BF%A1%E6%81%AF"><span class="toc-text">查询区块信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Web3-js%E4%BA%A4%E6%98%93%E6%93%8D%E4%BD%9C"><span class="toc-text">Web3.js交易操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Web3-js-%E5%90%88%E7%BA%A6%E4%BA%A4%E4%BA%92"><span class="toc-text">Web3.js 合约交互</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Web-js%E5%BA%94%E7%94%A8%E6%A1%88%E4%BE%8B"><span class="toc-text">Web.js应用案例</span></a></li></ol></div></div><div class="post-content"><p><img src="https://cdn.statically.io/gh/liugezhou/image@master/blog/033_web3js.png" alt=""></p>
+<span id="more"></span>
+<h2 id="文章说明">文章说明</h2>
+<p>这个篇文章的总结是在学习 <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV16L4y147Ly/?spm_id_from=333.337.search-card.all.click">b站web3.js的一个基础教程课</a> 的课程总结，方便后续在文章中查找API。</p>
+<p>学习中涉及的一些l零碎代码上传到了 <a target="_blank" rel="noopener" href="https://github.com/liugezhou/web3.js">这个仓库</a>。</p>
+<p>关于 web3js 这个 JS 库的相关操作，后续会持续更新。</p>
+<h2 id="获取-web3-对象">获取 web3 对象</h2>
+<p>下面的示例代码就是指 web3 这个JS库的一些基础操作，不做介绍。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="title class_">Web3</span> = <span class="built_in">require</span>(<span class="string">&#x27;web3&#x27;</span>); <span class="comment">//引入web3这个库</span></span><br><span class="line"><span class="keyword">const</span> &#123; log &#125; = <span class="variable language_">console</span></span><br><span class="line"><span class="comment">// 创建Provider</span></span><br><span class="line"><span class="keyword">const</span> provider = <span class="keyword">new</span> <span class="title class_">Web3</span>.<span class="property">providers</span>.<span class="title class_">HttpProvider</span>(</span><br><span class="line">  <span class="string">&quot;http://127.0.0.1:9545&quot;</span></span><br><span class="line">);</span><br><span class="line"><span class="keyword">const</span> provider2 = <span class="keyword">new</span> <span class="title class_">Web3</span>.<span class="property">providers</span>.<span class="title class_">HttpProvider</span>(</span><br><span class="line">  <span class="string">&quot;http://127.0.0.1:9999&quot;</span></span><br><span class="line">);</span><br><span class="line"><span class="keyword">let</span> web3 = <span class="keyword">new</span> <span class="title class_">Web3</span>(provider);</span><br><span class="line"></span><br><span class="line"><span class="title function_">log</span>(web3.<span class="property">modules</span>); <span class="comment">// 打印 web3 的 modules 属性</span></span><br><span class="line"><span class="title function_">log</span>(web3.<span class="property">version</span>); <span class="comment">// 打印 web3 的版本</span></span><br><span class="line"></span><br><span class="line">web3.<span class="property">eth</span>.<span class="title function_">getNodeInfo</span>().<span class="title function_">then</span>(log) <span class="comment">// 打印 web3 连接的节点信息</span></span><br><span class="line">web3.<span class="property">eth</span>.<span class="property">net</span>.<span class="title function_">isListening</span>().<span class="title function_">then</span>(log)  <span class="comment">//返回所连接节点的网络和检讨状态格式</span></span><br><span class="line">web3.<span class="property">eth</span>.<span class="property">net</span>.<span class="title function_">getId</span>().<span class="title function_">then</span>(log) <span class="comment">//获取 netWork id 网络号</span></span><br><span class="line">web3.<span class="property">eth</span>.<span class="title function_">getProtocolVersion</span>().<span class="title function_">then</span>(log) <span class="comment">//获取以太坊协议版本</span></span><br><span class="line"></span><br><span class="line"><span class="title function_">log</span>(web3.<span class="property">providers</span>) <span class="comment">//web3可用的Providers</span></span><br><span class="line"><span class="title function_">log</span>(web3.<span class="property">currentProvider</span>) <span class="comment">//web3当前正在使用的Providers</span></span><br><span class="line"><span class="title function_">log</span>(web3.<span class="property">givenProvider</span>) <span class="comment">//查看浏览器环境设置的 web3 provider</span></span><br><span class="line">web3.<span class="title function_">setProvider</span>(provider2) <span class="comment">//设置新的 Provider</span></span><br></pre></td></tr></table></figure>
+<h2 id="批处理请求">批处理请求</h2>
+<p>批处理请求是指几个请求打包在一起提交提交、串联执行 (一个个按顺序执行，速度不快，可保证代码执行顺序)</p>
+<p>通过<code>BatchRequest</code>实现批处理,核心代码为：</p>
+<ul>
+<li>new web3.BatchRequest()</li>
+<li>add(request) // 将请求对象添加到批调用中</li>
+<li>execute() //执行批处理请求</li>
+</ul>
+<p>代码示例：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> batch = <span class="keyword">new</span> web3.<span class="title class_">BatchRequest</span>();<span class="comment">//创建批量请求对象</span></span><br><span class="line">batch.<span class="title function_">add</span>(web3.<span class="property">eth</span>.<span class="property">getBalance</span>.<span class="title function_">request</span>(<span class="string">&#x27;0xxxx&#x27;</span>, <span class="string">&#x27;latest&#x27;</span>, callback)) <span class="comment">//指定定的钱包地址信息</span></span><br><span class="line">batch.<span class="title function_">add</span>(contract.<span class="property">methods</span>.<span class="title function_">getNumber</span>().<span class="property">call</span>.<span class="title function_">request</span>(&#123; <span class="attr">from</span>: <span class="string">&#x27;0xxxx&#x27;</span> &#125;, callback2)) <span class="comment">//合约的number值</span></span><br><span class="line">batch.<span class="title function_">execute</span>()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="Ganache-客户端">Ganache 客户端</h2>
+<p>项目在启动的时候，由于没有 ETH币，于是:</p>
+<ul>
+<li>下载了 Ganache 软件</li>
+<li>并且在浏览器插件中自定义网络接口为 7545</li>
+<li>账户 ETH 币通过 Ganache客户端复制 私钥导入的方式获得</li>
+<li>remix 部署的时候采取 Injected-MetaMask、切换账户</li>
+</ul>
+<h2 id="BigNumber大数据等处理工具">BigNumber大数据等处理工具</h2>
+<p><strong>大数据处理简介</strong><br>
+JS中，默认的数字精度较小，对于以太坊，推荐内部以 wei 来表示余额(大整数)，只要显示余额的时候才转为 ether 或其它单位。<br>
+在web3js中，自动添加一个依赖库 BigNumber，精度非常高，不会丢失。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> bigNumber = <span class="built_in">require</span>(<span class="string">&#x27;bignumber.js&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> n = <span class="keyword">new</span> <span class="title function_">bigNumber</span>(<span class="string">&#x27;1234356789765432123456786543213456&#x27;</span>)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(n)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(n.<span class="title function_">toString</span>()) <span class="comment">//打印科学计数法</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(n.<span class="title function_">toString</span>(<span class="number">10</span>))<span class="comment">//以10进制数完整显示，只会保存20位浮点计数(小数点后20位)</span></span><br></pre></td></tr></table></figure>
+<p><strong>判断是否为大数</strong><br>
+<code>web3.utils.isBigNumber(n)</code> :来判断一个数是否为大数。</p>
+<p><strong>以太单位转换</strong><br>
+<code>web3.utils.fromWei(number,[unit])</code> :将一个数值转换为以太单位<br>
+<code>web3.utils.toWei(number,[unit])</code>:将一个单位转换为Wei,1 ether为 10的18次方 wei</p>
+<p><strong>数值转换</strong><br>
+<code>web3.utils.toHex()</code>:数字转换为16进制，文本转换为utf-8字符串</p>
+<p><strong>地址相关</strong><br>
+<code>web3.utils.isAddress(address)</code>:检查指定的字符串是否是有效的以太坊地址，使用了大小写会校验和。</p>
+<h2 id="查询区块信息">查询区块信息</h2>
+<p><strong>查询最新的区块号（区块高度）</strong></p>
+<p><code>web3.eth.getBlockNumber().then(console.log)</code></p>
+<p><strong>查询区块信息</strong></p>
+<p>返回指定区块编号或块哈希对应的块:<br>
+<code>web3.eth.getBlock(blockHashOrBlockNumber [,returnTransactionsObjects,callback])</code></p>
+<p>blockHashOrBlockNumber 为可选值：可输入区块号、区块hash 、或者字符串【‘earliest’,‘latest’,‘pending’】</p>
+<p><strong>查询块中的交易信息</strong></p>
+<p><code>web3.eth.getTransactionFromBlock(hasStringOrNumber,indexNumber)</code></p>
+<p>hasStringOrNumber同上面的blockHashOrBlockNumber</p>
+<p>indexNumber：区块中交易的索引，从0开始<br>
+显示的内容和 getBlock 设置为true后返回的 transactions 交易信息一致</p>
+<p><strong>查询块中的交易数量</strong></p>
+<p><code>web3.eth.getBlockTransactionCount(blockHashOrBlockNumber [,callback])</code></p>
+<h2 id="Web3-js交易操作">Web3.js交易操作</h2>
+<p><strong>账户相关操作</strong><br>
+返回当前节点控制的账户列表：<br>
+<code>web3.eth.getAccounts()</code></p>
+<p>创建一个新账户：<br>
+<code>web3.eth.personal.newAccount(password,[callback])</code></p>
+<p>获得当前接收挖矿奖励的账户地址：<br>
+<code>web3.eth.getCoinbase()</code></p>
+<p><strong>交易相关操作</strong><br>
+<code>web3.eth.getBalance(address,[defaultBlock])</code>:获得指定区块中特定账户地址的余额<br>
+<code>web3.eth.getGasPrice()</code>:根据最近几个区块，计算平均gas价格</p>
+<p><strong>交易执行相关操作</strong><br>
+向以太网络提交一个交易：<br>
+<code>web3.eth.sendTransaction(transactionObject [,callback])</code></p>
+<p>transactionObject参数说明：</p>
+<ul>
+<li>from: 发送者地址</li>
+<li>to: 可选参数，接收者地址，若发送的为合约，则为空</li>
+<li>value: 发送的币</li>
+<li>gas: gas的限制</li>
+<li>gsaPrice: 每个gas的价格</li>
+<li>data: 若发送的为合约，则为当前合约的 ABI 文件，否则为说明信息</li>
+<li>noce: 账户的前一个交易计数，这个数必须是十六进制， web3.utils.toHex()进行转换</li>
+</ul>
+<p><a href="./%E9%92%B1%E5%8C%85%E8%BD%AC%E9%92%B1%E5%8C%85.js">示例代码</a></p>
+<p>返回具有指定哈希值的交易对象、查看交易细节：<br>
+<code>web3.eth.getTransaction()</code></p>
+<p>返回指定交易的收据对象，如果交易是pending，返回null：<br>
+<code>web3.eth.getTransactionReceipt()</code></p>
+<h2 id="Web3-js-合约交互">Web3.js 合约交互</h2>
+<p><strong>应用程序二进制接口(ABI)</strong></p>
+<p>ABI文件以JSON形式表示，在JSON文件中，不能写注释.</p>
+<p>ABI表现形式：functions、events</p>
+<p>作用：将这些ABI文件传递给web3.js(或其它sdk)，根据这些接口类型构建出js对象，js对象操作合约。</p>
+<p><strong>创建合约</strong></p>
+<p>合约中可用编写的内容：函数、结构体、构造函数、状态变量、事件、枚举类型等。</p>
+<p>合约要部署到区块链，需要编译为 字节码文件(remix中可直接复制)。</p>
+<p>合约要想被外部应用程序访问，需要编译 ABI文件(remix中可直接复制)。</p>
+<p><strong>js在区块链上部署合约</strong></p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">contract<span class="selector-class">.deploy</span>(&#123;</span><br><span class="line">  data:data</span><br><span class="line">&#125;)<span class="selector-class">.send</span>(&#123;</span><br><span class="line">  from:<span class="string">&#x27;&#x27;</span>, <span class="comment">//从哪个账户发送</span></span><br><span class="line">  gas:<span class="number">150000</span>,</span><br><span class="line">  gasPrice:<span class="string">&#x27;1000000&#x27;</span></span><br><span class="line">&#125;,<span class="built_in">function</span>(err,transactionHash)&#123;<span class="built_in">log</span>(transactionHash)&#125;)</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://github.com/liugezhou/web3.js/blob/main/deploy.js">示例代码</a>：这的代码是指，不是通过 remix 的 发布按钮，而是通过自己写的js脚本去发布的一个合约。</p>
+<p><strong>调用合约函数</strong></p>
+<ol>
+<li>调用智能合约读(view,pure)函数时，一般使用call，无收费，但有gas费。</li>
+</ol>
+<p><code>myContract.methods.myMethod([param1 [,p2]]).call(options [,defaultBlock] [,callback])</code></p>
+<ul>
+<li>myMethod为合约中的方法名</li>
+<li>params1 为函数的参数</li>
+<li>options参数说明：
+<ul>
+<li>from:String 可选 调用交易的地址</li>
+<li>gasPrice:String 可选，交易的每个Gas的价格</li>
+<li>gas：Number可选，交易的Gas限制</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li>调用智能合约写函数：相当于发送了交易</li>
+</ol>
+<p><code>MyContract.methods.myMethod([params [,param2]]).send(options [,callback])</code></p>
+<ul>
+<li>options参数说明：
+<ul>
+<li>from:String 可选 调用交易的地址</li>
+<li>gasPrice:String 可选，交易的每个Gas的价格</li>
+<li>gas：Number可选，交易的Gas限制</li>
+</ul>
+</li>
+<li>返回的结果触发事件：
+<ul>
+<li>transactionHash: string，发送交易且得到交易哈希值后立即触发</li>
+<li>receipt：object。以事件名称为键，以事件本身为属性值的 events</li>
+<li>confirmation：number。触发时第一个参数为接收到的确认数，第二个参数为收到交易数据</li>
+<li>error：交易发生过程中出错时触发</li>
+</ul>
+</li>
+</ul>
+<p><strong>调用合约事件</strong></p>
+<p><code>MyContract.methods.emitEvent(&quot;eventName&quot;).send(options [,callback])</code></p>
+<p><strong>执行事件查询</strong></p>
+<p>区块链是由一个个区块组成的列表，这些块的内容基本上是交易记录。<br>
+每个交易都有一个交易日志，事件结果存放在交易日志里。<br>
+合约发出的事件可以使用合约地址访问</p>
+<p><code>MyContract.getPassEvents(event [,options] [,callback])</code></p>
+<ul>
+<li>event: ‘AllEvents’ //获取全部事件</li>
+</ul>
+<h2 id="Web-js应用案例">Web.js应用案例</h2>
+<p><a target="_blank" rel="noopener" href="https://github.com/liugezhou/web3.js/tree/main/demo">代码示例</a></p>
+<p><strong>需求：简单创建投票DApp</strong><br>
+与区块进行通信的方式是通过 RPC（Remote Procedure Call)<br>
+web3.js是一个js库，抽象出了所有的 RPC 调用，便于通过 js与区块链进行交互。<br>
+实现一个最简单的投票DApp</p>
+<p><strong>创建合约</strong><br>
+写一个叫做 Voting 的合约，合约的内容</p>
+<ul>
+<li>初始化候选者</li>
+<li>用来投票的方法</li>
+<li>返回候选者所获得的总票数</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/liugezhou/web3.js/blob/main/demo/Voting.sol">合约代码</a></li>
+</ul>
+<p><strong>部署合约</strong></p>
+<p>将以上sol文件在 remix 中编写。<br>
+发布到 External Http Provider（选择倒数第二个账户发布）</p>
+<ul>
+<li>发布时，需要传入十六进制参数，通过 <a target="_blank" rel="noopener" href="https://github.com/liugezhou/web3.js/blob/main/demo/DemoUtils.js">web3.utils.toHex</a> 转成一个三个候选人的数据后，在deploy中加入数组参数，发现 remix 不支持部署</li>
+<li>于是使用 web3.js发布的方式实现  <a target="_blank" rel="noopener" href="https://github.com/liugezhou/web3.js/blob/main/demo/DeployUtils.js">DeployUtils.js 代码示例</a></li>
+<li>通过步骤一发布，步骤二测试检查</li>
+</ul>
+<p><strong>网页交互</strong><br>
+<a target="_blank" rel="noopener" href="https://github.com/liugezhou/drag/blob/main/src/view/HelloWorld.vue">前端内容代码</a></p>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>web3js 实战基本操作</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2023-02-15</p><p><span>最后更新：</span>2024-01-29</p><p><span>原始链接：</span><a href="/033-web3js实战基本操作/">https://blog.liugezhou.online/033-web3js%E5%AE%9E%E6%88%98%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/033-web3js%E5%AE%9E%E6%88%98%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/web3js"><i class="fa fa-tag">web3js</i></a></div><div class="post-nav"><a class="pre" href="/034-ethereum/">以太坊基础笔记</a><a class="next" href="/202306-No95/">每周小结(*95):小酒</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>

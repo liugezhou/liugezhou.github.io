@@ -1,0 +1,201 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="六个周的博客"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="六个周"><meta name="twitter:creator" content="@liugezhou"><meta name="twitter:title" content="服务端渲染"><meta name="twitter:description" content="&lt;p&gt;&lt;font color=blue&gt;更新说明：对文章排版以及内容格式做了调整。&lt;/font&gt;&lt;br&gt;
+&lt;font color=blue&gt; 更新时间：2022-05-04&lt;/font&gt;&lt;/p&gt;
+&lt;h1&gt;导读&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本文主要是从三个方面学习服务端渲染，内容整理自多个博客。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;服务端渲染是什么？什么是服务端渲染？（服务端渲染的运行机制）&lt;/li&gt;
+&lt;li&gt;为什么使用服务端渲染？服务端渲染解决了什么问题？&lt;/li&gt;
+&lt;li&gt;什么情况下使用服务端渲染？（服务端渲染的应用实例与使用场景）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;概念&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;首先，说到服务端渲染我们要先对渲染这个概念有一个大概的了解&lt;br&gt;
+渲染：就是将数据和模版组装成html&lt;/p&gt;
+&lt;p&gt;&lt;font color=Red&gt;客户端渲染（CSR）VS服务端渲染(SSR)&lt;/font&gt;&lt;br&gt;
+那么，为了更好的理解服务端渲染，我们也很有必要去了解一下客户端渲染。将客户端渲染与服务端渲染同时进行学习理解。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;客户端渲染&quot;&gt;客户端渲染&lt;/h2&gt;
+&lt;h3 id=&quot;概念&quot;&gt;概念&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;解释一：客户端渲染模式下，服务端把渲染的静态文件给到客户端，客户端拿到服务端发送过来的文件自己跑一遍js，根据JS运行结果，生成相应DOM，然后渲染给用户。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;解释二：html 仅仅作为静态文件，客户端在请求时，服务端不做任何处理，直接以原文件的形式返回给客户端客户端，然后根据 html 上的 JavaScript，生成 DOM 插入 html。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;延伸&quot;&gt;延伸&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;客户端渲染的方式起源于JavaScript的兴起，ajax的大热更是让前端渲染更加成熟，前端渲染真正意义上的实现了前后端分离，前端只专注于UI的开发，后端只专注于逻辑的开发，前后端交互只通过约定好的API来交互，后端提供json数据，前端循环json生成DOM插入到页面中去。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;利弊&quot;&gt;利弊&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;font color=Red&gt;好处&lt;/font&gt;： 网络传输数据量小、减少了服务器压力、前后端分离、局部刷新，无需每次请求完整页面、交互好可实现各种效果&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;font color=Red&gt;坏处&lt;/font&gt;：不利于SEO、爬虫看不到完整的程序源码、首屏渲染慢（渲染前需要下载一堆js和css等）&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;服务端渲染&quot;&gt;服务端渲染&lt;/h2&gt;
+&lt;h3 id=&quot;概念-2&quot;&gt;概念&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;解释一：服务端在返回 html 之前，在特定的区域，符号里用数据填充，再给客户端，客户端只负责解析 HTML 。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;解释二：服务端渲染的模式下，当用户第一次请求页面时，由服务器把需要的组件或页面渲染成 HTML 字符串，然后把它返回给客户端。客户端拿到手的，是可以直接渲染然后呈现给用户的 HTML 内容，不需要为了生成 DOM 内容自己再去跑一遍 JS 代码。使用服务端渲染的网站，可以说是“所见即所得”，页面上呈现的内容，我们在 html 源文件里也能找到。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;利弊-2&quot;&gt;利弊&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;font color=Red&gt;好处&lt;/font&gt;：首屏渲染快、利于SEO、可以生成缓存片段，生成静态化文件、节能（对比客户端渲染的耗电）&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;font color=Red&gt;坏处&lt;/font&gt;：用户体验较差、不容易维护，通常前端改了部分html或者css，后端也需要修改。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;对比&quot;&gt;对比&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;其实前后端的渲染本质是一样的，都是字符串的拼接，将数据渲染进一些固定格式的html代码中形成最终的html展示在用户页面上。  因为字符串的拼接必然会损耗一些性能资源。&lt;br&gt;
+如果在服务器端渲染，那么消耗的就是server端的性能。&lt;br&gt;
+如果是在客户端渲染，常见的手段，比如是直接生成DOM插入到html 中，或者是使用一些前端的模板引擎等。他们初次渲染的原理大多是将原html中的数据标记（例如）替换。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;为什么使用服务端渲染&lt;/h1&gt;
+&lt;p&gt;简单总结起来就是两点：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;font color=Red&gt;首屏加载快&lt;/font&gt;：&lt;br&gt;
+相比于加载单页应用，我只需要加载当前页面的内容，而不需要像 React 或者 Vue 一样加载全部的 js 文件&lt;br&gt;
+&lt;font color=Red&gt;SEO 优化&lt;/font&gt;：&lt;br&gt;
+对于单页应用，搜索引擎并不能收录到 ajax 爬取数据之后然后再动态 js 渲染出来的页面。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;为了更便于理解，下面几段话摘自掘金小册：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;事实上，很多网站是出于效益的考虑才启用服务端渲染，性能倒是在其次。&lt;br&gt;
+假设 A 网站页面中有一个关键字叫“前端性能优化”，这个关键字是 JS 代码跑过一遍后添加到 HTML 页面中的。那么客户端渲染模式下，我们在搜索引擎搜索这个关键字，是找不到 A 网站的——搜索引擎只会查找现成的内容，不会帮你跑 JS 代码。A 网站的运营方见此情形，感到很头大：搜索引擎搜不出来，用户找不到我们，谁还会用我的网站呢？为了把“现成的内容”拿给搜索引擎看，A 网站不得不启用服务端渲染。&lt;br&gt;
+但性能在其次，不代表性能不重要。服务端渲染解决了一个非常关键的性能问题——首屏加载速度过慢。在客户端渲染模式下，我们除了加载 HTML，还要等渲染所需的这部分 JS 加载完，之后还得把这部分 JS 在浏览器上再跑一遍。这一切都是发生在用户点击了我们的链接之后的事情，在这个过程结束之前，用户始终见不到我们网页的庐山真面目，也就是说用户一直在等！相比之下，服务端渲染模式下，服务器给到客户端的已经是一个直接可以拿来呈现给用户的网页，中间环节早在服务端就帮我们做掉了，用户岂不“美滋滋”？&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;什么情况下使用服务端渲染？&lt;/h1&gt;
+&lt;p&gt;通过服务端渲染的概念以及它的两个特点：&lt;font color=Red&gt;&lt;code&gt;首屏加载速度快&lt;/code&gt;、&lt;code&gt;SEO优化&lt;/code&gt;&lt;/font&gt;&lt;br&gt;
+我们知道，服务端渲染其实就是&lt;code&gt;由浏览器做的一些事情，我们放到了服务端去做&lt;/code&gt;，那么对于掘金、简书、CSDN、知乎等网站的搭建，这种在网上一搜搜出一堆东西的网站，SEO做的很好，应该多少都用到服务端渲染了吧？当然，做服务端渲染成本是高昂的。&lt;br&gt;
+vue全家桶或者react全家桶，都是推荐通过服务端渲染来实现路由的。&lt;br&gt;
+服务端渲染并非完全之策（服务器稀少而宝贵），关于首屏渲染体验以及SEO的优化方案很多，在不使用服务端渲染这个操作下，我们最好的处理方式就是找寻替代优化方案。&lt;/p&gt;
+&lt;p&gt;关于在server端还是在browser端渲染的选择，更多的是要看业务场景。&lt;/p&gt;
+&lt;h1&gt;相关文章延伸阅读&lt;/h1&gt;
+&lt;p&gt;&lt;a href=&quot;https://blog.csdn.net/b9q8e64lo6mm/article/details/79418969&quot;&gt;https://blog.csdn.net/b9q8e64lo6mm/article/details/79418969&lt;/a&gt; （力荐）&lt;/p&gt;
+"><meta name="twitter:image"><title>服务端渲染 | 六个周</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.3"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + '912656f1f71687bc80e68bfc7315fc4c';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">服务端渲染</h1><a id="logo" href="/.">六个周</a><p class="description">一个人只有一种命运，早日相遇，尽情拥抱。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> Me</i></a><a target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa fa-subway"> 开往</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">服务端渲染</h1><div class="post-meta">2018-10-15<span> | </span><span class="category"><a href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 1.8k</span><span class="post-meta-item-text"> 字</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 6</span><span class="post-meta-item-text"> 分钟</span></span></span></div><a class="disqus-comment-count" href="/002-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93/#vcomment"><span class="valine-comment-count" data-xid="/002-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">导读</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">概念</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%B8%B2%E6%9F%93"><span class="toc-text">客户端渲染</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5"><span class="toc-text">概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%B6%E4%BC%B8"><span class="toc-text">延伸</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E5%BC%8A"><span class="toc-text">利弊</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93"><span class="toc-text">服务端渲染</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5-2"><span class="toc-text">概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E5%BC%8A-2"><span class="toc-text">利弊</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E6%AF%94"><span class="toc-text">对比</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">为什么使用服务端渲染</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">什么情况下使用服务端渲染？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">相关文章延伸阅读</span></a></li></ol></div></div><div class="post-content"><p><font color=blue>更新说明：对文章排版以及内容格式做了调整。</font><br>
+<font color=blue> 更新时间：2022-05-04</font></p>
+<h1>导读</h1>
+<blockquote>
+<p>本文主要是从三个方面学习服务端渲染，内容整理自多个博客。</p>
+<ul>
+<li>服务端渲染是什么？什么是服务端渲染？（服务端渲染的运行机制）</li>
+<li>为什么使用服务端渲染？服务端渲染解决了什么问题？</li>
+<li>什么情况下使用服务端渲染？（服务端渲染的应用实例与使用场景）</li>
+</ul>
+</blockquote>
+<h1>概念</h1>
+<blockquote>
+<p>首先，说到服务端渲染我们要先对渲染这个概念有一个大概的了解<br>
+渲染：就是将数据和模版组装成html</p>
+<p><font color=Red>客户端渲染（CSR）VS服务端渲染(SSR)</font><br>
+那么，为了更好的理解服务端渲染，我们也很有必要去了解一下客户端渲染。将客户端渲染与服务端渲染同时进行学习理解。</p>
+</blockquote>
+<h2 id="客户端渲染">客户端渲染</h2>
+<h3 id="概念">概念</h3>
+<blockquote>
+<p>解释一：客户端渲染模式下，服务端把渲染的静态文件给到客户端，客户端拿到服务端发送过来的文件自己跑一遍js，根据JS运行结果，生成相应DOM，然后渲染给用户。</p>
+</blockquote>
+<blockquote>
+<p>解释二：html 仅仅作为静态文件，客户端在请求时，服务端不做任何处理，直接以原文件的形式返回给客户端客户端，然后根据 html 上的 JavaScript，生成 DOM 插入 html。</p>
+</blockquote>
+<h3 id="延伸">延伸</h3>
+<blockquote>
+<p>客户端渲染的方式起源于JavaScript的兴起，ajax的大热更是让前端渲染更加成熟，前端渲染真正意义上的实现了前后端分离，前端只专注于UI的开发，后端只专注于逻辑的开发，前后端交互只通过约定好的API来交互，后端提供json数据，前端循环json生成DOM插入到页面中去。</p>
+</blockquote>
+<h3 id="利弊">利弊</h3>
+<blockquote>
+<p><font color=Red>好处</font>： 网络传输数据量小、减少了服务器压力、前后端分离、局部刷新，无需每次请求完整页面、交互好可实现各种效果</p>
+</blockquote>
+<blockquote>
+<p><font color=Red>坏处</font>：不利于SEO、爬虫看不到完整的程序源码、首屏渲染慢（渲染前需要下载一堆js和css等）</p>
+</blockquote>
+<h2 id="服务端渲染">服务端渲染</h2>
+<h3 id="概念-2">概念</h3>
+<blockquote>
+<p>解释一：服务端在返回 html 之前，在特定的区域，符号里用数据填充，再给客户端，客户端只负责解析 HTML 。</p>
+</blockquote>
+<blockquote>
+<p>解释二：服务端渲染的模式下，当用户第一次请求页面时，由服务器把需要的组件或页面渲染成 HTML 字符串，然后把它返回给客户端。客户端拿到手的，是可以直接渲染然后呈现给用户的 HTML 内容，不需要为了生成 DOM 内容自己再去跑一遍 JS 代码。使用服务端渲染的网站，可以说是“所见即所得”，页面上呈现的内容，我们在 html 源文件里也能找到。</p>
+</blockquote>
+<h3 id="利弊-2">利弊</h3>
+<blockquote>
+<p><font color=Red>好处</font>：首屏渲染快、利于SEO、可以生成缓存片段，生成静态化文件、节能（对比客户端渲染的耗电）</p>
+</blockquote>
+<blockquote>
+<p><font color=Red>坏处</font>：用户体验较差、不容易维护，通常前端改了部分html或者css，后端也需要修改。</p>
+</blockquote>
+<h3 id="对比">对比</h3>
+<blockquote>
+<p>其实前后端的渲染本质是一样的，都是字符串的拼接，将数据渲染进一些固定格式的html代码中形成最终的html展示在用户页面上。  因为字符串的拼接必然会损耗一些性能资源。<br>
+如果在服务器端渲染，那么消耗的就是server端的性能。<br>
+如果是在客户端渲染，常见的手段，比如是直接生成DOM插入到html 中，或者是使用一些前端的模板引擎等。他们初次渲染的原理大多是将原html中的数据标记（例如）替换。</p>
+</blockquote>
+<h1>为什么使用服务端渲染</h1>
+<p>简单总结起来就是两点：</p>
+<blockquote>
+<p><font color=Red>首屏加载快</font>：<br>
+相比于加载单页应用，我只需要加载当前页面的内容，而不需要像 React 或者 Vue 一样加载全部的 js 文件<br>
+<font color=Red>SEO 优化</font>：<br>
+对于单页应用，搜索引擎并不能收录到 ajax 爬取数据之后然后再动态 js 渲染出来的页面。</p>
+</blockquote>
+<p>为了更便于理解，下面几段话摘自掘金小册：</p>
+<blockquote>
+<p>事实上，很多网站是出于效益的考虑才启用服务端渲染，性能倒是在其次。<br>
+假设 A 网站页面中有一个关键字叫“前端性能优化”，这个关键字是 JS 代码跑过一遍后添加到 HTML 页面中的。那么客户端渲染模式下，我们在搜索引擎搜索这个关键字，是找不到 A 网站的——搜索引擎只会查找现成的内容，不会帮你跑 JS 代码。A 网站的运营方见此情形，感到很头大：搜索引擎搜不出来，用户找不到我们，谁还会用我的网站呢？为了把“现成的内容”拿给搜索引擎看，A 网站不得不启用服务端渲染。<br>
+但性能在其次，不代表性能不重要。服务端渲染解决了一个非常关键的性能问题——首屏加载速度过慢。在客户端渲染模式下，我们除了加载 HTML，还要等渲染所需的这部分 JS 加载完，之后还得把这部分 JS 在浏览器上再跑一遍。这一切都是发生在用户点击了我们的链接之后的事情，在这个过程结束之前，用户始终见不到我们网页的庐山真面目，也就是说用户一直在等！相比之下，服务端渲染模式下，服务器给到客户端的已经是一个直接可以拿来呈现给用户的网页，中间环节早在服务端就帮我们做掉了，用户岂不“美滋滋”？</p>
+</blockquote>
+<h1>什么情况下使用服务端渲染？</h1>
+<p>通过服务端渲染的概念以及它的两个特点：<font color=Red><code>首屏加载速度快</code>、<code>SEO优化</code></font><br>
+我们知道，服务端渲染其实就是<code>由浏览器做的一些事情，我们放到了服务端去做</code>，那么对于掘金、简书、CSDN、知乎等网站的搭建，这种在网上一搜搜出一堆东西的网站，SEO做的很好，应该多少都用到服务端渲染了吧？当然，做服务端渲染成本是高昂的。<br>
+vue全家桶或者react全家桶，都是推荐通过服务端渲染来实现路由的。<br>
+服务端渲染并非完全之策（服务器稀少而宝贵），关于首屏渲染体验以及SEO的优化方案很多，在不使用服务端渲染这个操作下，我们最好的处理方式就是找寻替代优化方案。</p>
+<p>关于在server端还是在browser端渲染的选择，更多的是要看业务场景。</p>
+<h1>相关文章延伸阅读</h1>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/b9q8e64lo6mm/article/details/79418969">https://blog.csdn.net/b9q8e64lo6mm/article/details/79418969</a> （力荐）</p>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css?v=1.0.3"><p><span>本文标题：</span>服务端渲染</p><p><span>文章作者：</span>六个周</p><p><span>发布时间：</span>2018-10-15</p><p><span>最后更新：</span>2022-05-04</p><p><span>原始链接：</span><a href="/002-服务端渲染/">https://blog.liugezhou.online/002-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://blog.liugezhou.online/002-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93/"></i></span></p><p><span>版权声明：</span>本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！</p></div><br><div class="tags"><a href="/tags/编程概念"><i class="fa fa-tag">编程概念</i></a></div><div class="post-nav"><a class="pre" href="/003-%E5%89%8D%E7%AB%AF%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/">前端跨域问题</a><a class="next" href="/001-hexo%20first%20blood/">搭建个人-博客极简</a></div><div id="vcomment"></div><script src="//code.bdstatic.com/npm/leancloud-storage@4.12.0/dist/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'Ci6gl5SnXOdXxv9BTlQx3T2F-gzGzoHsz',
+  appKey:'bWsfs1hg9qURRp3gJ6SJU41x',
+  placeholder:'ヾﾉ≧∀≦)o来啊，快活啊!',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 文章分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Web3/">Web3</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E6%9E%B6%E6%9E%84%E4%B9%8B%E8%84%9A%E6%89%8B%E6%9E%B6/">Web架构之脚手架</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B0%8F%E6%8A%80/">前端小技</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E5%91%A8%E5%B0%8F%E7%BB%93/">每周小结</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 其它主页</i></div><ul></ul><a href="https://github.com/liugezhou" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://chat.liugezhou.online" title="自定义 ChatGPT" target="_blank">自定义 ChatGPT</a><ul></ul><a href="https://day.liugezhou.online" title="今日前端" target="_blank">今日前端</a><ul></ul><a href="https://zhouzhou.zhubai.love/" title="我的竹白" target="_blank">我的竹白</a><ul></ul><a href="https://read.liugezhou.online/" title="zlib 搜书工具" target="_blank">zlib 搜书工具</a><ul></ul><a href="https://list.liugezhou.online" title="网站导航" target="_blank">网站导航</a><ul></ul><a href="https://memos.liugezhou.online/explore" title="Memos" target="_blank">Memos</a><ul></ul><a href="https://twitter.com/liugezhou" title="Twitter" target="_blank">Twitter</a><ul></ul><a href="https://run.liugezhou.online" title="Running" target="_blank">Running</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">六个周.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"></a><a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.3" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.3" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><link rel="stylesheet" type="text/css" href="/css/search.css?v=1.0.3"><script type="text/javascript" src="/js/search.js?v=1.0.3"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+  search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/love.js?v=1.0.3"></script><script type="text/javascript" src="/js/copycode.js?v=1.0.3" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.3"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.3"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.3"></script></div></body></html>
