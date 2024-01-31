@@ -10,6 +10,4 @@ layout: about
 
 - 正在培养：<font color=Teal>读书</font>、<font color=Teal>学英语</font>、<font color=	Teal>写读后感</font>、<font color=Teal>跑步</font>
 
-
-- 最近在这里: [竹白](https://zhouzhou.zhubai.love/)、 公众号:<font color=Green>Wakaka</font>、[今日前端](https://day.liugezhou.online/)
-
+- 公众号:<font color=Green>Wakaka</font>、[今日前端](https://day.liugezhou.online/)、<font color=Blue>微信号</font>：enjoying-day

@@ -137,20 +137,12 @@ widgets: ## Six widgets in sidebar provided: search, category, tag, recent_posts
 links:
   - title: GitHub
     url: https://github.com/liugezhou
-  - title: 自定义 ChatGPT
+  - title: Twitter
+    url: https://twitter.com/liugezhou
+  - title: 自定义GPT
     url: https://chat.liugezhou.online
   - title: 今日前端
     url: https://day.liugezhou.online
-  - title: 我的竹白
-    url: https://zhouzhou.zhubai.love/
-  - title: zlib 搜书工具
-    url: https://read.liugezhou.online/
-  - title: 网站导航
-    url: https://list.liugezhou.online
-  - title: Memos
-    url: https://memos.liugezhou.online/explore
-  - title: Twitter
-    url: https://twitter.com/liugezhou
   - title: Running
     url: https://run.liugezhou.online
 
