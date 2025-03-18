@@ -19,6 +19,7 @@
 
 ## <a id="mzxj">每周小结</a>
 
+[如何蜗居赚钱：探索多种可能性](https://blog.liugezhou.online/20250318/)  
 [每周小结(*101):暂时告个别](https://blog.liugezhou.online/202314-No101/)  
 [每周小结(*100):总结过去，提升幸福感](https://blog.liugezhou.online/202313-No100/)  
 [每周小结(*99):鸽了一期](https://blog.liugezhou.online/202310-No99/)  
